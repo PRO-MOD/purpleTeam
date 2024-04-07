@@ -1,33 +1,37 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import SideNavbar from './components/SideNavbar'
+// import { AddUsers } from './components/index'
+
+import {
+  Route,
+  Routes,
+  BrowserRouter as Router
+} from "react-router-dom"
+import { AddUsers, AssignTeams, Report, ScoresComponent, UserHomePage } from './components'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+        <div className="flex flex-row h-full mt-1">
+          <div className="left_Home w-[5%] min-w-20">
+            <SideNavbar />
+          </div>
+          <div className="right_Home lg:w-[95%]">
+            <Routes>
+              <Route exact path='/' element={<>Hello</>} />
+              <Route exact path='/createuser' element={<AddUsers />} />
+              <Route exact path='/assignTeams' element={<AssignTeams />} />
+              <Route exact path='/scores' element={<ScoresComponent />} />
+              <Route exact path='/UserHome' element={<UserHomePage />} />
+              <Route exact path='/UserHome/report/SITREP' element={<Report />} />
+              <Route exact path='/UserHome/report/incident' element={<Report />} />
+            </Routes>
+          </div>
+        </div>
+      </Router>
     </>
   )
 }

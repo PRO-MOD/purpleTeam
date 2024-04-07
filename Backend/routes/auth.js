@@ -1,9 +1,9 @@
-
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const sendCredentials = require('../utils/sendMail')
 // const fetchuser = require('../middleware/fetchuser');
 const JWT_SECRET = process.env.JWT_SECRET; // This is to be stored in env.local for security purposes.
 
@@ -23,6 +23,8 @@ router.post('/createuser', async (req, res) => {
                 password: securedPass,
                 role: req.body.role
             })
+
+            sendCredentials(req.body.email, "Check your Hackathon Credentials !!", `Your Credntials for this session are \nEmail: ${req.body.email} \n Password: ${req.body.password}`)
 
             const data = {
                 user: {
@@ -104,6 +106,62 @@ router.post('/login', async (req, res) => {
 
 
 })
+
+// Route to fetch all users
+router.get('/getallusers', async (req, res) => {
+    try {
+        const users = await User.find({role: "BT"}, '-password'); // Exclude password field
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Route to fetch all Volunteer
+router.get('/getallVolunteer', async (req, res) => {
+    try {
+        const users = await User.find({role: "WT"}, '-password').populate('assignedTeams', 'name');; // Exclude password field
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Define the route for updating a user
+router.put('/updateuser/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const { name, email, password, role } = req.body;
+
+        // Check if user exists
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Update user's information
+        user.name = name;
+        user.email = email;
+        // Update password only if provided
+        if (password) {
+            const salt = bcrypt.genSaltSync(10);
+            const securedPass = bcrypt.hashSync(password, salt);
+            user.password = securedPass;
+        }
+        user.role = role;
+
+        // Save the updated user to the database
+        await user.save();
+
+        res.json({ message: "User updated successfully" });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: "Internal Server Error occurred while updating user" });
+    }
+});
+
 
 
 // Route 3: route for the api with the route of localhost/api/auth/getuser with a MIDDLEWARE
