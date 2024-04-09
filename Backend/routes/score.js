@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config();
 const User = require('../models/User')
+const Score = require('../models/score')
+const Report = require('../models/report')
 
 router.get('/getscores', async (req, res) => {
     try {
@@ -37,8 +39,39 @@ router.get('/getscores', async (req, res) => {
         // Filter scores to include only scores for users present in your database
         const filteredScores = scores.filter(score => userNames.includes(score.name));
 
+        // Update scores and manual scores in the database
+        for (const score of filteredScores) {
+            const user = await User.findOne({ name: score.name });
+            if (user) {
+                // Fetch all the reports belonging to the user
+                const reports = await Report.find({ userId: user._id });
+
+                // Calculate the sum of manual scores from the reports
+                let totalManualScore = 0;
+                for (const report of reports) {
+                    totalManualScore += report.manualScore || 0; // Add the manual score to the total
+                }
+
+                // Update the score and manual score for the user in the Score collection
+                await Score.findOneAndUpdate(
+                    { user: user._id },
+                    {
+                        $set: {
+                            account_id: score.account_id,
+                            score: score.score,
+                            manualScore: totalManualScore // Update manual score
+                        }
+                    },
+                    { upsert: true, new: true } // Create a new document if it doesn't exist
+                );
+            }
+        }
+
+        // Fetch scores from the Scores collection
+        const scoresData = await Score.find();
+
         // Send the filtered scores back as the response
-        res.json(filteredScores);
+        res.json(scoresData);
     } catch (error) {
         // Handle any errors that occur during the request
         console.error('Error fetching scores:', error);

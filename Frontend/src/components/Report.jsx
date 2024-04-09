@@ -12,6 +12,9 @@ function Report() {
     photos: [], // Array to store photo files
   });
 
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(''); // Error state
+
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'photo') {
@@ -36,6 +39,8 @@ function Report() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true); // Set loading state to true
+      setError(''); // Clear previous errors
       const formDataToSend = new FormData();
       formDataToSend.append('question1', formData.question1);
       formDataToSend.append('question2', formData.question2);
@@ -46,26 +51,33 @@ function Report() {
       formData.photos.forEach((photo) => {
         formDataToSend.append('photos', photo);
       });
-
+  
       let ReportType;
       (window.location.href.includes("SITREP")) ? ReportType = "SITREP" : ReportType = "INCIDENT"
-
+  
       const response = await fetch(`http://localhost:5000/api/reports/${ReportType}`, {
         method: 'POST',
         body: formDataToSend,
+        headers: {
+          "Auth-token": localStorage.getItem('Hactify-Auth-token')
+        },
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to submit form');
+        throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
       }
-
+  
       console.log('Form submitted successfully');
       alert('Response submitted successfully!');
       navigate('/');
     } catch (error) {
       console.error('Error submitting form:', error);
+      setError('Failed to submit form. Please try again.'); // Set error message
+    } finally {
+      setLoading(false); // Set loading state to false regardless of success or failure
     }
   };
+  
 
   return (
     <div className="container mx-auto p-4">
@@ -157,13 +169,17 @@ function Report() {
             onChange={handleInputChange}
           />
         </div>
-        {/* Submit button */}
+        {/* Error message */}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+        
+        {/* Submit button with loading state */}
         <div className="flex items-center justify-between">
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            disabled={loading} // Disable button when loading
           >
-            Submit
+            {loading ? 'Submitting...' : 'Submit'}
           </button>
         </div>
       </form>

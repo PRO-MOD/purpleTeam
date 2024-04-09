@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 
-function ReportTable() {
+function UserReports({ userId }) {
     const [reports, setReports] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
+    const [manualScore, setManualScore] = useState('');
+    const [showManualScoreModal, setShowManualScoreModal] = useState(false);
+    const [showPhotoModal, setShowPhotoModal] = useState(false);
+    const [showReportDetailsModal, setShowReportDetailsModal] = useState(false);
+    const [reportId, setReportId] = useState(null);
 
     useEffect(() => {
         // Fetch reports from the backend when the component mounts
@@ -14,13 +19,13 @@ function ReportTable() {
 
     const fetchReports = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/reports/getAllReports', {
+            const response = await fetch(`http://localhost:5000/api/reports/user/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     "auth-token": localStorage.getItem('Hactify-Auth-token')
                 },
-            }); // Assuming the route is served from '/api'
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch reports');
             }
@@ -39,6 +44,8 @@ function ReportTable() {
             }
             const reportDetails = await response.json();
             setSelectedReport(reportDetails);
+            // setShowReportDetailsModal(true); // Open report details modal
+
         } catch (error) {
             console.error('Error fetching report details:', error);
         }
@@ -47,22 +54,55 @@ function ReportTable() {
     const handlePhotoClick = (event, photoUrls) => {
         event.stopPropagation(); // Prevent propagation of the click event
         setSelectedPhoto(photoUrls);
+        setShowPhotoModal(true); // Open photo modal
     };
 
     const handleCloseModal = () => {
         setSelectedReport(null);
         setSelectedPhoto(null);
+        setShowManualScoreModal(false);
+        setShowPhotoModal(false);
+        setShowReportDetailsModal(false);
+        setManualScore('');
     };
+
+    const handleAddManualScore = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/reports/${reportId}/manual-score`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ score: manualScore })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to add manual score');
+            }
+            // Refresh the reports list after adding manual score
+            fetchReports();
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error adding manual score:', error);
+        }
+    };
+
+    const handleShowManualScoreModal = (reportId) => {
+        setShowManualScoreModal(true);
+        setReportId(reportId);
+    };
+    
 
     return (
         <div className="container mx-auto">
-            <h2 className="text-2xl font-semibold my-4">Reports</h2>
+            <h2 className="text-2xl font-semibold my-4">User Reports</h2>
             <table className="table-auto">
                 <thead>
                     <tr>
                         <th className="px-4 py-2">Date</th>
                         <th className="px-4 py-2">Report Type</th>
+                        <th className="px-4 py-2">Manual Score</th>
                         <th className="px-4 py-2">Actions</th>
+                        <th className="px-4 py-2"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,6 +110,7 @@ function ReportTable() {
                         <tr key={report._id} className="cursor-pointer hover:bg-gray-100" onClick={() => handleReportClick(report._id)}>
                             <td className="border px-4 py-2">{new Date(report.createdAt).toLocaleDateString()}</td>
                             <td className="border px-4 py-2">{report.reportType}</td>
+                            <td className="border px-4 py-2">{report.manualScore !== null ? report.manualScore : 'No score assigned yet'}</td>
                             <td className="border px-4 py-2">
                                 <FontAwesomeIcon
                                     icon={faEye}
@@ -79,16 +120,30 @@ function ReportTable() {
                                 &nbsp;&nbsp;
                                 <a href={`http://localhost:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500" onClick={(event) => event.stopPropagation()}>View PDF</a>
                             </td>
+                            <td>
+                                <button
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        setShowManualScoreModal(true);
+                                        handleShowManualScoreModal(report._id);
+                                    }}
+                                    className="text-blue-500 cursor-pointer"
+                                >
+                                    Add Manual Score
+                                </button>
+                                &nbsp;&nbsp;
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            {selectedPhoto && (
+
+            {showPhotoModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg relative max-h-full overflow-y-auto">
                         <span className="text-2xl font-bold cursor-pointer absolute top-2 right-2" onClick={handleCloseModal}>&times;</span>
                         <h3 className="text-lg font-semibold mb-4">Report Photos</h3>
-                        <div className="h-96 overflow-y-auto"> {/* Adjust the height as per your requirement */}
+                        <div className="h-96 overflow-y-auto">
                             {selectedPhoto.map((photoUrl, index) => (
                                 <img key={index} src={photoUrl} alt={`Photo ${index}`} className="max-w-full max-h-full my-4 border-2" />
                             ))}
@@ -97,23 +152,40 @@ function ReportTable() {
                 </div>
             )}
 
-            {selectedReport && (
+            {showReportDetailsModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg w-1/2 h-auto max-h-3/4 overflow-y-auto relative">
                         <span className="text-2xl font-bold cursor-pointer absolute top-2 right-2" onClick={handleCloseModal}>&times;</span>
                         <h3 className="text-lg font-semibold mb-4">Report Details</h3>
-                        <p><strong>Date:</strong> {new Date(selectedReport.createdAt).toLocaleDateString()}</p>
+                        <p><strong>Date:</strong> {selectedReport && new Date(selectedReport.createdAt).toLocaleDateString()}</p>
                         <p><strong>Question 1:</strong></p>
-                        <p>{selectedReport.question1}</p>
+                        <p>{selectedReport && selectedReport.question1}</p>
                         <p><strong>Question 2:</strong></p>
-                        <p>{selectedReport.question2}</p>
+                        <p>{selectedReport && selectedReport.question2}</p>
                         <p><strong>Question 3:</strong></p>
-                        <p>{selectedReport.question3}</p>
+                        <p>{selectedReport && selectedReport.question3}</p>
                         <p><strong>Question 4:</strong></p>
-                        <p>{selectedReport.question4}</p>
+                        <p>{selectedReport && selectedReport.question4}</p>
                         <p><strong>Question 5:</strong></p>
-                        <p>{selectedReport.question5}</p>
+                        <p>{selectedReport && selectedReport.question5}</p>
                         {/* Add additional details here */}
+                    </div>
+                </div>
+            )}
+
+            {showManualScoreModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg w-1/2 h-auto max-h-3/4 overflow-y-auto relative">
+                        <span className="text-2xl font-bold cursor-pointer absolute top-2 right-2" onClick={handleCloseModal}>&times;</span>
+                        <h3 className="text-lg font-semibold mb-4">Add Manual Score</h3>
+                        <input
+                            type="number"
+                            className="border-gray-300 rounded-md w-full p-2 mb-4"
+                            placeholder="Enter Manual Score"
+                            value={manualScore}
+                            onChange={(e) => setManualScore(e.target.value)}
+                        />
+                        <button onClick={handleAddManualScore} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit</button>
                     </div>
                 </div>
             )}
@@ -121,4 +193,4 @@ function ReportTable() {
     );
 }
 
-export default ReportTable;
+export default UserReports;

@@ -37,30 +37,31 @@ function AssignTeams() {
         setSelectedVolunteer(volunteerId);
         fetchUsers();
         setShowModal(true);
-    
+
         // Use the updated volunteers state
         const selectedVolunteer = volunteers.find(volunteer => volunteer._id === volunteerId);
-    
+
         if (selectedVolunteer) {
-            const assignedUserIds = selectedVolunteer.assignedTeams.map(team => team.userId);
+            const assignedUserIds = selectedVolunteer.assignedTeams.map(team => team._id);
             setSelectedUsers(assignedUserIds);
         }
     };
-    
-
 
     const handleCheckboxChange = (userId) => {
-        // Toggle the selected state of the user
         setSelectedUsers((prevSelectedUsers) => {
-            if (prevSelectedUsers.includes(userId)) {
-                return prevSelectedUsers.filter((id) => id !== userId);
+            const updatedUsers = new Set(prevSelectedUsers);
+
+            if (updatedUsers.has(userId)) {
+                updatedUsers.delete(userId);
             } else {
-                return [...prevSelectedUsers, userId];
+                updatedUsers.add(userId);
             }
+
+            return Array.from(updatedUsers);
         });
     };
 
-    const handleAssignTeamsSubmit = async () => {
+    const assignUsers = async () => {
         try {
             // Send a request to the backend to assign selected users to the volunteer
             const response = await fetch(`http://localhost:5000/api/auth/addUsers/${selectedVolunteer}`, {
@@ -73,11 +74,38 @@ function AssignTeams() {
             const data = await response.json();
             console.log('Users assigned to team successfully:', data);
             setShowModal(false);
-            // Reset selected users
-            setSelectedUsers([]);
         } catch (error) {
             console.error('Error assigning users to team:', error);
         }
+    };
+
+    const removeUsers = async () => {
+        // Remove users who are no longer selected
+        const unselectedUsers = users.filter(user => !selectedUsers.includes(user._id));
+
+        try {
+            // Send a request to the backend to remove unselected users from the volunteer
+            const response = await fetch(`http://localhost:5000/api/auth/removeUsers/${selectedVolunteer}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ unselectedUserIds: unselectedUsers.map(user => user._id) })
+            });
+            const data = await response.json();
+            console.log('Users removed from team successfully:', data);
+        } catch (error) {
+            console.error('Error removing users from team:', error);
+        }
+    };
+
+    const handleAssignTeamsSubmit = async () => {
+        await assignUsers();
+        await removeUsers();
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
     };
 
     return (
@@ -86,7 +114,7 @@ function AssignTeams() {
             <hr className='mx-2 my-8 border-black' />
 
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">Volunteers:</h1>
+                <h1 className="text-xl font-bold mb-4 underline">Red Team:</h1>
                 <table className="table-auto w-full">
                     <thead>
                         <tr>
@@ -108,7 +136,7 @@ function AssignTeams() {
                                         ? volunteer.assignedTeams.map(team => team.name).join(', ')
                                         : 'No assigned teams'}
                                 </td>
-                                <td className="border px-4 py-2">
+                                <td className="border px-4 py-2 text-indigo-500 hover:underline hover:text-indigo-800 ">
                                     <button onClick={() => handleAssignTeams(volunteer._id)}>Assign Teams</button>
                                 </td>
                             </tr>
@@ -134,7 +162,10 @@ function AssignTeams() {
                                     </label>
                                 </div>
                             ))}
-                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Assign Teams</button>
+                            <div className="flex flex-row items-center">
+                                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Assign Teams</button>
+                                <button onClick={handleCloseModal} className="text-red-500 hover:underline font-bold ms-4 rounded">Close Modal</button>
+                            </div>
                         </form>
                     </div>
                 </div>

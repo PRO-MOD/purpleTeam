@@ -24,8 +24,8 @@ const reportSchema = new mongoose.Schema({
     required: true,
   },
   photoUrl: {
-    type: [String], // Assuming you store the photo URL
-    required: false, // It's not required if the user doesn't upload a photo
+    type: [String], 
+    required: false, 
   },
   pdfName: {
     type: String,
@@ -34,14 +34,23 @@ const reportSchema = new mongoose.Schema({
   reportType: { 
     type: String, 
     required: true 
+  },  
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', 
+    required: true
   },
   createdAt: {
     type: Date,
     default: Date.now,
   },
+  manualScore: {
+    type: Number,
+    default: null // Assuming manual score is not initially set
+  }
 });
 
-// Create the FormData model
+// Creating the FormData model
 const reportModel = mongoose.model('reportData', reportSchema);
 
 // Export the model
