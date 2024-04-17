@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import ScoreTable from './ScoreTable';
+import { useLocation } from 'react-router-dom';
 
 function ScoresComponent() {
   const [scores, setScores] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true); // Set loading to true initially
-  
+  const location = useLocation();
+
   useEffect(() => {
     const fetchScores = async () => {
       try {
@@ -25,12 +27,16 @@ function ScoresComponent() {
     fetchScores();
   }, []);
 
+  const isHomePage = () => {
+    return location.pathname === '/';
+  };
+
   return (
     <div className='mx-16 my-12'>
-      <h1 className='text-3xl font-bold'>Scores</h1>
+      <h1 className='text-3xl font-bold'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
       <hr className='mt-4 mb-8'/>
       {error && <p>Error: {error}</p>}
-      <ScoreTable scores={scores} loading={loading} />
+      <ScoreTable scores={scores} loading={loading} isHomePage={isHomePage()}/>
     </div>
   );
 }

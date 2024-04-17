@@ -2,7 +2,7 @@ import React from 'react';
 import Loading from './Loading';
 import { useNavigate } from "react-router-dom";
 
-function ScoreTable({ scores, loading }) {
+function ScoreTable({ scores, loading, isHomePage }) {
   const navigate = useNavigate();
 
   const handleUserClick = async (userName) => {
@@ -44,21 +44,31 @@ function ScoreTable({ scores, loading }) {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {loading ? (
-            <Loading />
+            <tr>
+              <td>
+                <Loading />
+              </td>
+            </tr>
           ) : (
             scores.length > 0 ? (
-            scores.map((user, index) => (
-              <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                <td 
-                  className="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600 hover:text-indigo-900 cursor-pointer"
-                  onClick={() => handleUserClick(user.name)} // Call handleUserClick on user name click
-                >{user.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore || 'Not entered'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score + (user.manualScore || 0)}</td>
-              </tr>
-            ))) : <tr><td colSpan="4" className='px-6 py-4 text-center'>No Record Found</td></tr>
+              scores.map((user, index) => (
+                <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  <td
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'
+                      }`}
+                    onClick={() => {
+                      if (isHomePage) {
+                        return;
+                      }
+                      handleUserClick(user.name);
+                    }}
+                  >{user.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore || 'Not entered'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score + (user.manualScore || 0)}</td>
+                </tr>
+              ))) : <tr><td colSpan="4" className='px-6 py-4 text-center'>No Record Found</td></tr>
           )}
         </tbody>
       </table>
