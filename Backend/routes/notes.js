@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
 router.get('/fetchallnotes', fetchuser,async(req, res)=>{
 
   try {
-    const userId = req.user._id; 
+    const userId = req.user.id; 
     const note = await Note.find({user: userId});
     res.json(note);
   } catch (err) {

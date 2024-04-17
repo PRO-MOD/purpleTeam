@@ -6,7 +6,7 @@ export const AddNote = (props) => {
     const context = useContext(NoteContext);
     const {addNote} = context;
 
-    const [Note, setNote] = useState({title: "", description: "", tag: ""})
+    const [Note, setNote] = useState({title: "", description: "", tag: ""});
     const [isValid, setisValid] = useState(false);
 
 
