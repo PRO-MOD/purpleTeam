@@ -53,6 +53,12 @@ const SideNavbar = () => {
                 </div>
                 <p className="mt-2 text-sm">UserHome</p>
               </Link>
+              <Link to="/notes" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
+                <div className="h-10 w-10 flex items-center justify-center">
+                  <FontAwesomeIcon icon={faCircleUser} color="" size="xl" />
+                </div>
+                <p className="mt-2 text-sm">Notes</p>
+              </Link>
             </>
           )}
           {userRole === "WT" && (
