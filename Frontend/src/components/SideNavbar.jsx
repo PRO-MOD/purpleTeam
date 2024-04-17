@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 
 const SideNavbar = () => {
@@ -55,7 +55,7 @@ const SideNavbar = () => {
               </Link>
               <Link to="/notes" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
                 <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faCircleUser} color="" size="xl" />
+                  <FontAwesomeIcon icon={faNotesMedical} color="" size="xl" />
                 </div>
                 <p className="mt-2 text-sm">Notes</p>
               </Link>
