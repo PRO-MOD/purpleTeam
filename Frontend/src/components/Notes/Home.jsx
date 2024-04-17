@@ -8,7 +8,6 @@ export const Home = (props) => {
         <>
             <Notes showAlert={props.showAlert}/>
             
-
         </>
     )
 }

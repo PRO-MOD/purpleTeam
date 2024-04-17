@@ -34,11 +34,11 @@ const SideNavbar = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-800 text-white w-full sticky top-0 shadow-xl shadow-black z-50">
+    <div className="flex flex-col h-screen bg-white-800 text-black w-full sticky top-0 shadow-xl z-50">
       {/* Logo Section */}
       <div className="flex flex-col items-center justify-center py-4 px-2">
-        <img src="/Cyber_Abhyaas.png" alt="Logo" className="" />
-        <p className="mt-2 mx-2 text-lg font-bold uppercase invisible lg:visible">Hacktify</p>
+        <img src="https://hacktify.in/wp-content/uploads/2023/10/logo-1-min.png" alt="Logo" className="" />
+        {/* <p className="mt-2 mx-2 text-lg font-bold uppercase invisible lg:visible">Hacktify</p> */}
       </div>
       <hr className="mx-2" />
 
