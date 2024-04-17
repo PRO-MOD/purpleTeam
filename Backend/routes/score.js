@@ -57,6 +57,7 @@ router.get('/getscores', async (req, res) => {
                     { user: user._id },
                     {
                         $set: {
+                            name: score.name,
                             account_id: score.account_id,
                             score: score.score,
                             manualScore: totalManualScore // Update manual score
