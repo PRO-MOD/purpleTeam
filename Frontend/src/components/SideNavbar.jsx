@@ -47,7 +47,7 @@ const SideNavbar = () => {
         <ul>
           {userRole === "BT" && (
             <>
-              <Link to="/UserHome" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
+              {/* <Link to="/UserHome" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faCircleUser} color="" size="xl" />
                 </div>
@@ -58,7 +58,20 @@ const SideNavbar = () => {
                   <FontAwesomeIcon icon={faNotesMedical} color="" size="xl" />
                 </div>
                 <p className="mt-2 text-sm">Notes</p>
-              </Link>
+              </Link> */}
+              <Link to="/UserHome" className="flex flex-col items-center justify-center py-4 bg-white hover:bg-gray-700">
+  <div className="h-10 w-10 flex items-center justify-center">
+    <FontAwesomeIcon icon={faCircleUser} color="black" size="xl" />
+  </div>
+  <p className="mt-2 text-sm text-black">UserHome</p>
+</Link>
+<Link to="/notes" className="flex flex-col items-center justify-center py-4 bg-white hover:bg-gray-700">
+  <div className="h-10 w-10 flex items-center justify-center">
+    <FontAwesomeIcon icon={faNotesMedical} color="black" size="xl" />
+  </div>
+  <p className="mt-2 text-sm text-black">Notes</p>
+</Link>
+
             </>
           )}
           {userRole === "WT" && (
