@@ -1,3 +1,5 @@
+// Report.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -51,10 +53,10 @@ function Report() {
       formData.photos.forEach((photo) => {
         formDataToSend.append('photos', photo);
       });
-  
+
       let ReportType;
-      (window.location.href.includes("SITREP")) ? ReportType = "SITREP" : ReportType = "INCIDENT"
-  
+      (window.location.href.includes("SITREP")) ? ReportType = "SITREP" : (window.location.href.includes("incident")) ? ReportType = "INCIDENT" : ReportType = "DAY_END"
+
       const response = await fetch(`http://localhost:5000/api/reports/${ReportType}`, {
         method: 'POST',
         body: formDataToSend,
@@ -62,11 +64,11 @@ function Report() {
           "Auth-token": localStorage.getItem('Hactify-Auth-token')
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
       }
-  
+
       console.log('Form submitted successfully');
       alert('Response submitted successfully!');
       navigate('/');
@@ -77,7 +79,7 @@ function Report() {
       setLoading(false); // Set loading state to false regardless of success or failure
     }
   };
-  
+
 
   return (
     <div className="container mx-auto p-4">

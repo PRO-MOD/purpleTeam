@@ -51,6 +51,7 @@ function HomePage() {
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<Report />} />
               <Route exact path='/UserHome/report/incident' element={<Report />} />
+              <Route exact path='/UserHome/report/day-end' element={<Report />} />
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
             </Routes>

@@ -12,12 +12,11 @@ export const Notes = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
+        if (localStorage.getItem('Hactify-Auth-token')) {
             getNotes()
         }
         else {
             navigate('/signin');
-
         }
 
     }, [])
