@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 // import './App.css'
 import SideNavbar from './SideNavbar'
+import Analysis from '../components/Analysis';
 
 import {
   Route,
@@ -43,13 +44,14 @@ function HomePage() {
           <div className="right_Home lg:w-[95%]">
             <Alert alert={alert}/>
             <Routes>
-              <Route exact path='/home' element={<>Hello</>} />
+              <Route exact path='/home' element={<Analysis/>} />
               <Route exact path='/createuser' element={<AddUsers />} />
               <Route exact path='/assignTeams' element={<AssignTeams />} />
               <Route exact path='/scores' element={<ScoresComponent />} />
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<Report />} />
               <Route exact path='/UserHome/report/incident' element={<Report />} />
+              <Route exact path='/UserHome/report/day-end' element={<Report />} />
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
             </Routes>
