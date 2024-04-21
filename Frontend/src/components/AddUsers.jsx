@@ -144,7 +144,7 @@ function AddUsers() {
 
                 <div className="flex flex-row ms-8">
                     {/* Input for uploading Excel file */}
-                    <input type="file" onChange={handleFileChange} />
+                    <input type="file" onChange={handleFileChange} title='Add Excel to map flags in DB'/>
 
                     {/* Button to upload Excel file */}
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded" onClick={handleFileUpload}>Upload File</button>
