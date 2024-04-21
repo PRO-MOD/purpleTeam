@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Flag=require('../models/flags');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendCredentials = require('../utils/sendMail')
@@ -233,6 +234,28 @@ router.get('/user', async (req, res) => {
   }
 });
 
+
+router.post('/fetch-flag',fetchuser, async (req, res) => {
+  
+  const userId = req.user.id;
+  const user = await User.findById(userId).select("-password");
+  const {ctfdFlag } = req.body;
+  const  teamName=user.name;
+
+  try {
+    const flag = await Flag.findOne({ teamName, ctfdFlag });
+    
+
+    if (flag) {
+      return res.json({ encryptedFlag: flag.encryptedFlag });
+    } else {
+      return res.status(404).json({ error: 'Flag not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching encrypted flag:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 // Route to get user details by ID
 router.get('/:userId', async (req, res) => {
   try {
