@@ -1,29 +1,49 @@
-import React from 'react';
-import { ChatList } from "react-chat-elements"
+import React, { useState, useEffect } from 'react';
+import { ChatItem } from "react-chat-elements";
+import { useNavigate } from "react-router-dom";
 
 function ChatLists() {
+    const [conversations, setConversations] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchConversations();
+    }, []);
+
+    const fetchConversations = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/chat/conversations', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Auth-token": localStorage.getItem('Hactify-Auth-token') // Assuming you have a token stored in localStorage
+                }
+            });
+            const data = await response.json();
+            setConversations(data);
+        } catch (error) {
+            console.error('Error fetching conversations:', error);
+        }
+    };
+
+    const handleChatItemClick = (recipientId) => {
+        navigate(`/chat/${recipientId}`);
+    };
+
     return (
-        <div className="flex max-h-screen ">
-            <ChatList
-                className='chat-list'
-                dataSource={[
-                    {
-                        avatar: 'https://avatars.githubusercontent.com/u/80540635?v=4',
-                        alt: 'kursat_avatar',
-                        title: 'Kursat',
-                        subtitle: "Why don't we go to the No Way Home movie this weekend ?",
-                        date: new Date(),
-                        unread: 3,
-                    },
-                    {
-                        avatar: 'https://avatars.githubusercontent.com/u/41473129?v=4',
-                        alt: 'Emre',
-                        title: 'Emre',
-                        subtitle: "Okay !!",
-                        date: new Date(2021, 9, 22),
-                        unread: 3,
-                    }
-                ]} />
+        <div className="flex flex-col max-h-screen">
+            {conversations.map((conversation, index) => (
+                <ChatItem
+                    key={index}
+                    avatar="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    alt={conversation.recipient.name}
+                    title={conversation.recipient.name}
+                    subtitle={conversation.latestMessageContent}
+                    date={new Date(conversation.latestMessageDate)}
+                    unread={0}
+                    onClick={() => handleChatItemClick(conversation.recipient._id)}
+                />
+            ))}
         </div>
     );
 }

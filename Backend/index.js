@@ -17,6 +17,7 @@ app.use('/api/score',require('./routes/score.js'))
 app.use('/api/reports',require('./routes/report.js'))
 app.use('/api/notes',require('./routes/notes.js'))
 app.use('/api/flags',require('./routes/flags.js'))
+app.use('/api/chat',require('./routes/chat.js'))
 
 app.listen(port,()=>{
     console.log(`Listening on port: ${port}`)

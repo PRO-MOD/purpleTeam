@@ -55,7 +55,7 @@ function HomePage() {
               <Route exact path='/UserHome/report/day-end' element={<Report />} />
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
-              <Route exact path="/chat" element={<ChatMainPage/>}/>
+              <Route exact path="/chat/*" element={<ChatMainPage/>}/>
             </Routes>
           </div>
         </div>
