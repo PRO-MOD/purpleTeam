@@ -43,7 +43,7 @@ export const AddNote = (props) => {
                 <label htmlFor="description" className="form-label">Tag</label>
                 <input type="text" className="form-control" id="tag" name="tag" placeholder="Enter Tag" value={Note.tag} onChange={onChange} minLength={3}/>
             </div>
-            <button className="btn btn-warning" onClick={handleClick}>Add Note</button>
+            <button className="btn text-light" style={{backgroundColor: "#e94e1e"}} onClick={handleClick}>Add Note</button>
 
             <div className="container text-danger mt-4">
                 {isValid ? "Title and Desscription should atleast be of length 5 and Tag of length 3": ""}

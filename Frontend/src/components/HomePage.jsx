@@ -10,6 +10,7 @@ import {
 } from "react-router-dom"
 import { AddUsers, AssignTeams, Report, ScoresComponent, UserHomePage, UserDetails,AdminDataVisualization } from './index'
 import { Alert, Home } from './Notes';
+import ChatMainPage from './Chats/ChatMainPage'
 
 
 function HomePage() {
@@ -36,12 +37,12 @@ function HomePage() {
   return (
     <>
       {/* <Router> */}
-        <div className="flex flex-row h-full mt-1">
+        <div className="flex flex-row  h-screen">
           <div className="left_Home w-[5%] min-w-20">
             <SideNavbar />
           </div>
-          <div className="right_Home lg:w-[95%]">
-            <Alert alert={alert}/>
+          <div className="right_Home lg:w-[95%] h-screen">
+            {/* <Alert alert={alert}/> */}
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />
@@ -54,6 +55,7 @@ function HomePage() {
               <Route exact path='/UserHome/report/day-end' element={<Report />} />
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
+              <Route exact path="/chat" element={<ChatMainPage/>}/>
             </Routes>
           </div>
         </div>

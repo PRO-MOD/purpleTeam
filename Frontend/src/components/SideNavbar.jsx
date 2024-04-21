@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 
 const SideNavbar = () => {
@@ -33,6 +33,10 @@ const SideNavbar = () => {
     navigate('/signin');
   };
 
+  const isActive = (route) => {
+    return window.location.href.includes(route);
+  }
+
   return (
     <div className="flex flex-col h-screen bg-white-800 text-black w-full sticky top-0 shadow-xl z-50">
       {/* Logo Section */}
@@ -47,48 +51,54 @@ const SideNavbar = () => {
         <ul>
           {userRole === "BT" && (
             <>
-              <Link to="/UserHome" className="flex flex-col items-center justify-center py-4 bg-white hover:bg-gray-700">
+              <Link to="/UserHome" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/UserHome") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faCircleUser} color="black" size="xl" />
+                  <FontAwesomeIcon icon={faCircleUser} size="xl" />
                 </div>
-                <p className="mt-2 text-sm text-black">UserHome</p>
+                <p className="mt-2 text-sm">UserHome</p>
               </Link>
-              <Link to="/notes" className="flex flex-col items-center justify-center py-4 bg-white hover:bg-gray-700">
+              <Link to="/notes" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/notes") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faNotesMedical} color="black" size="xl" />
+                  <FontAwesomeIcon icon={faNotesMedical} size="xl" />
                 </div>
-                <p className="mt-2 text-sm text-black">Notes</p>
+                <p className="mt-2 text-sm">Notes</p>
+              </Link>
+              <Link to="/chat" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/chat") ? "bg-gray-700 text-white" : ""}`}>
+                <div className="h-10 w-10 flex items-center justify-center">
+                  <FontAwesomeIcon icon={faComment} size="xl" />
+                </div>
+                <p className="mt-2 text-sm">Chats</p>
               </Link>
 
             </>
           )}
           {userRole === "WT" && (
             <>
-              <Link to="/home" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
+              <Link to="/home" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/home") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faHome} size="xl" className="" />
                 </div>
                 <p className="mt-2 text-sm">Home</p>
               </Link>
-              <Link to="/createuser" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
+              <Link to="/createuser" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/createuser") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faUserPlus} color="#1f2937" size="lg" />
                 </div>
                 <p className="mt-2 text-sm">Create User</p>
               </Link>
-              <Link to="/assignTeams" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
+              <Link to="/assignTeams" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/assignTeams") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faCalendar} size="2xl" />
                 </div>
                 <p className="mt-2 text-sm">View All</p>
               </Link>
-              <Link to="/scores" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
+              <Link to="/scores" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/scores") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faRankingStar} size="2xl" />
                 </div>
                 <p className="mt-2 text-sm">Scores</p>
               </Link>
-              <Link to="/profile" className="flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ">
+              <Link to="/profile" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/profile") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faUser} color="" size="xl" />
                 </div>
@@ -97,7 +107,7 @@ const SideNavbar = () => {
             </>
           )}
         </ul>
-        <button onClick={handleLogout} className="flex flex-col items-center justify-center mx-4 py-4 hover:bg-gray-700 hover:text-white">
+        <button onClick={handleLogout} className="flex flex-col items-center justify-center p-4 hover:bg-gray-700 hover:text-white">
           <div className="h-10 w-10 flex items-center justify-center">
             <FontAwesomeIcon icon={faSignOutAlt} className="rotate-180" size="2xl" />
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
 
 function AddUsers() {
     const [showModal, setShowModal] = useState(false);
@@ -11,6 +12,7 @@ function AddUsers() {
     const [users, setUsers] = useState([]);
     const [volunteers, setVolunteers] = useState([]);
     const [editUserId, setEditUserId] = useState(null); // Store the ID of the user being edited
+    const [file, setFile] = useState(null);
 
     useEffect(() => {
         fetchUsers();
@@ -70,6 +72,28 @@ function AddUsers() {
         }
     };
 
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleFileUpload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('http://localhost:5000/api/flags/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    };
+
+
     const closeModal = () => {
         setShowModal(false);
         setFormData({
@@ -109,13 +133,24 @@ function AddUsers() {
             <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
             <hr className='mx-2 my-8 border-black' />
 
-            {/* Button to add user */}
-            <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setShowModal(true)}
-            >
-                Add User
-            </button>
+            <div className="flex flex-row">
+                {/* Button to add user */}
+                <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => setShowModal(true)}
+                >
+                    Add User
+                </button>
+
+                <div className="flex flex-row ms-8">
+                    {/* Input for uploading Excel file */}
+                    <input type="file" onChange={handleFileChange} />
+
+                    {/* Button to upload Excel file */}
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded" onClick={handleFileUpload}>Upload File</button>
+                </div>
+
+            </div>
 
             {/* Modal for adding a new user */}
             {showModal && (
@@ -191,7 +226,7 @@ function AddUsers() {
                 </div>
             )}
 
-<div className="users mt-12">
+            <div className="users mt-12">
                 <h1 className="text-xl font-bold mb-4 underline">Blue Team: </h1>
                 <table className="table-auto w-full">
                     <thead>
