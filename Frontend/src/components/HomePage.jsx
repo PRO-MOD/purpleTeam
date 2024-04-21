@@ -11,6 +11,7 @@ import {
 import { AddUsers, AssignTeams, Report, ScoresComponent, UserHomePage, UserDetails,AdminDataVisualization } from './index'
 import { Alert, Home } from './Notes';
 import ChatMainPage from './Chats/ChatMainPage'
+import FetchEncryptedFlag from './FetchEncryptedFlag';
 
 
 function HomePage() {
@@ -56,6 +57,7 @@ function HomePage() {
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
               <Route exact path="/chat/*" element={<ChatMainPage/>}/>
+              <Route exact path="/flag" element={<FetchEncryptedFlag/>}/>
             </Routes>
           </div>
         </div>
