@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "react-chat-elements/dist/main.css"
 import ChatList from './ChatList';
 import Profile from './Profile';
 import ChatWindow from './ChatWindow';
 import NoUserSelected from './NoUserSelected';
-
-
 
 import {
     Route,
@@ -13,6 +11,7 @@ import {
   } from "react-router-dom"
 
 function ChatAppLayout() {
+
     return (
         <div className="flex max-h-screen">
             {/* Left Section: List of existing chats */}

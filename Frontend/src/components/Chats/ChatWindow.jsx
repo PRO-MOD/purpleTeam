@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Avatar, MessageBox } from 'react-chat-elements';
 import AuthContext from '../../context/AuthContext';
 import ChatInput from './ChatInput';
 
 
+
+import { io } from 'socket.io-client'
 
 function ChatWindow() {
     const { userId } = useParams();
@@ -13,6 +15,45 @@ function ChatWindow() {
     const context = useContext(AuthContext);
     const { user, fetchUserRole } = context;
     const [error, setError] = useState(null);
+    const messageRef = useRef(null);
+
+
+    console.log(messages);
+
+    const [socket, setSocket] = useState(null)
+
+    useEffect(() => {
+        const newSocket = io('http://localhost:8080');
+        setSocket(newSocket);
+
+        // Clean up function to disconnect the socket when the component unmounts
+        return () => {
+            newSocket.disconnect();
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchUserRole();
+        socket?.emit('addUser', user._id);
+        socket?.on('getUsers', users => {
+            console.log("Active Users :>> ", users);
+        }); //on se receive karte hai
+
+        socket?.on('getMessage', message => {
+            console.log('Received message:', message);
+            const timestamp = new Date(); // Get the current timestamp
+            const messageWithTimestamp = { ...message, timestamp }; // Add the timestamp to the message
+            setMessages(prevMessages => [...prevMessages, messageWithTimestamp]);
+        });
+
+
+
+    }, [socket])
+
+    useEffect(() => {
+        messageRef?.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [messages])
+
 
     useEffect(() => {
         const getUserRole = async () => {
@@ -92,21 +133,33 @@ function ChatWindow() {
             {/* Main content */}
             <div className="flex-1 overflow-y-auto">
                 {/* Display messages */}
-                {messages.map((message, index) => (
-                    <MessageBox
-                        key={index}
-                        position={isLoggedInUserMsg(message.sender) ? 'right' : 'left'}
-                        title={isLoggedInUserMsg(message.sender) ? 'You' : userInfo.name}
-                        type='text'
-                        text={message.content}
-                        date={new Date(message.timestamp)}
-                        styles={{maxWidth: '50%'}}
-                    />
-                ))}
+                {messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">No message to Display</h2>
+                    <p className="text-gray-600">Start a conversation</p>
+                </div>
+                ) : (
+                    messages.map((message, index) => (
+                        <>
+                            <div key={index}>
+                                <MessageBox
+                                    position={isLoggedInUserMsg(message.sender) ? 'right' : 'left'}
+                                    title={isLoggedInUserMsg(message.sender) ? 'You' : userInfo?.name || 'Unknown'}
+                                    type='text'
+                                    text={message.content}
+                                    date={new Date(message.timestamp)}
+                                    styles={{ maxWidth: '50%' }}
+                                />
+                            </div>
+                            <div ref={messageRef}></div>
+                        </>
+                    ))
+                )}
+
             </div>
 
             {/* Messaging input */}
-            <ChatInput recipientId={userId} fetchMessages={fetchMessages}/>
+            <ChatInput recipientId={userId} fetchMessages={fetchMessages} socket={socket} userId={user._id} />
         </div>
     )
 }

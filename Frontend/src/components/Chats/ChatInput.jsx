@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
-function ChatInput({ recipientId }) {
+function ChatInput({ recipientId, socket, userId }) {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
@@ -19,6 +19,11 @@ function ChatInput({ recipientId }) {
         setError('');
 
         try {
+
+            socket?.emit('sendMessage', {
+                senderId: userId, recipient: recipientId, content: message
+            })
+
             const response = await fetch('http://localhost:5000/api/chat/send-message', {
                 method: 'POST',
                 headers: {
