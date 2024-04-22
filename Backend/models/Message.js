@@ -15,6 +15,9 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    images: [{
+        type: String // Array of image URLs
+    }],
     timestamp: {
         type: Date,
         default: Date.now

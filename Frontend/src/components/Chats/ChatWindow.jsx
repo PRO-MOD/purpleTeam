@@ -18,7 +18,7 @@ function ChatWindow() {
     const messageRef = useRef(null);
 
 
-    console.log(messages);
+    // console.log(messages);
 
     const [socket, setSocket] = useState(null)
 
@@ -110,6 +110,19 @@ function ChatWindow() {
         return messageSender === user._id; // Assuming userId is stored in localStorage
     };
 
+    const imageDataToBase64URL = (imageData) => {
+        // Check if the image data contains the Cloudinary domain
+        if (imageData && typeof imageData === 'object') {
+            return imageData.url; // Return the URL directly if it's already in base64 format
+        } else {
+            // Handle other cases or formats if needed
+            // For now, assuming it's already in the desired format, return it as is
+            return imageData;
+        }
+    };
+    
+    
+
     return (
         <div className='flex flex-col h-screen'>
             {/* Profile View */}
@@ -135,9 +148,9 @@ function ChatWindow() {
                 {/* Display messages */}
                 {messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">No message to Display</h2>
-                    <p className="text-gray-600">Start a conversation</p>
-                </div>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">No message to Display</h2>
+                        <p className="text-gray-600">Start a conversation</p>
+                    </div>
                 ) : (
                     messages.map((message, index) => (
                         <>
@@ -151,6 +164,20 @@ function ChatWindow() {
                                     styles={{ maxWidth: '50%' }}
                                 />
                             </div>
+                            {message.images && message.images.map((imageData, index) => (
+                                <MessageBox
+                                    key={index}
+                                    position={isLoggedInUserMsg(message.sender) ? 'right' : 'left'}
+                                    type={"photo"}
+                                    title={isLoggedInUserMsg(message.sender) ? 'You' : userInfo?.name || 'Unknown'}
+                                    data={{
+                                        uri: imageDataToBase64URL(imageData), // Convert image data to base64 URL
+                                    }}
+                                    date={new Date(message.timestamp)}
+                                    styles={{ maxWidth: '50%' }}
+                                />
+                            ))}
+
                             <div ref={messageRef}></div>
                         </>
                     ))

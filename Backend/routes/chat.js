@@ -1,22 +1,99 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const multer = require('multer');
 const Message = require('../models/Message');
 const User = require('../models/User');
 const fetchuser = require('../middleware/fetchuser');
+const uploadImageToCloudinary = require('../utils/imageUpload');
+
+// Function to handle socket logic
+let users = []
+const handleSocket = (io) => {
+    io.on('connection', (socket) => {
+        console.log('user connected', socket.id);
+
+        socket.on('addUser', (userId) => {
+            const isUserExist = users.find((user) => user.userId === userId);
+            if (!isUserExist) {
+                const user = { userId, socketId: socket.id };
+                users.push(user);
+                io.emit('getUsers', users);
+            }
+        });
+
+        // Define the 'sendMessage' event handler
+        socket.on('sendMessage', ({ senderId, recipient, content, images }) => {
+            const receiver = users.find((user) => user.userId == recipient);
+            const sender = users.find((user) => user.userId == senderId);
+            try {
+                if (receiver) {
+                    io.to(receiver.socketId).to(sender.socketId).emit('getMessage', {
+                        sender: senderId,
+                        content,
+                        recipient,
+                        images,
+                    });
+                } else {
+                    io.to(sender.socketId).emit('getMessage', {
+                        sender: senderId,
+                        content,
+                        recipient,
+                        images,
+                    });
+                }
+            } catch (error) {
+                console.error('Error handling sendMessage event:', error);
+            }
+        });
+
+        socket.on('disconnect', () => {
+            users = users.filter((user) => user.socketId !== socket.id);
+            io.emit('getUsers', users);
+        });
+    });
+
+    // Handle errors from Socket.IO
+    io.on('error', (error) => {
+        console.error('Socket.IO Error:', error);
+    });
+};
+
+
+
+// Multer storage and upload configuration
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // Send message
-router.post('/send-message', fetchuser, async (req, res) => {
+router.post('/send-message', fetchuser, upload.array('images', 5), async (req, res) => {
     const sender = req.user.id;
-    const { recipient, content } = req.body;
+    const { recipient, content } = req.body; // Extract recipient and content from the request body
+    const images = req.files; // Extract images from the request files
+
     try {
-        const message = await Message.create({ sender, recipient, content });
+        // Upload photos to Cloudinary and get their URLs
+        const photoUrls = [];
+        for (const photo of images) {
+            const imageUrl = await uploadImageToCloudinary(photo);
+            photoUrls.push(imageUrl); // Push imageUrl into photoUrls array
+        }
+
+        // Create and save the message with image URLs
+        const message = await Message.create({ sender, recipient, content, images: photoUrls });
+        await message.save();
+
+        // Return the message with status code 201 if everything is successful
         res.status(201).json(message);
     } catch (error) {
         console.error('Error sending message:', error);
+        // Handle other errors
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+
 
 // Get messages between two users
 router.get('/messages/:recipient', fetchuser, async (req, res) => {
@@ -89,4 +166,4 @@ router.get('/conversations', fetchuser, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-module.exports = router;
+module.exports = { router, handleSocket };

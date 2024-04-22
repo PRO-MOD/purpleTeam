@@ -8,7 +8,7 @@ import NoUserSelected from './NoUserSelected';
 import {
     Route,
     Routes
-  } from "react-router-dom"
+} from "react-router-dom"
 
 function ChatAppLayout() {
 
@@ -18,22 +18,22 @@ function ChatAppLayout() {
             <div className="w-1/4 bg-gray-200">
                 <Profile />
                 <hr />
-                <ChatList />
+                <ChatList position="left" />
             </div>
 
             {/* Center Section: Chat window */}
             <div className="flex-1 bg-gray-100 h-screen">
                 <Routes>
                     {/* <Route exact path="/:userId" element={<ChatWindow />} /> */}
-                    <Route exact path="/" element={<NoUserSelected/> } />
-                    <Route exact path="/:userId" element={<ChatWindow/> } />
+                    <Route exact path="/" element={<NoUserSelected />} />
+                    <Route exact path="/:userId" element={<ChatWindow />} />
                     {/* <ChatWindow /> */}
                 </Routes>
             </div>
 
             {/* Right Section: List of users available for chat */}
             <div className="w-1/4 bg-gray-200">
-                {/* <ChatUserList /> */}
+                <ChatList position="right" />
             </div>
         </div>
     );
