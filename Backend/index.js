@@ -24,6 +24,7 @@ handleSocket(io);
 app.use('/api/auth',require('./routes/auth.js'))
 app.use('/api/score',require('./routes/score.js'))
 app.use('/api/reports',require('./routes/report.js'))
+app.use('/api/IncidentReport',require('./routes/IncidentReport.js'))
 app.use('/api/notes',require('./routes/notes.js'))
 app.use('/api/flags',require('./routes/flags.js'))
 app.use('/api/chat',chatRouter)

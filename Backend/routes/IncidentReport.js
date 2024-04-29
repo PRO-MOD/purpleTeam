@@ -1,13 +1,11 @@
-
-
-
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const { PDFDocument } = require('pdf-lib');
-const reportModel = require('../models/report');
+// const incidentModel = require('../models/IncidentReport'); // Changed import to incidentModel
+const incidentModel =require('../models/IncidentReport')
 const fetchuser = require('../middleware/fetchuser');
 
 // Multer storage and upload configuration
@@ -16,95 +14,103 @@ const upload = multer({ storage });
 
 // POST route for form submission
 router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
+   // Removed ':reportType' from the route path
   try {
     const {
       description,
-      threatLevel,
-      areasOfConcern,
-      recentIncidents,
-      trendAnalysis,
-      impactAssessment,
-      sources,
-      keyThreatActors,
+      severityLevel,
+      impact,
+      affectedSystems,
+      detectionMethod,
+      initialDetectionTime,
+      attackVector,
+      attackers,
+      containment,
+      eradication,
+      recovery,
+      lessonsLearned,
+      evidence,
       indicatorsOfCompromise,
-      recentVulnerabilities,
-      patchStatus,
+      ttps,
       mitigationRecommendations,
-      currentOperations,
-      incidentResponse,
-      forensicAnalysis,
-      internalNotifications,
-      externalNotifications,
-      publicRelations,
-      riskAssessment,
-      continuityPlanning,
-      trainingAndExercises,
+      internalNotification,
+      externalNotification,
+      updates,
+      incidentReview,
+      documentation,
+      training,
     } = req.body;
 
     const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
-    const reportType = req.params.reportType;
+    const reportType=req.params.reportType;
     const userId = req.user.id;
-    const date=req.params.createdAt;
 
     // Load PDF file
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'original.pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'Report.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
+
 
     const form=pdfDoc.getForm();
 
   
-    const Description=form.getTextField('Description');
-    const Threat=form.getDropdown('Threat Level');
-    const Aoc=form.getTextField('Areas of Concern');
-    const RI=form.getTextField('Recent Incidents');
-    const TA=form.getTextField('Trend Analysis');
-    const IA=form.getTextField('Impact Assessment');
-    const Sources=form.getTextField('Sources');
-    const KTA=form.getTextField('Key Threat Actors');
-    const IOCs=form.getTextField('IOCs');
-    const Vm=form.getTextField('Vulnerability management');
-    const ps=form.getTextField('patch status');
-    const MR=form.getTextField('Mitigration Recommendations');
-    const CO=form.getTextField('current operations');
-    const IR=form.getTextField('Incident Response');
-    const FA=form.getTextField('Forensic Analysis');
-    const IN=form.getTextField('Internal Notifications');
-    const EN=form.getTextField('External Notifications');
-    const PR=form.getTextField('public Relations');
-    const RA=form.getTextField('Risk Assessment');
-    const CP=form.getTextField('Continuity Planning');
-    const TE=form.getTextField('Training and Exercise');
+    const description1=form.getTextField('Description');
+    const severityLevel1=form.getDropdown('Severity level');
+    const impact1=form.getDropdown('Impact');
+    const affectedSystems1=form.getTextField('Affected Systems');
+    const detectionMethod1=form.getDropdown('Detection Method');
+    const initialDetectionTime1=form.getTextField('Initial Detection Time');
+    const attackVector1=form.getDropdown('Attacker Vector');
+    const attackers1=form.getDropdown('Attackers');
+    const containment1=form.getTextField('containment');
+    const eradication1=form.getTextField('Eradiction');
+    const recovery1=form.getTextField('Recovery');
+    const lessonsLearned1=form.getTextField('Lession Learned');
+    const evidence1=form.getTextField('Evidence');
+    const indicatorsOfCompromise1=form.getTextField('IOCS');
+    const ttps1=form.getTextField('TTPs');
+    const mitigationRecommendations1=form.getTextField('mitigration Recommendations');
+    const internalNotification1=form.getTextField('internal notification');
+    const externalNotification1=form.getTextField('External Notification');
+    const updates1=form.getTextField('Updates');
+    const incidentReview1=form.getTextField('Incident Review');
+    const documentation1=form.getTextField('Documentation');
+    const training1=form.getTextField('Training');
+ 
 
 
-    Description.setText(description);
-    Threat.select(threatLevel);
-    Aoc.setText(areasOfConcern);
-    RI.setText(recentIncidents);
-    TA.setText(trendAnalysis);
-    IA.setText(impactAssessment)
-    Sources.setText(sources);
-    KTA.setText(keyThreatActors);
-    IOCs.setText(indicatorsOfCompromise);
-    Vm.setText(recentVulnerabilities);
-    ps.setText(patchStatus);
-    MR.setText(mitigationRecommendations);
-    CO.setText(currentOperations);
-    IR.setText(incidentResponse);
-    FA.setText(forensicAnalysis);
-    IN.setText(internalNotifications);
-    EN.setText(externalNotifications);
-    PR.setText(publicRelations);
-    RA.setText(riskAssessment);
-    CP.setText(continuityPlanning);
-    TE.setText(trainingAndExercises);
+    description1.setText(description);
+    severityLevel1.select(severityLevel);
+    impact1.select(impact);
+    affectedSystems1.setText(affectedSystems);
+    detectionMethod1.select(detectionMethod);
+    initialDetectionTime1.setText(initialDetectionTime);
+    attackVector1.select(attackVector);
+    attackers1.select(attackers);
+    containment1.setText(containment);
+    eradication1.setText(eradication);
+    recovery1.setText(recovery);
+    lessonsLearned1.setText(lessonsLearned);
+    evidence1.setText(evidence1);
+    indicatorsOfCompromise1.setText(indicatorsOfCompromise);
+    ttps1.setText(ttps);
+    mitigationRecommendations1.setText(mitigationRecommendations);
+    internalNotification1.setText(internalNotification);
+    externalNotification1.setText(externalNotification1);
+    updates1.setText(updates);
+    incidentReview1.setText(incidentReview);
+    documentation1.setText(documentation);
+    training1.setText(training);
+
+
+
+   
 
     form.flatten();
 
     
 
-    // Modify PDF (add text, etc.)
 
-    
+    // Modify PDF (add text, etc.)
     // Example: Add text to PDF
     // const pdfPage = pdfDoc.getPages()[0];
     // pdfPage.drawText('Sample Text', { x: 10, y: 10 });
@@ -119,28 +125,29 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
 
     // Save FormData to MongoDB
-    const formData = new reportModel({
+    const formData = new incidentModel({ // Changed to incidentModel
       description,
-      threatLevel,
-      areasOfConcern,
-      recentIncidents,
-      trendAnalysis,
-      impactAssessment,
-      sources,
-      keyThreatActors,
+      severityLevel,
+      impact,
+      affectedSystems,
+      detectionMethod,
+      initialDetectionTime,
+      attackVector,
+      attackers,
+      containment,
+      eradication,
+      recovery,
+      lessonsLearned,
+      evidence,
       indicatorsOfCompromise,
-      recentVulnerabilities,
-      patchStatus,
+      ttps,
       mitigationRecommendations,
-      currentOperations,
-      incidentResponse,
-      forensicAnalysis,
-      internalNotifications,
-      externalNotifications,
-      publicRelations,
-      riskAssessment,
-      continuityPlanning,
-      trainingAndExercises,
+      internalNotification,
+      externalNotification,
+      updates,
+      incidentReview,
+      documentation,
+      training,
       pocScreenshots,
       pdfName,
       reportType,
@@ -158,7 +165,6 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
 // Other routes (GET, POST for manual score, etc.) remain the same
 
 
-// Route to get all reports
 router.get('/getAllReports', fetchuser,async (req, res) => {
   try {
     const userID = req.user.id;

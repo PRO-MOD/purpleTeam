@@ -12,7 +12,7 @@ import { AddUsers, AssignTeams, Report, ScoresComponent, UserHomePage, UserDetai
 import { Alert, Home } from './Notes';
 import ChatMainPage from './Chats/ChatMainPage'
 import FetchEncryptedFlag from './FetchEncryptedFlag';
-
+import IncidentReport from './IncidentReport'
 
 function HomePage() {
     const navigate = useNavigate();
@@ -52,7 +52,7 @@ function HomePage() {
               <Route exact path='/scores' element={<ScoresComponent />} />
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<Report />} />
-              <Route exact path='/UserHome/report/incident' element={<Report />} />
+              <Route exact path='/UserHome/report/incident' element={<IncidentReport />} />
               <Route exact path='/UserHome/report/day-end' element={<Report />} />
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
