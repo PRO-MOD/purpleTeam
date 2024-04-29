@@ -7,6 +7,9 @@ const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const reportModel = require('../models/report');
 const uploadImageToCloudinary = require('../utils/imageUpload');
 const fetchuser = require('../middleware/fetchuser');
+const User = require('../models/User');
+const score = require('../models/score');
+
 
 // Multer storage and upload configuration
 const storage = multer.memoryStorage();
@@ -77,6 +80,29 @@ router.post('/:reportType', fetchuser, upload.array('photos', 5), async (req, re
   }
 });
 
+// Route to get scores data for a specific user
+router.get('/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find scores associated with the specified user ID
+    const scores = await score.find({ user: userId });
+
+    // Find reports submitted by the specified user ID
+    const reports = await reportModel.find({ userId });
+
+
+    if (!scores && !reports) {
+      return res.status(404).json({ message: 'No data found for the specified user' });
+    }
+
+    // Return the scores data in JSON format
+    res.json({ scores, reports });
+  } catch (error) {
+    console.error('Error fetching scores:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Route to get all reports
 router.get('/getAllReports', fetchuser,async (req, res) => {
