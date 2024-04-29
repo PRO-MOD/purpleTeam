@@ -1,11 +1,13 @@
+
+
+
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
+const { PDFDocument } = require('pdf-lib');
 const reportModel = require('../models/report');
-const uploadImageToCloudinary = require('../utils/imageUpload');
 const fetchuser = require('../middleware/fetchuser');
 const User = require('../models/User');
 const score = require('../models/score');
@@ -16,39 +18,90 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // POST route for form submission
-router.post('/:reportType', fetchuser, upload.array('photos', 5), async (req, res) => {
+router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
   try {
-    const { question1, question2, question3, question4, question5 } = req.body;
-    const photos = req.files; // Use req.files to access multiple uploaded photos
+    const {
+      description,
+      threatLevel,
+      areasOfConcern,
+      recentIncidents,
+      trendAnalysis,
+      impactAssessment,
+      sources,
+      keyThreatActors,
+      indicatorsOfCompromise,
+      recentVulnerabilities,
+      patchStatus,
+      mitigationRecommendations,
+      currentOperations,
+      incidentResponse,
+      forensicAnalysis,
+      internalNotifications,
+      externalNotifications,
+      publicRelations,
+      riskAssessment,
+      continuityPlanning,
+      trainingAndExercises,
+    } = req.body;
+
+    const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
     const reportType = req.params.reportType;
     const userId = req.user.id;
-
-    // console.log(photos);
-    // Upload photos to Cloudinary and get their URLs
-    const photoUrls = [];
-    for (const photo of photos) {
-      const imageUrl = await uploadImageToCloudinary(photo);
-      photoUrls.push(imageUrl); // Push imageUrl into photoUrls array
-    }
-    // console.log(photoUrls.toString());
+    const date=req.params.createdAt;
 
     // Load PDF file
     const pdfFilePath = path.join(__dirname, '..', 'public', 'original.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
-    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 
-    // Modify PDF (add text, etc.)
-    const pages = pdfDoc.getPages();
-    const firstPage = pages[0];
-    const { width, height } = firstPage.getSize();
-    const fontSize = 30;
-    firstPage.drawText(question1, {
-      x: 50,
-      y: height - 4 * fontSize,
-      size: fontSize,
-      font: timesRomanFont,
-      color: rgb(0, 0.53, 0.71),
-    }); // Example: Add question1 text to PDF
+    const form=pdfDoc.getForm();
+
+  
+    const Description=form.getTextField('Description');
+    const Threat=form.getDropdown('Threat Level');
+    const Aoc=form.getTextField('Areas of Concern');
+    const RI=form.getTextField('Recent Incidents');
+    const TA=form.getTextField('Trend Analysis');
+    const IA=form.getTextField('Impact Assessment');
+    const Sources=form.getTextField('Sources');
+    const KTA=form.getTextField('Key Threat Actors');
+    const IOCs=form.getTextField('IOCs');
+    const Vm=form.getTextField('Vulnerability management');
+    const ps=form.getTextField('patch status');
+    const MR=form.getTextField('Mitigration Recommendations');
+    const CO=form.getTextField('current operations');
+    const IR=form.getTextField('Incident Response');
+    const FA=form.getTextField('Forensic Analysis');
+    const IN=form.getTextField('Internal Notifications');
+    const EN=form.getTextField('External Notifications');
+    const PR=form.getTextField('public Relations');
+    const RA=form.getTextField('Risk Assessment');
+    const CP=form.getTextField('Continuity Planning');
+    const TE=form.getTextField('Training and Exercise');
+
+
+    Description.setText(description);
+    Threat.select(threatLevel);
+    Aoc.setText(areasOfConcern);
+    RI.setText(recentIncidents);
+    TA.setText(trendAnalysis);
+    IA.setText(impactAssessment)
+    Sources.setText(sources);
+    KTA.setText(keyThreatActors);
+    IOCs.setText(indicatorsOfCompromise);
+    Vm.setText(recentVulnerabilities);
+    ps.setText(patchStatus);
+    MR.setText(mitigationRecommendations);
+    CO.setText(currentOperations);
+    IR.setText(incidentResponse);
+    FA.setText(forensicAnalysis);
+    IN.setText(internalNotifications);
+    EN.setText(externalNotifications);
+    PR.setText(publicRelations);
+    RA.setText(riskAssessment);
+    CP.setText(continuityPlanning);
+    TE.setText(trainingAndExercises);
+
+    form.flatten();
 
     // Save modified PDF
     const modifiedPdfBytes = await pdfDoc.save();
@@ -61,15 +114,31 @@ router.post('/:reportType', fetchuser, upload.array('photos', 5), async (req, re
 
     // Save FormData to MongoDB
     const formData = new reportModel({
-      question1,
-      question2,
-      question3,
-      question4,
-      question5,
-      photoUrl: photoUrls.length > 0 ? photoUrls : null, // Save photo URLs if uploaded
-      pdfName: pdfName, // Save the name of the PDF file
-      reportType: reportType,
-      userId: userId,
+      description,
+      threatLevel,
+      areasOfConcern,
+      recentIncidents,
+      trendAnalysis,
+      impactAssessment,
+      sources,
+      keyThreatActors,
+      indicatorsOfCompromise,
+      recentVulnerabilities,
+      patchStatus,
+      mitigationRecommendations,
+      currentOperations,
+      incidentResponse,
+      forensicAnalysis,
+      internalNotifications,
+      externalNotifications,
+      publicRelations,
+      riskAssessment,
+      continuityPlanning,
+      trainingAndExercises,
+      pocScreenshots,
+      pdfName,
+      reportType,
+      userId,
     });
     await formData.save();
 
@@ -80,7 +149,7 @@ router.post('/:reportType', fetchuser, upload.array('photos', 5), async (req, re
   }
 });
 
-// Route to get scores data for a specific user
+// Route to get scores and reports data for a specific user
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -91,18 +160,18 @@ router.get('/:userId', async (req, res) => {
     // Find reports submitted by the specified user ID
     const reports = await reportModel.find({ userId });
 
-
     if (!scores && !reports) {
       return res.status(404).json({ message: 'No data found for the specified user' });
     }
 
-    // Return the scores data in JSON format
+    // Return the scores and reports data in JSON format
     res.json({ scores, reports });
   } catch (error) {
-    console.error('Error fetching scores:', error);
+    console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 // Route to get all reports
 router.get('/getAllReports', fetchuser,async (req, res) => {
@@ -175,7 +244,5 @@ router.post('/:reportId/manual-score', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-
 
 module.exports = router;
