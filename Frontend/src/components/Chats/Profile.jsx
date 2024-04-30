@@ -22,7 +22,7 @@ function Profile() {
   return (
     <div className="flex flex-col items-center py-8 mx-auto bg-white">
       <Avatar
-        src="https://avatars.githubusercontent.com/u/80540635?v=4"
+        src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
         alt="avatar"
         size="xlarge"
         type="rounded"

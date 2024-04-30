@@ -32,7 +32,7 @@ function ScoresComponent() {
   };
 
   return (
-    <div className='mx-16 my-12'>
+    <div className='mx-16 my-12 '>
       <h1 className='text-3xl font-bold'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
       <hr className='mt-4 mb-8'/>
       {error && <p>Error: {error}</p>}

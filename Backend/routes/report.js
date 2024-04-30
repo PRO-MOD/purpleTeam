@@ -172,7 +172,6 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-
 // Route to get all reports
 router.get('/getAllReports', fetchuser,async (req, res) => {
   try {
