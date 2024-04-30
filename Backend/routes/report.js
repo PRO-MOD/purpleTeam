@@ -1,6 +1,4 @@
 
-
-
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -39,20 +37,25 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
       riskAssessment,
       continuityPlanning,
       trainingAndExercises,
+      notes,
+      prepared,
     } = req.body;
 
     const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
     const reportType = req.params.reportType;
     const userId = req.user.id;
-    const date=req.params.createdAt;
+   
+    var currentDate = new Date().toLocaleDateString();
+    var currentTime = new Date().toLocaleTimeString();
 
     // Load PDF file
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'original.pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'SITREP Report.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
     const form=pdfDoc.getForm();
 
-  
+    const dateField=form.getTextField('Date');
+    const timeField=form.getTextField('Time');
     const Description=form.getTextField('Description');
     const Threat=form.getDropdown('Threat Level');
     const Aoc=form.getTextField('Areas of Concern');
@@ -74,8 +77,12 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
     const RA=form.getTextField('Risk Assessment');
     const CP=form.getTextField('Continuity Planning');
     const TE=form.getTextField('Training and Exercise');
+    const notes1=form.getTextField('Notes');
+    const prepared1=form.getTextField('prepared By');
 
 
+    dateField.setText(currentDate);
+    timeField.setText(currentTime);
     Description.setText(description);
     Threat.select(threatLevel);
     Aoc.setText(areasOfConcern);
@@ -97,6 +104,8 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
     RA.setText(riskAssessment);
     CP.setText(continuityPlanning);
     TE.setText(trainingAndExercises);
+    notes1.setText(notes);
+    prepared1.setText(prepared);
 
     form.flatten();
 
@@ -141,6 +150,8 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
       riskAssessment,
       continuityPlanning,
       trainingAndExercises,
+      notes,
+      prepared,
       pocScreenshots,
       pdfName,
       reportType,
@@ -171,7 +182,7 @@ router.get('/getAllReports', fetchuser,async (req, res) => {
   }
 });
 
-// Route to get details of a specific report by ID
+// // Route to get details of a specific report by ID
 router.get('/:reportId', async (req, res) => {
   try {
     const reportId = req.params.reportId;
@@ -190,6 +201,9 @@ router.get('/:reportId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+
 
 // Backend route to fetch reports by user ID
 router.get('/user/:userId', async (req, res) => {
