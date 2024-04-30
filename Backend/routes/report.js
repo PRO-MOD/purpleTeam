@@ -7,6 +7,9 @@ const multer = require('multer');
 const { PDFDocument } = require('pdf-lib');
 const reportModel = require('../models/report');
 const fetchuser = require('../middleware/fetchuser');
+const User = require('../models/User');
+const score = require('../models/score');
+
 
 // Multer storage and upload configuration
 const storage = multer.memoryStorage();
@@ -109,15 +112,6 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
 
     form.flatten();
 
-    
-
-    // Modify PDF (add text, etc.)
-
-    
-    // Example: Add text to PDF
-    // const pdfPage = pdfDoc.getPages()[0];
-    // pdfPage.drawText('Sample Text', { x: 10, y: 10 });
-
     // Save modified PDF
     const modifiedPdfBytes = await pdfDoc.save();
 
@@ -166,7 +160,28 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
   }
 });
 
-// Other routes (GET, POST for manual score, etc.) remain the same
+// Route to get scores and reports data for a specific user
+router.get('/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find scores associated with the specified user ID
+    const scores = await score.find({ user: userId });
+
+    // Find reports submitted by the specified user ID
+    const reports = await reportModel.find({ userId });
+
+    if (!scores && !reports) {
+      return res.status(404).json({ message: 'No data found for the specified user' });
+    }
+
+    // Return the scores and reports data in JSON format
+    res.json({ scores, reports });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 // Route to get all reports
