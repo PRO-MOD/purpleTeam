@@ -46,10 +46,10 @@ export default function UserHomePage() {
           <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>Add SITREP Report
         </button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/incident')}>
-          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>Add Incident Response Report
+          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>Add IRREP Report
         </button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/day-end')}>
-          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>Add Day End Report
+          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>Add Notification Report
         </button> 
       </div>
       <ReportTable/>

@@ -187,6 +187,7 @@ function ReportTable() {
                 <thead>
                     <tr className="bg-gray-200">
                         <th className="px-4 py-2 border">Date</th>
+                        <th className="px-4 py-2 border">Time</th>
                         <th className="px-4 py-2 border">Report Type</th>
                         <th className="px-4 py-2 border">Actions</th>
                     </tr>
@@ -195,6 +196,7 @@ function ReportTable() {
                     {reports.map((report) => (
                         <tr key={report._id} className="cursor-pointer hover:bg-gray-100">
                             <td className="px-4 py-2 border">{new Date(report.createdAt).toLocaleDateString()}</td>
+                            <td className="px-4 py-2 border">{new Date(report.createdAt).toLocaleTimeString()}</td>
                             <td className="px-4 py-2 border">{report.reportType}</td>
                             <td className="px-4 py-2 border">
                                 <FontAwesomeIcon
