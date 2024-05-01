@@ -1,6 +1,3 @@
-
-
-
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -150,7 +147,7 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
 });
 
 // Route to get scores and reports data for a specific user
-router.get('/:userId', async (req, res) => {
+router.get('/specific/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
