@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -189,7 +188,6 @@ router.get('/specific/:userId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 // Route to get all reports
 router.get('/getAllReports', fetchuser,async (req, res) => {

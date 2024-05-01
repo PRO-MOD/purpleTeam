@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Loading from './Loading';
 import { useNavigate } from "react-router-dom";
 
 function ScoreTable({ scores, loading, isHomePage }) {
   const navigate = useNavigate();
+  const [sortedScores, setSortedScores] = useState([]);
+
+  // Sort scores when scores or loading state changes
+  useEffect(() => {
+    if (!loading && scores.length > 0) {
+      const sorted = scores.slice().sort((a, b) => b.score - a.score); // Sort scores in descending order
+      setSortedScores(sorted);
+    }
+  }, [scores, loading]);
 
   const handleUserClick = async (userName) => {
     try {
@@ -28,6 +37,9 @@ function ScoreTable({ scores, loading, isHomePage }) {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center">
+              Rank
+            </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Name
             </th>
@@ -50,9 +62,10 @@ function ScoreTable({ scores, loading, isHomePage }) {
               </td>
             </tr>
           ) : (
-            scores.length > 0 ? (
-              scores.map((user, index) => (
+            sortedScores.length > 0 ? (
+              sortedScores.map((user, index) => (
                 <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  <td className='flex flex-row justify-center items-center'>{index+1}</td>
                   <td
                     className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'
                       }`}

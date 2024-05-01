@@ -7,8 +7,9 @@ const NoteItem = (props) => {
 
     const { deleteNote} = useContext(noteContext);
 
-    const EditNote = (e) =>{
-        console.log(e);
+    const EditNote = (note) =>{
+        console.log(note);
+        updateNote(note)
     }
 
     return (
@@ -18,7 +19,7 @@ const NoteItem = (props) => {
                     <div className="d-flex flex-row">
                         <h5 className="card-title">{note.title}</h5>
                         <div className="ms-auto">
-                            <i className="bi bi-pencil-square me-2 text-success" role="button" onClick={()=>updateNote(note)}></i>
+                            <i className="bi bi-pencil-square me-2 text-success" role="button" onClick={()=>EditNote(note)}></i>
                             <i className="bi bi-trash3 text-danger" role="button" onClick={()=>{
                                 deleteNote(note._id)
                                 showAlert("Deleted Successfully","success")

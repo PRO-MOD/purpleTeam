@@ -43,7 +43,7 @@ function HomePage() {
           <div className="left_Home w-[5%] min-w-20">
             <SideNavbar />
           </div>
-          <div className="right_Home lg:w-[95%] h-screen">
+          <div className="right_Home lg:w-[95%] h-screen overflow-y-scroll">
             {/* <Alert alert={alert}/> */}
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />
