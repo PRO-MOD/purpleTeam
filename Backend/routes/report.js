@@ -176,13 +176,15 @@ router.get('/specific/:userId', async (req, res) => {
 
     // Find reports submitted by the specified user ID
     const reports = await reportModel.find({ userId });
+    const incidentReport = await incidentModel.find({userId});
+    const NotificationReport = await notificationModel.find({userId}); 
 
     if (!scores && !reports) {
       return res.status(404).json({ message: 'No data found for the specified user' });
     }
 
     // Return the scores and reports data in JSON format
-    res.json({ scores, reports });
+    res.json({ scores, "SITREP_Report":reports, "IRREP_Report": incidentReport, "Notification_Report": NotificationReport });
   } catch (error) {
     console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
