@@ -62,6 +62,14 @@ const incidentSchema = new mongoose.Schema({
     type: Number,
     default: null, // Assuming manual score is not initially set
   },
+  notes:{
+    type: String,
+    required:false
+  },
+  prepared:{
+    type: String,
+    required: false 
+  },
 });
 
 const incidentModel = mongoose.model('incidentData', incidentSchema);
