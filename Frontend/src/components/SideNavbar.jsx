@@ -63,6 +63,12 @@ const SideNavbar = () => {
                 </div>
                 <p className="mt-2 text-sm">Notes</p>
               </Link>
+              <Link to="/profile" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/profile") ? "bg-gray-700 text-white" : ""}`}>
+                <div className="h-10 w-10 flex items-center justify-center">
+                  <FontAwesomeIcon icon={faUser} color="" size="xl" />
+                </div>
+                <p className="mt-2 text-sm">Account</p>
+              </Link>
                {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faNotesMedical} size="xl" />
@@ -98,12 +104,7 @@ const SideNavbar = () => {
                 </div>
                 <p className="mt-2 text-sm">Scores</p>
               </Link>
-              {/* <Link to="/profile" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/profile") ? "bg-gray-700 text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faUser} color="" size="xl" />
-                </div>
-                <p className="mt-2 text-sm">Account</p>
-              </Link> */}
+              {/*  */}
             </>
           )}
         </ul>

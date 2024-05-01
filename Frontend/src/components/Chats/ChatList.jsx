@@ -56,7 +56,7 @@ function ChatLists({ position }) {
             {position === 'left' && conversations.map((conversation, index) => (
                 <ChatItem
                     key={index}
-                    avatar="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    avatar={conversation.recipient.profile || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
                     alt={conversation.recipient.name}
                     title={conversation.recipient.name}
                     subtitle={conversation.latestMessageContent}

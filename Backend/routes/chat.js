@@ -149,8 +149,8 @@ router.get('/conversations', fetchuser, async (req, res) => {
 
         // Prepare response data
         const formattedConversations = await Promise.all(conversations.map(async conversation => {
-            const senderName = await User.findById(conversation.sender).select('name');
-            const recipientName = await User.findById(conversation.recipient).select('name');
+            const senderName = await User.findById(conversation.sender).select('name profile');
+            const recipientName = await User.findById(conversation.recipient).select('name profile');
             const latestMessageContent = conversation.latestMessage.content;
             return {
                 sender: senderName,

@@ -8,7 +8,10 @@ const sendCredentials = require('../utils/sendMail')
 const fetchuser = require('../middleware/fetchuser');
 const JWT_SECRET = process.env.JWT_SECRET; // This is to be stored in env.local for security purposes.
 const { ObjectId } = require('mongoose').Types;
-
+const multer = require('multer'); // For handling file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const uploadImageToCloudinary = require('../utils/imageUpload')
 
 // Route 1: route for the api with the route og localhost/api/auth/createuser
 router.post('/createuser', async (req, res) => {
@@ -273,6 +276,30 @@ router.get('/:userId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.post('/change-picture', upload.single('profilePicture'), fetchuser, async (req, res) => {
+  try {
+    // Check if a file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    // Upload image to Cloudinary
+    const imageUrl = await uploadImageToCloudinary(req.file);
+
+    // Assuming a User model and store the profile picture URL in the user document
+    const userId = req.user.id; 
+
+    const user = await User.findById(userId);
+    user.profile = imageUrl;
+    // const updatedUser = await (userId, imageUrl);
+    user.save()
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error('Error changing profile picture:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 

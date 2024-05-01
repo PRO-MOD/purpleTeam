@@ -144,11 +144,11 @@ function ChatWindow() {
             <div className="flex flex-row items-center h-[50px] bg-white m-4 rounded-full ">
                 {userInfo && (
                     <>
-                        <Avatar className='mx-4 rounded-full'
-                            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                        <Avatar className='mx-4 rounded-full border-2'
+                            src={userInfo.profile || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
                             alt={userInfo.name}
                             size="large"
-                            type="rounded"
+                            // type="rounded"
                         />
                         <div className="flex flex-col">
                             <h1>{userInfo.name}</h1>
