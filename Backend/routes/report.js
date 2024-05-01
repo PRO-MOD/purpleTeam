@@ -8,14 +8,16 @@ const reportModel = require('../models/report');
 const fetchuser = require('../middleware/fetchuser');
 const User = require('../models/User');
 const score = require('../models/score');
-
+const incidentModel = require('../models/IncidentReport');
+const notificationModel = require('../models/Notification');
 
 // Multer storage and upload configuration
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // POST route for form submission
-router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
+router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
+  // console.log(req.body);
   try {
     const {
       description,
@@ -44,7 +46,7 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
     } = req.body;
 
     const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
-    const reportType = req.params.reportType;
+    const reportType = "SITREP";
     const userId = req.user.id;
    
     var currentDate = new Date().toLocaleDateString();
@@ -114,8 +116,13 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
     // Save modified PDF
     const modifiedPdfBytes = await pdfDoc.save();
 
+    currentDate = currentDate.replace(/[^\w\s]/gi, '');
+currentTime= currentTime.replace(/[^\w\s]/gi, '');
+
+const pdfName = `Report_${currentDate}_${currentTime}.pdf`;
+
     // Generate unique filename for modified PDF
-    const pdfName = `newPdf.pdf`;
+  
 
     // Save modified PDF to uploads folder
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
@@ -187,7 +194,11 @@ router.get('/getAllReports', fetchuser,async (req, res) => {
   try {
     const userID = req.user.id;
     // Fetch all reports from the database
-    const reports = await reportModel.find({userId: userID});
+    const reportsSIT= await reportModel.find({userId: userID});
+    const reportsINC = await incidentModel.find({userId: userID});
+    const reportsNOT = await notificationModel.find({userId: userID});
+
+    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
     res.status(200).json(reports);
   } catch (error) {
     console.error('Error fetching reports:', error);
@@ -201,14 +212,18 @@ router.get('/:reportId', async (req, res) => {
     const reportId = req.params.reportId;
 
     // Fetch the report from the database by ID
-    const report = await reportModel.findById(reportId);
+    // const report = await reportModel.findById(reportId);
+    const reportsSIT= await reportModel.findById(reportId);
+    const reportsINC = await incidentModel.findById(reportId);
+    const reportsNOT = await notificationModel.findById(reportId);
+    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
 
-    if (!report) {
+    if (!reports) {
       return res.status(404).json({ error: 'Report not found' });
     }
 
     // Send the report details in the response
-    res.status(200).json(report);
+    res.status(200).json(reports);
   } catch (error) {
     console.error('Error fetching report details:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -223,7 +238,12 @@ router.get('/user/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
     // Assuming you have a Report model
-    const reports = await reportModel.find({ userId }); // Find all reports with the given user ID
+    // const reports = await reportModel.find({ userId }); // Find all reports with the given user ID
+    const reportsSIT= await reportModel.find({ userId });
+    const reportsINC = await incidentModel.find({ userId });
+    const reportsNOT = await notificationModel.find({ userId });
+    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+
     res.json(reports);
   } catch (error) {
     console.error('Error fetching reports:', error);
@@ -239,16 +259,21 @@ router.post('/:reportId/manual-score', async (req, res) => {
 
   try {
     // Find the report by ID
-    const report = await reportModel.findById(reportId);
-    if (!report) {
+    // const report = await reportModel.findById(reportId);
+
+    const reportsSIT= await reportModel.findById(reportId);
+    const reportsINC = await incidentModel.findById(reportId);
+    const reportsNOT = await notificationModel.findById(reportId);
+    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+    if (!reports) {
       return res.status(404).json({ message: 'Report not found' });
     }
 
     // Update the manual score field of the report
-    report.manualScore = score;
+    reports.manualScore = score;
 
     // Save the updated report
-    await report.save();
+    await reports.save();
 
     return res.status(200).json({ message: 'Manual score added successfully' });
   } catch (error) {

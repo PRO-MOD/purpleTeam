@@ -13,8 +13,9 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // POST route for form submission
-router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
+router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
    // Removed ':reportType' from the route path
+  //  console.log(req.body);
   try {
     const {
       description,
@@ -44,7 +45,7 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
     } = req.body;
 
     const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
-    const reportType=req.params.reportType;
+    const reportType = "IRREP";
     const userId = req.user.id;
 
     // Load PDF file
@@ -143,7 +144,10 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
     const modifiedPdfBytes = await pdfDoc.save();
 
     // Generate unique filename for modified PDF
-    const pdfName = `newPdf.pdf`;
+    currentDate = currentDate.replace(/[^\w\s]/gi, '');
+    currentTime= currentTime.replace(/[^\w\s]/gi, '');
+    
+    const pdfName = `Incident_${currentDate}_${currentTime}.pdf`;
 
     // Save modified PDF to uploads folder
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
@@ -191,75 +195,75 @@ router.post('/:reportType', fetchuser, upload.array('pocScreenshots', 5), async 
 // Other routes (GET, POST for manual score, etc.) remain the same
 
 
-router.get('/getAllReports', fetchuser,async (req, res) => {
-  try {
-    const userID = req.user.id;
-    // Fetch all reports from the database
-    const reports = await reportModel.find({userId: userID});
-    res.status(200).json(reports);
-  } catch (error) {
-    console.error('Error fetching reports:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+// router.get('/getAllReports', fetchuser,async (req, res) => {
+//   try {
+//     const userID = req.user.id;
+//     // Fetch all reports from the database
+//     const reports = await incidentModel.find({userId: userID});
+//     res.status(200).json(reports);
+//   } catch (error) {
+//     console.error('Error fetching reports:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
-// Route to get details of a specific report by ID
-router.get('/:reportId', async (req, res) => {
-  try {
-    const reportId = req.params.reportId;
+// // Route to get details of a specific report by ID
+// router.get('/:reportId', async (req, res) => {
+//   try {
+//     const reportId = req.params.reportId;
 
-    // Fetch the report from the database by ID
-    const report = await reportModel.findById(reportId);
+//     // Fetch the report from the database by ID
+//     const report = await incidentModel.findById(reportId);
 
-    if (!report) {
-      return res.status(404).json({ error: 'Report not found' });
-    }
+//     if (!report) {
+//       return res.status(404).json({ error: 'Report not found' });
+//     }
 
-    // Send the report details in the response
-    res.status(200).json(report);
-  } catch (error) {
-    console.error('Error fetching report details:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+//     // Send the report details in the response
+//     res.status(200).json(report);
+//   } catch (error) {
+//     console.error('Error fetching report details:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
-// Backend route to fetch reports by user ID
-router.get('/user/:userId', async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    // Assuming you have a Report model
-    const reports = await reportModel.find({ userId }); // Find all reports with the given user ID
-    res.json(reports);
-  } catch (error) {
-    console.error('Error fetching reports:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
+// // Backend route to fetch reports by user ID
+// router.get('/user/:userId', async (req, res) => {
+//   try {
+//     const userId = req.params.userId;
+//     // Assuming you have a Report model
+//     const reports = await incidentModel.find({ userId }); // Find all reports with the given user ID
+//     res.json(reports);
+//   } catch (error) {
+//     console.error('Error fetching reports:', error);
+//     res.status(500).json({ message: 'Internal Server Error' });
+//   }
+// });
 
-// POST route for adding manual score to a report
-router.post('/:reportId/manual-score', async (req, res) => {
-  const reportId = req.params.reportId;
-  const score = req.body.score;
-  // console.log(score);
+// // POST route for adding manual score to a report
+// router.post('/:reportId/manual-score', async (req, res) => {
+//   const reportId = req.params.reportId;
+//   const score = req.body.score;
+//   // console.log(score);
 
-  try {
-    // Find the report by ID
-    const report = await reportModel.findById(reportId);
-    if (!report) {
-      return res.status(404).json({ message: 'Report not found' });
-    }
+//   try {
+//     // Find the report by ID
+//     const report = await incidentModel.findById(reportId);
+//     if (!report) {
+//       return res.status(404).json({ message: 'Report not found' });
+//     }
 
-    // Update the manual score field of the report
-    report.manualScore = score;
+//     // Update the manual score field of the report
+//     report.manualScore = score;
 
-    // Save the updated report
-    await report.save();
+//     // Save the updated report
+//     await report.save();
 
-    return res.status(200).json({ message: 'Manual score added successfully' });
-  } catch (error) {
-    console.error('Error adding manual score:', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-});
+//     return res.status(200).json({ message: 'Manual score added successfully' });
+//   } catch (error) {
+//     console.error('Error adding manual score:', error);
+//     return res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
 
 module.exports = router;

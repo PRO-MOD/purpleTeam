@@ -14,6 +14,8 @@ import ChatMainPage from './Chats/ChatMainPage'
 import FetchEncryptedFlag from './FetchEncryptedFlag';
 import IncidentReport from './IncidentReport'
 import UserProfile from './UserProfile'
+import Notification from './Notification';
+
 function HomePage() {
     const navigate = useNavigate();
     const [alert, setAlert] = useState(null);
@@ -53,7 +55,7 @@ function HomePage() {
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<Report />} />
               <Route exact path='/UserHome/report/incident' element={<IncidentReport />} />
-              <Route exact path='/UserHome/report/day-end' element={<Report />} />
+              <Route exact path='/UserHome/report/day-end' element={<Notification />} />
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
               <Route exact path="/chat/*" element={<ChatMainPage/>}/>

@@ -320,7 +320,7 @@ function IncidentReport() {
     training: '',
     pocScreenshots: [],
     pdfName: '',
-    ReportType:'',
+    ReportType:'IRREP',
     userId: '', 
   });
 
@@ -351,15 +351,15 @@ function IncidentReport() {
     }
   };
   
-  let ReportType;
-  (window.location.href.includes("SITREP")) ? ReportType = "SITREP" : (window.location.href.includes("incident")) ? ReportType = "INCIDENT" : ReportType = "DAY_END"
+  // let ReportType;
+  // (window.location.href.includes("SITREP")) ? ReportType = "SITREP" : (window.location.href.includes("incident")) ? ReportType = "INCIDENT" : ReportType = "DAY_END"
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       setError('');
-      const response = await fetch(`http://localhost:5000/api/IncidentReport/${ReportType}`, {
+      const response = await fetch(`http://localhost:5000/api/reports/IRREP`, {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: {
