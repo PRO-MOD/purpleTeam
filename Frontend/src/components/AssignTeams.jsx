@@ -115,28 +115,28 @@ function AssignTeams() {
 
             <div className="volunteers mt-12">
                 <h1 className="text-xl font-bold mb-4 underline">Red Team:</h1>
-                <table className="table-auto w-full">
+                <table className="table-auto w-full border ">
                     <thead>
                         <tr>
-                            <th className="border px-4 py-2">SR. NO</th>
-                            <th className="border px-4 py-2">Name</th>
-                            <th className="border px-4 py-2">Email</th>
-                            <th className="border px-4 py-2">Assigned Teams</th>
-                            <th className="border px-4 py-2">Actions</th>
+                            <th className="border border-gray-400 px-4 py-2">SR. NO</th>
+                            <th className="border border-gray-400 px-4 py-2">Name</th>
+                            <th className="border border-gray-400 px-4 py-2">Email</th>
+                            <th className="border border-gray-400 px-4 py-2">Assigned Teams</th>
+                            <th className="border border-gray-400 px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {volunteers.map((volunteer, index) => (
                             <tr key={volunteer._id}>
-                                <td className="border px-4 py-2">{index + 1}</td>
-                                <td className="border px-4 py-2">{volunteer.name}</td>
-                                <td className="border px-4 py-2">{volunteer.email}</td>
-                                <td className="border px-4 py-2">
+                                <td className="border border-gray-400 px-4 py-2">{index + 1}</td>
+                                <td className="border border-gray-400 px-4 py-2">{volunteer.name}</td>
+                                <td className="border border-gray-400 px-4 py-2">{volunteer.email}</td>
+                                <td className="border border-gray-400 px-4 py-2">
                                     {volunteer.assignedTeams && volunteer.assignedTeams.length > 0
                                         ? volunteer.assignedTeams.map(team => team.name).join(', ')
                                         : 'No assigned teams'}
                                 </td>
-                                <td className="border px-4 py-2 text-indigo-500 hover:underline hover:text-indigo-800 ">
+                                <td className="border  border-gray-400 px-4 py-2 text-indigo-500 hover:underline hover:text-indigo-800 ">
                                     <button onClick={() => handleAssignTeams(volunteer._id)}>Assign Teams</button>
                                 </td>
                             </tr>
