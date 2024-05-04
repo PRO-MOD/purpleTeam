@@ -38,11 +38,11 @@ const SideNavbar = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-white-800 text-black w-full sticky top-0 shadow-xl z-50">
+    <div className="flex flex-col h-screen bg-white-600 text-gray w-full sticky top-0 shadow-xl z-50 font-serif">
       {/* Logo Section */}
-      <div className="flex flex-col items-center justify-center py-4 px-2">
-        <img src="https://hacktify.in/wp-content/uploads/2023/10/logo-1-min.png" alt="Logo" className="" />
-        {/* <p className="mt-2 mx-2 text-lg font-bold uppercase invisible lg:visible">Hacktify</p> */}
+      <div className="flex flex-row items-center justify-center py-4 px-4 ">
+        <img src="https://hacktify.in/wp-content/uploads/2023/10/logo-1-min.png" alt="Logo" className="h-16 mr-2 pb-2" />
+        <p className=" text-orange  uppercase invisible lg:visible">Hacktify</p>
       </div>
       <hr className="mx-2" />
 
@@ -51,23 +51,23 @@ const SideNavbar = () => {
         <ul>
           {userRole === "BT" && (
             <>
-              <Link to="/UserHome" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/UserHome") ? "bg-gray-700 text-white" : ""}`}>
+              <Link to="/UserHome" className={`flex flex-row items-center justify-start py-4 px-4 hover:bg-orange-100 hover:text-black ${isActive("/UserHome") ? "bg-orange-100 text-black" : ""}` }>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faCircleUser} size="xl" />
                 </div>
-                <p className="mt-2 text-sm">UserHome</p>
+                <p className="text-lg">Home</p>
               </Link>
-              <Link to="/notes" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/notes") ? "bg-gray-700 text-white" : ""}`}>
+              <Link to="/notes" className={`flex flex-row items-center justify-start py-4 px-4 hover:bg-orange-100 hover:text-black ${isActive("/notes") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faNotesMedical} size="xl" />
                 </div>
-                <p className="mt-2 text-sm">Notes</p>
+                <p className="text-lg">Notes</p>
               </Link>
-              <Link to="/profile" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/profile") ? "bg-gray-700 text-white" : ""}`}>
+              <Link to="/profile" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/profile") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faUser} color="" size="xl" />
                 </div>
-                <p className="mt-2 text-sm">Account</p>
+                <p className=" text-lg">Account</p>
               </Link>
                {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
@@ -80,45 +80,45 @@ const SideNavbar = () => {
           )}
           {userRole === "WT" && (
             <>
-              <Link to="/home" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/home") ? "bg-gray-700 text-white" : ""}`}>
+              <Link to="/home" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/home") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faHome} size="xl" className="" />
                 </div>
-                <p className="mt-2 text-sm">Home</p>
+                <p className="text-lg">Home</p>
               </Link>
-              <Link to="/createuser" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/createuser") ? "bg-gray-700 text-white" : ""}`}>
+              <Link to="/createuser" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/createuser") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faUserPlus} color="#1f2937" size="lg" />
+                  <FontAwesomeIcon icon={faUserPlus} color="#1f2937" size="xl" />
                 </div>
-                <p className="mt-2 text-sm">Create User</p>
+                <p className="text-lg">Create User</p>
               </Link>
-              <Link to="/assignTeams" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/assignTeams") ? "bg-gray-700 text-white" : ""}`}>
+              <Link to="/assignTeams" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-orange ${isActive("/assignTeams") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faCalendar} size="2xl" />
+                  <FontAwesomeIcon icon={faCalendar} size="xl" />
                 </div>
-                <p className="mt-2 text-sm">View All</p>
+                <p className=" text-lg">View All</p>
               </Link>
-              <Link to="/scores" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/scores") ? "bg-gray-700 text-white" : ""}`}>
+              <Link to="/scores" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/scores") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faRankingStar} size="2xl" />
+                  <FontAwesomeIcon icon={faRankingStar} size="xl" />
                 </div>
-                <p className="mt-2 text-sm">Scores</p>
+                <p className="text-lg">Scores</p>
               </Link>
               {/*  */}
             </>
           )}
         </ul>
-        <Link to="/chat" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/chat") ? "bg-gray-700 text-white" : ""}`}>
+        <Link to="/chat" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/chat") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faComment} size="xl" />
                 </div>
-                <p className="mt-2 text-sm">Chats</p>
+                <p className=" text-lg">Chats</p>
               </Link>
-        <button onClick={handleLogout} className="flex flex-col items-center justify-center p-4 hover:bg-gray-700 hover:text-white">
+        <button onClick={handleLogout} className="flex flex-row items-center justify-start px-6 py-4 hover:bg-orange-100 hover:text-black">
           <div className="h-10 w-10 flex items-center justify-center">
-            <FontAwesomeIcon icon={faSignOutAlt} className="rotate-180" size="2xl" />
+            <FontAwesomeIcon icon={faSignOutAlt} className="rotate-180" size="xl" />
           </div>
-          <p className="mt-2 text-sm">Logout</p>
+          <p className="text-lg">Logout</p>
         </button>
       </div>
     </div>

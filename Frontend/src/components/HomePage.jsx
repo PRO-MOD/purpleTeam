@@ -41,10 +41,10 @@ function HomePage() {
     <>
       {/* <Router> */}
         <div className="flex flex-row  h-screen">
-          <div className="left_Home w-[5%] min-w-20">
+          <div className="left_Home w-[10%] min-w-20">
             <SideNavbar />
           </div>
-          <div className="right_Home lg:w-[95%] h-screen overflow-y-scroll">
+          <div className="right_Home lg:w-[90%] h-screen overflow-y-scroll bg-orange-50">
             {/* <Alert alert={alert}/> */}
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />

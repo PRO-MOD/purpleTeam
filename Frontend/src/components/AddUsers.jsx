@@ -136,7 +136,7 @@ function AddUsers() {
             <div className="flex flex-row">
                 {/* Button to add user */}
                 <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
                     onClick={() => setShowModal(true)}
                 >
                     Add User
@@ -147,7 +147,7 @@ function AddUsers() {
                     <input type="file" onChange={handleFileChange} title='Add Excel to map flags in DB'/>
 
                     {/* Button to upload Excel file */}
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded" onClick={handleFileUpload}>Upload File</button>
+                    <button className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105" onClick={handleFileUpload}>Upload File</button>
                 </div>
 
             </div>
@@ -228,24 +228,24 @@ function AddUsers() {
 
             <div className="users mt-12">
                 <h1 className="text-xl font-bold mb-4 underline">Blue Team: </h1>
-                <table className="table-auto w-full">
+                <table className="table-auto w-full border">
                     <thead>
                         <tr>
-                            <th className="border px-4 py-2 w-1/12">SR. NO</th>
-                            <th className="border px-4 py-2 w-4/12">Name</th>
-                            <th className="border px-4 py-2 w-4/12">Email</th>
-                            <th className="border px-4 py-2 w-3/6">Password</th>
-                            <th className="border px-4 py-2 w-1/12">Actions</th>
+                            <th className="border border-gray-400 px-4 py-2 w-1/12">SR. NO</th>
+                            <th className="border border-gray-400 px-4 py-2 w-4/12">Name</th>
+                            <th className="border border-gray-400 px-4 py-2 w-4/12">Email</th>
+                            <th className="border border-gray-400 px-4 py-2 w-3/6">Password</th>
+                            <th className="border border-gray-400 px-4 py-2 w-1/12">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {users && users.map((user, index) => (
                             <tr key={index}>
-                                <td className="border px-4 py-2">{index + 1}</td>
-                                <td className="border px-4 py-2">{user.name}</td>
-                                <td className="border px-4 py-2">{user.email}</td>
-                                <td className="border px-4 py-2">************</td>
-                                <td className="border px-4 py-2">
+                                <td className="border border-gray-400 px-4 py-2">{index + 1}</td>
+                                <td className="border border-gray-400 px-4 py-2">{user.name}</td>
+                                <td className="border border-gray-400 px-4 py-2">{user.email}</td>
+                                <td className="border border-gray-400 px-4 py-2">************</td>
+                                <td className="border border-gray-400 px-4 py-2">
                                     <button onClick={() => handleEditUser(user._id, "user")}>Edit</button>
                                 </td>
                             </tr>
@@ -255,24 +255,24 @@ function AddUsers() {
             </div>
             <div className="volunteers mt-12">
                 <h1 className="text-xl font-bold mb-4 underline">Red Team: </h1>
-                <table className="table-auto w-full">
+                <table className="table-auto w-full border">
                     <thead>
                         <tr>
-                            <th className="border px-4 py-2 w-1/12">SR. NO</th>
-                            <th className="border px-4 py-2 w-4/12">Name</th>
-                            <th className="border px-4 py-2 w-4/12">Email</th>
-                            <th className="border px-4 py-2 w-3/6">Password</th>
-                            <th className="border px-4 py-2 w-1/12">Actions</th>
+                            <th className="border border-gray-400 px-4 py-2 w-1/12">SR. NO</th>
+                            <th className="border border-gray-400 px-4 py-2 w-4/12">Name</th>
+                            <th className="border border-gray-400 px-4 py-2 w-4/12">Email</th>
+                            <th className="border border-gray-400 px-4 py-2 w-3/6">Password</th>
+                            <th className="border border-gray-400 px-4 py-2 w-1/12">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {volunteers && volunteers.map((volunteer, index) => (
                             <tr key={index}>
-                                <td className="border px-4 py-2">{index + 1}</td>
-                                <td className="border px-4 py-2">{volunteer.name}</td>
-                                <td className="border px-4 py-2">{volunteer.email}</td>
-                                <td className="border px-4 py-2">************</td>
-                                <td className="border px-4 py-2">
+                                <td className="border border-gray-400 px-4 py-2">{index + 1}</td>
+                                <td className="border border-gray-400 px-4 py-2">{volunteer.name}</td>
+                                <td className="border border-gray-400 px-4 py-2">{volunteer.email}</td>
+                                <td className="border border-gray-400 px-4 py-2">************</td>
+                                <td className="border border-gray-400 px-4 py-2">
                                     <button onClick={() => handleEditUser(volunteer._id, "volunteer")}>Edit</button>
                                 </td>
                             </tr>
