@@ -50,7 +50,7 @@ function Notification() {
     try {
       setLoading(true); // Set loading state to true
       setError(''); // Clear previous errors
-      const response = await fetch(`http://localhost:5000/api/reports/Notification`, {
+      const response = await fetch(`http://13.233.214.116:5000/api/reports/Notification`, {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: {

@@ -10,7 +10,7 @@ const SideNavbar = () => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/auth/getuser", {
+        const response = await fetch("http://13.233.214.116:5000/api/auth/getuser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

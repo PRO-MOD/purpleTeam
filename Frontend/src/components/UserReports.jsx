@@ -19,7 +19,7 @@ function UserReports({ userId }) {
 
     const fetchReports = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/reports/user/${userId}`, {
+            const response = await fetch(`http://13.233.214.116:5000/api/reports/user/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -38,7 +38,7 @@ function UserReports({ userId }) {
 
     const handleReportClick = async (reportId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/reports/${reportId}`);
+            const response = await fetch(`http://13.233.214.116:5000/api/reports/${reportId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch report details');
             }
@@ -68,7 +68,7 @@ function UserReports({ userId }) {
 
     const handleAddManualScore = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/reports/${reportId}/manual-score`, {
+            const response = await fetch(`http://13.233.214.116:5000/api/reports/${reportId}/manual-score`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ function UserReports({ userId }) {
                                     className="text-blue-500 cursor-pointer"
                                 />
                                 &nbsp;&nbsp;
-                                <a href={`http://localhost:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500" onClick={(event) => event.stopPropagation()}>View PDF</a>
+                                <a href={`http://13.233.214.116:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500" onClick={(event) => event.stopPropagation()}>View PDF</a>
                             </td>
                             <td>
                                 <button

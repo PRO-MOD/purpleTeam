@@ -90,7 +90,7 @@
 //     try {
 //       setLoading(true); // Set loading state to true
 //       setError(''); // Clear previous errors
-//       const response = await fetch(`http://localhost:5000/api/IncidentReport/${ReportType}`, {
+//       const response = await fetch(`http://13.233.214.116:5000/api/IncidentReport/${ReportType}`, {
 //         method: 'POST',
 //         body: JSON.stringify(formData),
 //         headers: {
@@ -359,7 +359,7 @@ function IncidentReport() {
     try {
       setLoading(true);
       setError('');
-      const response = await fetch(`http://localhost:5000/api/reports/IRREP`, {
+      const response = await fetch(`http://13.233.214.116:5000/api/reports/IRREP`, {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: {

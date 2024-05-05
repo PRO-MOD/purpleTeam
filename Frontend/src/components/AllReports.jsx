@@ -17,7 +17,7 @@ function ReportTable() {
 
     const fetchReports = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/reports/getAllReports', {
+            const response = await fetch('http://13.233.214.116:5000/api/reports/getAllReports', {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -36,7 +36,7 @@ function ReportTable() {
 
     const handleReportClick = async (reportId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/reports/${reportId}`);
+            const response = await fetch(`http://13.233.214.116:5000/api/reports/${reportId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch report details');
             }
@@ -81,7 +81,7 @@ function ReportTable() {
                                     onClick={(event) => handlePhotoClick(event, report.photoUrl)}
                                     className="text-blue-500 cursor-pointer mr-2"
                                 />
-                                <a href={`http://localhost:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View PDF</a>
+                                <a href={`http://13.233.214.116:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View PDF</a>
                             </td>
                         </tr>
                     ))}
