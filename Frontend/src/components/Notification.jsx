@@ -50,19 +50,39 @@ function Notification() {
     try {
       setLoading(true); // Set loading state to true
       setError(''); // Clear previous errors
+      
+      const formDataToSend = new FormData(); // Create a FormData object
+      
+      // Append all form data fields to the FormData object
+      Object.entries(formData).forEach(([key, value]) => {
+        // If the value is an array (e.g., pocScreenshots), append each item separately
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            formDataToSend.append(key, item);
+          });
+        } else {
+          formDataToSend.append(key, value);
+        }
+      });
+  
+      // Now, append the images to the FormData object
+      formData.pocScreenshots.forEach((file) => {
+        formDataToSend.append('pocScreenshots', file);
+      });
+  
       const response = await fetch(`http://localhost:5000/api/reports/Notification`, {
         method: 'POST',
-        body: JSON.stringify(formData),
+        body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
-          'Content-Type': 'application/json',
+          // Remove 'Content-Type' header since it's automatically set by FormData
           'Auth-token': localStorage.getItem('Hactify-Auth-token')
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
       }
-
+  
       console.log('Form submitted successfully');
       alert('Response submitted successfully!');
       navigate('/');
