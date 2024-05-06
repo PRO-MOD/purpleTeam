@@ -13,10 +13,9 @@ const messageSchema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true
     },
     images: [{
-        type: String // Array of image URLs
+        type: String 
     }],
     timestamp: {
         type: Date,

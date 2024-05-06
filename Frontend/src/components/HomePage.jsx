@@ -40,7 +40,7 @@ function HomePage() {
   return (
     <>
       {/* <Router> */}
-        <div className="flex flex-row  h-screen">
+        <div className="flex flex-row h-screen">
           <div className="left_Home w-[10%] min-w-20">
             <SideNavbar />
           </div>

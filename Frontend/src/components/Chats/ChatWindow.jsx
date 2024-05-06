@@ -169,15 +169,19 @@ function ChatWindow() {
                             <h3 className="text-gray-600 text-center my-4"> <span className='border-2 px-2 bg-gray-200 rounded-lg shadow-lg'>{group.date}</span></h3>
                             {group.messages.map((message, index) => (
                                 <div key={index}>
-                                    <MessageBox
-                                        position={isLoggedInUserMsg(message.sender) ? 'right' : 'left'}
-                                        title={isLoggedInUserMsg(message.sender) ? 'You' : userInfo?.name || 'Unknown'}
-                                        type='text'
-                                        text={message.content}
-                                        date={new Date(message.timestamp)}
-                                        dateString={formatDate(message.timestamp)}
-                                        styles={{ maxWidth: '50%' }}
-                                    />
+                                    {
+                                        !(message.content.length === 0) &&
+                                        <MessageBox
+                                            position={isLoggedInUserMsg(message.sender) ? 'right' : 'left'}
+                                            title={isLoggedInUserMsg(message.sender) ? 'You' : userInfo?.name || 'Unknown'}
+                                            type='text'
+                                            text={message.content}
+                                            date={new Date(message.timestamp)}
+                                            dateString={formatDate(message.timestamp)}
+                                            styles={{ maxWidth: '50%' }}
+                                        />
+
+                                    }
                                     {message.images && message.images.map((imageData, index) => (
                                         <MessageBox
                                             key={index}

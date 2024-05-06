@@ -51,7 +51,7 @@ const SideNavbar = () => {
         <ul>
           {userRole === "BT" && (
             <>
-              <Link to="/UserHome" className={`flex flex-row items-center justify-start py-4 px-4 hover:bg-orange-100 hover:text-black ${isActive("/UserHome") ? "bg-orange-100 text-black" : ""}` }>
+              <Link to="/UserHome" className={`flex flex-row items-center justify-start py-4 px-4 hover:bg-orange-100 hover:text-black ${isActive("/UserHome") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faCircleUser} size="xl" />
                 </div>
@@ -69,7 +69,7 @@ const SideNavbar = () => {
                 </div>
                 <p className=" text-lg">Account</p>
               </Link>
-               {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
+              {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faNotesMedical} size="xl" />
                 </div>
@@ -109,11 +109,11 @@ const SideNavbar = () => {
           )}
         </ul>
         <Link to="/chat" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/chat") ? "bg-orange-100 text-black" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faComment} size="xl" />
-                </div>
-                <p className=" text-lg">Chats</p>
-              </Link>
+          <div className="h-10 w-10 flex items-center justify-center">
+            <FontAwesomeIcon icon={faComment} size="xl" />
+          </div>
+          <p className=" text-lg">Chats</p>
+        </Link>
         <button onClick={handleLogout} className="flex flex-row items-center justify-start px-6 py-4 hover:bg-orange-100 hover:text-black">
           <div className="h-10 w-10 flex items-center justify-center">
             <FontAwesomeIcon icon={faSignOutAlt} className="rotate-180" size="xl" />

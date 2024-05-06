@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import noteContext from "../../context/NoteContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faPencilSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import '../../App.css'
 
 const NoteItem = (props) => {
 
@@ -27,7 +28,7 @@ const NoteItem = (props) => {
                         }} />
                     </div>
                 </div>
-                <p className="text-black mb-4 text-lg">{note.description}</p>
+                <p className="text-black mb-4 text-lg  whitespace-pre-wrap  max-h-[150px] overflow-y-auto overflow-x-hidden">{note.description}</p>
                 <hr className="border-t border-gray-300 my-4" />
                 <h6 className="text-sm text-gray-600 font-semibold">{note.tag}</h6>
             </div>
