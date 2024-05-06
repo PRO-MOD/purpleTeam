@@ -45,7 +45,12 @@ function HomePage() {
             <SideNavbar />
           </div>
           <div className="right_Home lg:w-[90%] h-screen overflow-y-scroll bg-orange-50">
-            {/* <Alert alert={alert}/> */}
+            {
+              alert ? 
+              <Alert alert={alert}/>
+              :
+              ""
+            }
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />
