@@ -530,7 +530,8 @@ const Signin = () => {
     };
 
     return (
-        <div className="relative h-screen flex items-center justify-center bg-white" style={{backgroundImage: `url('https://img.freepik.com/free-vector/cyber-security-concept_23-2148534852.jpg?size=626&ext=jpg')`}}>
+        // <div className="relative h-screen flex items-center justify-center bg-white" style={{backgroundImage: `url('./public/background.png')`, backgroundSize: 'cover'}}>
+        <div className="relative h-screen flex items-center justify-center bg-white">
         {/* Hacktify Logo */}
             {/* Hacktify Logo */}
             <img src="https://eccommonstorage.blob.core.windows.net/codered/uploads/9535ca4e-7a19-4576-98ac-0ae1db1a9980.webp" alt="Hacktify Logo" className="absolute top-0 left-0 h-auto w-56" />
@@ -539,16 +540,16 @@ const Signin = () => {
             <img src="\cyber .jpg" alt="Login" className="absolute top-0 right-0 h-auto w-32 md:w-64" />
 
             {/* Sign-in div */}
-            <div className="w-full md:max-w-md bg-white p-8 rounded-lg shadow-lg">
+            <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-16">
                 {/* Company logo and name on top */}
                 <div className="mb-8 text-center">
-                    <h1 className='text-blue-900 text-2xl font-extrabold'>Welcome</h1>
+                    <h1 className='block text-blue-700 text-2xl font-bold mb-2'>Welcome</h1>
                 </div>
 
                 {/* Sign-in form */}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+                        <label htmlFor="email" className="block text-blue-700 text-sm font-bold mb-2">
                             Email
                         </label>
                         <input
@@ -561,7 +562,7 @@ const Signin = () => {
                         />
                     </div>
                     <div className="mb-6">
-                        <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+                        <label htmlFor="password" className="block text-blue-700 text-sm font-bold mb-2">
                             Password
                         </label>
                         <div className="relative">

@@ -11,6 +11,7 @@ function UserReports({ userId }) {
     const [showPhotoModal, setShowPhotoModal] = useState(false);
     const [showReportDetailsModal, setShowReportDetailsModal] = useState(false);
     const [reportId, setReportId] = useState(null);
+    const [reportType, setReportType] = useState(null);
 
     useEffect(() => {
         // Fetch reports from the backend when the component mounts
@@ -36,20 +37,20 @@ function UserReports({ userId }) {
         }
     };
 
-    const handleReportClick = async (reportId) => {
-        try {
-            const response = await fetch(`http://13.233.214.116:5000/api/reports/${reportId}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch report details');
-            }
-            const reportDetails = await response.json();
-            setSelectedReport(reportDetails);
-            // setShowReportDetailsModal(true); // Open report details modal
+    // const handleReportClick = async (reportId) => {
+    //     try {
+    //         const response = await fetch(`http://localhost:5000/api/reports/${reportId}`);
+    //         if (!response.ok) {
+    //             throw new Error('Failed to fetch report details');
+    //         }
+    //         const reportDetails = await response.json();
+    //         setSelectedReport(reportDetails);
+    //         // setShowReportDetailsModal(true); // Open report details modal
 
-        } catch (error) {
-            console.error('Error fetching report details:', error);
-        }
-    };
+    //     } catch (error) {
+    //         console.error('Error fetching report details:', error);
+    //     }
+    // };
 
     const handlePhotoClick = (event, photoUrls) => {
         event.stopPropagation(); // Prevent propagation of the click event
@@ -68,7 +69,7 @@ function UserReports({ userId }) {
 
     const handleAddManualScore = async () => {
         try {
-            const response = await fetch(`http://13.233.214.116:5000/api/reports/${reportId}/manual-score`, {
+            const response = await fetch(`http://localhost:5000/api/reports/${reportId}/${reportType}/manual-score`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -86,9 +87,10 @@ function UserReports({ userId }) {
         }
     };
 
-    const handleShowManualScoreModal = (reportId) => {
+    const handleShowManualScoreModal = (reportId,reportType) => {
         setShowManualScoreModal(true);
         setReportId(reportId);
+        setReportType(reportType);
     };
     
 
@@ -107,14 +109,15 @@ function UserReports({ userId }) {
                 </thead>
                 <tbody>
                     {reports.map((report) => (
-                        <tr key={report._id} className="cursor-pointer hover:bg-gray-100" onClick={() => handleReportClick(report._id)}>
+                        <tr key={report._id} className="" >
                             <td className="border px-4 py-2">{new Date(report.createdAt).toLocaleDateString()}</td>
+                            <td className="border px-4 py-2">{new Date(report.createdAt).toLocaleTimeString()}</td>
                             <td className="border px-4 py-2">{report.reportType}</td>
                             <td className="border px-4 py-2">{report.manualScore !== null ? report.manualScore : 'No score assigned yet'}</td>
                             <td className="border px-4 py-2">
                                 <FontAwesomeIcon
                                     icon={faEye}
-                                    onClick={(event) => handlePhotoClick(event, report.photoUrl)}
+                                    onClick={(event) => handlePhotoClick(event, report.pocScreenshots)}
                                     className="text-blue-500 cursor-pointer"
                                 />
                                 &nbsp;&nbsp;
@@ -125,7 +128,7 @@ function UserReports({ userId }) {
                                     onClick={(event) => {
                                         event.stopPropagation();
                                         setShowManualScoreModal(true);
-                                        handleShowManualScoreModal(report._id);
+                                        handleShowManualScoreModal(report._id,report.reportType);
                                     }}
                                     className="text-blue-500 cursor-pointer"
                                 >
@@ -152,26 +155,7 @@ function UserReports({ userId }) {
                 </div>
             )}
 
-            {showReportDetailsModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg w-1/2 h-auto max-h-3/4 overflow-y-auto relative">
-                        <span className="text-2xl font-bold cursor-pointer absolute top-2 right-2" onClick={handleCloseModal}>&times;</span>
-                        <h3 className="text-lg font-semibold mb-4">Report Details</h3>
-                        <p><strong>Date:</strong> {selectedReport && new Date(selectedReport.createdAt).toLocaleDateString()}</p>
-                        <p><strong>Question 1:</strong></p>
-                        <p>{selectedReport && selectedReport.question1}</p>
-                        <p><strong>Question 2:</strong></p>
-                        <p>{selectedReport && selectedReport.question2}</p>
-                        <p><strong>Question 3:</strong></p>
-                        <p>{selectedReport && selectedReport.question3}</p>
-                        <p><strong>Question 4:</strong></p>
-                        <p>{selectedReport && selectedReport.question4}</p>
-                        <p><strong>Question 5:</strong></p>
-                        <p>{selectedReport && selectedReport.question5}</p>
-                        {/* Add additional details here */}
-                    </div>
-                </div>
-            )}
+           
 
             {showManualScoreModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

@@ -4,6 +4,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #6b7280; /* Change the color of the scrollbar thumb */
-    border-radius: 4px; /* Optional: Add border-radius to the scrollbar thumb */
+    background-color: #6b7280; 
+    border-radius: 4px; 
+}
+
+.rce-citem-body--bottom-status{
+    background-color: #3f77a1;
+    border-radius: 50%;
 }

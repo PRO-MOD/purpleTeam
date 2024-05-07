@@ -29,7 +29,8 @@ function Report() {
     pocScreenshots: [],
     pdfName: '',
     reportType: 'SITREP',
-    userId: '', // Make sure to provide a valid user ID here
+    userId: '', 
+   // Make sure to provide a valid user ID here
   });
 
   const [loading, setLoading] = useState(false); // Loading state
@@ -37,7 +38,9 @@ function Report() {
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'pocScreenshots') {
+    if (name === 'pocScreenshot') {
+
+
       // If input is for photos, check if the number of photos exceeds 5
       if (formData.pocScreenshots.length >= 5) {
         alert("You can't add more than 5 photos");
@@ -59,24 +62,73 @@ function Report() {
   // let ReportType;
   // (window.location.href.includes("SITREP")) ? ReportType = "SITREP" : (window.location.href.includes("incident")) ? ReportType = "INCIDENT" : ReportType = "DAY_END"
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     setLoading(true); // Set loading state to true
+  //     setError(''); // Clear previous errors
+  //     const response = await fetch(`http://localhost:5000/api/reports/SITREP`, {
+  //       method: 'POST',
+  //       body: JSON.stringify(formData),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Auth-token': localStorage.getItem('Hactify-Auth-token')
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
+  //     }
+
+  //     console.log('Form submitted successfully');
+  //     alert('Response submitted successfully!');
+  //     navigate('/');
+  //   } catch (error) {
+  //     console.error('Error submitting form:', error);
+  //     setError('Failed to submit form. Please try again.'); // Set error message
+  //   } finally {
+  //     setLoading(false); // Set loading state to false regardless of success or failure
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true); // Set loading state to true
       setError(''); // Clear previous errors
-      const response = await fetch(`http://13.233.214.116:5000/api/reports/SITREP`, {
+      
+      const formDataToSend = new FormData(); // Create a FormData object
+      
+      // Append all form data fields to the FormData object
+      Object.entries(formData).forEach(([key, value]) => {
+        // If the value is an array (e.g., pocScreenshots), append each item separately
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            formDataToSend.append(key, item);
+          });
+        } else {
+          formDataToSend.append(key, value);
+        }
+      });
+  
+      // Now, append the images to the FormData object
+      formData.pocScreenshots.forEach((file) => {
+        formDataToSend.append('pocScreenshots', file);
+      });
+  
+      const response = await fetch(`http://localhost:5000/api/reports/SITREP`, {
         method: 'POST',
-        body: JSON.stringify(formData),
+        body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
-          'Content-Type': 'application/json',
+          // Remove 'Content-Type' header since it's automatically set by FormData
           'Auth-token': localStorage.getItem('Hactify-Auth-token')
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
       }
-
+  
       console.log('Form submitted successfully');
       alert('Response submitted successfully!');
       navigate('/');
@@ -87,6 +139,7 @@ function Report() {
       setLoading(false); // Set loading state to false regardless of success or failure
     }
   };
+  
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
@@ -278,7 +331,7 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">10. POC (Screenshots)</h3>
           <div>
             <label className="block mb-1 text-gray-700">Screenshots (up to 5):</label>
-            <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" type="file" name="pocScreenshots" multiple onChange={handleInputChange} />
+            <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" type="file" name="pocScreenshot" multiple onChange={handleInputChange} />
           </div>
         </div>
 

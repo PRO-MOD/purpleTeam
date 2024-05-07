@@ -5,7 +5,7 @@ import AuthContext from '../../context/AuthContext';
 import { useParams } from 'react-router-dom';
 
 function ChatInput({ socket }) {
-    const { userId } = useParams();
+    const { userId } = useParams(); // recipientID
     // console.log("userId:>> " + userId);
     const [message, setMessage] = useState('');
     const [images, setImages] = useState([]);

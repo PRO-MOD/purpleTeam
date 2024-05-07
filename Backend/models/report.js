@@ -30,6 +30,10 @@ const reportSchema = new mongoose.Schema({
     type: [String],
     required: false,
   },
+  photoUrl: {
+    type: [String], 
+    required: false,
+  },
   pdfName: {
     type: String,
     required: true,

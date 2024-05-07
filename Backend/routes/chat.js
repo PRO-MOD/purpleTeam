@@ -9,16 +9,20 @@ const uploadImageToCloudinary = require('../utils/imageUpload');
 
 // Function to handle socket logic
 let users = []
+// let isUserIdAvailable = false;
 const handleSocket = (io) => {
     io.on('connection', (socket) => {
         console.log('user connected', socket.id);
 
         socket.on('addUser', (userId) => {
-            const isUserExist = users.find((user) => user.userId === userId);
-            if (!isUserExist) {
-                const user = { userId, socketId: socket.id };
-                users.push(user);
-                io.emit('getUsers', users);
+            if (userId ) {
+                // Add the user to the active users list only if userId is available
+                const isUserExist = users.find((user) => user.userId === userId);
+                if (!isUserExist) {
+                    const newUser = { userId, socketId: socket.id };
+                    users.push(newUser);
+                    io.emit('getUsers', users);
+                }
             }
         });
 
@@ -100,12 +104,25 @@ router.get('/messages/:recipient', fetchuser, async (req, res) => {
     const userId = req.user.id;
     const { recipient } = req.params;
     try {
-        const messages = await Message.find({
+        let messages = await Message.find({
             $or: [
                 { sender: userId, recipient: recipient },
                 { sender: recipient, recipient: userId }
             ]
         }).sort({ timestamp: 1 });
+
+        // Mark messages as read and update readCount
+        messages = await Promise.all(messages.map(async (message) => {
+            // Check if the message is sent by the other user and has not been read yet
+            if (message.recipient.toString() === userId && message.readCount <= 2) {
+                // Increment read count
+                message.readCount += 1;
+                // Save the message
+                await message.save();
+            }
+            return message;
+        }));
+
         res.json(messages);
     } catch (error) {
         console.error('Error getting messages:', error);
@@ -158,7 +175,7 @@ router.get('/conversations', fetchuser, async (req, res) => {
                 latestMessageDate: conversation.latestMessage.timestamp,
                 latestMessageContent: latestMessageContent
             };
-        }));
+        }));     
 
         res.json(formattedConversations);
     } catch (error) {
@@ -166,4 +183,27 @@ router.get('/conversations', fetchuser, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// Endpoint to get messages with readCount 0 that are not sent by the logged-in user
+router.get('/unread-messages', fetchuser, async (req, res) => {
+    try {
+        // Assuming user ID is available in the request object after authentication
+        const userId = req.user.id;
+
+        // Find unread messages not sent by the logged-in user
+        const unreadMessages = await Message.find({
+            $and: [
+                { readCount: 0 }, // Message has readCount of 0
+                { sender: { $ne: userId } } 
+            ]
+        });
+
+        res.json(unreadMessages);
+    } catch (error) {
+        console.error('Error getting unread messages:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 module.exports = { router, handleSocket };

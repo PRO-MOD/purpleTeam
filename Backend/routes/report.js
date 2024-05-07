@@ -8,6 +8,7 @@ const reportModel = require('../models/report');
 const fetchuser = require('../middleware/fetchuser');
 const User = require('../models/User');
 const score = require('../models/score');
+const uploadImageToCloudinary = require('../utils/imageUpload');
 const incidentModel = require('../models/IncidentReport');
 const notificationModel = require('../models/Notification');
 
@@ -45,16 +46,67 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       prepared,
     } = req.body;
 
-    const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
+    const pocScreenshots = req.files;
+    
+     // Use req.files to access multiple uploaded screenshots
     const reportType = "SITREP";
     const userId = req.user.id;
-   
+
+    const photoUrls = [];
+    for (const photo of pocScreenshots) {
+      const imageUrl = await uploadImageToCloudinary(photo);
+      photoUrls.push(imageUrl); // Push imageUrl into photoUrls array
+    }
+
+    
     var currentDate = new Date().toLocaleDateString();
     var currentTime = new Date().toLocaleTimeString();
+
+    currentDate = currentDate.replace(/[^\w\s]/gi, '');
+    currentTime= currentTime.replace(/[^\w\s]/gi, '');
+    
+    const pdfName = `Report_${currentDate}_${currentTime}.pdf`;
+   
+    const formData = new reportModel({
+      description,
+      threatLevel,
+      areasOfConcern,
+      recentIncidents,
+      trendAnalysis,
+      impactAssessment,
+      sources,
+      keyThreatActors,
+      indicatorsOfCompromise,
+      recentVulnerabilities,
+      patchStatus,
+      mitigationRecommendations,
+      currentOperations,
+      incidentResponse,
+      forensicAnalysis,
+      internalNotifications,
+      externalNotifications,
+      publicRelations,
+      riskAssessment,
+      continuityPlanning,
+      trainingAndExercises,
+      notes,
+      prepared,
+      pocScreenshots:photoUrls,
+      pdfName,
+      reportType,
+      userId,
+    });
+    await formData.save();
+
+    
+   
 
     // Load PDF file
     const pdfFilePath = path.join(__dirname, '..', 'public', 'SITREP Report.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
+
+    currentDate = new Date(formData.createdAt).toLocaleDateString();
+    currentTime = new Date(formData.createdAt).toLocaleTimeString();
 
     const form=pdfDoc.getForm();
 
@@ -83,6 +135,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const TE=form.getTextField('Training and Exercise');
     const notes1=form.getTextField('Notes');
     const prepared1=form.getTextField('prepared By');
+
 
 
     dateField.setText(currentDate);
@@ -116,10 +169,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     // Save modified PDF
     const modifiedPdfBytes = await pdfDoc.save();
 
-    currentDate = currentDate.replace(/[^\w\s]/gi, '');
-currentTime= currentTime.replace(/[^\w\s]/gi, '');
-
-const pdfName = `Report_${currentDate}_${currentTime}.pdf`;
+   
 
     // Generate unique filename for modified PDF
   
@@ -128,36 +178,9 @@ const pdfName = `Report_${currentDate}_${currentTime}.pdf`;
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
 
     // Save FormData to MongoDB
-    const formData = new reportModel({
-      description,
-      threatLevel,
-      areasOfConcern,
-      recentIncidents,
-      trendAnalysis,
-      impactAssessment,
-      sources,
-      keyThreatActors,
-      indicatorsOfCompromise,
-      recentVulnerabilities,
-      patchStatus,
-      mitigationRecommendations,
-      currentOperations,
-      incidentResponse,
-      forensicAnalysis,
-      internalNotifications,
-      externalNotifications,
-      publicRelations,
-      riskAssessment,
-      continuityPlanning,
-      trainingAndExercises,
-      notes,
-      prepared,
-      pocScreenshots,
-      pdfName,
-      reportType,
-      userId,
-    });
-    await formData.save();
+  
+    
+
 
     res.status(201).json({ message: 'Form data saved successfully' });
   } catch (error) {
@@ -165,6 +188,7 @@ const pdfName = `Report_${currentDate}_${currentTime}.pdf`;
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // Route to get scores and reports data for a specific user
 router.get('/specific/:userId', async (req, res) => {
@@ -208,29 +232,29 @@ router.get('/getAllReports', fetchuser,async (req, res) => {
   }
 });
 
-// // Route to get details of a specific report by ID
-router.get('/:reportId', async (req, res) => {
-  try {
-    const reportId = req.params.reportId;
+// // // Route to get details of a specific report by ID
+// router.get('/:reportId', async (req, res) => {
+//   try {
+//     const reportId = req.params.reportId;
 
-    // Fetch the report from the database by ID
-    // const report = await reportModel.findById(reportId);
-    const reportsSIT= await reportModel.findById(reportId);
-    const reportsINC = await incidentModel.findById(reportId);
-    const reportsNOT = await notificationModel.findById(reportId);
-    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+//     // Fetch the report from the database by ID
+//     // const report = await reportModel.findById(reportId);
+//     const reportsSIT= await reportModel.findById(reportId);
+//     const reportsINC = await incidentModel.findById(reportId);
+//     const reportsNOT = await notificationModel.findById(reportId);
+//     const reports =[...reportsSIT,...reportsINC,...reportsNOT];
 
-    if (!reports) {
-      return res.status(404).json({ error: 'Report not found' });
-    }
+//     if (!reports) {
+//       return res.status(404).json({ error: 'Report not found' });
+//     }
 
-    // Send the report details in the response
-    res.status(200).json(reports);
-  } catch (error) {
-    console.error('Error fetching report details:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+//     // Send the report details in the response
+//     res.status(200).json(reports);
+//   } catch (error) {
+//     console.error('Error fetching report details:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
 
 
@@ -254,10 +278,11 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 // POST route for adding manual score to a report
-router.post('/:reportId/manual-score', async (req, res) => {
+router.post('/:reportId/:reportType/manual-score', async (req, res) => {
   const reportId = req.params.reportId;
+  const reportType=req.params.reportType;
   const score = req.body.score;
-  // console.log(score);
+  // console.log(reportType);
 
   try {
     // Find the report by ID
@@ -266,16 +291,34 @@ router.post('/:reportId/manual-score', async (req, res) => {
     const reportsSIT= await reportModel.findById(reportId);
     const reportsINC = await incidentModel.findById(reportId);
     const reportsNOT = await notificationModel.findById(reportId);
-    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
-    if (!reports) {
-      return res.status(404).json({ message: 'Report not found' });
+    // const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+    // if (!reports) {
+    //   return res.status(404).json({ message: 'Report not found' });
+    // }
+    if(reportType=="SITREP"){
+      reportsSIT.manualScore = score;
+      await reportsSIT.save();
+
+    }
+    else if (reportType=="IRREP"){
+      reportsINC.manualScore = score;
+      await reportsINC.save();
+
+    }
+    else{
+      reportsNOT.manualScore=score;
+      
+    await reportsNOT.save();
+      
     }
 
+
     // Update the manual score field of the report
-    reports.manualScore = score;
+    // reports.manualScore = score;
 
     // Save the updated report
-    await reports.save();
+    
+    
 
     return res.status(200).json({ message: 'Manual score added successfully' });
   } catch (error) {

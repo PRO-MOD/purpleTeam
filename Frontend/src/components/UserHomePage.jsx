@@ -8,7 +8,7 @@ export default function UserHomePage() {
   };
 
   return (
-    <div className="bg-gray-100">
+    <div className="">
       <div className="text-center py-8">
         <h1 className="text-4xl font-bold text-blue-600 mb-4 py-4">Share Your Report</h1>
         <hr className='mx-12 border-black'/>

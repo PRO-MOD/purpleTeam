@@ -17,6 +17,10 @@ const messageSchema = new mongoose.Schema({
     images: [{
         type: String 
     }],
+    readCount: {
+        type: Number,
+        default: 0 
+    },
     timestamp: {
         type: Date,
         default: Date.now

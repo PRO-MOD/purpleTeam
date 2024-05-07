@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChatItem } from "react-chat-elements";
 import { useNavigate } from "react-router-dom";
+import "../../App.css"
 
 function ChatLists({ position }) {
     const [conversations, setConversations] = useState([]);
@@ -17,7 +18,7 @@ function ChatLists({ position }) {
 
     const fetchConversations = async () => {
         try {
-            const response = await fetch('http://13.233.214.116:5000/api/chat/conversations', {
+            const response = await fetch('http://localhost:5000/api/chat/conversations', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,6 +26,7 @@ function ChatLists({ position }) {
                 }
             });
             const data = await response.json();
+            console.log(conversations);
             setConversations(data);
         } catch (error) {
             console.error('Error fetching conversations:', error);

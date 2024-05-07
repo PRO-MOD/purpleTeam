@@ -5,6 +5,7 @@ const path = require('path');
 const multer = require('multer');
 const { PDFDocument } = require('pdf-lib');
 // const incidentModel = require('../models/IncidentReport'); // Changed import to incidentModel
+const uploadImageToCloudinary = require('../utils/imageUpload');
 const incidentModel =require('../models/IncidentReport')
 const fetchuser = require('../middleware/fetchuser');
 
@@ -48,14 +49,65 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const reportType = "IRREP";
     const userId = req.user.id;
 
+    const photoUrls = [];
+    for (const photo of pocScreenshots) {
+      const imageUrl = await uploadImageToCloudinary(photo);
+      photoUrls.push(imageUrl); // Push imageUrl into photoUrls array
+    }
+
     // Load PDF file
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'IRR.pdf'); // Path to original PDF file
-    const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
+    
 
     var currentDate = new Date().toLocaleDateString();
     var currentTime = new Date().toLocaleTimeString();
 
+    
+    // Generate unique filename for modified PDF
+    currentDate = currentDate.replace(/[^\w\s]/gi, '');
+    currentTime= currentTime.replace(/[^\w\s]/gi, '');
+    
+    const pdfName = `Incident_${currentDate}_${currentTime}.pdf`;
 
+     // Save FormData to MongoDB
+     const formData = new incidentModel({ // Changed to incidentModel
+      description,
+      severityLevel,
+      impact,
+      affectedSystems,
+      detectionMethod,
+      initialDetectionTime,
+      attackVector,
+      attackers,
+      containment,
+      eradication,
+      recovery,
+      lessonsLearned,
+      evidence,
+      indicatorsOfCompromise,
+      ttps,
+      mitigationRecommendations,
+      internalNotification,
+      externalNotification,
+      updates,
+      incidentReview,
+      documentation,
+      training,
+      notes,
+      prepared,
+      pocScreenshots:photoUrls,
+      pdfName,
+      reportType,
+      userId,
+    });
+    await formData.save();
+
+
+
+    currentDate = new Date(formData.createdAt).toLocaleDateString();
+    currentTime = new Date(formData.createdAt).toLocaleTimeString();
+
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'IRR.pdf'); // Path to original PDF file
+    const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
     const form=pdfDoc.getForm();
 
@@ -132,6 +184,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
     form.flatten();
 
+
     
 
 
@@ -143,47 +196,11 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     // Save modified PDF
     const modifiedPdfBytes = await pdfDoc.save();
 
-    // Generate unique filename for modified PDF
-    currentDate = currentDate.replace(/[^\w\s]/gi, '');
-    currentTime= currentTime.replace(/[^\w\s]/gi, '');
-    
-    const pdfName = `Incident_${currentDate}_${currentTime}.pdf`;
 
     // Save modified PDF to uploads folder
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
 
-    // Save FormData to MongoDB
-    const formData = new incidentModel({ // Changed to incidentModel
-      description,
-      severityLevel,
-      impact,
-      affectedSystems,
-      detectionMethod,
-      initialDetectionTime,
-      attackVector,
-      attackers,
-      containment,
-      eradication,
-      recovery,
-      lessonsLearned,
-      evidence,
-      indicatorsOfCompromise,
-      ttps,
-      mitigationRecommendations,
-      internalNotification,
-      externalNotification,
-      updates,
-      incidentReview,
-      documentation,
-      training,
-      notes,
-      prepared,
-      pocScreenshots,
-      pdfName,
-      reportType,
-      userId,
-    });
-    await formData.save();
+   
 
     res.status(201).json({ message: 'Form data saved successfully' });
   } catch (error) {

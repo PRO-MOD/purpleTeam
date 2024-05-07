@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
@@ -58,7 +55,7 @@ function ReportTable() {
     };
 
     return (
-        <div className="container mx-auto bg-orange-50 ">
+        <div className="container mx-auto px-4  ">
             <h2 className="text-2xl font-semibold my-4 text-black-600">Your Submitted Reports </h2>
             <table className="w-full border-collapse border">
                 <thead>
@@ -71,14 +68,15 @@ function ReportTable() {
                 </thead>
                 <tbody>
                     {reports.map((report, index) => (
-                        <tr key={report._id} className={`border ${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}`}>
+                        <tr key={report._id} className={`border ${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}` }>
+                             <tr key={report._id} className="cursor-pointer hover:bg-gray-100" onClick={() => handleReportClick(report._id)}></tr>
                             <td className="px-4 py-2 border border-gray-300">{new Date(report.createdAt).toLocaleDateString()}</td>
                             <td className="px-4 py-2  border border-gray-300">{new Date(report.createdAt).toLocaleTimeString()}</td>
                             <td className="px-4 py-2 border border-gray-300">{report.reportType}</td>
                             <td className="px-4 py-2 border border-gray-300">
                                 <FontAwesomeIcon
                                     icon={faEye}
-                                    onClick={(event) => handlePhotoClick(event, report.photoUrl)}
+                                    onClick={(event) => handlePhotoClick(event, report.pocScreenshots)}
                                     className="text-blue-500 cursor-pointer mr-2"
                                 />
                                 <a href={`http://13.233.214.116:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View PDF</a>
