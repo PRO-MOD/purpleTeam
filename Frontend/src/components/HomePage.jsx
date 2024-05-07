@@ -40,12 +40,17 @@ function HomePage() {
   return (
     <>
       {/* <Router> */}
-        <div className="flex flex-row  h-screen">
-          <div className="left_Home w-[10%] min-w-20">
+        <div className="flex flex-row h-screen b">
+          <div className="left_Home w-[10%] min-w-20 bg-brown-500">
             <SideNavbar />
           </div>
-          <div className="right_Home lg:w-[90%] h-screen overflow-y-scroll bg-orange-50">
-            {/* <Alert alert={alert}/> */}
+          <div className="right_Home lg:w-[90%] h-screen overflow-y-scroll bg-white-100">
+            {
+              alert ? 
+              <Alert alert={alert}/>
+              :
+              ""
+            }
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />

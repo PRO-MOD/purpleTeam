@@ -8,8 +8,7 @@ const scoreSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   score: {
     type: Number,
@@ -19,6 +18,9 @@ const scoreSchema = new mongoose.Schema({
     type: Number,
     default: null
   },
+  date: {
+    type: Date
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User' // Reference to the User schema
@@ -26,4 +28,4 @@ const scoreSchema = new mongoose.Schema({
 });
 
 // Create a Score model from the schema
-module.exports = mongoose.model('Score', scoreSchema);
+module.exports = mongoose.model('SampleScore', scoreSchema);

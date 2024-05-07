@@ -13,11 +13,14 @@ const messageSchema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true
     },
     images: [{
-        type: String // Array of image URLs
+        type: String 
     }],
+    readCount: {
+        type: Number,
+        default: 0 
+    },
     timestamp: {
         type: Date,
         default: Date.now

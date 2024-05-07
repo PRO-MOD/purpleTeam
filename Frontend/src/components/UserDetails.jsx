@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import DataVisualization from './DataVisualization'
+import TimeSeriesGraph from './TimeSeriesGraph'
 
 import UserReports from './UserReports';
 
@@ -15,7 +16,7 @@ function UserDetails() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/${userId}`);
+        const response = await fetch(`http://13.233.214.116:5000/api/auth/${userId}`);
         if (response.ok) {
           const data = await response.json();
           setUser(data);
@@ -36,13 +37,27 @@ function UserDetails() {
     navigate(-1); // Navigate back to the previous page
   };
 
+  const [jsonData, setJsonData] = useState(null);
+
+    useEffect(() => {
+        // Fetch JSON data from API
+        fetch(`http://13.233.214.116:5000/api/reports/specific/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                setJsonData(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8"><FontAwesomeIcon icon={faArrowLeft} className='me-4' /> Back</button>
       <h1 className="text-3xl font-bold mb-4">User Details</h1>
       {user ? (
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div className='flex flex-row '>
+          <div className='flex flex-row'>
             <div>
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">Name:</label>
@@ -53,10 +68,14 @@ function UserDetails() {
                 <p className="text-gray-700">{user.email}</p>
               </div>
             </div>
-            <div>
-              {/* <DataVisualization/> */}
-            </div>
+            {/* {jsonData && <TimeSeriesGraph jsonData={jsonData} />} */}
           </div>
+          {jsonData && 
+          <div className='flex flex-row flex-wrap justify-center items-center'>
+            <DataVisualization jsonData={jsonData} />
+            <TimeSeriesGraph jsonData={jsonData} />
+          </div>
+          }
           <UserReports userId={userId} />
         </div>
       ) : (

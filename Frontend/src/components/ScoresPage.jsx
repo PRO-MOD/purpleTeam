@@ -11,7 +11,7 @@ function ScoresComponent() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/score/getscores');
+        const response = await fetch('http://localhost:5000/api/score/get-scores');
         if (!response.ok) {
           throw new Error('Failed to fetch scores');
         }
@@ -23,9 +23,38 @@ function ScoresComponent() {
         setLoading(false); // Set loading to false if there's an error
       }
     };
-    
+    UpdateScores();
+    UpdateManualScores();
     fetchScores();
   }, []);
+
+
+  const UpdateScores = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/score/getscores');
+      if (!response.ok) {
+        throw new Error('Failed to fetch scores');
+      }
+      const data = await response.json();
+    } catch (error) {
+      setError(error.message);
+      setLoading(false); // Set loading to false if there's an error
+    }
+  };
+
+  const UpdateManualScores = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/score/sum-manual-scores');
+      if (!response.ok) {
+        throw new Error('Failed to fetch scores');
+      }
+      const data = await response.json();
+      setLoading(false); // Set loading to false after fetching scores
+    } catch (error) {
+      setError(error.message);
+      setLoading(false); // Set loading to false if there's an error
+    }
+  };
 
   const isHomePage = () => {
     return location.pathname === '/';
@@ -33,10 +62,13 @@ function ScoresComponent() {
 
   return (
     <div className='mx-16 my-12 '>
-      <h1 className='text-3xl font-bold'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
-      <hr className='mt-4 mb-8'/>
+      <div className="flex flex-row items-center">
+        <h1 className='text-3xl font-bold underline'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
+        <span className='ms-4'>Format ( CTFD Score / Manual Score )</span>
+      </div>
+      <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}
-      <ScoreTable scores={scores} loading={loading} isHomePage={isHomePage()}/>
+      <ScoreTable scores={scores} loading={loading} isHomePage={isHomePage()} />
     </div>
   );
 }
