@@ -38,11 +38,9 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       internalNotification,
       externalNotification,
       updates,
-      incidentReview,
-      documentation,
-      training,
       notes,
       prepared,
+      other,
     } = req.body;
 
     const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
@@ -89,15 +87,13 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       internalNotification,
       externalNotification,
       updates,
-      incidentReview,
-      documentation,
-      training,
       notes,
       prepared,
       pocScreenshots:photoUrls,
       pdfName,
       reportType,
       userId,
+      other,
     });
     await formData.save();
 
@@ -106,7 +102,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     currentDate = new Date(formData.createdAt).toLocaleDateString();
     currentTime = new Date(formData.createdAt).toLocaleTimeString();
 
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'IRR.pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'IncidentFinal.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
     const form=pdfDoc.getForm();
@@ -128,15 +124,13 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const evidence1=form.getTextField('Evidence');
     const indicatorsOfCompromise1=form.getTextField('IOCS');
     const ttps1=form.getTextField('TTPs');
-    const mitigationRecommendations1=form.getTextField('Paragraph-HXNlG_oA5V');
+    const mitigationRecommendations1=form.getTextField('Recommendations');
     const internalNotification1=form.getTextField('internal notification');
     const externalNotification1=form.getTextField('External Notification');
-    const updates1=form.getTextField('Paragraph-GcOPMpWjLi');
-    const incidentReview1=form.getTextField('Incident Review');
-    const documentation1=form.getTextField('Documentation');
-    const training1=form.getTextField('Training');
+    const updates1=form.getTextField('Updates');
     const notes1=form.getTextField('Notes');
     const prepared1=form.getTextField('prepared By');
+    const other1=form.getTextField('other');
   
  
 
@@ -162,21 +156,9 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     internalNotification1.setText(internalNotification);
     externalNotification1.setText(externalNotification);
     updates1.setText(updates);
-    incidentReview1.setText(incidentReview);
-
-    if(documentation==false){
-      documentation1.setText("pending");
-
-    }
-    else{
-      documentation1.setText("done");
-
-
-    }
-    // documentation1.setText("done");
-    training1.setText(training);
     notes1.setText(notes);
     prepared1.setText(prepared);
+    other1.setText(other);
 
 
 

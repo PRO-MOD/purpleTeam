@@ -37,9 +37,7 @@ const incidentSchema = new mongoose.Schema({
     internalNotification: [{ type: String }],
     externalNotification: [{ type: String }],
     updates: { type: String, required: true },
-    incidentReview: { type: Date },
-    documentation: { type: Boolean, default: false },
-    training: { type: String, required: true },
+    other: { type: String, required: false },
   pocScreenshots:{ type: [String], required:false},
   pdfName: {
     type: String,

@@ -183,7 +183,7 @@ const SideNavbar = () => {
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faCircleUser} size="xl" />
                 </div>
-                <p className="text-lg">Home</p>
+                <p className="text-lg">Dashboard</p>
               </Link>
               <Link to="/notes" className={`flex flex-row items-center justify-start py-4 px-4 hover:bg-orange-100 hover:text-black ${isActive("/notes") ? "bg-orange-100 text-black" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
@@ -191,12 +191,7 @@ const SideNavbar = () => {
                 </div>
                 <p className="text-lg">Notes</p>
               </Link>
-              <Link to="/profile" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/profile") ? "bg-orange-100 text-black" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faUser} color="" size="xl" />
-                </div>
-                <p className=" text-lg">Account</p>
-              </Link>
+             
                {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faNotesMedical} size="xl" />
@@ -240,7 +235,13 @@ const SideNavbar = () => {
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faComment} size="xl" />
                 </div>
-                <p className=" text-lg">Chats</p>
+                <p className=" text-lg">Communication</p>
+              </Link>
+              <Link to="/profile" className={`flex flex-row items-center justify-start px-4 py-4 hover:bg-orange-100 hover:text-black ${isActive("/profile") ? "bg-orange-100 text-black" : ""}`}>
+                <div className="h-10 w-10 flex items-center justify-center">
+                  <FontAwesomeIcon icon={faUser} color="" size="xl" />
+                </div>
+                <p className=" text-lg">Profile</p>
               </Link>
         <button onClick={handleLogout} className="flex flex-row items-center justify-start px-6 py-4 hover:bg-orange-100 hover:text-black">
           <div className="h-10 w-10 flex items-center justify-center">

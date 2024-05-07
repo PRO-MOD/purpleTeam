@@ -24,13 +24,11 @@ function IncidentReport() {
     internalNotification: '',
     externalNotification: '',
     updates: '',
-    incidentReview: '',
-    documentation: false,
-    training: '',
     pocScreenshots: [],
     pdfName: '',
     ReportType:'IRREP',
     userId: '', 
+    other:'',
   });
 
   const [loading, setLoading] = useState(false);
@@ -161,7 +159,7 @@ function IncidentReport() {
     {/* 2. Incident Details */}
     <h3 className="text-xl mb-2">2. Incident Details</h3>
     {/* Detection Method */}
-    <div className="mb-4">
+    {/* <div className="mb-4">
       <label className="block mb-1 text-gray-700">Detection Method:</label>
       <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="detectionMethod" value={formData.detectionMethod} onChange={handleInputChange} required>
         <option value="">Select Detection Method</option>
@@ -171,7 +169,31 @@ function IncidentReport() {
         <option value="User Report">User Report</option>
         <option value="Other">Other</option>
       </select>
-    </div>
+    </div> */}
+
+<div className="mb-4">
+  <label className="block mb-1 text-gray-700">Detection Method:</label>
+  <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="detectionMethod" value={formData.detectionMethod} onChange={handleInputChange} required>
+    <option value="">Select Detection Method</option>
+    <option value="Intrusion Detection System">Intrusion Detection System</option>
+    <option value="Security Information and Event Management (SIEM)">Security Information and Event Management (SIEM)</option>
+    <option value="Endpoint Detection and Response (EDR)">Endpoint Detection and Response (EDR)</option>
+    <option value="User Report">User Report</option>
+    <option value="Other">Other</option>
+  </select>
+  {formData.detectionMethod === "Other" && (
+    <input
+      type="text"
+      className="w-full mt-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+      name="other"
+      value={formData.other}
+      onChange={handleInputChange}
+      placeholder="Enter Detection Method"
+      required
+    />
+  )}
+</div>
+
 
     {/* Initial Detection Time */}
     <div className="mb-4">
@@ -275,29 +297,9 @@ function IncidentReport() {
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="updates" value={formData.updates} onChange={handleInputChange} required  placeholder='Frequency and content of updates provided to stakeholders'/>
     </div>
 
-    {/* 6. Follow-Up Actions */}
-    <h3 className="text-xl mb-2">6. Follow-Up Actions</h3>
-    {/* Incident Review */}
-    <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Incident Review:</label>
-      <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" type="datetime-local" name="incidentReview" value={formData.incidentReview} onChange={handleInputChange} />
-    </div>
-
-    {/* Documentation */}
-    <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Documentation:</label>
-      <input className="mr-2" type="checkbox" name="documentation" checked={formData.documentation} onChange={handleInputChange} />
-      <span className="text-gray-700">Is documentation complete?</span>
-    </div>
-
-    {/* Training */}
-    <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Training:</label>
-      <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="training" value={formData.training} onChange={handleInputChange} required  placeholder='Identified training needs for team members based on incident response'/>
-    </div>
 
     {/* 7. Additional Notes */}
-    <h3 className="text-xl mb-2">7. Additional Notes</h3>
+    <h3 className="text-xl mb-2">6. Additional Notes</h3>
     {/* Additional Notes (optional) */}
     <div className="mb-4">
       <label className="block mb-1 text-gray-700">Additional Notes (optional)</label>
@@ -305,7 +307,7 @@ function IncidentReport() {
     </div>
 
     {/* 8. Submission */}
-    <h3 className="text-xl mb-2">8. Submission</h3>
+    <h3 className="text-xl mb-2">7. Submission</h3>
     {/* Prepared By */}
     <div className="mb-4">
       <label className="block mb-1 text-gray-700">Prepared By</label>
@@ -313,7 +315,7 @@ function IncidentReport() {
     </div>
 
     {/* 9. POC (Screenshots) */}
-    <h3 className="text-xl mb-2">9. POC (Screenshots)</h3>
+    <h3 className="text-xl mb-2">8. POC (Screenshots)</h3>
     {/* POC Screenshots */}
     <div className="mb-4">
       <label className="block mb-1 text-gray-700">POC Screenshots (up to 5):</label>
