@@ -184,26 +184,68 @@ router.get('/conversations', fetchuser, async (req, res) => {
     }
 });
 
-// Endpoint to get messages with readCount 0 that are not sent by the logged-in user
 router.get('/unread-messages', fetchuser, async (req, res) => {
     try {
-        // Assuming user ID is available in the request object after authentication
+        // Get the user ID of the logged-in user from the request (assuming it's stored in req.user)
         const userId = req.user.id;
 
-        // Find unread messages not sent by the logged-in user
-        const unreadMessages = await Message.find({
-            $and: [
-                { readCount: 0 }, // Message has readCount of 0
-                { sender: { $ne: userId } } 
+        // Fetch all messages where the user is either the sender or the recipient
+        const messages = await Message.find({
+            $or: [
+                { sender: userId },
+                { recipient: userId }
             ]
         });
 
-        res.json(unreadMessages);
+        // Calculate the total unread messages count
+        let unreadMessagesCount = 0;
+        messages.forEach(message => {
+            // Check if the user is a recipient of the message and the message is unread
+            if (message.recipient.equals(userId) && message.readCount < 2) {
+                unreadMessagesCount++;
+            }
+        });
+
+        res.status(200).json({ unreadMessagesCount });
     } catch (error) {
-        console.error('Error getting unread messages:', error);
+        console.error('Error fetching unread messages count:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
+router.get('/unread-messages-users', fetchuser, async (req, res) => {
+    try {
+        // Get the user ID of the logged-in user from the request (assuming it's stored in req.user)
+        const userId = req.user.id;
+
+        // Fetch all messages where the user is either the sender or the recipient
+        const messages = await Message.find({
+            $or: [
+                { sender: userId },
+                { recipient: userId }
+            ]
+        });
+
+        // Create an object to store unread messages count for each user
+        const unreadMessagesByUser = {};
+
+        // Calculate the unread messages count for each user
+        messages.forEach(message => {
+            // Check if the user is a recipient of the message and the message is unread
+            if (message.recipient.equals(userId) && message.readCount < 2) {
+                // Increment the unread messages count for the sender
+                if (!unreadMessagesByUser[message.sender]) {
+                    unreadMessagesByUser[message.sender] = 0;
+                }
+                unreadMessagesByUser[message.sender]++;
+            }
+        });
+
+        res.status(200).json({ unreadMessagesByUser });
+    } catch (error) {
+        console.error('Error fetching unread messages:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = { router, handleSocket };

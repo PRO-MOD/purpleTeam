@@ -23,10 +23,24 @@ function ScoresComponent() {
         setLoading(false); // Set loading to false if there's an error
       }
     };
+    UpdateScores();
     UpdateManualScores();
     fetchScores();
   }, []);
 
+
+  const UpdateScores = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/score/getscores');
+      if (!response.ok) {
+        throw new Error('Failed to fetch scores');
+      }
+      const data = await response.json();
+    } catch (error) {
+      setError(error.message);
+      setLoading(false); // Set loading to false if there's an error
+    }
+  };
 
   const UpdateManualScores = async () => {
     try {
