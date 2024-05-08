@@ -27,6 +27,7 @@ function ChatLists({ position }) {
             });
             const data = await response.json();
             console.log(conversations);
+            data.sort((a, b) => new Date(b.latestMessageDate) - new Date(a.latestMessageDate));
             setConversations(data);
         } catch (error) {
             console.error('Error fetching conversations:', error);

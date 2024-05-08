@@ -43,12 +43,12 @@ router.get('/getscores', async (req, res) => {
             const user = await User.findOne({ name: score.name });
             if (user) {
                 // Check if a score document exists for today's date and the user's _id
-                const existingScore = await Score.findOne({ user: user._id, date: { $gte: new Date("2024-05-05T10:07:24.392Z").setHours(0, 0, 0, 0) } });
+                const existingScore = await Score.findOne({ user: user._id, date: { $gte: new Date().setHours(0, 0, 0, 0) } });
                 if (existingScore) {
                     // Update the existing score document
                     existingScore.name = score.name;
                     existingScore.account_id = score.account_id;
-                    existingScore.score = score.score;
+                    existingScore.score = 1000 - score.score;
                     // existingScore.manualScore = 0;
                     await existingScore.save();
                 } else {
@@ -56,10 +56,10 @@ router.get('/getscores', async (req, res) => {
                     await Score.create({
                         name: score.name,
                         account_id: score.account_id,
-                        score: score.score,
+                        score: 1000 - score.score,
                         manualScore: 0,
                         user: user._id,
-                        date: new Date("2024-05-05T10:07:24.392Z") // Insert the current date
+                        date: new Date() // Insert the current date
                     });
                 }
             }
@@ -123,6 +123,8 @@ router.get('/sum-manual-scores', async (req, res) => {
                 notificationReport.find({ userId: score.user })
             ]);
 
+            // console.log(reports);
+
             // Iterate through each type of report
             for (const reportType of reports) {
                 // Iterate through each report
@@ -132,7 +134,9 @@ router.get('/sum-manual-scores', async (req, res) => {
                     const formattedDate = reportDate.toDateString();
 
                     // Check if the report belongs to the same user and date as the current score
+                    // console.log(score.user.toString() + " "+report.userId.toString()+" "+score.date.toDateString()+" "+formattedDate);
                     if (score.user.toString() === report.userId.toString() && score.date.toDateString() === formattedDate) {
+                        // console.log("hello");
                         // Update the manual score for the current date
                         if (!manualScoresByUserAndDate[score.user]) {
                             manualScoresByUserAndDate[score.user] = {}; // Initialize a new object to store scores by date
