@@ -64,11 +64,13 @@ function Notification() {
           formDataToSend.append(key, value);
         }
       });
-  
+   // Log the pocScreenshots separately
+// console.log("pocScreenshots sent to backend:", formData.pocScreenshots);
+
       // Now, append the images to the FormData object
-      formData.pocScreenshots.forEach((file) => {
-        formDataToSend.append('pocScreenshots', file);
-      });
+      // formData.pocScreenshots.forEach((file) => {
+      //   formDataToSend.append('pocScreenshots', file);
+      // });
   
       const response = await fetch(`http://localhost:5000/api/reports/Notification`, {
         method: 'POST',

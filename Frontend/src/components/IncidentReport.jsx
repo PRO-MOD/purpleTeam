@@ -83,10 +83,10 @@ function IncidentReport() {
         }
       });
   
-      // Now, append the images to the FormData object
-      formData.pocScreenshots.forEach((file) => {
-        formDataToSend.append('pocScreenshots', file);
-      });
+      // // Now, append the images to the FormData object
+      // formData.pocScreenshots.forEach((file) => {
+      //   formDataToSend.append('pocScreenshots', file);
+      // });
   
       const response = await fetch(`http://localhost:5000/api/reports/IRREP`, {
         method: 'POST',
