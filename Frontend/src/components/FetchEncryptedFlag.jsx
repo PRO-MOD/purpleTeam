@@ -9,7 +9,7 @@ function FetchEncryptedFlag() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://13.233.214.116:5000/api/auth/fetch-flag', {
+      const response = await fetch('http://13.127.232.191:5000/api/auth/fetch-flag', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

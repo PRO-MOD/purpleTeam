@@ -31,7 +31,7 @@ function ChatWindow() {
     };
 
     useEffect(() => {
-        const newSocket = io('http://13.233.214.116:8080');
+        const newSocket = io('http://13.127.232.191:8080');
         setSocket(newSocket);
 
         return () => {
@@ -96,7 +96,7 @@ function ChatWindow() {
 
     const fetchUserInfo = async (userId) => {
         try {
-            const response = await fetch(`http://13.233.214.116:5000/api/auth/${userId}`, {
+            const response = await fetch(`http://13.127.232.191:5000/api/auth/${userId}`, {
                 method: 'GET'
             });
             const userData = await response.json();
@@ -108,7 +108,7 @@ function ChatWindow() {
 
     const fetchMessages = async (userId) => {
         try {
-            const response = await fetch(`http://13.233.214.116:5000/api/chat/messages/${userId}`, {
+            const response = await fetch(`http://13.127.232.191:5000/api/chat/messages/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ const SideNavbar = () => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const response = await fetch("http://13.233.214.116:5000/api/auth/getuser", {
+        const response = await fetch("http://13.127.232.191:5000/api/auth/getuser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -32,7 +32,7 @@ const SideNavbar = () => {
 
   const fetchUnreadMessages = async () => {
     try {
-      const response = await fetch("http://13.233.214.116:5000/api/chat/unread-messages", {
+      const response = await fetch("http://13.127.232.191:5000/api/chat/unread-messages", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
