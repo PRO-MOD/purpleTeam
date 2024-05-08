@@ -81,7 +81,7 @@ function ReportTable() {
                                     className="text-blue-500 cursor-pointer mr-2"
                                 /> </td>
 
-                              <td className="px-4 py-2 border border-gray-300 text-center">  <a href={`http://localhost:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View POCs</a>
+                              <td className="px-4 py-2 border border-gray-300 text-center">  <a href={`http://13.233.214.116:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View POCs</a>
                             </td>
                         </tr>
                     ))}

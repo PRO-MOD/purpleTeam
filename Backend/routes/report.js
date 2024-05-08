@@ -46,8 +46,8 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     } = req.body;
 
     const pocScreenshots = req.files;
-    
-     // Use req.files to access multiple uploaded screenshots
+
+    // Use req.files to access multiple uploaded screenshots
     const reportType = "SITREP";
     const userId = req.user.id;
 
@@ -57,15 +57,15 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       photoUrls.push(imageUrl); // Push imageUrl into photoUrls array
     }
 
-    
+
     var currentDate = new Date().toLocaleDateString();
     var currentTime = new Date().toLocaleTimeString();
 
     currentDate = currentDate.replace(/[^\w\s]/gi, '');
-    currentTime= currentTime.replace(/[^\w\s]/gi, '');
-    
+    currentTime = currentTime.replace(/[^\w\s]/gi, '');
+
     const pdfName = `Report_${currentDate}_${currentTime}.pdf`;
-   
+
     const formData = new reportModel({
       description,
       threatLevel,
@@ -89,49 +89,50 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       continuityPlanning,
       notes,
       prepared,
-      pocScreenshots:photoUrls,
+      pocScreenshots: photoUrls,
       pdfName,
       reportType,
       userId,
     });
     await formData.save();
 
-    
-   
+
+
 
     // Load PDF file
     const pdfFilePath = path.join(__dirname, '..', 'public', 'Sitfinal.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
-    currentDate = new Date(formData.createdAt).toLocaleDateString();
-    currentTime = new Date(formData.createdAt).toLocaleTimeString();
+    const options = { timeZone: 'Asia/Kolkata' };
+    currentDate = new Date(formData.createdAt).toLocaleDateString('en-IN', options);
+    currentTime = new Date(formData.createdAt).toLocaleTimeString('en-IN', options);
 
-    const form=pdfDoc.getForm();
+    const form = pdfDoc.getForm();
 
-    const dateField=form.getTextField('Date');
-    const timeField=form.getTextField('Time');
-    const Description=form.getTextField('Description');
-    const Threat=form.getDropdown('Threat Level');
-    const Aoc=form.getTextField('Areas of Concern');
-    const RI=form.getTextField('Recent Incidents');
-    const TA=form.getTextField('Trend Analysis');
-    const IA=form.getTextField('Impact Assessment');
-    const Sources=form.getTextField('Sources');
-    const KTA=form.getTextField('Key Threat Actors');
-    const IOCs=form.getTextField('IOCs');
-    const Vm=form.getTextField('Vulnerability management');
-    const ps=form.getTextField('patch status');
-    const MR=form.getTextField('Mitigration Recommendations');
-    const CO=form.getTextField('current operations');
-    const IR=form.getTextField('Incident Response');
-    const FA=form.getTextField('Forensic Analysis');
-    const IN=form.getTextField('Internal Notifications');
-    const EN=form.getTextField('External Notifications');
-    const PR=form.getTextField('public Relations');
-    const RA=form.getTextField('Risk Assessment');
-    const CP=form.getTextField('Continuity Planning');
-    const notes1=form.getTextField('Notes');
-    const prepared1=form.getTextField('prepared By');
+    const dateField = form.getTextField('Date');
+    const timeField = form.getTextField('Time');
+    const Description = form.getTextField('Description');
+    const Threat = form.getDropdown('Threat Level');
+    const Aoc = form.getTextField('Areas of Concern');
+    const RI = form.getTextField('Recent Incidents');
+    const TA = form.getTextField('Trend Analysis');
+    const IA = form.getTextField('Impact Assessment');
+    const Sources = form.getTextField('Sources');
+    const KTA = form.getTextField('Key Threat Actors');
+    const IOCs = form.getTextField('IOCs');
+    const Vm = form.getTextField('Vulnerability management');
+    const ps = form.getTextField('patch status');
+    const MR = form.getTextField('Mitigration Recommendations');
+    const CO = form.getTextField('current operations');
+    const IR = form.getTextField('Incident Response');
+    const FA = form.getTextField('Forensic Analysis');
+    const IN = form.getTextField('Internal Notifications');
+    const EN = form.getTextField('External Notifications');
+    const PR = form.getTextField('public Relations');
+    const RA = form.getTextField('Risk Assessment');
+    const CP = form.getTextField('Continuity Planning');
+    const notes1 = form.getTextField('Notes');
+    const prepared1 = form.getTextField('prepared By');
 
 
 
@@ -165,17 +166,17 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     // Save modified PDF
     const modifiedPdfBytes = await pdfDoc.save();
 
-   
+
 
     // Generate unique filename for modified PDF
-  
+
 
     // Save modified PDF to uploads folder
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
 
     // Save FormData to MongoDB
-  
-    
+
+
 
 
     res.status(201).json({ message: 'Form data saved successfully' });
@@ -196,15 +197,15 @@ router.get('/specific/:userId', async (req, res) => {
 
     // Find reports submitted by the specified user ID
     const reports = await reportModel.find({ userId });
-    const incidentReport = await incidentModel.find({userId});
-    const NotificationReport = await notificationModel.find({userId}); 
+    const incidentReport = await incidentModel.find({ userId });
+    const NotificationReport = await notificationModel.find({ userId });
 
     if (!scores && !reports) {
       return res.status(404).json({ message: 'No data found for the specified user' });
     }
 
     // Return the scores and reports data in JSON format
-    res.json({ scores, "SITREP_Report":reports, "IRREP_Report": incidentReport, "Notification_Report": NotificationReport });
+    res.json({ scores, "SITREP_Report": reports, "IRREP_Report": incidentReport, "Notification_Report": NotificationReport });
   } catch (error) {
     console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -212,15 +213,15 @@ router.get('/specific/:userId', async (req, res) => {
 });
 
 // Route to get all reports
-router.get('/getAllReports', fetchuser,async (req, res) => {
+router.get('/getAllReports', fetchuser, async (req, res) => {
   try {
     const userID = req.user.id;
     // Fetch all reports from the database
-    const reportsSIT= await reportModel.find({userId: userID});
-    const reportsINC = await incidentModel.find({userId: userID});
-    const reportsNOT = await notificationModel.find({userId: userID});
+    const reportsSIT = await reportModel.find({ userId: userID });
+    const reportsINC = await incidentModel.find({ userId: userID });
+    const reportsNOT = await notificationModel.find({ userId: userID });
 
-    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+    const reports = [...reportsSIT, ...reportsINC, ...reportsNOT];
     res.status(200).json(reports);
   } catch (error) {
     console.error('Error fetching reports:', error);
@@ -261,10 +262,10 @@ router.get('/user/:userId', async (req, res) => {
     const userId = req.params.userId;
     // Assuming you have a Report model
     // const reports = await reportModel.find({ userId }); // Find all reports with the given user ID
-    const reportsSIT= await reportModel.find({ userId });
+    const reportsSIT = await reportModel.find({ userId });
     const reportsINC = await incidentModel.find({ userId });
     const reportsNOT = await notificationModel.find({ userId });
-    const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+    const reports = [...reportsSIT, ...reportsINC, ...reportsNOT];
 
     res.json(reports);
   } catch (error) {
@@ -276,7 +277,7 @@ router.get('/user/:userId', async (req, res) => {
 // POST route for adding manual score to a report
 router.post('/:reportId/:reportType/manual-score', async (req, res) => {
   const reportId = req.params.reportId;
-  const reportType=req.params.reportType;
+  const reportType = req.params.reportType;
   const score = req.body.score;
   // console.log(reportType);
 
@@ -284,28 +285,28 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
     // Find the report by ID
     // const report = await reportModel.findById(reportId);
 
-    const reportsSIT= await reportModel.findById(reportId);
+    const reportsSIT = await reportModel.findById(reportId);
     const reportsINC = await incidentModel.findById(reportId);
     const reportsNOT = await notificationModel.findById(reportId);
     // const reports =[...reportsSIT,...reportsINC,...reportsNOT];
     // if (!reports) {
     //   return res.status(404).json({ message: 'Report not found' });
     // }
-    if(reportType=="SITREP"){
+    if (reportType == "SITREP") {
       reportsSIT.manualScore = score;
       await reportsSIT.save();
 
     }
-    else if (reportType=="IRREP"){
+    else if (reportType == "IRREP") {
       reportsINC.manualScore = score;
       await reportsINC.save();
 
     }
-    else{
-      reportsNOT.manualScore=score;
-      
-    await reportsNOT.save();
-      
+    else {
+      reportsNOT.manualScore = score;
+
+      await reportsNOT.save();
+
     }
 
 
@@ -313,8 +314,8 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
     // reports.manualScore = score;
 
     // Save the updated report
-    
-    
+
+
 
     return res.status(200).json({ message: 'Manual score added successfully' });
   } catch (error) {

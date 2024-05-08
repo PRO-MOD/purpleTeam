@@ -6,7 +6,7 @@ const multer = require('multer');
 const { PDFDocument } = require('pdf-lib');
 // const incidentModel = require('../models/IncidentReport'); // Changed import to incidentModel
 const uploadImageToCloudinary = require('../utils/imageUpload');
-const incidentModel =require('../models/IncidentReport')
+const incidentModel = require('../models/IncidentReport')
 const fetchuser = require('../middleware/fetchuser');
 
 // Multer storage and upload configuration
@@ -15,7 +15,7 @@ const upload = multer({ storage });
 
 // POST route for form submission
 router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
-   // Removed ':reportType' from the route path
+  // Removed ':reportType' from the route path
   //  console.log(req.body);
   try {
     const {
@@ -54,20 +54,20 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     }
 
     // Load PDF file
-    
+
 
     var currentDate = new Date().toLocaleDateString();
     var currentTime = new Date().toLocaleTimeString();
 
-    
+
     // Generate unique filename for modified PDF
     currentDate = currentDate.replace(/[^\w\s]/gi, '');
-    currentTime= currentTime.replace(/[^\w\s]/gi, '');
-    
+    currentTime = currentTime.replace(/[^\w\s]/gi, '');
+
     const pdfName = `Incident_${currentDate}_${currentTime}.pdf`;
 
-     // Save FormData to MongoDB
-     const formData = new incidentModel({ // Changed to incidentModel
+    // Save FormData to MongoDB
+    const formData = new incidentModel({ // Changed to incidentModel
       description,
       severityLevel,
       impact,
@@ -89,7 +89,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       updates,
       notes,
       prepared,
-      pocScreenshots:photoUrls,
+      pocScreenshots: photoUrls,
       pdfName,
       reportType,
       userId,
@@ -99,40 +99,41 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
 
 
-    currentDate = new Date(formData.createdAt).toLocaleDateString();
-    currentTime = new Date(formData.createdAt).toLocaleTimeString();
+    const options = { timeZone: 'Asia/Kolkata' };
+    currentDate = new Date(formData.createdAt).toLocaleDateString('en-IN', options);
+    currentTime = new Date(formData.createdAt).toLocaleTimeString('en-IN', options);
 
     const pdfFilePath = path.join(__dirname, '..', 'public', 'IncidentFinal.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
-    const form=pdfDoc.getForm();
+    const form = pdfDoc.getForm();
 
-    const dateField=form.getTextField('Date');
-    const timeField=form.getTextField('Time');
-    const description1=form.getTextField('Description');
-    const severityLevel1=form.getDropdown('Severity level');
-    const impact1=form.getDropdown('Impact');
-    const affectedSystems1=form.getTextField('Affected Systems');
-    const detectionMethod1=form.getDropdown('Detection Method');
-    const initialDetectionTime1=form.getTextField('Initial Detection Time');
-    const attackVector1=form.getDropdown('Attacker Vector');
-    const attackers1=form.getDropdown('Attackers');
-    const containment1=form.getTextField('containment');
-    const eradication1=form.getTextField('Eradication');
-    const recovery1=form.getTextField('Recovery');
-    const lessonsLearned1=form.getTextField('Lession Learned');
-    const evidence1=form.getTextField('Evidence');
-    const indicatorsOfCompromise1=form.getTextField('IOCS');
-    const ttps1=form.getTextField('TTPs');
-    const mitigationRecommendations1=form.getTextField('Recommendations');
-    const internalNotification1=form.getTextField('internal notification');
-    const externalNotification1=form.getTextField('External Notification');
-    const updates1=form.getTextField('Updates');
-    const notes1=form.getTextField('Notes');
-    const prepared1=form.getTextField('prepared By');
-    const other1=form.getTextField('other');
-  
- 
+    const dateField = form.getTextField('Date');
+    const timeField = form.getTextField('Time');
+    const description1 = form.getTextField('Description');
+    const severityLevel1 = form.getDropdown('Severity level');
+    const impact1 = form.getDropdown('Impact');
+    const affectedSystems1 = form.getTextField('Affected Systems');
+    const detectionMethod1 = form.getDropdown('Detection Method');
+    const initialDetectionTime1 = form.getTextField('Initial Detection Time');
+    const attackVector1 = form.getDropdown('Attacker Vector');
+    const attackers1 = form.getDropdown('Attackers');
+    const containment1 = form.getTextField('containment');
+    const eradication1 = form.getTextField('Eradication');
+    const recovery1 = form.getTextField('Recovery');
+    const lessonsLearned1 = form.getTextField('Lession Learned');
+    const evidence1 = form.getTextField('Evidence');
+    const indicatorsOfCompromise1 = form.getTextField('IOCS');
+    const ttps1 = form.getTextField('TTPs');
+    const mitigationRecommendations1 = form.getTextField('Recommendations');
+    const internalNotification1 = form.getTextField('internal notification');
+    const externalNotification1 = form.getTextField('External Notification');
+    const updates1 = form.getTextField('Updates');
+    const notes1 = form.getTextField('Notes');
+    const prepared1 = form.getTextField('prepared By');
+    const other1 = form.getTextField('other');
+
+
 
     dateField.setText(currentDate);
     timeField.setText(currentTime);
@@ -162,12 +163,12 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
 
 
-   
+
 
     form.flatten();
 
 
-    
+
 
 
     // Modify PDF (add text, etc.)
@@ -182,7 +183,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     // Save modified PDF to uploads folder
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
 
-   
+
 
     res.status(201).json({ message: 'Form data saved successfully' });
   } catch (error) {
