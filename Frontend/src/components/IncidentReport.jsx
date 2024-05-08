@@ -84,9 +84,9 @@ function IncidentReport() {
       });
   
       // Now, append the images to the FormData object
-      formData.pocScreenshots.forEach((file) => {
-        formDataToSend.append('pocScreenshots', file);
-      });
+      // formData.pocScreenshots.forEach((file) => {
+      //   formDataToSend.append('pocScreenshots', file);
+      // });
   
       const response = await fetch(`http://13.233.214.116:5000/api/reports/IRREP`, {
         method: 'POST',
