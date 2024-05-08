@@ -125,7 +125,7 @@ const SideNavbar = () => {
                 <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faComment} size="xl" />
                 </div>
-                <p className=" text-lg "> Communicate</p>
+                <p className=" text-md flex flex-row items-center flex-wrap">Communicate <span className="px-2 ms-2 text-sm text-green-800 rounded-lg bg-green-100 dark:bg-gray-800 dark:text-green-400">{unreadMessages ? unreadMessages.unreadMessagesCount : ""}</span></p>
               </Link>
               <Link to="/profile" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/profile") ? "bg-brown-450  text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center px-2">
