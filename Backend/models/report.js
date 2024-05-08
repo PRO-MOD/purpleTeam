@@ -25,7 +25,6 @@ const reportSchema = new mongoose.Schema({
     publicRelations: { type: String, required: true },
     riskAssessment: { type: String, required: true },
     continuityPlanning: { type: String, required: true },
-    trainingAndExercises: { type: String, required: true },
   pocScreenshots: {
     type: [String],
     required: false,

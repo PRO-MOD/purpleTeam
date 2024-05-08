@@ -25,7 +25,6 @@ function Report() {
     publicRelations: '',
     riskAssessment: '',
     continuityPlanning: '',
-    trainingAndExercises: '',
     pocScreenshots: [],
     pdfName: '',
     reportType: 'SITREP',
@@ -302,10 +301,10 @@ function Report() {
           </div>
 
           {/* Training and Exercises */}
-          <div>
+          {/* <div>
             <label className="block mb-1 text-gray-700">Training and Exercises:</label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="trainingAndExercises" value={formData.trainingAndExercises} onChange={handleInputChange} required placeholder='Summary of upcoming training or exercises' />
-          </div>
+          </div> */}
         </div>
 
         {/* 8. Additional Notes (Optional) */}

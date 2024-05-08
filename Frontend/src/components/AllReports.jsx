@@ -63,23 +63,25 @@ function ReportTable() {
                         <th className="px-4 py-2 border border-gray-400">Date</th>
                         <th className="px-4 py-2 border border-gray-400">Time</th>
                         <th className="px-4 py-2 border border-gray-400">Report Type</th>
-                        <th className="px-4 py-2 border border-gray-400">Actions</th>
+                        <th className="px-4 py-2 border border-gray-400">View</th>
+                        <th className="px-4 py-2 border border-gray-400">POCs</th>
                     </tr>
                 </thead>
                 <tbody>
                     {reports.map((report, index) => (
                         <tr key={report._id} className={`border ${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}` }>
-                             <tr key={report._id} className="cursor-pointer hover:bg-gray-100" onClick={() => handleReportClick(report._id)}></tr>
-                            <td className="px-4 py-2 border border-gray-300">{new Date(report.createdAt).toLocaleDateString()}</td>
-                            <td className="px-4 py-2  border border-gray-300">{new Date(report.createdAt).toLocaleTimeString()}</td>
-                            <td className="px-4 py-2 border border-gray-300">{report.reportType}</td>
-                            <td className="px-4 py-2 border border-gray-300">
+                             {/* <tr key={report._id} className="cursor-pointer hover:bg-gray-100" onClick={() => handleReportClick(report._id)}></tr> */}
+                            <td className="px-4 py-2 border border-gray-300 text-center">{new Date(report.createdAt).toLocaleDateString()}</td>
+                            <td className="px-4 py-2  border border-gray-300 text-center">{new Date(report.createdAt).toLocaleTimeString()}</td>
+                            <td className="px-4 py-2 border border-gray-300 text-center">{report.reportType}</td>
+                            <td className="px-4 py-2 border border-gray-300 text-center">
                                 <FontAwesomeIcon
                                     icon={faEye}
                                     onClick={(event) => handlePhotoClick(event, report.pocScreenshots)}
                                     className="text-blue-500 cursor-pointer mr-2"
-                                />
-                                <a href={`http://13.233.214.116:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View PDF</a>
+                                /> </td>
+
+                              <td className="px-4 py-2 border border-gray-300 text-center">  <a href={`http://localhost:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View POCs</a>
                             </td>
                         </tr>
                     ))}

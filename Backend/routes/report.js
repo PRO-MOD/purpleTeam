@@ -41,7 +41,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       publicRelations,
       riskAssessment,
       continuityPlanning,
-      trainingAndExercises,
       notes,
       prepared,
     } = req.body;
@@ -88,7 +87,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       publicRelations,
       riskAssessment,
       continuityPlanning,
-      trainingAndExercises,
       notes,
       prepared,
       pocScreenshots:photoUrls,
@@ -102,7 +100,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
    
 
     // Load PDF file
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'SITREP Report.pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'Sitfinal.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
     currentDate = new Date(formData.createdAt).toLocaleDateString();
@@ -132,7 +130,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const PR=form.getTextField('public Relations');
     const RA=form.getTextField('Risk Assessment');
     const CP=form.getTextField('Continuity Planning');
-    const TE=form.getTextField('Training and Exercise');
     const notes1=form.getTextField('Notes');
     const prepared1=form.getTextField('prepared By');
 
@@ -160,7 +157,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     PR.setText(publicRelations);
     RA.setText(riskAssessment);
     CP.setText(continuityPlanning);
-    TE.setText(trainingAndExercises);
     notes1.setText(notes);
     prepared1.setText(prepared);
 
