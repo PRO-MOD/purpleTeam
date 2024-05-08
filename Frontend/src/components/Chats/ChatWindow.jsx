@@ -214,6 +214,7 @@ function ChatWindow() {
                                                 uri: imageDataToBase64URL(imageData),
                                             }}
                                             date={new Date(message.timestamp)}
+                                            dateString={formatDate(message.timestamp)}
                                             styles={{ maxWidth: '50%' }}
                                             onClick={() => handleImageClick(imageDataToBase64URL(imageData))}
                                         />
