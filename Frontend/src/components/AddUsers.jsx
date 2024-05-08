@@ -208,7 +208,7 @@ function AddUsers() {
                                     required
                                 >
                                     <option value="">Select Role</option>
-                                    <option value="WT">Red Team</option>
+                                    <option value="WT">White Team</option>
                                     <option value="BT">Blue Team</option>
                                 </select>
                             </div>
@@ -254,7 +254,7 @@ function AddUsers() {
                 </table>
             </div>
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">Red Team: </h1>
+                <h1 className="text-xl font-bold mb-4 underline">White Team: </h1>
                 <table className="table-auto w-full border">
                     <thead>
                         <tr>

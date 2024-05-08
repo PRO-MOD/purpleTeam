@@ -114,7 +114,7 @@ function AssignTeams() {
             <hr className='mx-2 my-8 border-black' />
 
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">Red Team:</h1>
+                <h1 className="text-xl font-bold mb-4 underline">White Team:</h1>
                 <table className="table-auto w-full border ">
                     <thead>
                         <tr>
@@ -164,7 +164,7 @@ function AssignTeams() {
                             ))}
                             <div className="flex flex-row items-center">
                                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Assign Teams</button>
-                                <button onClick={handleCloseModal} className="text-red-500 hover:underline font-bold ms-4 rounded">Close Modal</button>
+                                <button onClick={handleCloseModal} className="text-red-500 hover:underline font-bold ms-4 rounded">Close</button>
                             </div>
                         </form>
                     </div>
