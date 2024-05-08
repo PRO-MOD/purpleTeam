@@ -75,7 +75,7 @@ function ChatInput({ socket }) {
                 senderId: user._id, recipient: userId, content: message, images: images
             });
 
-            const response = await fetch('http://13.233.214.116:5000/api/chat/send-message', {
+            const response = await fetch('http://localhost:5000/api/chat/send-message', {
                 method: 'POST',
                 headers: {
                     "Auth-token": localStorage.getItem('Hactify-Auth-token')

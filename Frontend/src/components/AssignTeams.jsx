@@ -14,7 +14,7 @@ function AssignTeams() {
     const fetchVolunteers = async () => {
         try {
             // Fetch volunteers from the backend
-            const response = await fetch('http://13.233.214.116:5000/api/auth/getallVolunteer');
+            const response = await fetch('http://localhost:5000/api/auth/getallVolunteer');
             const data = await response.json();
             setVolunteers(data);
         } catch (error) {
@@ -25,7 +25,7 @@ function AssignTeams() {
     const fetchUsers = async () => {
         try {
             // Fetch users with role "BT" from the backend
-            const response = await fetch('http://13.233.214.116:5000/api/auth/getallusers');
+            const response = await fetch('http://localhost:5000/api/auth/getallusers');
             const data = await response.json();
             setUsers(data);
         } catch (error) {
@@ -64,7 +64,7 @@ function AssignTeams() {
     const assignUsers = async () => {
         try {
             // Send a request to the backend to assign selected users to the volunteer
-            const response = await fetch(`http://13.233.214.116:5000/api/auth/addUsers/${selectedVolunteer}`, {
+            const response = await fetch(`http://localhost:5000/api/auth/addUsers/${selectedVolunteer}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ function AssignTeams() {
 
         try {
             // Send a request to the backend to remove unselected users from the volunteer
-            const response = await fetch(`http://13.233.214.116:5000/api/auth/removeUsers/${selectedVolunteer}`, {
+            const response = await fetch(`http://localhost:5000/api/auth/removeUsers/${selectedVolunteer}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

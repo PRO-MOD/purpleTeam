@@ -88,7 +88,7 @@ function IncidentReport() {
       //   formDataToSend.append('pocScreenshots', file);
       // });
   
-      const response = await fetch(`http://13.233.214.116:5000/api/reports/IRREP`, {
+      const response = await fetch(`http://localhost:5000/api/reports/IRREP`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {

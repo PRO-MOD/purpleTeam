@@ -11,7 +11,7 @@ function ScoresComponent() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch('http://13.233.214.116:5000/api/score/get-scores');
+        const response = await fetch('http://localhost:5000/api/score/get-scores');
         if (!response.ok) {
           throw new Error('Failed to fetch scores');
         }
@@ -31,7 +31,7 @@ function ScoresComponent() {
 
   const UpdateScores = async () => {
     try {
-      const response = await fetch('http://13.233.214.116:5000/api/score/getscores');
+      const response = await fetch('http://localhost:5000/api/score/getscores');
       if (!response.ok) {
         throw new Error('Failed to fetch scores');
       }
@@ -44,7 +44,7 @@ function ScoresComponent() {
 
   const UpdateManualScores = async () => {
     try {
-      const response = await fetch('http://13.233.214.116:5000/api/score/sum-manual-scores');
+      const response = await fetch('http://localhost:5000/api/score/sum-manual-scores');
       if (!response.ok) {
         throw new Error('Failed to fetch scores');
       }
