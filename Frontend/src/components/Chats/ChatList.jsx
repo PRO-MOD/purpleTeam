@@ -18,7 +18,7 @@ function ChatLists({ position }) {
 
     const fetchConversations = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/chat/conversations', {
+            const response = await fetch('http://13.233.214.116:5000/api/chat/conversations', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ function ChatLists({ position }) {
                     title={conversation.recipient.name}
                     subtitle={conversation.latestMessageContent}
                     date={new Date(conversation.latestMessageDate)}
-                    unread={0}
+                    unread={conversation.unreadCount}
                     onClick={() => handleChatItemClick(conversation.recipient._id)}
                 />
             ))}

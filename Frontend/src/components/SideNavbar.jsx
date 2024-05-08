@@ -32,7 +32,7 @@ const SideNavbar = () => {
 
   const fetchUnreadMessages = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/chat/unread-messages", {
+      const response = await fetch("http://13.233.214.116:5000/api/chat/unread-messages", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -39,7 +39,7 @@ function UserReports({ userId }) {
 
     // const handleReportClick = async (reportId) => {
     //     try {
-    //         const response = await fetch(`http://localhost:5000/api/reports/${reportId}`);
+    //         const response = await fetch(`http://13.233.214.116:5000/api/reports/${reportId}`);
     //         if (!response.ok) {
     //             throw new Error('Failed to fetch report details');
     //         }
@@ -69,7 +69,7 @@ function UserReports({ userId }) {
 
     const handleAddManualScore = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/reports/${reportId}/${reportType}/manual-score`, {
+            const response = await fetch(`http://13.233.214.116:5000/api/reports/${reportId}/${reportType}/manual-score`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
