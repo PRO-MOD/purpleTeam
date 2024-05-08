@@ -41,10 +41,10 @@ function HomePage() {
     <>
       {/* <Router> */}
         <div className="flex flex-row h-screen b">
-          <div className="left_Home w-[10%] min-w-20 bg-brown-500">
+          <div className="left_Home lg:w-[13%] md:w-[20%] bg-brown-500">
             <SideNavbar />
           </div>
-          <div className="right_Home lg:w-[90%] h-screen overflow-y-scroll bg-white-100">
+          <div className="right_Home lg:w-[87%] md:w-[80%] h-screen overflow-y-scroll bg-white-100">
             {
               alert ? 
               <Alert alert={alert}/>

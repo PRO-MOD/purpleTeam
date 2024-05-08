@@ -174,7 +174,7 @@ function ChatWindow() {
                         />
                         <div className="flex flex-col">
                             <h1>{userInfo.name}</h1>
-                            <h1>{userInfo.email}</h1>
+                            <h1>{userInfo.role == "BT" ? "Blue Team" : userInfo.role == "WT" ? "White Team" : ""}</h1>
                         </div>
                     </>
                 )}
