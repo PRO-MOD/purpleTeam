@@ -53,12 +53,7 @@ function UserDetails() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {
-        window.location.href.includes("/personal") ? 
-        ""
-        :
-        <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8"><FontAwesomeIcon icon={faArrowLeft} className='me-4' /> Back</button>
-      }
+      <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8"><FontAwesomeIcon icon={faArrowLeft} className='me-4' /> Back</button>
       <h1 className="text-3xl font-bold mb-4">User Details</h1>
       {user ? (
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
