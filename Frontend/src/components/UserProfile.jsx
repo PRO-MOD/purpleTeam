@@ -141,9 +141,9 @@ const UserProfile = () => {
       <div className="flex flex-col items-center">
         <h2 className="text-xl font-semibold mb-2">Change Profile Picture:</h2>
         <div className="flex items-center justify-center space-x-4 mb-4">
-          <label htmlFor="profilePicture" className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">Choose File</label>
+          <label htmlFor="profilePicture" className="cursor-pointer bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105">Choose File</label>
           <input type="file" accept="image/*" id="profilePicture" className="hidden" onChange={handleProfilePictureChange} />
-          <button onClick={handleProfilePictureSubmit} className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105">Upload</button>
+          <button onClick={handleProfilePictureSubmit} className="bg-brown-650 text-white py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">Upload</button>
         </div>
       </div>
     </div>

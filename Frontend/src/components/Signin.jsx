@@ -651,7 +651,7 @@ const Signin = () => {
     return (
         <div className="relative h-screen flex flex-col items-center bg-white">
             {/* Header */}
-            <div className="w-full  h-16 bg-brown-500 text-white flex justify-center items-center px-4 py-2">
+            <div className="w-full  h-16 bg-brown-650 text-white flex justify-center items-center px-4 py-2">
                 {/* Left Logo */}
                 {/* <img src="\cyber .jpg" alt="Hacktify Logo" className="h-16 w-32 " /> */}
                 
@@ -715,7 +715,7 @@ const Signin = () => {
 
             {/* Footer */}
             <footer className="text-center text-gray-500 text-sm mt-4">
-                Powered by Hacktify
+                Powered By Hacktify
             </footer>
         </div>
     );

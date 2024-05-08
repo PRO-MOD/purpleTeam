@@ -21,7 +21,7 @@ const NoteItem = (props) => {
                 <div className="flex items-center justify-between mb-4">
                     <h5 className="text-xl font-bold text-gray-800">{note.title}</h5>
                     <div className="flex items-center">
-                        <FontAwesomeIcon icon={faPenToSquare} className="text-blue-500 cursor-pointer text-lg" role="button" onClick={() => EditNote(note)} />
+                        <FontAwesomeIcon icon={faPenToSquare} className="text-brown-500 cursor-pointer text-lg" role="button" onClick={() => EditNote(note)} />
                         <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer ml-2 text-lg" role="button" onClick={() => {
                             deleteNote(note._id);
                             showAlert("Deleted Successfully", "success");
