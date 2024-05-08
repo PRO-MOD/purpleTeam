@@ -71,7 +71,7 @@ function ChatLists({ position }) {
             {
                 position === 'right' && (
                     <>
-                    <h1 className='p-4 bg-white'>Start Conversation with Volunteers...</h1>
+                    <h1 className='p-4 bg-white'>Start Conversation...</h1>
                     <hr />
                     </>
                 )

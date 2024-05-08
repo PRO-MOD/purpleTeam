@@ -53,6 +53,7 @@ function HomePage() {
             }
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />
+              <Route exact path='/personal/:userId' element={<UserDetails/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />
               <Route exact path='/createuser' element={<AddUsers />} />
               <Route exact path='/assignTeams' element={<AssignTeams />} />
