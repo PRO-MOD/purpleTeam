@@ -715,7 +715,7 @@ const Signin = () => {
 
             {/* Footer */}
             <footer className="text-center text-gray-500 text-sm mt-4">
-                Powered by Hacktify
+                Powered By Hacktify
             </footer>
         </div>
     );

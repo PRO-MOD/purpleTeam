@@ -32,7 +32,7 @@ const SideNavbar = () => {
 
   const fetchUnreadMessages = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/chat/unread-messages", {
+      const response = await fetch("http://13.233.214.116:5000/api/chat/unread-messages", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -71,13 +71,13 @@ const SideNavbar = () => {
           {userRole === "BT" && (
             <>
               <Link to="/UserHome" className={`flex flex-row items-center justify-start py-4 px-0 hover:bg-brown-450 hover:text-white ${isActive("/UserHome") ? "bg-brown-450 text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faCircleUser} size="xl" />
                 </div>
                 <p className="text-lg text-white">Dashboard</p>
               </Link>
               <Link to="/notes" className={`flex flex-row items-center justify-start py-4 px-0 hover:bg-brown-450  hover:text-white ${isActive("/notes") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faNotesMedical} size="xl" />
                 </div>
                 <p className="text-lg">Notes</p>
@@ -95,25 +95,25 @@ const SideNavbar = () => {
           {userRole === "WT" && (
             <>
               <Link to="/home" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/home") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faHome} size="xl" className="" />
                 </div>
                 <p className="text-lg">Home</p>
               </Link>
               <Link to="/createuser" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/createuser") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faUserPlus} color="#1f2937" size="xl" />
+                <div className="px-2">
+                  <FontAwesomeIcon icon={faUserPlus} color="" size="xl" />
                 </div>
                 <p className="text-lg">Create User</p>
               </Link>
               <Link to="/assignTeams" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/assignTeams") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faCalendar} size="xl" />
                 </div>
                 <p className=" text-lg">View All</p>
               </Link>
               <Link to="/scores" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/scores") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faRankingStar} size="xl" />
                 </div>
                 <p className="text-lg">Scores</p>
@@ -122,19 +122,19 @@ const SideNavbar = () => {
           )}
         </ul>
         <Link to="/chat" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/chat") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faComment} size="xl" />
                 </div>
-                <p className=" text-lg"> Communication</p>
+                <p className=" text-md flex flex-row items-center flex-wrap">Communication <span className="px-2 ms-2 text-sm text-green-800 rounded-lg bg-green-100 dark:bg-gray-800 dark:text-green-400">{unreadMessages ? unreadMessages.unreadMessagesCount : ""}</span></p>
               </Link>
               <Link to="/profile" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/profile") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faUser} color="" size="xl" />
                 </div>
                 <p className=" text-lg">Profile</p>
               </Link>
-        <button onClick={handleLogout} className="flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white">
-          <div className="h-10 w-11 flex items-center justify-center">
+        <button onClick={handleLogout} className="w-[100%] flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white">
+          <div className="h-10 flex items-center justify-center px-2">
             <FontAwesomeIcon icon={faSignOutAlt} className="rotate-180" size="xl" />
           </div>
           <p className="text-lg">Logout</p>

@@ -184,6 +184,61 @@ router.get('/conversations', fetchuser, async (req, res) => {
     }
 });
 
+router.get('/conversations1', fetchuser, async (req, res) => {
+    const userId = req.user.id; // Assuming user ID is available in the request object after authentication
+    try {
+        // Fetch messages involving the logged-in user
+        const messages = await Message.find({
+            $or: [
+                { sender: userId },
+                { recipient: userId }
+            ]
+        }).sort({ timestamp: -1 });
+
+        // Group messages by sender and recipient
+        const conversationsMap = {};
+        messages.forEach(message => {
+            const otherUser = message.sender.toString() === userId ? message.recipient : message.sender;
+            if (!conversationsMap[otherUser]) {
+                conversationsMap[otherUser] = {
+                    otherUserId: otherUser,
+                    latestMessage: message,
+                    unreadCount: 0 // Initialize unread count to 0
+                };
+            }
+            if (message.recipient.toString() === userId && message.readCount < 2) {
+                conversationsMap[otherUser].unreadCount++; // Increment unread count if the message is unread
+            }
+        });
+
+        // Convert map to array of conversations
+        const conversations = Object.values(conversationsMap);
+
+        // Prepare response data
+        const formattedConversations = await Promise.all(conversations.map(async conversation => {
+            const otherUserDetails = await User.findById(conversation.otherUserId).select('name profile');
+            const latestMessageContent = conversation.latestMessage.content;
+            const senderName = await User.findById(conversation.latestMessage.sender).select('name profile');
+            const recipientName = await User.findById(conversation.latestMessage.recipient).select('name profile');
+            return {
+                sender: senderName,
+                recipient: recipientName,
+                otherUser: otherUserDetails,
+                latestMessageDate: conversation.latestMessage.timestamp,
+                latestMessageContent: latestMessageContent,
+                unreadCount: conversation.unreadCount // Include unread count in the response
+            };
+        }));
+
+        res.json(formattedConversations);
+    } catch (error) {
+        console.error('Error getting conversations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
 router.get('/unread-messages', fetchuser, async (req, res) => {
     try {
         // Get the user ID of the logged-in user from the request (assuming it's stored in req.user)

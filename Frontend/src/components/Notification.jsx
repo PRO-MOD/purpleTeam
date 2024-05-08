@@ -72,7 +72,7 @@ function Notification() {
       //   formDataToSend.append('pocScreenshots', file);
       // });
   
-      const response = await fetch(`http://localhost:5000/api/reports/Notification`, {
+      const response = await fetch(`http://13.233.214.116:5000/api/reports/Notification`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
@@ -98,56 +98,56 @@ function Notification() {
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
-    <h2 className="text-3xl mb-4 text-center font-bold text-blue-500">Notification Report Form</h2>
+    <h2 className="text-3xl mb-4 text-center font-bold text-brown-650">Notification Report Form</h2>
     {error && <div className="text-red-500 mb-4">Error: {error}</div>}
     <form onSubmit={handleSubmit}>
       
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">1. Incident Type:</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="type" value={formData.type} onChange={handleInputChange} required  />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="type" value={formData.type} onChange={handleInputChange} required  />
       </div>
   
   
       {/* Areas of Concern */}
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">2. Incident Location: </label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="location" value={formData.location} onChange={handleInputChange} required />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="location" value={formData.location} onChange={handleInputChange} required />
       </div>
   
       
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">3. Incident Priority:</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="priority" value={formData.priority} onChange={handleInputChange} required  />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="priority" value={formData.priority} onChange={handleInputChange} required  />
       </div>
   
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">4. Action Taken:</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="action" value={formData.action} onChange={handleInputChange} required  />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="action" value={formData.action} onChange={handleInputChange} required  />
       </div>
   
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">5. MITRE Technique:</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="mitre" value={formData.mitre} onChange={handleInputChange} required  />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="mitre" value={formData.mitre} onChange={handleInputChange} required  />
       </div>
   
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">6. Remediation steps:</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="step" value={formData.step} onChange={handleInputChange} required  />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="step" value={formData.step} onChange={handleInputChange} required  />
       </div>
   
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">7. Additional Information (if any) :</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="notes" value={formData.notes} onChange={handleInputChange}  />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="notes" value={formData.notes} onChange={handleInputChange}  />
       </div>
   
       {/* Attachment */}
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">Attachment (up to 5):</label>
-        <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" type="file" name="pocScreenshots" multiple onChange={handleInputChange} />
+        <input className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" type="file" name="pocScreenshots" multiple onChange={handleInputChange} />
       </div>
   
       {/* Submit Button */}
-      <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
+      <button type="submit" className="w-full bg-brown-650  text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
     </form>
   </div>
   

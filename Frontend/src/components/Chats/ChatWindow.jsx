@@ -31,7 +31,7 @@ function ChatWindow() {
     };
 
     useEffect(() => {
-        const newSocket = io('http://localhost:8080');
+        const newSocket = io('http://13.233.214.116:8080');
         setSocket(newSocket);
 
         return () => {
@@ -108,7 +108,7 @@ function ChatWindow() {
 
     const fetchMessages = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/chat/messages/${userId}`, {
+            const response = await fetch(`http://13.233.214.116:5000/api/chat/messages/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ function ChatWindow() {
                         />
                         <div className="flex flex-col">
                             <h1>{userInfo.name}</h1>
-                            <h1>{userInfo.email}</h1>
+                            <h1>{userInfo.role == "BT" ? "Blue Team" : userInfo.role == "WT" ? "White Team" : ""}</h1>
                         </div>
                     </>
                 )}
@@ -214,6 +214,7 @@ function ChatWindow() {
                                                 uri: imageDataToBase64URL(imageData),
                                             }}
                                             date={new Date(message.timestamp)}
+                                            dateString={formatDate(message.timestamp)}
                                             styles={{ maxWidth: '50%' }}
                                             onClick={() => handleImageClick(imageDataToBase64URL(imageData))}
                                         />

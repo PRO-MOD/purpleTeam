@@ -44,7 +44,7 @@ function HomePage() {
           <div className="left_Home w-[10%] min-w-20 bg-brown-650">
             <SideNavbar />
           </div>
-          <div className="right_Home lg:w-[90%] h-screen overflow-y-scroll bg-white-100">
+          <div className="right_Home lg:w-[87%] md:w-[80%] h-screen overflow-y-scroll bg-white-100">
             {
               alert ? 
               <Alert alert={alert}/>
@@ -60,8 +60,8 @@ function HomePage() {
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<Report />} />
               <Route exact path='/UserHome/report/incident' element={<IncidentReport />} />
-              <Route exact path='/UserHome/report/day-end' element={<Notification />} />
-              <Route exact path='/UserHome/report/day-end' element={<Notification />} />
+              <Route exact path='/UserHome/report/notification' element={<Notification />} />
+              {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
               <Route exact path="/user/:userId" element={<UserDetails/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
               <Route exact path="/chat/*" element={<ChatMainPage/>}/>

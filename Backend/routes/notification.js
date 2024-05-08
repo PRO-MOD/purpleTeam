@@ -6,7 +6,7 @@ const path = require('path');
 const multer = require('multer');
 const { PDFDocument } = require('pdf-lib');
 // const reportModel = require('../models/report');
-const notificationModel=require('../models/Notification')
+const notificationModel = require('../models/Notification')
 const fetchuser = require('../middleware/fetchuser');
 const uploadImageToCloudinary = require('../utils/imageUpload');
 const User = require('../models/User');
@@ -18,21 +18,21 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 b =>
-c
+  c
 
 // POST route for form submission
 router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
 
   try {
     const {
-    type,
-    location,
-    priority,
-    action,
-    mitre,
-    step,
-    notes,
-     
+      type,
+      location,
+      priority,
+      action,
+      mitre,
+      step,
+      notes,
+
     } = req.body;
 
     const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
@@ -44,53 +44,54 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       const imageUrl = await uploadImageToCloudinary(photo);
       photoUrls.push(imageUrl); // Push imageUrl into photoUrls array
     }
-   
+
     var currentDate = new Date().toLocaleDateString();
     var currentTime = new Date().toLocaleTimeString();
 
     currentDate = currentDate.replace(/[^\w\s]/gi, '');
-    currentTime= currentTime.replace(/[^\w\s]/gi, '');
-    
+    currentTime = currentTime.replace(/[^\w\s]/gi, '');
+
     const pdfName = `Notification_${currentDate}_${currentTime}.pdf`;
 
-      // Save FormData to MongoDB
-      const formData = new notificationModel({
-        type,
-        location,
-        priority,
-        action,
-        mitre,
-        step,
-        notes,
-        pocScreenshots:photoUrls,
-        pdfName,
-        reportType,
-        userId,
-      });
-      await formData.save();
+    // Save FormData to MongoDB
+    const formData = new notificationModel({
+      type,
+      location,
+      priority,
+      action,
+      mitre,
+      step,
+      notes,
+      pocScreenshots: photoUrls,
+      pdfName,
+      reportType,
+      userId,
+    });
+    await formData.save();
 
     // Load PDF file
     const pdfFilePath = path.join(__dirname, '..', 'public', 'NotificationFinal.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
-    currentDate = new Date(formData.createdAt).toLocaleDateString();
-    currentTime = new Date(formData.createdAt).toLocaleTimeString();
+
+    const options = { timeZone: 'Asia/Kolkata' };
+    currentDate = new Date(formData.createdAt).toLocaleDateString('en-IN', options);
+    currentTime = new Date(formData.createdAt).toLocaleTimeString('en-IN', options);
 
 
+    const form = pdfDoc.getForm();
 
-    const form=pdfDoc.getForm();
+    const dateField = form.getTextField('Date');
+    const timeField = form.getTextField('Time');
+    const type1 = form.getTextField('Type');
+    const location1 = form.getTextField('Location');
+    const priority1 = form.getTextField('Priority');
+    const action1 = form.getTextField('Action');
+    const mitre1 = form.getTextField('MITRE');
+    const step1 = form.getTextField('step');
+    const notes1 = form.getTextField('Notes');
 
-    const dateField=form.getTextField('Date');
-    const timeField=form.getTextField('Time');
-    const type1=form.getTextField('Type');
-    const location1=form.getTextField('Location');
-    const priority1=form.getTextField('Priority');
-    const action1=form.getTextField('Action');
-    const mitre1=form.getTextField('MITRE');
-    const step1=form.getTextField('step');
-    const notes1=form.getTextField('Notes');
 
-    
 
     dateField.setText(currentDate);
     timeField.setText(currentTime);
@@ -102,7 +103,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     step1.setText(step);
     notes1.setText(notes);
 
-    
+
 
     form.flatten();
 
@@ -110,12 +111,12 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const modifiedPdfBytes = await pdfDoc.save();
 
     // Generate unique filename for modified PDF
-    
+
 
     // Save modified PDF to uploads folder
     fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
 
-  
+
 
     res.status(201).json({ message: 'Form data saved successfully' });
   } catch (error) {
