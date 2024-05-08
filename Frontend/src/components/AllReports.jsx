@@ -64,7 +64,7 @@ function ReportTable() {
                         <th className="px-4 py-2 border border-gray-400">Time</th>
                         <th className="px-4 py-2 border border-gray-400">Report Type</th>
                         <th className="px-4 py-2 border border-gray-400">View</th>
-                        <th className="px-4 py-2 border border-gray-400">POCs</th>
+                        <th className="px-4 py-2 border border-gray-400">View Report</th>
                     </tr>
                 </thead>
                 <tbody>
