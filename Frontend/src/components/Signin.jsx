@@ -30,7 +30,7 @@
 // // //         setError('');
 
 // // //         try {
-// // //             const response = await fetch('http://13.127.232.191:5000/api/auth/login', {
+// // //             const response = await fetch('http://localhost:5000/api/auth/login', {
 // // //                 method: 'POST',
 // // //                 headers: {
 // // //                     'Content-Type': 'application/json'
@@ -149,7 +149,7 @@
 // // //         setError('');
 
 // // //         try {
-// // //             const response = await fetch('http://13.127.232.191:5000/api/auth/login', {
+// // //             const response = await fetch('http://localhost:5000/api/auth/login', {
 // // //                 method: 'POST',
 // // //                 headers: {
 // // //                     'Content-Type': 'application/json'
@@ -266,7 +266,7 @@
 // //         setLoading(true);
 // //         setError('');
 // //         try {
-// //             const response = await fetch('http://13.127.232.191:5000/api/auth/login', {
+// //             const response = await fetch('http://localhost:5000/api/auth/login', {
 // //                 method: 'POST',
 // //                 headers: {
 // //                     'Content-Type': 'application/json'
@@ -385,7 +385,7 @@
 //         setLoading(true);
 //         setError('');
 //         try {
-//             const response = await fetch('http://13.127.232.191:5000/api/auth/login', {
+//             const response = await fetch('http://localhost:5000/api/auth/login', {
 //                 method: 'POST',
 //                 headers: {
 //                     'Content-Type': 'application/json'
@@ -406,7 +406,7 @@
 //             setLoading(false);
 //         }
 //     };
-
+   
 //     return (
 //         <div className="flex flex-col sm:flex-row h-screen">
 //             {/* Left div with logo */}
@@ -507,7 +507,7 @@
 //         setLoading(true);
 //         setError('');
 //         try {
-//             const response = await fetch('http://13.127.232.191:5000/api/auth/login', {
+//             const response = await fetch('http://localhost:5000/api/auth/login', {
 //                 method: 'POST',
 //                 headers: {
 //                     'Content-Type': 'application/json'
@@ -595,11 +595,10 @@
 
 // export default Signin;
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
 
 const Signin = () => {
     const navigate = useNavigate();
@@ -608,37 +607,10 @@ const Signin = () => {
         password: ''
     });
 
-    const context = useContext(AuthContext);
-    const { user, fetchUserRole } = context;
-
-    // useEffect(() => {
-
-    //     getUserRole();
-    // }, []);
-
-    const getUserRole = async () => {
-        try {
-            await fetchUserRole();
-        } catch (error) {
-            setError('Error fetching user role');
-        }
-    };
-
     useEffect(() => {
-        const fetchRole = async () => {
-            const authToken = localStorage.getItem('Hactify-Auth-token');
-            if (authToken) {
-                await getUserRole();
-                if (await user && await user.role == "BT") {
-                    navigate(`/personal/${user._id}`);
-                    console.log("hello in submit with BT");
-                }
-                else{
-                    console.log("hello in submit");
-                    navigate("/");
-                }
-        }
-        fetchRole();
+        const authToken = localStorage.getItem('Hactify-Auth-token');
+        if (authToken) {
+            navigate('/');
         }
     }, [navigate]);
 
@@ -665,15 +637,7 @@ const Signin = () => {
             setLoading(false);
             if (response.ok) {
                 localStorage.setItem('Hactify-Auth-token', data.authtoken);
-                await getUserRole();
-                if (await user && await user.role == "BT") {
-                    navigate(`/personal/${user._id}`);
-                    console.log("hello in submit with BT");
-                }
-                else{
-                    console.log("hello in submit");
-                    navigate("/");
-                }
+                navigate("/");
             } else {
                 setError(data.error);
             }
@@ -690,20 +654,20 @@ const Signin = () => {
             <div className="w-full  h-16 bg-brown-650 text-white flex justify-center items-center px-4 py-2">
                 {/* Left Logo */}
                 {/* <img src="\cyber .jpg" alt="Hacktify Logo" className="h-16 w-32 " /> */}
-
+                
                 {/* Heading */}
                 <h1 className="text-2xl font-bold ">Cyber Suraksha Platform </h1>
-
+                
                 {/* Placeholder for the right side */}
                 <div></div>
             </div>
 
             {/* Sign-in div */}
             <img src="\cyber .jpg" alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
-
+            
             <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-8">
-                <div className="mb-8 text-center">
-                    <h1 className='block text-brown-500 text-2xl font-bold mb-2'>Defend the Flag</h1>
+            <div className="mb-8 text-center">
+                   <h1 className='block text-brown-500 text-2xl font-bold mb-2'>Defend the Flag</h1>
                 </div>
                 {/* Sign-in form */}
                 <form onSubmit={handleSubmit}>
