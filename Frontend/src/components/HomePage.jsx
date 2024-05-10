@@ -41,10 +41,10 @@ function HomePage() {
     <>
       {/* <Router> */}
         <div className="flex flex-row h-screen b">
-          <div className="left_Home w-[10%] min-w-20 bg-brown-650">
+          <div className="left_Home w-[13%] min-w-20 bg-brown-650">
             <SideNavbar />
           </div>
-          <div className="right_Home lg:w-[87%] md:w-[80%] h-screen overflow-y-scroll bg-white-100">
+          <div className="right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white-100">
             {
               alert ? 
               <Alert alert={alert}/>
@@ -53,6 +53,7 @@ function HomePage() {
             }
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />
+              <Route exact path='/personal/:userId' element={<UserDetails/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />
               <Route exact path='/createuser' element={<AddUsers />} />
               <Route exact path='/assignTeams' element={<AssignTeams />} />

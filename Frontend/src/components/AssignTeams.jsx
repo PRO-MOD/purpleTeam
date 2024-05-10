@@ -14,7 +14,7 @@ function AssignTeams() {
     const fetchVolunteers = async () => {
         try {
             // Fetch volunteers from the backend
-            const response = await fetch('http://localhost:5000/api/auth/getallVolunteer');
+            const response = await fetch('http://13.127.232.191:5000/api/auth/getallVolunteer');
             const data = await response.json();
             setVolunteers(data);
         } catch (error) {
@@ -25,7 +25,7 @@ function AssignTeams() {
     const fetchUsers = async () => {
         try {
             // Fetch users with role "BT" from the backend
-            const response = await fetch('http://localhost:5000/api/auth/getallusers');
+            const response = await fetch('http://13.127.232.191:5000/api/auth/getallusers');
             const data = await response.json();
             setUsers(data);
         } catch (error) {
@@ -64,7 +64,7 @@ function AssignTeams() {
     const assignUsers = async () => {
         try {
             // Send a request to the backend to assign selected users to the volunteer
-            const response = await fetch(`http://localhost:5000/api/auth/addUsers/${selectedVolunteer}`, {
+            const response = await fetch(`http://13.127.232.191:5000/api/auth/addUsers/${selectedVolunteer}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ function AssignTeams() {
 
         try {
             // Send a request to the backend to remove unselected users from the volunteer
-            const response = await fetch(`http://localhost:5000/api/auth/removeUsers/${selectedVolunteer}`, {
+            const response = await fetch(`http://13.127.232.191:5000/api/auth/removeUsers/${selectedVolunteer}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ function AssignTeams() {
             <hr className='mx-2 my-8 border-black' />
 
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">Red Team:</h1>
+                <h1 className="text-xl font-bold mb-4 underline">White Team:</h1>
                 <table className="table-auto w-full border ">
                     <thead>
                         <tr>
@@ -164,7 +164,7 @@ function AssignTeams() {
                             ))}
                             <div className="flex flex-row items-center">
                                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Assign Teams</button>
-                                <button onClick={handleCloseModal} className="text-red-500 hover:underline font-bold ms-4 rounded">Close Modal</button>
+                                <button onClick={handleCloseModal} className="text-red-500 hover:underline font-bold ms-4 rounded">Close</button>
                             </div>
                         </form>
                     </div>

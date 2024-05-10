@@ -11,7 +11,7 @@ function ScoresComponent() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/score/get-scores');
+        const response = await fetch('http://13.127.232.191:5000/api/score/getscores1');
         if (!response.ok) {
           throw new Error('Failed to fetch scores');
         }
@@ -23,15 +23,15 @@ function ScoresComponent() {
         setLoading(false); // Set loading to false if there's an error
       }
     };
-    UpdateScores();
-    UpdateManualScores();
+    // UpdateScores();
+    // UpdateManualScores();
     fetchScores();
   }, []);
 
 
   const UpdateScores = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/score/getscores');
+      const response = await fetch('http://13.127.232.191:5000/api/score/getscores');
       if (!response.ok) {
         throw new Error('Failed to fetch scores');
       }
@@ -44,7 +44,7 @@ function ScoresComponent() {
 
   const UpdateManualScores = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/score/sum-manual-scores');
+      const response = await fetch('http://13.127.232.191:5000/api/score/sum-manual-scores');
       if (!response.ok) {
         throw new Error('Failed to fetch scores');
       }
@@ -64,7 +64,7 @@ function ScoresComponent() {
     <div className='mx-16 my-12 '>
       <div className="flex flex-row items-center">
         <h1 className='text-3xl font-bold underline'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
-        <span className='ms-4'>Format ( CTFD Score / Manual Score )</span>
+        <span className='ms-4'>Format ( Challenge Score / Manual Score )</span>
       </div>
       <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}

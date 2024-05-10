@@ -21,7 +21,7 @@ function AddUsers() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/getallusers');
+            const response = await fetch('http://13.127.232.191:5000/api/auth/getallusers');
             const data = await response.json();
             setUsers(data);
         } catch (error) {
@@ -31,7 +31,7 @@ function AddUsers() {
 
     const fetchVolunteers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/getallVolunteer');
+            const response = await fetch('http://13.127.232.191:5000/api/auth/getallVolunteer');
             const data = await response.json();
             setVolunteers(data);
         } catch (error) {
@@ -46,7 +46,7 @@ function AddUsers() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const url = editUserId ? `http://localhost:5000/api/auth/updateuser/${editUserId}` : 'http://localhost:5000/api/auth/createuser';
+            const url = editUserId ? `http://13.127.232.191:5000/api/auth/updateuser/${editUserId}` : 'http://13.127.232.191:5000/api/auth/createuser';
             const method = editUserId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -81,7 +81,7 @@ function AddUsers() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch('http://localhost:5000/api/flags/upload', {
+            const response = await fetch('http://13.127.232.191:5000/api/flags/upload', {
                 method: 'POST',
                 body: formData
             });
@@ -144,10 +144,10 @@ function AddUsers() {
 
                 <div className="flex flex-row ms-8">
                     {/* Input for uploading Excel file */}
-                    <input type="file" onChange={handleFileChange} title='Add Excel to map flags in DB'/>
+                    {/* <input type="file" onChange={handleFileChange} title='Add Excel to map flags in DB'/> */}
 
                     {/* Button to upload Excel file */}
-                    <button className="bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105" onClick={handleFileUpload}>Upload File</button>
+                    {/* <button className="bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105" onClick={handleFileUpload}>Upload File</button> */}
                 </div>
 
             </div>
@@ -208,7 +208,7 @@ function AddUsers() {
                                     required
                                 >
                                     <option value="">Select Role</option>
-                                    <option value="WT">Red Team</option>
+                                    <option value="WT">White Team</option>
                                     <option value="BT">Blue Team</option>
                                 </select>
                             </div>
@@ -254,7 +254,7 @@ function AddUsers() {
                 </table>
             </div>
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">Red Team: </h1>
+                <h1 className="text-xl font-bold mb-4 underline">White Team: </h1>
                 <table className="table-auto w-full border">
                     <thead>
                         <tr>

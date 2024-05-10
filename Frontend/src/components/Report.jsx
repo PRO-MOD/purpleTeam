@@ -66,7 +66,7 @@ function Report() {
   //   try {
   //     setLoading(true); // Set loading state to true
   //     setError(''); // Clear previous errors
-  //     const response = await fetch(`http://localhost:5000/api/reports/SITREP`, {
+  //     const response = await fetch(`http://13.127.232.191:5000/api/reports/SITREP`, {
   //       method: 'POST',
   //       body: JSON.stringify(formData),
   //       headers: {
@@ -115,7 +115,7 @@ function Report() {
       //   formDataToSend.append('pocScreenshots', file);
       // });
   
-      const response = await fetch(`http://localhost:5000/api/reports/SITREP`, {
+      const response = await fetch(`http://13.127.232.191:5000/api/reports/SITREP`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {

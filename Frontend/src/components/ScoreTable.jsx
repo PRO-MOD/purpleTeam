@@ -1,59 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Loading from './Loading';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function ScoreTable({ scores, loading, isHomePage }) {
   const navigate = useNavigate();
-  const [uniqueDates, setUniqueDates] = useState([]);
   const [sortedScores, setSortedScores] = useState([]);
 
-  // Extract unique dates from scores and sort them
+  // Sort scores when scores or loading state changes
   useEffect(() => {
-    if (!loading && Object.keys(scores).length > 0) {
-      const dates = Object.values(scores).reduce((acc, userScores) => {
-        userScores.forEach(score => {
-          if (!acc.includes(score.date)) {
-            acc.push(score.date);
-          }
-        });
-        return acc;
-      }, []);
-      const sortedDates = dates.sort();
-      setUniqueDates(sortedDates);
-      setSortedScores(groupScoresByDate(scores, sortedDates));
-      // console.log(sortedScores);
+    if (!loading && scores.length > 0) {
+      const sorted = scores.slice().sort((a, b) => b.score - a.score); // Sort scores in descending order
+      setSortedScores(sorted);
     }
   }, [scores, loading]);
 
-  // Function to group scores by date
-  const groupScoresByDate = (scores, dates) => {
-    // console.log(scores);
-    const groupedScores = {};
-    Object.keys(scores).forEach(userName => {
-      const userScores = scores[userName];
-      groupedScores[userName] = { name: userName, scores: {}, manualScores: {} };
-      userScores.forEach(score => {
-        groupedScores[userName].scores[score.date] = score.score;
-        groupedScores[userName].manualScores[score.date] = score.manualScore;
-      });
-    });
-    return groupedScores;
-  };
-
-  const getUserTotalScore = (userData) => {
-    let totalScore = 0;
-    for (const date in userData.scores) {
-      totalScore += userData.scores[date];
-    }
-    for (const date in userData.manualScores) {
-      totalScore += userData.manualScores[date];
-    }
-    return totalScore;
-  };
-
-  const handleUserClick = async userName => {
+  const handleUserClick = async (userName) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/user?name=${userName}`);
+      const response = await fetch(`http://13.127.232.191:5000/api/auth/user?name=${userName}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data._id) {
@@ -71,57 +34,57 @@ function ScoreTable({ scores, loading, isHomePage }) {
 
   return (
     <div className="flex flex-col">
-      {loading ? (
-        <Loading />
-      ) : (
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center">
+              Rank
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Name
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Challenge Score
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Manual Score
+            </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Total Score
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {loading ? (
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center">
-                Rank
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              {uniqueDates.map((date, index) => (
-                <th key={index} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {`Day ${index + 1}`}
-                </th>
-              ))}
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Total
-              </th>
+              <td>
+                <Loading />
+              </td>
             </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {Object.values(sortedScores).map((score, index) => (
-              <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                <td className="flex flex-row justify-center items-center">{index + 1}</td>
-                <td
-                  className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'}`}
-                  onClick={() => {
-                    if (isHomePage) {
-                      return;
-                    }
-                    handleUserClick(score.name);
-                  }}
-                >
-                  {score.name}
-                </td>
-                {uniqueDates.map((date, index) => (
-                  <td key={index} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {score.scores[date] ? `${score.scores[date]} / ${score.manualScores[date]}` : '-'}
+          ) : (
+            sortedScores.length > 0 ? (
+              sortedScores.map((user, index) => (
+                <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  <td className='flex flex-row justify-center items-center'>{index+1}</td>
+                  <td
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'
+                      }`}
+                    onClick={() => {
+                      if (isHomePage) {
+                        return;
+                      }
+                      handleUserClick(user.name);
+                    }}
+                  >{user.name}
                   </td>
-                ))}
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {getUserTotalScore(score)}
-                </td>
-              </tr>
-            ))
-            }
-          </tbody>
-        </table>
-      )}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore || 'Not entered'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score + (user.manualScore || 0)}</td>
+                </tr>
+              ))) : <tr><td colSpan="4" className='px-6 py-4 text-center'>No Record Found</td></tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

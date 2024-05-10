@@ -16,7 +16,7 @@ function UserDetails() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/${userId}`);
+        const response = await fetch(`http://13.127.232.191:5000/api/auth/${userId}`);
         if (response.ok) {
           const data = await response.json();
           setUser(data);
@@ -41,7 +41,7 @@ function UserDetails() {
 
     useEffect(() => {
         // Fetch JSON data from API
-        fetch(`http://localhost:5000/api/reports/specific/${userId}`)
+        fetch(`http://13.127.232.191:5000/api/reports/specific/${userId}`)
             .then(response => response.json())
             .then(data => {
                 setJsonData(data);
@@ -53,7 +53,12 @@ function UserDetails() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8"><FontAwesomeIcon icon={faArrowLeft} className='me-4' /> Back</button>
+      {
+        window.location.href.includes("/personal") ? 
+        ""
+        :
+        <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8"><FontAwesomeIcon icon={faArrowLeft} className='me-4' /> Back</button>
+      }
       <h1 className="text-3xl font-bold mb-4">User Details</h1>
       {user ? (
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
