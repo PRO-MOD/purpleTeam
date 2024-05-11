@@ -12,9 +12,11 @@ function ReportTable() {
         fetchReports();
     }, []);
 
+    const apiUrl = import.meta.env.VITE_Backend_URL;
+
     const fetchReports = async () => {
         try {
-            const response = await fetch('http://13.127.232.191:5000/api/reports/getAllReports', {
+            const response = await fetch(`${apiUrl}/api/reports/getAllReports`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -33,7 +35,7 @@ function ReportTable() {
 
     const handleReportClick = async (reportId) => {
         try {
-            const response = await fetch(`http://13.127.232.191:5000/api/reports/${reportId}`);
+            const response = await fetch(`${apiUrl}/api/reports/${reportId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch report details');
             }
@@ -81,7 +83,7 @@ function ReportTable() {
                                     className="text-blue-500 cursor-pointer mr-2"
                                 /> </td>
 
-                              <td className="px-4 py-2 border border-gray-300 text-center">  <a href={`http://13.127.232.191:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View POCs</a>
+                              <td className="px-4 py-2 border border-gray-300 text-center">  <a href={`${apiUrl}/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View POCs</a>
                             </td>
                         </tr>
                     ))}

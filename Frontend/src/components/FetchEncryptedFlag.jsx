@@ -7,9 +7,10 @@ function FetchEncryptedFlag() {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     e.preventDefault();
     try {
-      const response = await fetch('http://13.127.232.191:5000/api/auth/fetch-flag', {
+      const response = await fetch(`${apiUrl}/api/auth/fetch-flag`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

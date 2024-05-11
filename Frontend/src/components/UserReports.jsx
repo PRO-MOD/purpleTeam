@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 function UserReports({ userId }) {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     const [reports, setReports] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -20,7 +21,7 @@ function UserReports({ userId }) {
 
     const fetchReports = async () => {
         try {
-            const response = await fetch(`http://13.127.232.191:5000/api/reports/user/${userId}`, {
+            const response = await fetch(`${apiUrl}/api/reports/user/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -39,7 +40,7 @@ function UserReports({ userId }) {
 
     // const handleReportClick = async (reportId) => {
     //     try {
-    //         const response = await fetch(`http://13.127.232.191:5000/api/reports/${reportId}`);
+    //         const response = await fetch(`${apiUrl}/api/reports/${reportId}`);
     //         if (!response.ok) {
     //             throw new Error('Failed to fetch report details');
     //         }
@@ -69,7 +70,7 @@ function UserReports({ userId }) {
 
     const handleAddManualScore = async () => {
         try {
-            const response = await fetch(`http://13.127.232.191:5000/api/reports/${reportId}/${reportType}/manual-score`, {
+            const response = await fetch(`${apiUrl}/api/reports/${reportId}/${reportType}/manual-score`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -123,7 +124,7 @@ function UserReports({ userId }) {
                                 />
                                 
                                 &nbsp;&nbsp;
-                                <a href={`http://13.127.232.191:5000/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500" onClick={(event) => event.stopPropagation()}>View PDF</a>
+                                <a href={`${apiUrl}/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500" onClick={(event) => event.stopPropagation()}>View PDF</a>
                             </td>
                             <td>
                                 <button

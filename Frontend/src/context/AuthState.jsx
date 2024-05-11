@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import AuthContext from "./AuthContext";
 
 const AuthState = (props) => {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -10,7 +11,7 @@ const AuthState = (props) => {
     const fetchUserRole = async () => {
         setLoading(true);
         try {
-            const response = await fetch("http://13.127.232.191:5000/api/auth/getuser", {
+            const response = await fetch(`${apiUrl}/api/auth/getuser`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

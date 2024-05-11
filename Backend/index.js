@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const io = require('socket.io')(8080,{
     cors: {
-        origin: 'http://13.127.232.191:5173'
+        origin: 'http://localhost:5173'
     }
 })
 const { router: chatRouter, handleSocket } = require('./routes/chat');

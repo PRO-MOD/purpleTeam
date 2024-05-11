@@ -19,9 +19,11 @@ function AddUsers() {
         fetchVolunteers();
     }, []);
 
+    const apiUrl = import.meta.env.VITE_Backend_URL;
+
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://13.127.232.191:5000/api/auth/getallusers');
+            const response = await fetch(`${apiUrl}/api/auth/getallusers`);
             const data = await response.json();
             setUsers(data);
         } catch (error) {
@@ -31,7 +33,7 @@ function AddUsers() {
 
     const fetchVolunteers = async () => {
         try {
-            const response = await fetch('http://13.127.232.191:5000/api/auth/getallVolunteer');
+            const response = await fetch(`${apiUrl}/api/auth/getallVolunteer`);
             const data = await response.json();
             setVolunteers(data);
         } catch (error) {
@@ -46,7 +48,7 @@ function AddUsers() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const url = editUserId ? `http://13.127.232.191:5000/api/auth/updateuser/${editUserId}` : 'http://13.127.232.191:5000/api/auth/createuser';
+            const url = editUserId ? `${apiUrl}/api/auth/updateuser/${editUserId}` : `${apiUrl}/api/auth/createuser`;
             const method = editUserId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -81,7 +83,7 @@ function AddUsers() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch('http://13.127.232.191:5000/api/flags/upload', {
+            const response = await fetch(`${apiUrl}/api/flags/upload`, {
                 method: 'POST',
                 body: formData
             });

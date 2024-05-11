@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ScoreTable from './ScoreTable';
+import ScoreTable from './ScoreTable1';
 import { useLocation } from 'react-router-dom';
 
 function ScoresComponent() {
@@ -12,7 +12,7 @@ function ScoresComponent() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/score/getscores1`);
+        const response = await fetch(`${apiUrl}/api/score/get-scores`);
         if (!response.ok) {
           throw new Error('Failed to fetch scores');
         }
@@ -24,8 +24,8 @@ function ScoresComponent() {
         setLoading(false); // Set loading to false if there's an error
       }
     };
-    // UpdateScores();
-    // UpdateManualScores();
+    UpdateScores();
+    UpdateManualScores();
     fetchScores();
   }, []);
 
@@ -65,7 +65,7 @@ function ScoresComponent() {
     <div className='mx-16 my-12 '>
       <div className="flex flex-row items-center">
         <h1 className='text-3xl font-bold underline'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
-        <span className='ms-4'>Format ( Challenge Score / Manual Score )</span>
+        <span className='ms-4'>Format ( CTFD Score / Manual Score )</span>
       </div>
       <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}

@@ -5,6 +5,7 @@ import AuthContext from '../../context/AuthContext';
 import { useParams } from 'react-router-dom';
 
 function ChatInput({ socket }) {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     const { userId } = useParams(); // recipientID
     // console.log("userId:>> " + userId);
     const [message, setMessage] = useState('');
@@ -75,7 +76,7 @@ function ChatInput({ socket }) {
                 senderId: user._id, recipient: userId, content: message, images: images
             });
 
-            const response = await fetch('http://13.127.232.191:5000/api/chat/send-message', {
+            const response = await fetch(`${apiUrl}/api/chat/send-message`, {
                 method: 'POST',
                 headers: {
                     "Auth-token": localStorage.getItem('Hactify-Auth-token')

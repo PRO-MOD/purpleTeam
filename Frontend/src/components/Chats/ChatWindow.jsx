@@ -2,18 +2,24 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Avatar, MessageBox } from 'react-chat-elements';
 import AuthContext from '../../context/AuthContext';
+import SocketContext from '../../context/SocketContext';
 import ChatInput from './ChatInput';
 import { io } from 'socket.io-client';
 
 function ChatWindow() {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     const { userId } = useParams();
     const [userInfo, setUserInfo] = useState(null);
     const [messages, setMessages] = useState([]);
-    const context = useContext(AuthContext);
-    const { user, fetchUserRole } = context;
+
+    // import all context 
+    const { user, fetchUserRole } = useContext(AuthContext);
+    const { socket } = useContext(SocketContext);
+
+
     const [error, setError] = useState(null);
     const messageRef = useRef(null);
-    const [socket, setSocket] = useState(null);
+    // const [socket, setSocket] = useState(null);
     // State to manage the visibility of the image modal
     const [showImageModal, setShowImageModal] = useState(false);
     // State to keep track of the selected image URI
@@ -31,12 +37,13 @@ function ChatWindow() {
     };
 
     useEffect(() => {
-        const newSocket = io('http://13.127.232.191:8080');
-        setSocket(newSocket);
+        // const newSocket = io('http://localhost:8080');
+        // setSocket(newSocket);
 
-        return () => {
-            newSocket.disconnect();
-        }
+        // return () => {
+        //     newSocket.disconnect();
+        // }
+        // creteSocket();
     }, []);
 
     useEffect(() => {
@@ -96,7 +103,7 @@ function ChatWindow() {
 
     const fetchUserInfo = async (userId) => {
         try {
-            const response = await fetch(`http://13.127.232.191:5000/api/auth/${userId}`, {
+            const response = await fetch(`${apiUrl}/api/auth/${userId}`, {
                 method: 'GET'
             });
             const userData = await response.json();
@@ -108,7 +115,7 @@ function ChatWindow() {
 
     const fetchMessages = async (userId) => {
         try {
-            const response = await fetch(`http://13.127.232.191:5000/api/chat/messages/${userId}`, {
+            const response = await fetch(`${apiUrl}/api/chat/messages/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
