@@ -2,26 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
-import SocketContext from "../context/SocketContext";
+import SocketContext from '../context/SocketContext';
 
 const SideNavbar = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userRole, setUserRole] = useState(null);
-  const [unreadMessages, setUnreadMessages] = useState(null);
+  // const [unreadMessages, setUnreadMessages] = useState(null);
   const navigate = useNavigate();
-
-  // imort socket code 
-  const { creteSocket } = useContext(SocketContext);
-
-  useEffect(() => {
-    // const newSocket = io('http://localhost:8080');
-    // setSocket(newSocket);
-
-    // return () => {
-    //     newSocket.disconnect();
-    // }
-    creteSocket();
-}, []);
+  const { unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -43,23 +31,6 @@ const SideNavbar = () => {
     fetchUserRole();
     fetchUnreadMessages();
   }, []);
-
-
-  const fetchUnreadMessages = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/chat/unread-messages`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Auth-token": localStorage.getItem('Hactify-Auth-token')
-        },
-      });
-      const userData = await response.json();
-      setUnreadMessages(userData);
-    } catch (error) {
-      console.error("Error fetching user role:", error);
-    }
-  };
 
   const handleLogout = () => {
     // Clear local storage and redirect to login page

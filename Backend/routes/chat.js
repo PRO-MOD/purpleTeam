@@ -63,30 +63,6 @@ const handleSocket = (io) => {
     });
 };
 
-const emitUnreadMessagesCount = async (io, userID) => {
-    try {
-        // Calculate the unread messages count (similar to your existing endpoint logic)
-        const userId = userID; // Extract user ID from request
-        const messages = await Message.find({
-            $or: [
-                { sender: userId },
-                { recipient: userId }
-            ]
-        });
-        let unreadMessagesCount = 0;
-        messages.forEach(message => {
-            if (message.recipient.equals(userId) && message.readCount < 2) {
-                unreadMessagesCount++;
-            }
-        });
-
-        // Emit the unread messages count to all connected clients
-        io.emit('unreadMessagesCount', unreadMessagesCount);
-    } catch (error) {
-        console.error('Error emitting unread messages count:', error);
-    }
-};
-
 
 
 // Multer storage and upload configuration
@@ -110,8 +86,6 @@ router.post('/send-message', fetchuser, upload.array('images', 5), async (req, r
         // Create and save the message with image URLs
         const message = await Message.create({ sender, recipient, content, images: photoUrls });
         await message.save();
-
-        await emitUnreadMessagesCount(req.app.io, req.user.id);
 
         // Return the message with status code 201 if everything is successful
         res.status(201).json(message);
@@ -282,7 +256,7 @@ router.get('/unread-messages', fetchuser, async (req, res) => {
         let unreadMessagesCount = 0;
         messages.forEach(message => {
             // Check if the user is a recipient of the message and the message is unread
-            if (message.recipient.equals(userId) && message.readCount < 2) {
+            if (message.recipient.equals(userId) && message.readCount <= 1) {
                 unreadMessagesCount++;
             }
         });

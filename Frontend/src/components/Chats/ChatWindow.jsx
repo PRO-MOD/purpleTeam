@@ -14,7 +14,8 @@ function ChatWindow() {
 
     // import all context 
     const { user, fetchUserRole } = useContext(AuthContext);
-    const { socket } = useContext(SocketContext);
+    // const { socket, creteSocket } = useContext(SocketContext);
+    const { unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
 
 
     const [error, setError] = useState(null);
@@ -36,13 +37,15 @@ function ChatWindow() {
         setShowImageModal(false);
     };
 
-    useEffect(() => {
-        // const newSocket = io('http://localhost:8080');
-        // setSocket(newSocket);
+    const [socket, setSocket] = useState(null);
 
-        // return () => {
-        //     newSocket.disconnect();
-        // }
+    useEffect(() => {
+        const newSocket = io('http://localhost:8080');
+        setSocket(newSocket);
+
+        return () => {
+            newSocket.disconnect();
+        }
         // creteSocket();
     }, []);
 
@@ -76,7 +79,7 @@ function ChatWindow() {
             const messageWithTimestamp = { ...message, timestamp };
             setMessages(prevMessages => [...prevMessages, messageWithTimestamp]);
         });
-
+        fetchUnreadMessages();
         
     }, [socket]);
 
@@ -123,6 +126,7 @@ function ChatWindow() {
                 }
             });
             const messageData = await response.json();
+            await fetchUnreadMessages();
             setMessages(messageData);
         } catch (error) {
             console.error('Error fetching messages:', error);
