@@ -291,7 +291,7 @@ router.get('/unread-messages-users', fetchuser, async (req, res) => {
         // Calculate the unread messages count for each user
         messages.forEach(message => {
             // Check if the user is a recipient of the message and the message is unread
-            if (message.recipient.equals(userId) && message.readCount < 2) {
+            if (message.recipient.equals(userId) && message.readCount < 1) {
                 // Increment the unread messages count for the sender
                 if (!unreadMessagesByUser[message.sender]) {
                     unreadMessagesByUser[message.sender] = 0;

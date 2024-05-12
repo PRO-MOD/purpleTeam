@@ -48,6 +48,8 @@ const SocketState = (props) => {
             const timestamp = new Date();
             const messageWithTimestamp = { ...message, timestamp };
             setMessages(prevMessages => [...prevMessages, messageWithTimestamp]);
+            fetchUnreadMessagesByUser();
+            fetchUnreadMessages();
         }
     });
     fetchUnreadMessages();
@@ -77,6 +79,25 @@ const playNotificationSound = () => {
     }
   };
 
+  const [unreadCounts, setUnreadCounts] = useState({});
+  // Function to fetch unread messages counts by user ID
+  const fetchUnreadMessagesByUser = async () => {
+      try {
+          const response = await fetch(`${apiUrl}/api/chat/unread-messages-users`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  "Auth-token": localStorage.getItem('Hactify-Auth-token') // Assuming you have a token stored in localStorage
+              }
+          });
+          const data = await response.json();
+          setUnreadCounts(data.unreadMessagesByUser);
+      } catch (error) {
+          console.error('Error fetching unread messages by user:', error);
+          return 0; // Return 0 in case of an error
+      }
+  };
+
 
   useEffect(() => {
     // creteSocket();
@@ -84,7 +105,7 @@ const playNotificationSound = () => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages }}>
+    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser }}>
       {props.children}
     </SocketContext.Provider>
   )
