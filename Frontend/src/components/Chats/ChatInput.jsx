@@ -119,7 +119,7 @@ function ChatInput({ socket }) {
                 </div>
             ))}
             <form className="flex items-center justify-between m-2 mt-auto" onSubmit={handleSubmit}>
-                <textarea
+                <input
                     className={`flex-1 w-full h-12 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500 resize-none ${images.length === 0 ? 'required' : ''}`}
                     type="text"
                     placeholder="Enter Msg here"

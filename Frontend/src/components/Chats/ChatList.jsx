@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ChatItem } from "react-chat-elements";
 import { useNavigate } from "react-router-dom";
+import SocketContext from '../../context/SocketContext';
 import "../../App.css"
 
 function ChatLists({ position }) {
@@ -8,6 +9,9 @@ function ChatLists({ position }) {
     const [conversations, setConversations] = useState([]);
     const [volunteers, setVolunteers] = useState([]);
     const navigate = useNavigate();
+
+    // import all context
+    const { unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
 
     useEffect(() => {
         if (position === 'left') {
@@ -51,8 +55,9 @@ function ChatLists({ position }) {
         }
     };
 
-    const handleChatItemClick = (recipientId) => {
+    const handleChatItemClick = async (recipientId) => {
         navigate(`/chat/${recipientId}`);
+        await fetchUnreadMessages();
     };
 
     return (

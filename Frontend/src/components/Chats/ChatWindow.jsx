@@ -4,18 +4,19 @@ import { Avatar, MessageBox } from 'react-chat-elements';
 import AuthContext from '../../context/AuthContext';
 import SocketContext from '../../context/SocketContext';
 import ChatInput from './ChatInput';
+import Notification from '/notification.mp3'
 import { io } from 'socket.io-client';
 
 function ChatWindow() {
     const apiUrl = import.meta.env.VITE_Backend_URL;
     const { userId } = useParams();
     const [userInfo, setUserInfo] = useState(null);
-    const [messages, setMessages] = useState([]);
+    // const [messages, setMessages] = useState([]);
 
     // import all context 
     const { user, fetchUserRole } = useContext(AuthContext);
-    // const { socket, creteSocket } = useContext(SocketContext);
-    const { unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
+    // const { unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
+    const { socket, creteSocket , unreadMessages, fetchUnreadMessages, messages, setMessages } = useContext(SocketContext);
 
 
     const [error, setError] = useState(null);
@@ -37,15 +38,15 @@ function ChatWindow() {
         setShowImageModal(false);
     };
 
-    const [socket, setSocket] = useState(null);
+    // const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const newSocket = io('http://localhost:8080');
-        setSocket(newSocket);
+        // const newSocket = io('http://localhost:8080');
+        // setSocket(newSocket);
 
-        return () => {
-            newSocket.disconnect();
-        }
+        // return () => {
+        //     newSocket.disconnect();
+        // }
         // creteSocket();
     }, []);
 
@@ -53,11 +54,11 @@ function ChatWindow() {
         const fetchData = () => {
             fetchUserRole().then(() => {
                 // After fetching user role, emit 'addUser' event and set up socket listeners
-                socket?.emit('addUser', user._id);
+                // socket?.emit('addUser', user._id);
 
-                socket?.on('getUsers', users => {
-                    console.log("Active Users :>> ", users);
-                });
+                // socket?.on('getUsers', users => {
+                //     console.log("Active Users :>> ", users);
+                // });
 
                 // socket?.on('getMessage', message => {
                 //     const timestamp = new Date();
@@ -72,17 +73,30 @@ function ChatWindow() {
         fetchData();
     }, [socket, user._id]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        socket?.on('getMessage', message => {
-            const timestamp = new Date();
-            const messageWithTimestamp = { ...message, timestamp };
-            setMessages(prevMessages => [...prevMessages, messageWithTimestamp]);
-        });
-        fetchUnreadMessages();
-        
-    }, [socket]);
+    //     socket?.on('getMessage', message => {
+    //         if (!window.location.href.includes('/chat')) {
+    //             // Play notification sound
+    //             playNotificationSound();
+    //             fetchUnreadMessages();
+    //         }
+    //         else {
+    //             // playNotificationSound();
+    //             const timestamp = new Date();
+    //             const messageWithTimestamp = { ...message, timestamp };
+    //             setMessages(prevMessages => [...prevMessages, messageWithTimestamp]);
+    //         }
+    //     });
+    //     fetchUnreadMessages();
 
+    // }, [socket]);
+
+    // const playNotificationSound = () => {
+    //     // Play notification sound
+    //     const notificationSound = new Audio(Notification);
+    //     notificationSound.play();
+    // };
 
     useEffect(() => {
         messageRef?.current?.scrollIntoView({ behavior: 'smooth' });
@@ -139,6 +153,7 @@ function ChatWindow() {
 
     const imageDataToBase64URL = (imageData) => {
         if (imageData && typeof imageData === 'object') {
+            console.log(imageData);
             return imageData.url;
         } else {
             return imageData;

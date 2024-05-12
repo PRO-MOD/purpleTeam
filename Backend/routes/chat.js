@@ -6,19 +6,23 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 const fetchuser = require('../middleware/fetchuser');
 const uploadImageToCloudinary = require('../utils/imageUpload');
+const notificationSound = './notification.mp3';
 
 // Function to handle socket logic
 let users = []
 // let isUserIdAvailable = false;
 const handleSocket = (io) => {
     io.on('connection', (socket) => {
-        console.log('user connected', socket.id);
-
+        
         socket.on('addUser', (userId) => {
-            if (userId ) {
+            console.log('user connected', socket.id);
+            console.log('userId: >>'+userId);
+            if (userId) {
+                // console.log("hello");
                 // Add the user to the active users list only if userId is available
                 const isUserExist = users.find((user) => user.userId === userId);
                 if (!isUserExist) {
+                    // console.log("hello1");
                     const newUser = { userId, socketId: socket.id };
                     users.push(newUser);
                     io.emit('getUsers', users);
@@ -175,7 +179,7 @@ router.get('/conversations', fetchuser, async (req, res) => {
                 latestMessageDate: conversation.latestMessage.timestamp,
                 latestMessageContent: latestMessageContent
             };
-        }));     
+        }));
 
         res.json(formattedConversations);
     } catch (error) {

@@ -17,7 +17,7 @@ export const Notes = (props) => {
             navigate('/signin');
         }
         getNotes();
-    }, [navigate, getNotes]);
+    }, []);
 
     const refClose = useRef();
 
