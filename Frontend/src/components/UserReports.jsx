@@ -243,7 +243,7 @@ function UserReports({ userId }) {
                                 <tr key={key}>
                                     <td className="border px-4 py-2">{key.replace('Score', '')}</td>
                                     <td className="border px-4 py-2">{selectedReport[key.replace('Score', '')]}</td>
-                                    <td className="border px-4 py-2">10</td>
+                                    <td className="border px-4 py-2">50</td>
                                     <td className="border px-4 py-2">
                                         {/* <input
                                             type="number"
@@ -266,7 +266,7 @@ function UserReports({ userId }) {
         let inputValue = parseInt(e.target.value);
         
         // Check if the input value is empty or within the range of 0 to 10
-        if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= 10)) {
+        if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= 50)) {
             // Update the selected report with the new score value
             setSelectedReport(prevReport => ({
                 ...prevReport,
