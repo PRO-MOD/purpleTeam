@@ -99,7 +99,7 @@ function Notification() {
     <form onSubmit={handleSubmit}>
       
       <div className="mb-4">
-        <label className="block mb-1 text-gray-700">1. Incident Type:</label>
+        <label className="block mb-1 text-gray-700">1. Incident Type:<span className="text-red-500 ml-1">*</span></label>
         <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="type" value={formData.type} onChange={handleInputChange} required placeholder='Description: Type of incident situation - Eg Ransomware, DDOS, Bruteforce etc. You can please add IOCs if possible. 
 ' />
       </div>
@@ -107,7 +107,7 @@ function Notification() {
   
       {/* Areas of Concern */}
       <div className="mb-4">
-        <label className="block mb-1 text-gray-700">2. Incident Location: </label>
+        <label className="block mb-1 text-gray-700">2. Incident Location:<span className="text-red-500 ml-1">*</span> </label>
         <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="location" value={formData.location} onChange={handleInputChange} required  placeholder='Location: Mention the IP Address of the Server, File Path or Version of the Service exploited etc. 
 '/>
       </div>
