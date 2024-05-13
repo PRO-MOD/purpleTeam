@@ -8,7 +8,7 @@ const io = require('socket.io')(8080,{
         origin: 'http://localhost:5173'
     }
 })
-const { router: chatRouter, handleSocket } = require('./routes/chat');
+const { router: chatRouter, handleSocket, users } = require('./routes/chat');
 
 
 connectToMongo();
@@ -49,7 +49,8 @@ app.post('/api/webhook', (req, res) => {
     res.status(200).send('Webhook received successfully');
   });
 
-  const sharedSecret = "d7f013280cddd3b074790a77606240d5ad1517c9059bcf6810d82d230e8db973"
+  // const sharedSecret = process.env.CTFD_WEBHOOK_SHARED_SECRECT;
+  const sharedSecret = "d7f013280cddd3b074790a77606240d5ad1517c9059bcf6810d82d230e8db973";
   // Define webhook validation endpoint
 // Endpoint for validating webhook ownership
 app.get('/', (req, res) => {
@@ -85,6 +86,14 @@ app.post('/', async (req, res) => {
 
       if (match) {
         console.log(`User ${score.name} solved challenge ${match.challenge.name}`);
+        // Emit event to the user socket
+        const user = users.find(user => user.userId === score.user);
+        if (user) {
+          io.to(user.socketId).emit('challengeSolved', { challenge: match.challenge.name });
+          console.log("Emmited ChallengeSolved to frontend");
+        } else {
+          console.error(`User ${score.name} is not connected to the server`);
+        }
       }
     } else {
       console.error('Error fetching data from CTFd API:', data);
