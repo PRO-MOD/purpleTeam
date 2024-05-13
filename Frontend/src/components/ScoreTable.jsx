@@ -16,7 +16,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
 
   const handleUserClick = async (userName) => {
     try {
-      const response = await fetch(`http://13.127.232.191:5000/api/auth/user?name=${userName}`);
+      const response = await fetch(`http://localhost:5000/api/auth/user?name=${userName}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data._id) {

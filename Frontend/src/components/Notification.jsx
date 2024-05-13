@@ -7,10 +7,6 @@ function Notification() {
   const [formData, setFormData] = useState({
     type: '',
     location: '',
-    priority: '',
-    action: '',
-    mitre: '',
-    step: '',
     notes: '',
     pocScreenshots: [],
     pdfName: '',
@@ -72,7 +68,7 @@ function Notification() {
       //   formDataToSend.append('pocScreenshots', file);
       // });
   
-      const response = await fetch(`http://13.127.232.191:5000/api/reports/Notification`, {
+      const response = await fetch(`http://localhost:5000/api/reports/Notification`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
@@ -104,18 +100,20 @@ function Notification() {
       
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">1. Incident Type:</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="type" value={formData.type} onChange={handleInputChange} required  />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="type" value={formData.type} onChange={handleInputChange} required placeholder='Description: Type of incident situation - Eg Ransomware, DDOS, Bruteforce etc. You can please add IOCs if possible. 
+' />
       </div>
   
   
       {/* Areas of Concern */}
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">2. Incident Location: </label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="location" value={formData.location} onChange={handleInputChange} required />
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="location" value={formData.location} onChange={handleInputChange} required  placeholder='Location: Mention the IP Address of the Server, File Path or Version of the Service exploited etc. 
+'/>
       </div>
   
       
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="block mb-1 text-gray-700">3. Incident Priority:</label>
         <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="priority" value={formData.priority} onChange={handleInputChange} required  />
       </div>
@@ -133,11 +131,12 @@ function Notification() {
       <div className="mb-4">
         <label className="block mb-1 text-gray-700">6. Remediation steps:</label>
         <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="step" value={formData.step} onChange={handleInputChange} required  />
-      </div>
+      </div> */}
   
       <div className="mb-4">
-        <label className="block mb-1 text-gray-700">7. Additional Information (if any) :</label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="notes" value={formData.notes} onChange={handleInputChange}  />
+        <label className="block mb-1 text-gray-700">3. Additional Information (if any) :</label>
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="notes" value={formData.notes} onChange={handleInputChange} placeholder='Additional Info: Any points you want to add
+' />
       </div>
   
       {/* Attachment */}

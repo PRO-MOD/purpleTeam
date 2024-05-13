@@ -11,7 +11,7 @@
 
 //   const fetchUserData = async () => {
 //     try {
-//       const response = await fetch("http://13.127.232.191:5000/api/auth/getuser", {
+//       const response = await fetch("http://localhost:5000/api/auth/getuser", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -36,7 +36,7 @@
 //       formData.append('profilePicture', newProfilePicture);
 
 //       // Send the new profile picture to the backend
-//       await fetch('http://13.127.232.191:5000/api/auth/change-picture', {
+//       await fetch('http://localhost:5000/api/auth/change-picture', {
 //         method: 'POST',
 //         headers: {
 //             "Auth-token": localStorage.getItem('Hactify-Auth-token')
@@ -86,7 +86,7 @@ const UserProfile = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://13.127.232.191:5000/api/auth/getuser", {
+      const response = await fetch("http://localhost:5000/api/auth/getuser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const UserProfile = () => {
       formData.append('profilePicture', newProfilePicture);
 
       // Send the new profile picture to the backend
-      await fetch('http://13.127.232.191:5000/api/auth/change-picture', {
+      await fetch('http://localhost:5000/api/auth/change-picture', {
         method: 'POST',
         headers: {
             "Auth-token": localStorage.getItem('Hactify-Auth-token')

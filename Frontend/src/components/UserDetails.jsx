@@ -16,7 +16,7 @@ function UserDetails() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(`http://13.127.232.191:5000/api/auth/${userId}`);
+        const response = await fetch(`http://localhost:5000/api/auth/${userId}`);
         if (response.ok) {
           const data = await response.json();
           setUser(data);
@@ -41,7 +41,7 @@ function UserDetails() {
 
     useEffect(() => {
         // Fetch JSON data from API
-        fetch(`http://13.127.232.191:5000/api/reports/specific/${userId}`)
+        fetch(`http://localhost:5000/api/reports/specific/${userId}`)
             .then(response => response.json())
             .then(data => {
                 setJsonData(data);

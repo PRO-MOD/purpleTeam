@@ -43,10 +43,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
         const {
             type,
             location,
-            priority,
-            action,
-            mitre,
-            step,
             notes,
         } = req.body;
 
@@ -72,10 +68,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
         const formData = new notificationModel({
             type,
             location,
-            priority,
-            action,
-            mitre,
-            step,
             notes,
             pocScreenshots: photoUrls,
             pdfName,
@@ -85,7 +77,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
         await formData.save();
 
         // Load PDF file
-        const pdfFilePath = path.join(__dirname, '..', 'public', 'NotificationFinal (1).pdf'); // Path to original PDF file
+        const pdfFilePath = path.join(__dirname, '..', 'public', 'NotificationFinal (3).pdf'); // Path to original PDF file
         const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
         const options = { timeZone: 'Asia/Kolkata' };
@@ -100,10 +92,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
             const type1 = form.getTextField('Type');
             const location1 = form.getTextField('Location');
             const priority1 = form.getTextField('Priority');
-            const action1 = form.getTextField('Action');
-            const mitre1 = form.getTextField('MITRE');
-            const step1 = form.getTextField('step');
-            const notes1 = form.getTextField('Notes');
         
         
         
@@ -111,11 +99,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
             timeField.setText(currentTime);
             type1.setText(type);
             location1.setText(location);
-            priority1.setText(priority);
-            action1.setText(action);
-            mitre1.setText(mitre);
-            step1.setText(step);
-            notes1.setText(notes);
+            priority1.setText(notes);
         
         
         
