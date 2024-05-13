@@ -307,4 +307,4 @@ router.get('/unread-messages-users', fetchuser, async (req, res) => {
     }
 });
 
-module.exports = { router, handleSocket };
+module.exports = { router, handleSocket, users };
