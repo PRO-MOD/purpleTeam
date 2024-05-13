@@ -13,7 +13,7 @@ const SocketState = (props) => {
 
   // Fetch user
   const creteSocket = async (userID) => {
-    const newSocket = io('http://15.206.26.38/:8080');
+    const newSocket = io('https://internship-project-gj6x.onrender.com');
     setSocket(newSocket);
     setUserId(userID);
     console.log("userId: >> "+userId+" userID: >> "+userID);

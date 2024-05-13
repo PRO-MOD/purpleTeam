@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const Score = require('./models/score.js')
 const io = require('socket.io')(8080,{
     cors: {
-        origin: 'http://localhost:5173'
+        origin: 'http://localhost'
     }
 })
 const { router: chatRouter, handleSocket, users } = require('./routes/chat');
