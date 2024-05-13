@@ -126,37 +126,106 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
    }
 });
 
+
+// // Function to draw images on a page
+// async function drawImagesOnPage(page, imageUrls) {
+//    const margin = 50; // Margin for images
+//    const pageWidth = page.getWidth();
+//    const pageHeight = page.getHeight();
+//    let x = margin;
+//    let y = pageHeight - margin;
+
+//    for (const imageUrl of imageUrls) {
+//        const imageBytes = await fetchImageAsBuffer(imageUrl);
+//        if (imageBytes) {
+//            const image = await page.doc.embedPng(imageBytes); // Embed the image into the document
+//            const scaleFactor = (pageWidth - 2 * margin) / image.width;
+//            const scaledWidth = (pageWidth - 2 * margin);
+//            const scaledHeight = image.height * scaleFactor;
+
+//            page.drawImage(image, {
+//                x: x,
+//                y: y - scaledHeight,
+//                width: scaledWidth,
+//                height: scaledHeight,
+//            });
+
+//            x += scaledWidth + margin;
+//            if (x + scaledWidth > pageWidth - margin) {
+//                x = margin;
+//                y -= scaledHeight + margin;
+//                if (y < margin) break;
+//            }
+//        }
+//    }
+// }
+
+
+// Function to determine the image format based on file extension
+function getImageFormat(fileName) {
+    const extension = fileName.split('.').pop().toLowerCase();
+    if (extension === 'png') {
+        return 'png';
+    } else if (extension === 'jpg' || extension === 'jpeg') {
+        return 'jpeg';
+    } else if (extension === 'tif' || extension === 'tiff') {
+        return 'tiff';
+    } else {
+        return null; // Unsupported format
+    }
+}
+
+// Function to embed images into the PDF document based on their format
+async function embedImage(page, imageBytes, format) {
+    if (format === 'png') {
+        return page.doc.embedPng(imageBytes);
+    } else if (format === 'jpeg' || format === 'jpg') {
+        return page.doc.embedJpg(imageBytes);
+    } else if (format === 'tiff' || format === 'tif') {
+        return page.doc.embedTiff(imageBytes);
+    } else {
+        throw new Error('Unsupported image format');
+    }
+}
+
 // Function to draw images on a page
 async function drawImagesOnPage(page, imageUrls) {
-   const margin = 50; // Margin for images
-   const pageWidth = page.getWidth();
-   const pageHeight = page.getHeight();
-   let x = margin;
-   let y = pageHeight - margin;
+    const margin = 50; // Margin for images
+    const pageWidth = page.getWidth();
+    const pageHeight = page.getHeight();
+    let x = margin;
+    let y = pageHeight - margin;
 
-   for (const imageUrl of imageUrls) {
-       const imageBytes = await fetchImageAsBuffer(imageUrl);
-       if (imageBytes) {
-           const image = await page.doc.embedPng(imageBytes); // Embed the image into the document
-           const scaleFactor = (pageWidth - 2 * margin) / image.width;
-           const scaledWidth = (pageWidth - 2 * margin);
-           const scaledHeight = image.height * scaleFactor;
+    for (const imageUrl of imageUrls) {
+        const imageBytes = await fetchImageAsBuffer(imageUrl);
+        if (imageBytes) {
+            const format = getImageFormat(imageUrl); // Determine image format
+            if (!format) {
+                console.error(`Unsupported image format for ${imageUrl}`);
+                continue;
+            }
 
-           page.drawImage(image, {
-               x: x,
-               y: y - scaledHeight,
-               width: scaledWidth,
-               height: scaledHeight,
-           });
+            const image = await embedImage(page, imageBytes, format); // Embed the image into the document
+            const scaleFactor = (pageWidth - 2 * margin) / image.width;
+            const scaledWidth = (pageWidth - 2 * margin);
+            const scaledHeight = image.height * scaleFactor;
 
-           x += scaledWidth + margin;
-           if (x + scaledWidth > pageWidth - margin) {
-               x = margin;
-               y -= scaledHeight + margin;
-               if (y < margin) break;
-           }
-       }
-   }
+            page.drawImage(image, {
+                x: x,
+                y: y - scaledHeight,
+                width: scaledWidth,
+                height: scaledHeight,
+            });
+
+            x += scaledWidth + margin;
+            if (x + scaledWidth > pageWidth - margin) {
+                x = margin;
+                y -= scaledHeight + margin;
+                if (y < margin) break;
+            }
+        }
+    }
 }
+
 
 module.exports = router;
