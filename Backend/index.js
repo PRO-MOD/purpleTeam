@@ -2,6 +2,7 @@ const connectToMongo = require('./db')
 const express = require('express')
 const cors = require('cors')
 const crypto = require('crypto');
+const Score = require('./models/score.js')
 const io = require('socket.io')(8080,{
     cors: {
         origin: 'http://localhost:5173'
@@ -66,10 +67,30 @@ app.get('/', (req, res) => {
   });
 
   // Endpoint for handling webhook events
-app.post('/', (req, res) => {
-    console.log('Request URL:', req.url);
-    console.log('Request Headers:', req.headers);
-    console.log('Request Body:', req.body);
+app.post('/', async (req, res) => {
+  const { challenge_id, date, id } = req.body;
+  console.log("Requested Body: >> "+ challenge_id, date, id );
+  // Fetch all documents from Score schema
+  const scores = await Score.find();
+
+  // Iterate over each document
+  for (const score of scores) {
+    // Fetch data from CTFd API for each account_id
+    const response = await fetch(`https://ctf.hacktify.in/api/v1/users/${score.account_id}/solves`);
+    const { success, data } = await response.json();
+
+    if (success) {
+      // Check if there's a match with the provided challenge_id and date
+      const match = data.find(item => item.challenge_id === challenge_id && item.id === id && item.date === date);
+
+      if (match) {
+        console.log(`User ${score.name} solved challenge ${match.challenge.name}`);
+      }
+    } else {
+      console.error('Error fetching data from CTFd API:', data);
+    }
+  }
+
     
     return res.status(200).end();
   });
