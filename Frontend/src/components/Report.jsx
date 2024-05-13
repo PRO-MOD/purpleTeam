@@ -147,13 +147,13 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">1. Current Situation</h3>
           {/* Description */}
           <div>
-            <label className="block mb-1 text-gray-700">Description:</label>
+            <label className="block mb-1 text-gray-700">Description:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="description" value={formData.description} onChange={handleInputChange} required placeholder='Brief summary of the current situation' />
           </div>
 
           {/* Threat Level */}
           <div>
-            <label className="block mb-1 text-gray-700">Threat Level:</label>
+            <label className="block mb-1 text-gray-700">Threat Level:<span className="text-red-500 ml-1">*</span></label>
             <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="threatLevel" value={formData.threatLevel} onChange={handleInputChange} required>
               <option value="">Select Threat Level</option>
               <option value="Low">Low</option>
@@ -166,7 +166,7 @@ function Report() {
 
           {/* Areas of Concern */}
           <div>
-            <label className="block mb-1 text-gray-700">Areas of Concern:</label>
+            <label className="block mb-1 text-gray-700">Areas of Concern:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="areasOfConcern" value={formData.areasOfConcern} onChange={handleInputChange} placeholder='List of current security concerns or vulnerabilities' />
           </div>
         </div>
@@ -177,7 +177,7 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">2. Incident Overview</h3>
           {/* Recent Incidents */}
           <div>
-            <label className="block mb-1 text-gray-700">Recent Incidents:</label>
+            <label className="block mb-1 text-gray-700">Recent Incidents:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="recentIncidents" value={formData.recentIncidents} onChange={handleInputChange} required placeholder='Summary of recent security incidents or events' />
           </div>
 
@@ -189,7 +189,7 @@ function Report() {
 
           {/* Impact Assessment */}
           <div>
-            <label className="block mb-1 text-gray-700">Impact Assessment:</label>
+            <label className="block mb-1 text-gray-700">Impact Assessment:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="impactAssessment" value={formData.impactAssessment} onChange={handleInputChange} required placeholder='Assessment of the potential impact of current threats' />
           </div>
         </div>
@@ -199,19 +199,19 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">3. Threat Intelligence</h3>
           {/* Sources */}
           <div>
-            <label className="block mb-1 text-gray-700">Sources:</label>
+            <label className="block mb-1 text-gray-700">Sources:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="sources" value={formData.sources} onChange={handleInputChange} placeholder='List of sources for threat intelligence' />
           </div>
 
           {/* Key Threat Actors */}
           <div>
-            <label className="block mb-1 text-gray-700">Key Threat Actors:</label>
+            <label className="block mb-1 text-gray-700">Key Threat Actors:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="keyThreatActors" value={formData.keyThreatActors} onChange={handleInputChange} required placeholder='Summary of known threat actors and their activities' />
           </div>
 
           {/* Indicators of Compromise */}
           <div>
-            <label className="block mb-1 text-gray-700">Indicators of Compromise:</label>
+            <label className="block mb-1 text-gray-700">Indicators of Compromise:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="indicatorsOfCompromise" value={formData.indicatorsOfCompromise} onChange={handleInputChange} placeholder='List of relevant IOCs' />
           </div>
         </div>
@@ -221,13 +221,13 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">4. Vulnerability Management</h3>
           {/* Recent Vulnerabilities */}
           <div>
-            <label className="block mb-1 text-gray-700">Recent Vulnerabilities:</label>
+            <label className="block mb-1 text-gray-700">Recent Vulnerabilities:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="recentVulnerabilities" value={formData.recentVulnerabilities} onChange={handleInputChange} required placeholder='Summary of recently discovered vulnerabilities' />
           </div>
 
           {/* Patch Status */}
           <div>
-            <label className="block mb-1 text-gray-700">Patch Status:</label>
+            <label className="block mb-1 text-gray-700">Patch Status:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="patchStatus" value={formData.patchStatus} onChange={handleInputChange} required placeholder='Overview of patching efforts and status' />
           </div>
 
@@ -243,19 +243,19 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">5. Security Operations</h3>
           {/* Current Operations */}
           <div>
-            <label className="block mb-1 text-gray-700">Current Operations:</label>
+            <label className="block mb-1 text-gray-700">Current Operations:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="currentOperations" value={formData.currentOperations} onChange={handleInputChange} required placeholder='Overview of ongoing security operations or activities' />
           </div>
 
           {/* Incident Response */}
           <div>
-            <label className="block mb-1 text-gray-700">Incident Response:</label>
+            <label className="block mb-1 text-gray-700">Incident Response:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="incidentResponse" value={formData.incidentResponse} onChange={handleInputChange} required placeholder='Summary of recent incident response activities' />
           </div>
 
           {/* Forensic Analysis */}
           <div>
-            <label className="block mb-1 text-gray-700">Forensic Analysis:</label>
+            <label className="block mb-1 text-gray-700">Forensic Analysis:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="forensicAnalysis" value={formData.forensicAnalysis} onChange={handleInputChange} required placeholder='Status of ongoing forensic analysis efforts' />
           </div>
         </div>
@@ -265,19 +265,19 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">6. Communication</h3>
           {/* Internal Notifications */}
           <div>
-            <label className="block mb-1 text-gray-700">Internal Notifications:</label>
+            <label className="block mb-1 text-gray-700">Internal Notifications:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="internalNotifications" value={formData.internalNotifications} onChange={handleInputChange} placeholder='List of internal stakeholders notified of current situation' />
           </div>
 
           {/* External Notifications */}
           <div>
-            <label className="block mb-1 text-gray-700">External Notifications:</label>
+            <label className="block mb-1 text-gray-700">External Notifications:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="externalNotifications" value={formData.externalNotifications} onChange={handleInputChange} placeholder='List of external parties or authorities notified, if applicable' />
           </div>
 
           {/* Public Relations */}
           <div>
-            <label className="block mb-1 text-gray-700">Public Relations:</label>
+            <label className="block mb-1 text-gray-700">Public Relations:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="publicRelations" value={formData.publicRelations} onChange={handleInputChange} required placeholder='Summary of public relations or communication efforts' />
           </div>
         </div>

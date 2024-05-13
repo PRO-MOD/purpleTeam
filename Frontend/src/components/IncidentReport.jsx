@@ -124,13 +124,13 @@ function IncidentReport() {
     <h3 className="text-xl mb-2">1. Incident Overview</h3>
     {/* Description */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Description:</label>
+      <label className="block mb-1 text-gray-700">Description:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="description" value={formData.description} onChange={handleInputChange} required placeholder='Brief summary of the incident' />
     </div>
 
     {/* Severity Level */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Severity Level:</label>
+      <label className="block mb-1 text-gray-700">Severity Level:<span className="text-red-500 ml-1">*</span></label>
       <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="severityLevel" value={formData.severityLevel} onChange={handleInputChange} required>
         <option value="">Select Severity Level</option>
         <option value="Low">Low</option>
@@ -142,7 +142,7 @@ function IncidentReport() {
 
     {/* Impact */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Impact:</label>
+      <label className="block mb-1 text-gray-700">Impact:<span className="text-red-500 ml-1">*</span></label>
       <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="impact" value={formData.impact} onChange={handleInputChange} required>
         <option value="">Select Impact</option>
         <option value="Minimal">Minimal</option>
@@ -154,7 +154,7 @@ function IncidentReport() {
 
     {/* Affected Systems */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Affected Systems:</label>
+      <label className="block mb-1 text-gray-700">Affected Systems:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="affectedSystems" value={formData.affectedSystems} onChange={handleInputChange} placeholder='List of systems or assets affected' />
     </div>
 
@@ -174,7 +174,7 @@ function IncidentReport() {
     </div> */}
 
 <div className="mb-4">
-  <label className="block mb-1 text-gray-700">Detection Method:</label>
+  <label className="block mb-1 text-gray-700">Detection Method:<span className="text-red-500 ml-1">*</span></label>
   <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="detectionMethod" value={formData.detectionMethod} onChange={handleInputChange} required>
     <option value="">Select Detection Method</option>
     <option value="Intrusion Detection System">Intrusion Detection System</option>
@@ -199,13 +199,13 @@ function IncidentReport() {
 
     {/* Initial Detection Time */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Initial Detection Time:</label>
+      <label className="block mb-1 text-gray-700">Initial Detection Time:<span className="text-red-500 ml-1">*</span></label>
       <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="datetime-local" name="initialDetectionTime" value={formData.initialDetectionTime} onChange={handleInputChange} required />
     </div>
 
     {/* Attack Vector */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Attack Vector:</label>
+      <label className="block mb-1 text-gray-700">Attack Vector:<span className="text-red-500 ml-1">*</span></label>
       <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="attackVector" value={formData.attackVector} onChange={handleInputChange} required>
         <option value="">Select Attack Vector</option>
         <option value="Phishing">Phishing</option>
@@ -218,7 +218,7 @@ function IncidentReport() {
 
     {/* Attackers */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Attackers:</label>
+      <label className="block mb-1 text-gray-700">Attackers:<span className="text-red-500 ml-1">*</span></label>
       <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="attackers" value={formData.attackers} onChange={handleInputChange} required>
         <option value="">Select Attackers</option>
         <option value="External">External</option>
@@ -231,25 +231,25 @@ function IncidentReport() {
     <h3 className="text-xl mb-2">3. Response Actions Taken</h3>
     {/* Containment */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Containment:</label>
+      <label className="block mb-1 text-gray-700">Containment:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="containment" value={formData.containment} onChange={handleInputChange} required  placeholder='Description of initial containment actions taken'/>
     </div>
 
     {/* Eradication */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Eradication:</label>
+      <label className="block mb-1 text-gray-700">Eradication:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="eradication" value={formData.eradication} onChange={handleInputChange} required  placeholder='Description of steps taken to remove the threat'/>
     </div>
 
     {/* Recovery */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Recovery:</label>
+      <label className="block mb-1 text-gray-700">Recovery:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="recovery" value={formData.recovery} onChange={handleInputChange} required  placeholder='Description of efforts to restore affected systems to normal operation'/>
     </div>
 
     {/* Lessons Learned */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Lessons Learned:</label>
+      <label className="block mb-1 text-gray-700">Lessons Learned:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="lessonsLearned" value={formData.lessonsLearned} onChange={handleInputChange} required placeholder='Key takeaways from the incident for future improvements'/>
     </div>
 
@@ -257,25 +257,25 @@ function IncidentReport() {
     <h3 className="text-xl mb-2">4. Technical Analysis</h3>
     {/* Evidence */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Evidence:</label>
+      <label className="block mb-1 text-gray-700">Evidence:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="evidence" value={formData.evidence} onChange={handleInputChange} required  placeholder='Logs, screenshots, or other evidence collected'/>
     </div>
 
     {/* Indicators of Compromise */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Indicators of Compromise:</label>
+      <label className="block mb-1 text-gray-700">Indicators of Compromise:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="indicatorsOfCompromise" value={formData.indicatorsOfCompromise} onChange={handleInputChange} placeholder='List of identified IOCs' />
     </div>
 
     {/* Tactics, Techniques, and Procedures */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Tactics, Techniques, and Procedures (TTPs):</label>
+      <label className="block mb-1 text-gray-700">Tactics, Techniques, and Procedures (TTPs):<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="ttps" value={formData.ttps} onChange={handleInputChange} required  placeholder='Description of attacker TTPs'/>
     </div>
 
     {/* Mitigation Recommendations */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Mitigation Recommendations:</label>
+      <label className="block mb-1 text-gray-700">Mitigation Recommendations:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="mitigationRecommendations" value={formData.mitigationRecommendations} onChange={handleInputChange} required  placeholder='Actions recommended to mitigate similar incidents in the future'/>
     </div>
 
@@ -283,19 +283,19 @@ function IncidentReport() {
     <h3 className="text-xl mb-2">5. Communication</h3>
     {/* Internal Notification */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Internal Notification:</label>
+      <label className="block mb-1 text-gray-700">Internal Notification:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="internalNotification" value={formData.internalNotification} onChange={handleInputChange} placeholder='List of team members or stakeholders notified' />
     </div>
 
     {/* External Notification */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">External Notification:</label>
+      <label className="block mb-1 text-gray-700">External Notification:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="externalNotification" value={formData.externalNotification} onChange={handleInputChange}  placeholder='List of external parties or authorities notified, if applicable'/>
     </div>
 
     {/* Updates */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Updates:</label>
+      <label className="block mb-1 text-gray-700">Updates:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="updates" value={formData.updates} onChange={handleInputChange} required  placeholder='Frequency and content of updates provided to stakeholders'/>
     </div>
 
