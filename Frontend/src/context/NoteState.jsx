@@ -3,6 +3,7 @@ import NoteContext from "./NoteContext";
 
 
 const NoteState = (props) => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
 
     const s1 = [{}]
 
@@ -11,7 +12,7 @@ const NoteState = (props) => {
     // Fetch all notes
     const getNotes=async()=>{
         // API call
-        const response = await fetch('http://localhost:5000/api/notes/fetchallnotes', {
+        const response = await fetch(`${apiUrl}/api/notes/fetchallnotes`, {
             method: "GET",  
             headers: {
               "Content-Type": "application/json",
@@ -28,7 +29,7 @@ const NoteState = (props) => {
     // Add note
     const addNote = async(title, description, tag) => {
         // Api Call
-        const response = await fetch('http://localhost:5000/api/notes/addnote', {
+        const response = await fetch(`${apiUrl}/api/notes/addnote`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -48,7 +49,7 @@ const NoteState = (props) => {
     // Delete note
     const deleteNote = async (id) => {
         // Api Call
-        const response = await fetch(`http://localhost:5000/api/notes//deletenote/${id}`, {
+        const response = await fetch(`${apiUrl}/api/notes//deletenote/${id}`, {
             method: "DELETE",  
             headers: {
               "Content-Type": "application/json",
@@ -66,7 +67,7 @@ const NoteState = (props) => {
     // edit note
     const editNote = async(id, title, description, tag) => {
         // Api Call
-        const response = await fetch(`http://localhost:5000/api/notes/updatenote/${id}`, {
+        const response = await fetch(`${apiUrl}/api/notes/updatenote/${id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",

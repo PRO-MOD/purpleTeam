@@ -15,6 +15,8 @@ import FetchEncryptedFlag from './FetchEncryptedFlag';
 import IncidentReport from './IncidentReport'
 import UserProfile from './UserProfile'
 import Notification from './Notification';
+import ScorePage1 from './ScoresPage1';
+import ProtectedRoute from './ProtectedRoute';
 
 function HomePage() {
     const navigate = useNavigate();
@@ -57,13 +59,14 @@ function HomePage() {
               <Route exact path='/home' element={<AdminDataVisualization/>} />
               <Route exact path='/createuser' element={<AddUsers />} />
               <Route exact path='/assignTeams' element={<AssignTeams />} />
-              <Route exact path='/scores' element={<ScoresComponent />} />
+              <Route exact path='/scores' element={<ProtectedRoute Component={ScoresComponent}/>} />
+              {/* <Route exact path='/scores1' element={<ProtectedRoute Component={ScorePage1}/>} /> */}
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<Report />} />
               <Route exact path='/UserHome/report/incident' element={<IncidentReport />} />
               {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
               <Route exact path='/UserHome/report/notification' element={<Notification />} />
-              <Route exact path="/user/:userId" element={<UserDetails/>} />
+              <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails}/>} />
               <Route exact path="/notes" element={<Home showAlert={showAlert}/>}/>
               <Route exact path="/chat/*" element={<ChatMainPage/>}/>
               <Route exact path="/flag" element={<FetchEncryptedFlag/>}/>

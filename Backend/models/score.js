@@ -8,7 +8,8 @@ const scoreSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   score: {
     type: Number,
@@ -28,4 +29,4 @@ const scoreSchema = new mongoose.Schema({
 });
 
 // Create a Score model from the schema
-module.exports = mongoose.model('score', scoreSchema);
+module.exports = mongoose.model('score2', scoreSchema);

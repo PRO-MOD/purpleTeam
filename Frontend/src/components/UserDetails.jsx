@@ -9,6 +9,7 @@ import TimeSeriesGraph from './TimeSeriesGraph'
 import UserReports from './UserReports';
 
 function UserDetails() {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const { userId } = useParams();
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function UserDetails() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/${userId}`);
+        const response = await fetch(`${apiUrl}/api/auth/${userId}`);
         if (response.ok) {
           const data = await response.json();
           setUser(data);
@@ -41,7 +42,7 @@ function UserDetails() {
 
     useEffect(() => {
         // Fetch JSON data from API
-        fetch(`http://localhost:5000/api/reports/specific/${userId}`)
+        fetch(`${apiUrl}/api/reports/specific/${userId}`)
             .then(response => response.json())
             .then(data => {
                 setJsonData(data);

@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     
 })
 
-// Route 1: Get All the Notes using: GET route of "13.127.232.191/api/notes/fetchallnotes" with a MIDDLEWARE
+// Route 1: Get All the Notes using: GET route of "localhost/api/notes/fetchallnotes" with a MIDDLEWARE
 router.get('/fetchallnotes', fetchuser,async(req, res)=>{
 
   try {
@@ -26,7 +26,7 @@ router.get('/fetchallnotes', fetchuser,async(req, res)=>{
 
 })
 
-// Route 2: Add the Notes using: POST route of "13.127.232.191/api/notes/addnote" with a MIDDLEWARE
+// Route 2: Add the Notes using: POST route of "localhost/api/notes/addnote" with a MIDDLEWARE
 router.post('/addnote', fetchuser,[body('title', "Name should atleast be of length 3").isLength({min: 3}), body('description','description  should atleast be of length 3 !').isLength({min: 3}), body('tag', "Tag should atleast be of length 2").isLength({min: 2})],async(req, res)=>{
 
   const error = validationResult(req);
@@ -45,7 +45,7 @@ router.post('/addnote', fetchuser,[body('title', "Name should atleast be of leng
   }
 })
 
-// Route 3: Update the Notes using: PUT route of "13.127.232.191/api/notes/updatenote/:id" with a MIDDLEWARE
+// Route 3: Update the Notes using: PUT route of "localhost/api/notes/updatenote/:id" with a MIDDLEWARE
 router.put('/updatenote/:id', fetchuser,async(req, res)=>{
 
   try {
@@ -68,7 +68,7 @@ router.put('/updatenote/:id', fetchuser,async(req, res)=>{
   }
 })
 
-// Route 4: Delete the Note using: DELETE route of "13.127.232.191/api/notes/deletenote/:id" with a MIDDLEWARE
+// Route 4: Delete the Note using: DELETE route of "localhost/api/notes/deletenote/:id" with a MIDDLEWARE
 router.delete('/deletenote/:id', fetchuser,async(req, res)=>{
 
   try {

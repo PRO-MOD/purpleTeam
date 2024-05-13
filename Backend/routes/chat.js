@@ -6,19 +6,23 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 const fetchuser = require('../middleware/fetchuser');
 const uploadImageToCloudinary = require('../utils/imageUpload');
+const notificationSound = './notification.mp3';
 
 // Function to handle socket logic
 let users = []
 // let isUserIdAvailable = false;
 const handleSocket = (io) => {
     io.on('connection', (socket) => {
-        console.log('user connected', socket.id);
-
+        
         socket.on('addUser', (userId) => {
-            if (userId ) {
+            console.log('user connected', socket.id);
+            console.log('userId: >>'+userId);
+            if (userId) {
+                // console.log("hello");
                 // Add the user to the active users list only if userId is available
                 const isUserExist = users.find((user) => user.userId === userId);
                 if (!isUserExist) {
+                    // console.log("hello1");
                     const newUser = { userId, socketId: socket.id };
                     users.push(newUser);
                     io.emit('getUsers', users);
@@ -175,7 +179,7 @@ router.get('/conversations', fetchuser, async (req, res) => {
                 latestMessageDate: conversation.latestMessage.timestamp,
                 latestMessageContent: latestMessageContent
             };
-        }));     
+        }));
 
         res.json(formattedConversations);
     } catch (error) {
@@ -256,7 +260,7 @@ router.get('/unread-messages', fetchuser, async (req, res) => {
         let unreadMessagesCount = 0;
         messages.forEach(message => {
             // Check if the user is a recipient of the message and the message is unread
-            if (message.recipient.equals(userId) && message.readCount < 2) {
+            if (message.recipient.equals(userId) && message.readCount <= 1) {
                 unreadMessagesCount++;
             }
         });
@@ -287,7 +291,7 @@ router.get('/unread-messages-users', fetchuser, async (req, res) => {
         // Calculate the unread messages count for each user
         messages.forEach(message => {
             // Check if the user is a recipient of the message and the message is unread
-            if (message.recipient.equals(userId) && message.readCount < 2) {
+            if (message.recipient.equals(userId) && message.readCount < 1) {
                 // Increment the unread messages count for the sender
                 if (!unreadMessagesByUser[message.sender]) {
                     unreadMessagesByUser[message.sender] = 0;

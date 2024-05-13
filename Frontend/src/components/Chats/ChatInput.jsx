@@ -5,6 +5,7 @@ import AuthContext from '../../context/AuthContext';
 import { useParams } from 'react-router-dom';
 
 function ChatInput({ socket }) {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     const { userId } = useParams(); // recipientID
     // console.log("userId:>> " + userId);
     const [message, setMessage] = useState('');
@@ -75,7 +76,7 @@ function ChatInput({ socket }) {
                 senderId: user._id, recipient: userId, content: message, images: images
             });
 
-            const response = await fetch('http://localhost:5000/api/chat/send-message', {
+            const response = await fetch(`${apiUrl}/api/chat/send-message`, {
                 method: 'POST',
                 headers: {
                     "Auth-token": localStorage.getItem('Hactify-Auth-token')
@@ -118,7 +119,7 @@ function ChatInput({ socket }) {
                 </div>
             ))}
             <form className="flex items-center justify-between m-2 mt-auto" onSubmit={handleSubmit}>
-                <textarea
+                <input
                     className={`flex-1 w-full h-12 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500 resize-none ${images.length === 0 ? 'required' : ''}`}
                     type="text"
                     placeholder="Enter Msg here"

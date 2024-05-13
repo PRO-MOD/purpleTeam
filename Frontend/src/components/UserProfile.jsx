@@ -11,7 +11,7 @@
 
 //   const fetchUserData = async () => {
 //     try {
-//       const response = await fetch("http://localhost:5000/api/auth/getuser", {
+//       const response = await fetch("${apiUrl}/api/auth/getuser", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -36,7 +36,7 @@
 //       formData.append('profilePicture', newProfilePicture);
 
 //       // Send the new profile picture to the backend
-//       await fetch('http://localhost:5000/api/auth/change-picture', {
+//       await fetch('${apiUrl}/api/auth/change-picture', {
 //         method: 'POST',
 //         headers: {
 //             "Auth-token": localStorage.getItem('Hactify-Auth-token')
@@ -76,6 +76,7 @@
 import React, { useState, useEffect } from 'react';
 
 const UserProfile = () => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userData, setUserData] = useState({});
   const [newProfilePicture, setNewProfilePicture] = useState(null);
 
@@ -86,7 +87,7 @@ const UserProfile = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/auth/getuser", {
+      const response = await fetch(`${apiUrl}/api/auth/getuser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +112,7 @@ const UserProfile = () => {
       formData.append('profilePicture', newProfilePicture);
 
       // Send the new profile picture to the backend
-      await fetch('http://localhost:5000/api/auth/change-picture', {
+      await fetch(`${apiUrl}/api/auth/change-picture`, {
         method: 'POST',
         headers: {
             "Auth-token": localStorage.getItem('Hactify-Auth-token')

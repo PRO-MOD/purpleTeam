@@ -13,7 +13,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const uploadImageToCloudinary = require('../utils/imageUpload')
 
-// Route 1: route for the api with the route og 13.127.232.191/api/auth/createuser
+// Route 1: route for the api with the route og localhost/api/auth/createuser
 router.post('/createuser', async (req, res) => {
   let success = false;
 
@@ -81,7 +81,7 @@ router.post('/addUsers/:userId', async (req, res) => {
 
 
 
-// Route 2: route for the api with the route og 13.127.232.191/api/auth/login
+// Route 2: route for the api with the route og localhost/api/auth/login
 router.post('/login', async (req, res) => {
   let success = false;
 
@@ -206,7 +206,7 @@ router.put('/updateuser/:userId', async (req, res) => {
 
 
 
-// Route 3: route for the api with the route of 13.127.232.191/api/auth/getuser with a MIDDLEWARE
+// Route 3: route for the api with the route of localhost/api/auth/getuser with a MIDDLEWARE
 router.post('/getuser', fetchuser, async (req, res) => {
 
   try {

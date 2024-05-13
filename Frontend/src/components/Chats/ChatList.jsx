@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ChatItem } from "react-chat-elements";
 import { useNavigate } from "react-router-dom";
+import SocketContext from '../../context/SocketContext';
 import "../../App.css"
 
 function ChatLists({ position }) {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     const [conversations, setConversations] = useState([]);
     const [volunteers, setVolunteers] = useState([]);
     const navigate = useNavigate();
+
+    // import all context
+    const { unreadMessages, fetchUnreadMessages, unreadCounts, fetchUnreadMessagesByUser } = useContext(SocketContext);
 
     useEffect(() => {
         if (position === 'left') {
@@ -18,7 +23,7 @@ function ChatLists({ position }) {
 
     const fetchConversations = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/chat/conversations', {
+            const response = await fetch(`${apiUrl}/api/chat/conversations`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -26,7 +31,7 @@ function ChatLists({ position }) {
                 }
             });
             const data = await response.json();
-            console.log(conversations);
+            // console.log(conversations);
             data.sort((a, b) => new Date(b.latestMessageDate) - new Date(a.latestMessageDate));
             setConversations(data);
         } catch (error) {
@@ -36,7 +41,7 @@ function ChatLists({ position }) {
 
     const fetchVolunteers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/getallVolunteer', {
+            const response = await fetch(`${apiUrl}/api/auth/getallVolunteer`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -50,9 +55,17 @@ function ChatLists({ position }) {
         }
     };
 
-    const handleChatItemClick = (recipientId) => {
+    const handleChatItemClick = async (recipientId) => {
         navigate(`/chat/${recipientId}`);
+        await fetchUnreadMessages();
+        await fetchUnreadMessagesByUser();
     };
+
+
+    useEffect(() => {
+        fetchUnreadMessagesByUser();
+    }, [])
+
 
     return (
         <div className="flex flex-col max-h-screen">
@@ -64,15 +77,15 @@ function ChatLists({ position }) {
                     title={conversation.recipient.name}
                     subtitle={conversation.latestMessageContent}
                     date={new Date(conversation.latestMessageDate)}
-                    unread={conversation.unreadCount}
+                    unread={unreadCounts[conversation.recipient._id]}
                     onClick={() => handleChatItemClick(conversation.recipient._id)}
                 />
             ))}
             {
                 position === 'right' && (
                     <>
-                    <h1 className='p-4 bg-white'>Start Conversation...</h1>
-                    <hr />
+                        <h1 className='p-4 bg-white'>Start Conversation...</h1>
+                        <hr />
                     </>
                 )
             }

@@ -13,20 +13,24 @@ import SignIn from './components/Signin'
 import HomePage from './components/HomePage'
 import NoteState from './context/NoteState'
 import AuthState from './context/AuthState'
+import SocketState from './context/SocketState'
 
 function App() {
-
+  const apiUrl = import.meta.env.VITE_Backend_URL;
+  // console.log(apiUrl);
   return (
     <>
       <AuthState>
-        <NoteState>
-          <Router>
-            <Routes>
-              <Route exact path='/*' element={<HomePage />} />
-              <Route exact path='/signin' element={<SignIn />} />
-            </Routes>
-          </Router>
-        </NoteState>
+        <SocketState>
+          <NoteState>
+            <Router>
+              <Routes>
+                <Route exact path='/*' element={<HomePage />} />
+                <Route exact path='/signin' element={<SignIn />} />
+              </Routes>
+            </Router>
+          </NoteState>
+        </SocketState>
       </AuthState>
     </>
   )

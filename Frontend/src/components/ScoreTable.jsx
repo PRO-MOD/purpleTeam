@@ -3,6 +3,7 @@ import Loading from './Loading';
 import { useNavigate } from "react-router-dom";
 
 function ScoreTable({ scores, loading, isHomePage }) {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
   const [sortedScores, setSortedScores] = useState([]);
 
@@ -16,7 +17,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
 
   const handleUserClick = async (userName) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/user?name=${userName}`);
+      const response = await fetch(`${apiUrl}/api/auth/user?name=${userName}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data._id) {

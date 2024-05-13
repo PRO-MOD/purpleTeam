@@ -40,7 +40,7 @@ function Notification() {
 
   // let ReportType;
   // (window.location.href.includes("SITREP")) ? ReportType = "SITREP" : (window.location.href.includes("incident")) ? ReportType = "INCIDENT" : ReportType = "DAY_END"
-
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -68,7 +68,7 @@ function Notification() {
       //   formDataToSend.append('pocScreenshots', file);
       // });
   
-      const response = await fetch(`http://localhost:5000/api/reports/Notification`, {
+      const response = await fetch(`${apiUrl}/api/reports/Notification`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {

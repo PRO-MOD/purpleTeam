@@ -1,53 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
+import SocketContext from '../context/SocketContext';
 
 const SideNavbar = () => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userRole, setUserRole] = useState(null);
-  const [unreadMessages, setUnreadMessages] = useState(null);
+  const [userId, setUserId] = useState();
+  // const [unreadMessages, setUnreadMessages] = useState(null);
   const navigate = useNavigate();
+  const { creteSocket, unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/auth/getuser", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Auth-token": localStorage.getItem('Hactify-Auth-token')
-          },
-        });
-        const userData = await response.json();
-        setUserRole(userData.role);
-      } catch (error) {
-        console.error("Error fetching user role:", error);
-      }
-    };
-
     fetchUserRole();
     fetchUnreadMessages();
   }, []);
 
-
-  const fetchUnreadMessages = async () => {
+  const fetchUserRole = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/chat/unread-messages", {
-        method: "GET",
+      const response = await fetch(`${apiUrl}/api/auth/getuser`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Auth-token": localStorage.getItem('Hactify-Auth-token')
         },
       });
       const userData = await response.json();
-      setUnreadMessages(userData);
+      setUserId(userData._id);
+      setUserRole(userData.role);
     } catch (error) {
       console.error("Error fetching user role:", error);
     }
   };
 
+  useEffect(()=>{
+    if (userId) {
+      creteSocket(userId);
+    }
+  },[userId])
+
   const handleLogout = () => {
-    // Clear local storage and redirect to login page
+    // Clear local storage and redirect to login pageuserId
     localStorage.removeItem('Hactify-Auth-token');
     navigate('/signin');
   };

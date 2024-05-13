@@ -15,7 +15,7 @@ function ChatAppLayout() {
     return (
         <div className="flex max-h-screen">
             {/* Left Section: List of existing chats */}
-            <div className="w-1/4 bg-gray-200">
+            <div className="w-1/4 bg-gray-200 h-screen overflow-x-scroll ">
                 <Profile />
                 <hr />
                 <ChatList position="left" />
@@ -32,7 +32,7 @@ function ChatAppLayout() {
             </div>
 
             {/* Right Section: List of users available for chat */}
-            <div className="w-1/4 bg-gray-200">
+            <div className="w-1/4 bg-gray-200 h-screen overflow-x-scroll ">
                 <ChatList position="right" />
             </div>
         </div>

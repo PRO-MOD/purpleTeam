@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Report() {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     description: '',
@@ -62,7 +63,7 @@ function Report() {
   //   try {
   //     setLoading(true); // Set loading state to true
   //     setError(''); // Clear previous errors
-  //     const response = await fetch(`http://localhost:5000/api/reports/SITREP`, {
+  //     const response = await fetch(`${apiUrl}/api/reports/SITREP`, {
   //       method: 'POST',
   //       body: JSON.stringify(formData),
   //       headers: {
@@ -111,7 +112,7 @@ function Report() {
       //   formDataToSend.append('pocScreenshots', file);
       // });
   
-      const response = await fetch(`http://localhost:5000/api/reports/SITREP`, {
+      const response = await fetch(`${apiUrl}/api/reports/SITREP`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {

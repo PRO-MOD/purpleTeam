@@ -87,8 +87,10 @@ function IncidentReport() {
       // formData.pocScreenshots.forEach((file) => {
       //   formDataToSend.append('pocScreenshots', file);
       // });
+
+      const apiUrl = import.meta.env.VITE_Backend_URL;
   
-      const response = await fetch(`http://localhost:5000/api/reports/IRREP`, {
+      const response = await fetch(`${apiUrl}/api/reports/IRREP`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
