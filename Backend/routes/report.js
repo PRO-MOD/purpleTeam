@@ -96,24 +96,19 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       threatLevel,
       areasOfConcern,
       recentIncidents,
-      trendAnalysis,
       impactAssessment,
       sources,
       keyThreatActors,
       indicatorsOfCompromise,
       recentVulnerabilities,
       patchStatus,
-      mitigationRecommendations,
       currentOperations,
       incidentResponse,
       forensicAnalysis,
       internalNotifications,
       externalNotifications,
       publicRelations,
-      riskAssessment,
-      continuityPlanning,
       notes,
-      prepared,
       pocScreenshots: photoUrls,
       pdfName,
       reportType,
@@ -125,7 +120,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
 
     // Load PDF file
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'Sitfinal (1).pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'Sitnew.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
     const options = { timeZone: 'Asia/Kolkata' };
@@ -140,24 +135,24 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const Threat = form.getDropdown('Threat Level');
     const Aoc = form.getTextField('Areas of Concern');
     const RI = form.getTextField('Recent Incidents');
-    const TA = form.getTextField('Trend Analysis');
+    // const TA = form.getTextField('Trend Analysis');
     const IA = form.getTextField('Impact Assessment');
     const Sources = form.getTextField('Sources');
     const KTA = form.getTextField('Key Threat Actors');
     const IOCs = form.getTextField('IOCs');
     const Vm = form.getTextField('Vulnerability management');
     const ps = form.getTextField('patch status');
-    const MR = form.getTextField('Mitigration Recommendations');
+    // const MR = form.getTextField('Mitigration Recommendations');
     const CO = form.getTextField('current operations');
     const IR = form.getTextField('Incident Response');
     const FA = form.getTextField('Forensic Analysis');
     const IN = form.getTextField('Internal Notifications');
     const EN = form.getTextField('External Notifications');
     const PR = form.getTextField('public Relations');
-    const RA = form.getTextField('Risk Assessment');
-    const CP = form.getTextField('Continuity Planning');
+    // const RA = form.getTextField('Risk Assessment');
+    // const CP = form.getTextField('Continuity Planning');
     const notes1 = form.getTextField('Notes');
-    const prepared1 = form.getTextField('prepared By');
+    // const prepared1 = form.getTextField('prepared By');
 
 
 
@@ -167,24 +162,24 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     Threat.select(threatLevel);
     Aoc.setText(areasOfConcern);
     RI.setText(recentIncidents);
-    TA.setText(trendAnalysis);
+    // TA.setText(trendAnalysis);
     IA.setText(impactAssessment)
     Sources.setText(sources);
     KTA.setText(keyThreatActors);
     IOCs.setText(indicatorsOfCompromise);
     Vm.setText(recentVulnerabilities);
     ps.setText(patchStatus);
-    MR.setText(mitigationRecommendations);
+    // MR.setText(mitigationRecommendations);
     CO.setText(currentOperations);
     IR.setText(incidentResponse);
     FA.setText(forensicAnalysis);
     IN.setText(internalNotifications);
     EN.setText(externalNotifications);
     PR.setText(publicRelations);
-    RA.setText(riskAssessment);
-    CP.setText(continuityPlanning);
+    // RA.setText(riskAssessment);
+    // CP.setText(continuityPlanning);
     notes1.setText(notes);
-    prepared1.setText(prepared);
+    // prepared1.setText(prepared);
 
     form.flatten();
 
@@ -284,29 +279,67 @@ router.get('/getAllReports', fetchuser, async (req, res) => {
   }
 });
 
-// // // Route to get details of a specific report by ID
-// router.get('/:reportId', async (req, res) => {
-//   try {
-//     const reportId = req.params.reportId;
+// Route to get details of a specific report by ID
+router.get('/update/:reportType/:reportId', async (req, res) => {
+   try {
+    const reportId = req.params.reportId;
+    const reportType=req.params.reportType;
 
-//     // Fetch the report from the database by ID
-//     // const report = await reportModel.findById(reportId);
-//     const reportsSIT= await reportModel.findById(reportId);
-//     const reportsINC = await incidentModel.findById(reportId);
-//     const reportsNOT = await notificationModel.findById(reportId);
-//     const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+    // console.log(reportType);
 
-//     if (!reports) {
-//       return res.status(404).json({ error: 'Report not found' });
-//     }
+    // Fetch the report from the database by ID
+    // const report = await reportModel.findById(reportId);
+  
+    
+    
 
-//     // Send the report details in the response
-//     res.status(200).json(reports);
-//   } catch (error) {
-//     console.error('Error fetching report details:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
+
+    if (reportType == "SITREP") {
+      const reportsSIT= await reportModel.findById(reportId);
+      if (!reportsSIT) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+  
+      // Send the report details in the response
+      res.status(200).json(reportsSIT);
+
+    }
+    else if (reportType == "IRREP") {
+      const reportsINC = await incidentModel.findById(reportId);
+      if (!reportsINC) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+  
+      // Send the report details in the response
+      res.status(200).json(reportsINC);
+
+    }
+    else {
+      const reportsNOT = await notificationModel.findById(reportId);
+      if (!reportsNOT) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+  
+      // Send the report details in the response
+      res.status(200).json(reportsNOT);
+    }
+    }
+  // console.log("hello");
+
+  // if (!report) {
+  //         return res.status(404).json({ error: 'Report not found' });
+  //       }
+    
+  //       // Send the report details in the response
+        // res.status(200).json(report);
+
+
+
+   catch (error) {
+    console.error('Error fetching report details:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 
@@ -329,54 +362,139 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
-// POST route for adding manual score to a report
+// // POST route for adding manual score to a report
+// router.post('/:reportId/:reportType/manual-score', async (req, res) => {
+//   const reportId = req.params.reportId;
+//   const reportType = req.params.reportType;
+//   const score = req.body.score;
+//   // console.log(reportType);
+
+//   try {
+//     // Find the report by ID
+//     // const report = await reportModel.findById(reportId);
+
+//     const reportsSIT = await reportModel.findById(reportId);
+//     const reportsINC = await incidentModel.findById(reportId);
+//     const reportsNOT = await notificationModel.findById(reportId);
+//     // const reports =[...reportsSIT,...reportsINC,...reportsNOT];
+//     // if (!reports) {
+//     //   return res.status(404).json({ message: 'Report not found' });
+//     // }
+//     if (reportType == "SITREP") {
+//       reportsSIT.manualScore = score;
+//       await reportsSIT.save();
+
+//     }
+//     else if (reportType == "IRREP") {
+//       reportsINC.manualScore = score;
+//       await reportsINC.save();
+
+//     }
+//     else {
+//       reportsNOT.manualScore = score;
+
+//       await reportsNOT.save();
+
+//     }
+
+
+//     // Update the manual score field of the report
+//     // reports.manualScore = score;
+
+//     // Save the updated report
+
+
+
+//     return res.status(200).json({ message: 'Manual score added successfully' });
+//   } catch (error) {
+//     console.error('Error adding manual score:', error);
+//     return res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
+
+// Assuming you have already set up your Express app and mongoose models
+
+// Route to handle manual score update
+// router.post('/:reportId/:reportType/manual-score', async (req, res) => {
+//   const { reportId, reportType } = req.params;
+//   const updatedData = req.body;
+//   console.log(updatedData);
+
+//   try {
+//       // Find the report by ID and update its data
+//       const report = await reportModel.findByIdAndUpdate(reportId, updatedData, { new: true });
+
+//       if (!report) {
+//           return res.status(404).json({ message: 'Report not found' });
+//       }
+
+//       // Optionally, perform any additional processing or validation here
+
+//       return res.json({ message: 'Manual score updated successfully', report });
+//   } catch (error) {
+//       console.error('Error updating manual score:', error);
+//       return res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
+
+
+// Route to handle manual score update
 router.post('/:reportId/:reportType/manual-score', async (req, res) => {
-  const reportId = req.params.reportId;
-  const reportType = req.params.reportType;
-  const score = req.body.score;
-  // console.log(reportType);
+  const { reportId, reportType } = req.params;
+  const updatedData = req.body;
 
   try {
-    // Find the report by ID
-    // const report = await reportModel.findById(reportId);
+      // Extract total manual score from the request body
+      const { totalManualScore, ...reportData } = updatedData;
+      // console.log(totalManualScore);
 
-    const reportsSIT = await reportModel.findById(reportId);
-    const reportsINC = await incidentModel.findById(reportId);
-    const reportsNOT = await notificationModel.findById(reportId);
-    // const reports =[...reportsSIT,...reportsINC,...reportsNOT];
-    // if (!reports) {
-    //   return res.status(404).json({ message: 'Report not found' });
-    // }
-    if (reportType == "SITREP") {
-      reportsSIT.manualScore = score;
-      await reportsSIT.save();
+      // console.log(updatedData);
 
+      // console.log(totalManualScore);
+      if (reportType == "SITREP") {
+        const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
+      report.manualScore = totalManualScore;
+            await report.save();
+            return res.json({ message: 'Manual score updated successfully', report });
+      }
+       
+  
+      // }
+      else if (reportType == "IRREP") {
+        const report = await incidentModel.findByIdAndUpdate(reportId, reportData, { new: true });
+      report.manualScore = totalManualScore;
+            await report.save();
+           
+            return res.json({ message: 'Manual score updated successfully', report });
+       
+      }
+      else {
+        const report = await notificationModel.findByIdAndUpdate(reportId, reportData, { new: true });
+      report.manualScore = totalManualScore;
+            await report.save();
+            return res.json({ message: 'Manual score updated successfully', report });
+       
+      }  
+
+      // Find the report by ID and update its data
+      // const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
+      // report.manualScore = totalManualScore;
+      //       await report.save();
+
+      // if (!report) {
+      //     return res.status(404).json({ message: 'Report not found' });
+      // }
+      // return res.json({ message: 'Manual score updated successfully', report });
+
+      // Optionally, perform any additional processing or validation here
     }
-    else if (reportType == "IRREP") {
-      reportsINC.manualScore = score;
-      await reportsINC.save();
-
-    }
-    else {
-      reportsNOT.manualScore = score;
-
-      await reportsNOT.save();
-
-    }
-
-
-    // Update the manual score field of the report
-    // reports.manualScore = score;
-
-    // Save the updated report
-
-
-
-    return res.status(200).json({ message: 'Manual score added successfully' });
-  } catch (error) {
-    console.error('Error adding manual score:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+      
+   catch (error) {
+      console.error('Error updating manual score:', error);
+      return res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
 
 module.exports = router;

@@ -10,22 +10,18 @@ function Report() {
     threatLevel: '',
     areasOfConcern: '',
     recentIncidents: '',
-    trendAnalysis: '',
     impactAssessment: '',
     sources: '',
     keyThreatActors: '',
     indicatorsOfCompromise: '',
     recentVulnerabilities: '',
     patchStatus: '',
-    mitigationRecommendations: '',
     currentOperations: '',
     incidentResponse: '',
     forensicAnalysis: '',
     internalNotifications: '',
     externalNotifications: '',
     publicRelations: '',
-    riskAssessment: '',
-    continuityPlanning: '',
     pocScreenshots: [],
     pdfName: '',
     reportType: 'SITREP',
@@ -186,10 +182,10 @@ function Report() {
           </div>
 
           {/* Trend Analysis */}
-          <div>
+          {/* <div>
             <label className="block mb-1 text-gray-700">Trend Analysis:</label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="trendAnalysis" value={formData.trendAnalysis} onChange={handleInputChange} required placeholder='Analysis of trends in security incidents or threats' />
-          </div>
+          </div> */}
 
           {/* Impact Assessment */}
           <div>
@@ -236,10 +232,10 @@ function Report() {
           </div>
 
           {/* Mitigation Recommendations */}
-          <div>
+          {/* <div>
             <label className="block mb-1 text-gray-700">Mitigation Recommendations:</label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="mitigationRecommendations" value={formData.mitigationRecommendations} onChange={handleInputChange} required placeholder='Recommendations for mitigating known vulnerabilities' />
-          </div>
+          </div> */}
         </div>
 
         {/* 5. Security Operations */}
@@ -287,30 +283,11 @@ function Report() {
         </div>
 
         {/* 7. Future Planning */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">7. Future Planning</h3>
-          {/* Risk Assessment */}
-          <div>
-            <label className="block mb-1 text-gray-700">Risk Assessment:</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="riskAssessment" value={formData.riskAssessment} onChange={handleInputChange} required placeholder='Summary of current risk assessment efforts' />
-          </div>
-
-          {/* Continuity Planning */}
-          <div>
-            <label className="block mb-1 text-gray-700">Continuity Planning:</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="continuityPlanning" value={formData.continuityPlanning} onChange={handleInputChange} required placeholder='Overview of continuity planning efforts' />
-          </div>
-
-          {/* Training and Exercises */}
-          {/* <div>
-            <label className="block mb-1 text-gray-700">Training and Exercises:</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" name="trainingAndExercises" value={formData.trainingAndExercises} onChange={handleInputChange} required placeholder='Summary of upcoming training or exercises' />
-          </div> */}
-        </div>
+        
 
         {/* 8. Additional Notes (Optional) */}
         <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">8. Additional Notes</h3>
+          <h3 className="text-xl mb-2 font-semibold text-gray-800">7. Additional Notes</h3>
           <div>
             <label className="block mb-1 text-gray-700">Additional Notes (optional)</label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="notes" value={formData.notes} onChange={handleInputChange} placeholder='Space for any additional comments or observations' />
@@ -318,17 +295,17 @@ function Report() {
         </div>
 
         {/* 9. Submission */}
-        <div>
+        {/* <div>
           <h3 className="text-xl mb-2 font-semibold text-gray-800">9. Submission</h3>
           <div>
             <label className="block mb-1 text-gray-700">Prepared By</label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="prepared" value={formData.prepared} onChange={handleInputChange} placeholder='Name of the individual(s) preparing the report' />
           </div>
-        </div>
+        </div> */}
 
         {/* 10. POC (Screenshots) */}
         <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">10. POC (Screenshots)</h3>
+          <h3 className="text-xl mb-2 font-semibold text-gray-800">8. POC (Screenshots)</h3>
           <div>
             <label className="block mb-1 text-gray-700">Screenshots (up to 5):</label>
             <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshot" multiple onChange={handleInputChange} />
