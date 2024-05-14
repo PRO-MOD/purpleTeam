@@ -43,8 +43,8 @@ const SocketState = (props) => {
 
     socket?.on('challengeSolved', (data) => {
       console.log('Challenge solved:', data);
-      setChallenge(data.challenge);
-      setModalIsOpen(true);
+      // setChallenge(data.challenge);
+      // setModalIsOpen(true);
     });
 
     socket?.on('getMessage', message => {
@@ -114,16 +114,9 @@ const playNotificationSound = () => {
     fetchUnreadMessages();
   }, []);
 
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
-
   return (
     <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser }}>
       {props.children}
-      <Modal isOpen={modalIsOpen} closeModal={closeModal}>
-        <p>{challenge}</p>
-      </Modal>
     </SocketContext.Provider>
   )
 }
