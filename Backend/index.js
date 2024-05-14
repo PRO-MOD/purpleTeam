@@ -152,11 +152,11 @@ app.post('/', async (req, res) => {
       }
     });
     const { success, data } = await response.json();
-
+    // console.log(data);
     if (success) {
       // Check if there's a match with the provided challenge_id and date
       const match = data.find(item => item.challenge_id === challenge_id && item.id === id && item.date === date);
-
+      // console.log(match);
       if (match) {
         console.log(`User ${score.name} solved challenge ${match.challenge.name}`);
         // Emit event to the user socket
