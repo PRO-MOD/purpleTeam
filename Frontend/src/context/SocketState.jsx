@@ -37,6 +37,12 @@ const SocketState = (props) => {
 
   useEffect(() => {
 
+    socket?.on('challengeSolved', (data) => {
+      console.log('Challenge solved:', data);
+      // setChallenge(data.challenge);
+      // setModalIsOpen(true);
+    });
+
     socket?.on('getMessage', message => {
         if (!window.location.href.includes('/chat')) {
             // Play notification sound

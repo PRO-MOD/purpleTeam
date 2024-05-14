@@ -160,7 +160,7 @@ app.post('/', async (req, res) => {
       if (match) {
         console.log(`User ${score.name} solved challenge ${match.challenge.name}`);
         // Emit event to the user socket
-        const user = users.find(user => user.userId === score.user);
+        const user = users.find(user => user.userId == score.user);
         console.log(score.user);
         console.log("Users: "+users);
         console.log("socketId:" +user.socketId);
