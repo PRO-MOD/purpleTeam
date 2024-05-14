@@ -135,6 +135,10 @@ const incidentSchema = new mongoose.Schema({
     updatesScore: { type: Number, default: 0, required: false },
     other: { type: String, required: false },
     pocScreenshots: { type: [String], required: false },
+    pocScreenshotsScore:{
+      type: Number, default: 0, required: false
+
+  },
     pdfName: { type: String, required: true },
     reportType: { type: String, required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

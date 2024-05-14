@@ -123,6 +123,11 @@ const reportSchema = new mongoose.Schema({
         type: [String],
         required: false,
     },
+    pocScreenshotsScore:{
+        type: Number, default: 0, required: false
+
+    },
+   
     photoUrl: {
         type: [String],
         required: false,
