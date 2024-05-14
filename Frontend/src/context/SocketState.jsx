@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SocketContext from "./SocketContext";
 import { io } from 'socket.io-client';
 import Notification from '/notification.mp3'
+import Modal from "../components/ChallengeSolvedModal";
 
 
 const SocketState = (props) => {
@@ -10,6 +11,9 @@ const SocketState = (props) => {
   const [unreadMessages, setUnreadMessages] = useState(null);
   const [userId, setUserId] = useState();
   const [messages, setMessages] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false); // State for modal visibility
+  const [challenge, setChallenge] = useState(''); // State for challenge name
+
 
   // Fetch user
   const creteSocket = async (userID) => {
@@ -39,8 +43,8 @@ const SocketState = (props) => {
 
     socket?.on('challengeSolved', (data) => {
       console.log('Challenge solved:', data);
-      // setChallenge(data.challenge);
-      // setModalIsOpen(true);
+      setChallenge(data.challenge);
+      setModalIsOpen(true);
     });
 
     socket?.on('getMessage', message => {
@@ -113,6 +117,9 @@ const playNotificationSound = () => {
   return (
     <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser }}>
       {props.children}
+      <Modal isOpen={modalIsOpen} closeModal={closeModal}>
+        <p>{challenge}</p>
+      </Modal>
     </SocketContext.Provider>
   )
 }
