@@ -114,6 +114,10 @@ const playNotificationSound = () => {
     fetchUnreadMessages();
   }, []);
 
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
   return (
     <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser }}>
       {props.children}
