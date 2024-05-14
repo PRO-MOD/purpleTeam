@@ -61,6 +61,10 @@ const notificationSchema = new mongoose.Schema({
         type: [String],
         required: false,
     },
+    pocScreenshotsScore:{
+        type: Number, default: 0, required: false
+
+    },
     pdfName: {
         type: String,
         required: true,
