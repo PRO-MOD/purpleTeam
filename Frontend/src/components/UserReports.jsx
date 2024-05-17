@@ -569,11 +569,16 @@ function UserReports({ userId, route }) {
                                 <tr key={key}>
                                     <td className="border px-4 py-2">{key.replace('Score', '')}</td>
                                     {/* <td className="border px-4 py-2 break-words max-w-xs">{selectedReport[key.replace('Score', '')]}</td> */}
-                                    <td className="border px-4 py-2  break-words max-w-xs">
-                                                    {key === 'penaltyScore' ? (
+                                    <td className={`border px-4 py-2 break-words max-w-xs ${key=="pocScreenshotsScore"?"text-indigo-500":""}`}>
+                                    {key=="pocScreenshotsScore"?selectedReport[key.replace('Score', '')].map((data,index)=>{
+                                        return <div key={index+1} ><a href={data} target='_blank'>Screenshot {index+1}</a><br/></div>
+                                    }):
+                                                    key === 'penaltyScore' ? (
+                                                        <div>
+                                                        <span className="font-semibold text-red-700">Remark: </span>
                                                         <input
                                                             type="text"
-                                                            className="border-gray-300  text-red-500 rounded-md w-full p-2"
+                                                            className={`border-gray-300 rounded-md w-full p-2 ${key === 'penaltyScore' ? 'text-red-500' : ''}`}
                                                             value={selectedReport.penalty || ''}
                                                             onChange={(e) => {
                                                                 const inputValue = e.target.value;
@@ -583,6 +588,7 @@ function UserReports({ userId, route }) {
                                                                 }));
                                                             }}
                                                         />
+                                                    </div>
                                                     ) : (
                                                         selectedReport[key.replace('Score', '')]
                                                     )}
