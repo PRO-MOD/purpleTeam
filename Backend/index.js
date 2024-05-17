@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const crypto = require('crypto');
 const Score = require('./models/score.js')
+const ChallengeSolve = require('./models/ChallengeSolved.js'); 
 require('dotenv').config();
 const io = require('socket.io')(8080, {
   cors: {
@@ -160,12 +161,25 @@ app.post('/', async (req, res) => {
       // console.log(match);
       if (match) {
         console.log(`User ${score.name} solved challenge ${match.challenge.name}`);
+
+        // Create a new ChallengeSolve document
+        const challengeSolve = new ChallengeSolve({
+          userId: score.user,
+          challenge_id: match.challenge_id,
+          challenge_name: match.challenge.name,
+          date: match.date,
+          solve_id: match.id
+        });
+
+        // Save the ChallengeSolve document to the database
+        await challengeSolve.save();
+
         // Emit event to the user socket
         const user = users.find(user => user.userId == score.user);
         console.log(score.user);
         console.log("Users: "+users);
         if (user) {
-          console.log("socketId:" +user.socketId);
+          // console.log("socketId:" +user.socketId);
           io.to(user.socketId).emit('challengeSolved', { challenge: match.challenge.name });
           console.log("Emmited ChallengeSolved to frontend");
         } else {
