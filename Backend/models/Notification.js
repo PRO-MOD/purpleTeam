@@ -51,11 +51,14 @@ const mongoose = require('mongoose');
 // Define the schema for form data
 const notificationSchema = new mongoose.Schema({
 
-    type: { type: String, required: true },
-    typeScore: { type: Number, default: 0, required: false },
+    description: { type: String, required: true },
+    descriptionScore: { type: Number, default: 0, required: false },
     location: { type: String, required: true },
     locationScore: { type: Number, default: 0, required: false },
     notes: { type: String, required: false },
+    ID:{
+        type: String, required: true
+    },
     // notesScore: { type: Number, default: 0, required: false },
     pocScreenshots: {
         type: [String],
@@ -87,6 +90,11 @@ const notificationSchema = new mongoose.Schema({
         default: null, // Assuming manual score is not initially set
         required: false,
     },
+    penaltyScore: {
+        type: Number, default: 0, required: false
+  
+    },
+    penalty:{type: String, required: false},
 });
 
 // Creating the FormData model

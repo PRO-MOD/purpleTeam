@@ -41,7 +41,8 @@ async function fetchImageAsBuffer(url) {
 router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) => {
     try {
         const {
-            type,
+            ID,
+            description,
             location,
             notes,
         } = req.body;
@@ -66,7 +67,8 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
         // Save FormData to MongoDB
         const formData = new notificationModel({
-            type,
+            ID,
+            description,
             location,
             notes,
             pocScreenshots: photoUrls,
@@ -77,7 +79,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
         await formData.save();
 
         // Load PDF file
-        const pdfFilePath = path.join(__dirname, '..', 'public', 'NotificationFinal (3).pdf'); // Path to original PDF file
+        const pdfFilePath = path.join(__dirname, '..', 'public', 'Notifications.pdf'); // Path to original PDF file
         const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
         const options = { timeZone: 'Asia/Kolkata' };
@@ -89,17 +91,20 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
         
             const dateField = form.getTextField('Date');
             const timeField = form.getTextField('Time');
-            const type1 = form.getTextField('Type');
+            const ID1 = form.getTextField('ID');
+            const description1 = form.getTextField('Description');
             const location1 = form.getTextField('Location');
-            const priority1 = form.getTextField('Priority');
+            const notes1 = form.getTextField('Notes');
         
         
         
             dateField.setText(currentDate);
             timeField.setText(currentTime);
-            type1.setText(type);
+            description1.setText(description);
+            ID1.setText(ID);
+            // type1.setText(type);
             location1.setText(location);
-            priority1.setText(notes);
+            notes1.setText(notes);
         
         
         

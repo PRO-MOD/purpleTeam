@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 function Notification() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    type: '',
+    ID:'',
+    description: '',
     location: '',
     notes: '',
     pocScreenshots: [],
@@ -97,10 +98,22 @@ function Notification() {
     <h2 className="text-3xl mb-4 text-center font-bold text-brown-650">Notification Report Form</h2>
     {error && <div className="text-red-500 mb-4">Error: {error}</div>}
     <form onSubmit={handleSubmit}>
+
+    <div className="mb-4">
+            <label className="block mb-1 text-gray-700">Incident ID:<span className="text-red-500 ml-1">*</span></label>
+            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="ID" value={formData.ID} onChange={handleInputChange} required>
+              <option value="">Select Threat Level</option>
+              <option value="Low">Low</option>
+              <option value="Guarded">Guarded</option>
+              <option value="Elevated">Elevated</option>
+              <option value="High">High</option>
+              <option value="Severe">Severe</option>
+            </select>
+          </div>
       
       <div className="mb-4">
-        <label className="block mb-1 text-gray-700">1. Incident Type:<span className="text-red-500 ml-1">*</span></label>
-        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="type" value={formData.type} onChange={handleInputChange} required placeholder='Description: Type of incident situation - Eg Ransomware, DDOS, Bruteforce etc. You can please add IOCs if possible. 
+        <label className="block mb-1 text-gray-700">1. Description:<span className="text-red-500 ml-1">*</span></label>
+        <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="description" value={formData.description} onChange={handleInputChange} required placeholder='Description: Type of incident situation - Eg Ransomware, DDOS, Bruteforce etc. You can please add IOCs if possible. 
 ' />
       </div>
   

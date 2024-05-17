@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function IncidentReport() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    ID:'',
     description: '',
     severityLevel: '',
     impact: '',
@@ -121,8 +122,20 @@ function IncidentReport() {
   {error && <div className="text-red-500 mb-4">Error: {error}</div>}
   <form onSubmit={handleSubmit}>
     {/* 1. Incident Overview */}
+    <div className="mb-4">
+            <label className="block mb-1 text-gray-700">Incident ID:<span className="text-red-500 ml-1">*</span></label>
+            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="ID" value={formData.ID} onChange={handleInputChange} required>
+              <option value="">Select Threat Level</option>
+              <option value="Low">Low</option>
+              <option value="Guarded">Guarded</option>
+              <option value="Elevated">Elevated</option>
+              <option value="High">High</option>
+              <option value="Severe">Severe</option>
+            </select>
+          </div>
     <h3 className="text-xl mb-2">1. Incident Overview</h3>
     {/* Description */}
+
     <div className="mb-4">
       <label className="block mb-1 text-gray-700">Description:<span className="text-red-500 ml-1">*</span></label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="description" value={formData.description} onChange={handleInputChange} required placeholder='Brief summary of the incident' />

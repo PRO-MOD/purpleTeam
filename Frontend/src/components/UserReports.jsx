@@ -377,13 +377,20 @@ function UserReports({ userId }) {
         try {
             // Calculate total manual score
             const totalManualScore = Object.entries(selectedReport)
-                .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
-                .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0);
+            .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore' && key !== 'penaltyScore') // Exclude penaltyScore from sum
+                        .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0) - (selectedReport.penaltyScore || 0);
+            
+                // .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
+                // .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0);
+
+
+               
 
             // Add total manual score to the selected report object
             const reportWithTotalScore = {
                 ...selectedReport,
-                totalManualScore
+                totalManualScore,
+                penalty: selectedReport.penalty || ''
             };
 
             const response = await fetch(`${apiUrl}/api/reports/${reportId}/${reportType}/manual-score`, {
@@ -560,8 +567,26 @@ function UserReports({ userId }) {
                             return (
                                 <tr key={key}>
                                     <td className="border px-4 py-2">{key.replace('Score', '')}</td>
-                                    <td className="border px-4 py-2 break-words max-w-xs">{selectedReport[key.replace('Score', '')]}</td>
-                                    <td className="border px-4 py-2">{selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'50':'5'}</td>
+                                    {/* <td className="border px-4 py-2 break-words max-w-xs">{selectedReport[key.replace('Score', '')]}</td> */}
+                                    <td className="border px-4 py-2  break-words max-w-xs">
+                                                    {key === 'penaltyScore' ? (
+                                                        <input
+                                                            type="text"
+                                                            className="border-gray-300  text-red-500 rounded-md w-full p-2"
+                                                            value={selectedReport.penalty || ''}
+                                                            onChange={(e) => {
+                                                                const inputValue = e.target.value;
+                                                                setSelectedReport(prevReport => ({
+                                                                    ...prevReport,
+                                                                    penalty: inputValue
+                                                                }));
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        selectedReport[key.replace('Score', '')]
+                                                    )}
+                                                </td>
+                                    <td className="border px-4 py-2">{selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'50':key==="penaltyScore"?'':'5'}</td>
                                     <td className="border px-2 py-2">
                                         <input
                                             type="number"
@@ -585,11 +610,17 @@ function UserReports({ userId }) {
                     })}
                     <tr>
                         <td className="border px-4 py-2" colSpan="3">Total Manual Score</td>
-                        <td className="border px-4 py-2">
+                        {/* <td className="border px-4 py-2">
                             {selectedReport &&
                                 Object.entries(selectedReport)
                                     .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
                                     .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0)}
+                        </td> */}
+                         <td className="border px-4 py-2">
+                            {selectedReport &&
+                                Object.entries(selectedReport)
+                                    .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore' && key !== 'penaltyScore') // Exclude penaltyScore from sum
+                                    .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0) - (selectedReport.penaltyScore || 0)} {/* Subtract penaltyScore */}
                         </td>
                     </tr>
                 </tbody>

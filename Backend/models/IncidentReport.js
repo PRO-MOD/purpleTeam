@@ -78,6 +78,10 @@
 const mongoose = require('mongoose');
 
 const incidentSchema = new mongoose.Schema({
+
+
+  ID: { type: String, required: true },
+
  
     description: { type: String, required: true },
     descriptionScore: { type: Number, default: 0, required: false },
@@ -93,7 +97,7 @@ const incidentSchema = new mongoose.Schema({
       required: true,
     },
     impactScore: { type: Number, default: 0, required: false },
-    affectedSystems: [{ type: String }],
+    affectedSystems: { type: String, required: true },
     affectedSystemsScore: { type: Number, default: 0, required: false },
     detectionMethod: { type: String, required: true },
     detectionMethodScore: { type: Number, default: 0, required: false },
@@ -121,18 +125,18 @@ const incidentSchema = new mongoose.Schema({
     lessonsLearnedScore: { type: Number, default: 0, required: false },
     evidence: { type: String, required: true },
     evidenceScore: { type: Number, default: 0, required: false },
-    indicatorsOfCompromise: [{ type: String }],
+    indicatorsOfCompromise: { type: String, required: true },
     indicatorsOfCompromiseScore: { type: Number, default: 0, required: false },
     ttps: { type: String, required: true },
     ttpsScore: { type: Number, default: 0, required: false },
     mitigationRecommendations: { type: String, required: true },
     mitigationRecommendationsScore: { type: Number, default: 0, required: false },
-    internalNotification: [{ type: String }],
-    internalNotificationScore: { type: Number, default: 0, required: false },
+    // internalNotification: [{ type: String }],
+    // internalNotificationScore: { type: Number, default: 0, required: false },
     externalNotification: [{ type: String }],
-    externalNotificationScore: { type: Number, default: 0, required: false },
+    // externalNotificationScore: { type: Number, default: 0, required: false },
     updates: { type: String, required: true },
-    updatesScore: { type: Number, default: 0, required: false },
+    // updatesScore: { type: Number, default: 0, required: false },
     other: { type: String, required: false },
     pocScreenshots: { type: [String], required: false },
     pocScreenshotsScore:{
@@ -145,7 +149,12 @@ const incidentSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     manualScore: { type: Number, default: null, required: false },
     notes: { type: String, required: false },
-    prepared: { type: String, required: false }
+    prepared: { type: String, required: false },
+    penalty:{type: String, required: false},
+    penaltyScore: {
+      type: Number, default: 0, required: false
+
+  },
 });
 
 const incidentModel = mongoose.model('incidentData', incidentSchema);

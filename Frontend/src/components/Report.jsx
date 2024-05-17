@@ -6,22 +6,16 @@ function Report() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    ID:'',
     description: '',
     threatLevel: '',
     areasOfConcern: '',
-    recentIncidents: '',
-    impactAssessment: '',
     sources: '',
-    keyThreatActors: '',
     indicatorsOfCompromise: '',
     recentVulnerabilities: '',
     patchStatus: '',
+    Status:'',
     currentOperations: '',
-    incidentResponse: '',
-    forensicAnalysis: '',
-    internalNotifications: '',
-    externalNotifications: '',
-    publicRelations: '',
     pocScreenshots: [],
     pdfName: '',
     reportType: 'SITREP',
@@ -142,6 +136,18 @@ function Report() {
       <h2 className="text-3xl mb-8 text-center font-bold text-brown-650">SITREP Report Form</h2>
       {error && <div className="text-red-500 mb-4">Error: {error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
+
+      <div className="mb-4">
+            <label className="block mb-1 text-gray-700">Incident ID:<span className="text-red-500 ml-1">*</span></label>
+            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="ID" value={formData.ID} onChange={handleInputChange} required>
+              <option value="">Select Threat Level</option>
+              <option value="Low">Low</option>
+              <option value="Guarded">Guarded</option>
+              <option value="Elevated">Elevated</option>
+              <option value="High">High</option>
+              <option value="Severe">Severe</option>
+            </select>
+          </div>
         {/* 1. Current Situation */}
         <div>
           <h3 className="text-xl mb-2 font-semibold text-gray-800">1. Current Situation</h3>
@@ -172,31 +178,10 @@ function Report() {
         </div>
 
 
-        {/* 2. Incident Overview */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">2. Incident Overview</h3>
-          {/* Recent Incidents */}
-          <div>
-            <label className="block mb-1 text-gray-700">Recent Incidents:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="recentIncidents" value={formData.recentIncidents} onChange={handleInputChange} required placeholder='Summary of recent security incidents or events' />
-          </div>
-
-          {/* Trend Analysis */}
-          {/* <div>
-            <label className="block mb-1 text-gray-700">Trend Analysis:</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="trendAnalysis" value={formData.trendAnalysis} onChange={handleInputChange} required placeholder='Analysis of trends in security incidents or threats' />
-          </div> */}
-
-          {/* Impact Assessment */}
-          <div>
-            <label className="block mb-1 text-gray-700">Impact Assessment:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="impactAssessment" value={formData.impactAssessment} onChange={handleInputChange} required placeholder='Assessment of the potential impact of current threats' />
-          </div>
-        </div>
 
         {/* 3. Threat Intelligence */}
         <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">3. Threat Intelligence</h3>
+          <h3 className="text-xl mb-2 font-semibold text-gray-800">2. Threat Intelligence</h3>
           {/* Sources */}
           <div>
             <label className="block mb-1 text-gray-700">Sources:<span className="text-red-500 ml-1">*</span></label>
@@ -204,10 +189,6 @@ function Report() {
           </div>
 
           {/* Key Threat Actors */}
-          <div>
-            <label className="block mb-1 text-gray-700">Key Threat Actors:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="keyThreatActors" value={formData.keyThreatActors} onChange={handleInputChange} required placeholder='Summary of known threat actors and their activities' />
-          </div>
 
           {/* Indicators of Compromise */}
           <div>
@@ -218,7 +199,7 @@ function Report() {
 
         {/* 4. Vulnerability Management */}
         <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">4. Vulnerability Management</h3>
+          <h3 className="text-xl mb-2 font-semibold text-gray-800">3. Vulnerability Management</h3>
           {/* Recent Vulnerabilities */}
           <div>
             <label className="block mb-1 text-gray-700">Recent Vulnerabilities:<span className="text-red-500 ml-1">*</span></label>
@@ -231,6 +212,15 @@ function Report() {
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="patchStatus" value={formData.patchStatus} onChange={handleInputChange} required placeholder='Overview of patching efforts and status' />
           </div>
 
+          <div className="mb-4">
+            <label className="block mb-1 text-gray-700">Status:<span className="text-red-500 ml-1">*</span></label>
+            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="Status" value={formData.Status} onChange={handleInputChange} required>
+              <option value="">Select Status</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Not Identified">Not Identified</option>
+            </select>
+          </div>
+
           {/* Mitigation Recommendations */}
           {/* <div>
             <label className="block mb-1 text-gray-700">Mitigation Recommendations:</label>
@@ -240,7 +230,7 @@ function Report() {
 
         {/* 5. Security Operations */}
         <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">5. Security Operations</h3>
+          <h3 className="text-xl mb-2 font-semibold text-gray-800">4. Security Operations</h3>
           {/* Current Operations */}
           <div>
             <label className="block mb-1 text-gray-700">Current Operations:<span className="text-red-500 ml-1">*</span></label>
@@ -248,39 +238,20 @@ function Report() {
           </div>
 
           {/* Incident Response */}
-          <div>
+          {/* <div>
             <label className="block mb-1 text-gray-700">Incident Response:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="incidentResponse" value={formData.incidentResponse} onChange={handleInputChange} required placeholder='Summary of recent incident response activities' />
-          </div>
+          </div> */}
 
           {/* Forensic Analysis */}
-          <div>
+          {/* <div>
             <label className="block mb-1 text-gray-700">Forensic Analysis:<span className="text-red-500 ml-1">*</span></label>
             <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="forensicAnalysis" value={formData.forensicAnalysis} onChange={handleInputChange} required placeholder='Status of ongoing forensic analysis efforts' />
-          </div>
+          </div> */}
         </div>
 
         {/* 6. Communication */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">6. Communication</h3>
-          {/* Internal Notifications */}
-          <div>
-            <label className="block mb-1 text-gray-700">Internal Notifications:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="internalNotifications" value={formData.internalNotifications} onChange={handleInputChange} placeholder='List of internal stakeholders notified of current situation' />
-          </div>
-
-          {/* External Notifications */}
-          <div>
-            <label className="block mb-1 text-gray-700">External Notifications:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="externalNotifications" value={formData.externalNotifications} onChange={handleInputChange} placeholder='List of external parties or authorities notified, if applicable' />
-          </div>
-
-          {/* Public Relations */}
-          <div>
-            <label className="block mb-1 text-gray-700">Public Relations:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="publicRelations" value={formData.publicRelations} onChange={handleInputChange} required placeholder='Summary of public relations or communication efforts' />
-          </div>
-        </div>
+       
 
         {/* 7. Future Planning */}
         

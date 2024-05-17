@@ -46,28 +46,17 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
   // console.log(req.body);
   try {
     const {
+      ID,
       description,
       threatLevel,
       areasOfConcern,
-      recentIncidents,
-      trendAnalysis,
-      impactAssessment,
       sources,
-      keyThreatActors,
       indicatorsOfCompromise,
       recentVulnerabilities,
       patchStatus,
-      mitigationRecommendations,
+      Status,
       currentOperations,
-      incidentResponse,
-      forensicAnalysis,
-      internalNotifications,
-      externalNotifications,
-      publicRelations,
-      riskAssessment,
-      continuityPlanning,
       notes,
-      prepared,
     } = req.body;
 
     const pocScreenshots = req.files;
@@ -92,22 +81,16 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const pdfName = `Report_${currentDate}_${currentTime}.pdf`;
 
     const formData = new reportModel({
+      ID,
       description,
       threatLevel,
       areasOfConcern,
-      recentIncidents,
-      impactAssessment,
       sources,
-      keyThreatActors,
       indicatorsOfCompromise,
       recentVulnerabilities,
       patchStatus,
+      Status,
       currentOperations,
-      incidentResponse,
-      forensicAnalysis,
-      internalNotifications,
-      externalNotifications,
-      publicRelations,
       notes,
       pocScreenshots: photoUrls,
       pdfName,
@@ -120,7 +103,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
 
     // Load PDF file
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'Sitnew.pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'incident (1).pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
     const options = { timeZone: 'Asia/Kolkata' };
@@ -131,24 +114,18 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
     const dateField = form.getTextField('Date');
     const timeField = form.getTextField('Time');
+    const ID1=form.getTextField('ID');
     const Description = form.getTextField('Description');
     const Threat = form.getDropdown('Threat Level');
-    const Aoc = form.getTextField('Areas of Concern');
-    const RI = form.getTextField('Recent Incidents');
-    // const TA = form.getTextField('Trend Analysis');
-    const IA = form.getTextField('Impact Assessment');
+    const Aoc = form.getTextField('Area of Concern');
     const Sources = form.getTextField('Sources');
-    const KTA = form.getTextField('Key Threat Actors');
     const IOCs = form.getTextField('IOCs');
-    const Vm = form.getTextField('Vulnerability management');
-    const ps = form.getTextField('patch status');
+    const Vm = form.getTextField('Recent Vulnerabilities');
+    const ps = form.getTextField('Patch Status');
+    const Status1 = form.getDropdown('Status');
     // const MR = form.getTextField('Mitigration Recommendations');
-    const CO = form.getTextField('current operations');
-    const IR = form.getTextField('Incident Response');
-    const FA = form.getTextField('Forensic Analysis');
-    const IN = form.getTextField('Internal Notifications');
-    const EN = form.getTextField('External Notifications');
-    const PR = form.getTextField('public Relations');
+    const CO = form.getTextField('Current Operations');
+  
     // const RA = form.getTextField('Risk Assessment');
     // const CP = form.getTextField('Continuity Planning');
     const notes1 = form.getTextField('Notes');
@@ -158,24 +135,18 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
     dateField.setText(currentDate);
     timeField.setText(currentTime);
+    ID1.setText(ID);
     Description.setText(description);
     Threat.select(threatLevel);
     Aoc.setText(areasOfConcern);
-    RI.setText(recentIncidents);
     // TA.setText(trendAnalysis);
-    IA.setText(impactAssessment)
     Sources.setText(sources);
-    KTA.setText(keyThreatActors);
     IOCs.setText(indicatorsOfCompromise);
     Vm.setText(recentVulnerabilities);
     ps.setText(patchStatus);
+    Status1.select(Status);
     // MR.setText(mitigationRecommendations);
     CO.setText(currentOperations);
-    IR.setText(incidentResponse);
-    FA.setText(forensicAnalysis);
-    IN.setText(internalNotifications);
-    EN.setText(externalNotifications);
-    PR.setText(publicRelations);
     // RA.setText(riskAssessment);
     // CP.setText(continuityPlanning);
     notes1.setText(notes);
@@ -511,18 +482,21 @@ router.get('/user/:userId', async (req, res) => {
 router.post('/:reportId/:reportType/manual-score', async (req, res) => {
   const { reportId, reportType } = req.params;
   const updatedData = req.body;
+  // console.log(updatedData);
 
   try {
       // Extract total manual score from the request body
       const { totalManualScore, ...reportData } = updatedData;
+      const { penalty }=updatedData;
       // console.log(totalManualScore);
 
-      // console.log(updatedData);
+      
 
       // console.log(totalManualScore);
       if (reportType == "SITREP") {
         const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
       report.manualScore = totalManualScore;
+      report.penalty=penalty;
             await report.save();
             return res.json({ message: 'Manual score updated successfully', report });
       }
@@ -532,6 +506,7 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
       else if (reportType == "IRREP") {
         const report = await incidentModel.findByIdAndUpdate(reportId, reportData, { new: true });
       report.manualScore = totalManualScore;
+      report.penalty=penalty;
             await report.save();
            
             return res.json({ message: 'Manual score updated successfully', report });
@@ -540,6 +515,7 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
       else {
         const report = await notificationModel.findByIdAndUpdate(reportId, reportData, { new: true });
       report.manualScore = totalManualScore;
+      report.penalty=penalty;
             await report.save();
             return res.json({ message: 'Manual score updated successfully', report });
        
