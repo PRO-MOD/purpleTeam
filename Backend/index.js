@@ -77,7 +77,7 @@ const handleSocket = (io) => {
 connectToMongo();
 const app = express()
 app.use(cors())
-const port = 5000
+const port = 80
 
 app.use(express.json())
 
@@ -163,8 +163,8 @@ app.post('/', async (req, res) => {
         const user = users.find(user => user.userId == score.user);
         console.log(score.user);
         console.log("Users: "+users);
-        console.log("socketId:" +user.socketId);
         if (user) {
+          console.log("socketId:" +user.socketId);
           io.to(user.socketId).emit('challengeSolved', { challenge: match.challenge.name });
           console.log("Emmited ChallengeSolved to frontend");
         } else {
