@@ -153,7 +153,6 @@ function AddUsers() {
                     {/* Button to upload Excel file */}
                     {/* <button className="bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105" onClick={handleFileUpload}>Upload File</button> */}
                 </div>
-
             </div>
 
             {/* Modal for adding a new user */}
