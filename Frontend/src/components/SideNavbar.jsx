@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment, faChartColumn } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
 
@@ -75,6 +75,12 @@ const SideNavbar = () => {
                   <FontAwesomeIcon icon={faNotesMedical} size="xl" />
                 </div>
                 <p className="text-lg">Notes</p>
+              </Link>
+              <Link to="/progress" className={`flex flex-row items-center justify-start py-4 px-0 hover:bg-brown-450  hover:text-white ${isActive("/progress") ? "bg-brown-450  text-white" : ""}`}>
+                <div className="h-10 w-10 flex items-center justify-center px-2">
+                  <FontAwesomeIcon icon={faChartColumn} size="xl" />
+                </div>
+                <p className="text-lg">Progress</p>
               </Link>
              
                {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
