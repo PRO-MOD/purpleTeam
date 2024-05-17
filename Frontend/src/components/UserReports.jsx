@@ -562,7 +562,7 @@ function UserReports({ userId, route }) {
                                 <tr key={key}>
                                     <td className="border px-4 py-2">{key.replace('Score', '')}</td>
                                     <td className={`border px-4 py-2 break-words max-w-xs ${key=="pocScreenshotsScore"?"text-indigo-500":""}`}>{key=="pocScreenshotsScore"?selectedReport[key.replace('Score', '')].map((data,index)=>{
-                                        return <div key={index+1} ><a href={data}>Screenshot {index+1}</a><br/></div>
+                                        return <div key={index+1} ><a href={data} target='_blank'>Screenshot {index+1}</a><br/></div>
                                     }):selectedReport[key.replace('Score', '')]}</td>
                                     <td className="border px-4 py-2">{selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'50':'5'}</td>
                                     <td className="border px-2 py-2">

@@ -3,6 +3,8 @@ const axios = require('axios');
 const router = express.Router();
 const multer = require('multer');
 const xlsx = require('xlsx');
+const ChallengeSolve = require('../models/ChallengeSolved');
+const fetchuser = require('../middleware/fetchuser');
 
 const API_URL = 'https://ctf.hacktify.in/api/v1/';
 const API_TOKEN = process.env.CTFD_accessToken;
@@ -74,6 +76,22 @@ async function updateChallengeState(challengeId, newState) {
         console.error('Error updating challenge state:', error.response ? error.response.data : error.message);
     }
 }
+
+// Define the endpoint to fetch challenge submissions by userId
+router.get('/challengesubmissions', fetchuser, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        // Query the database for challenge submissions by userId
+        const submissions = await ChallengeSolve.find({ userId });
+
+        // Send the challenge submissions as the response
+        res.status(200).json(submissions);
+    } catch (error) {
+        console.error('Error fetching challenge submissions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // router.post('/create', async (req, res) => {
     

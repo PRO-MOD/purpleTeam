@@ -162,17 +162,19 @@ app.post('/', async (req, res) => {
       if (match) {
         console.log(`User ${score.name} solved challenge ${match.challenge.name}`);
 
-        // Create a new ChallengeSolve document
-        const challengeSolve = new ChallengeSolve({
-          userId: score.user,
-          challenge_id: match.challenge_id,
-          challenge_name: match.challenge.name,
-          date: match.date,
-          solve_id: match.id
-        });
-
-        // Save the ChallengeSolve document to the database
-        await challengeSolve.save();
+        if (!ChallengeSolve.find({solve_id: match.id})) {
+          // Create a new ChallengeSolve document
+          const challengeSolve = new ChallengeSolve({
+            userId: score.user,
+            challenge_id: match.challenge_id,
+            challenge_name: match.challenge.name,
+            date: match.date,
+            solve_id: match.id
+          });
+  
+          // Save the ChallengeSolve document to the database
+          await challengeSolve.save();
+        }
 
         // Emit event to the user socket
         const user = users.find(user => user.userId == score.user);

@@ -18,6 +18,7 @@ import Notification from './Notification';
 import ScorePage1 from './ScoresPage1';
 import ProtectedRoute from './ProtectedRoute';
 import UserProgress from './UserProgress';
+import ChallengeSubmissions from './ChallengSubmissions';
 
 function HomePage() {
     const navigate = useNavigate();
@@ -56,7 +57,7 @@ function HomePage() {
             }
             <Routes>
               <Route exact path='/' element={<ScoresComponent/>} />
-              <Route exact path='/personal/:userId' element={<UserDetails/>} />
+              {/* <Route exact path='/personal/:userId' element={<UserDetails/>} /> */}
               <Route exact path='/progress' element={<UserProgress/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />
               <Route exact path='/createuser' element={<AddUsers />} />
@@ -66,6 +67,7 @@ function HomePage() {
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<Report />} />
               <Route exact path='/UserHome/report/incident' element={<IncidentReport />} />
+              <Route exact path='/attacks' element={<ChallengeSubmissions />} />
               {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
               <Route exact path='/UserHome/report/notification' element={<Notification />} />
               <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails}/>} />
