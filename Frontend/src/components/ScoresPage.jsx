@@ -71,7 +71,7 @@ function ScoresComponent() {
     <div className='mx-16 my-12 '>
       <div className="flex flex-row items-center">
         <h1 className='text-3xl font-bold underline'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
-        <span className='ms-4'>Format ( Challenge Score / Manual Score )</span>
+        {/* <span className='ms-4'>Format ( Challenge Score / Manual Score )</span> */}
       </div>
       <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}

@@ -97,6 +97,7 @@ app.use('/api/reports', require('./routes/report.js')) // get report sit
 
 app.use('/api/notes', require('./routes/notes.js'))
 app.use('/api/flags', require('./routes/flags.js'))
+app.use('/api/challenge', require('./routes/ctfdChallenge.js'))
 app.use('/api/chat', chatRouter)
 
 // Define webhook endpoint
