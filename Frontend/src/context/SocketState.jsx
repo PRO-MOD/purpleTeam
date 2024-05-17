@@ -43,8 +43,8 @@ const SocketState = (props) => {
 
     socket?.on('challengeSolved', (data) => {
       console.log('Challenge solved:', data);
-      // setChallenge(data.challenge);
-      // setModalIsOpen(true);
+      setChallenge(data.challenge);
+      setModalIsOpen(true);
     });
 
     socket?.on('getMessage', message => {
@@ -115,8 +115,8 @@ const playNotificationSound = () => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser }}>
-      {modalIsOpen && <Modal challenge={challenge} closeModal={() => setModalIsOpen(false)} />}
+    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser, challenge }}>
+      {modalIsOpen && <p className="bg-red-500 text-white w-full py-2">Red Team Captured {challenge}</p>}
       {props.children}
     </SocketContext.Provider>
   )

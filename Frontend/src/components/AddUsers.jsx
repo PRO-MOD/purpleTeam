@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CreateChallenge from './CreateChallenge';
 // import axios from 'axios';
 
 function AddUsers() {
@@ -135,23 +136,23 @@ function AddUsers() {
             <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
             <hr className='mx-2 my-8 border-black' />
 
-            <div className="flex flex-row">
+            <div className="flex flex-row w-full items-center">
                 {/* Button to add user */}
                 <button
-                    className="cursor-pointer bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105"
+                    className="cursor-pointer bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 h-[45px]"
                     onClick={() => setShowModal(true)}
                 >
                     Add User
                 </button>
 
                 <div className="flex flex-row ms-8">
+                    <CreateChallenge/>
                     {/* Input for uploading Excel file */}
                     {/* <input type="file" onChange={handleFileChange} title='Add Excel to map flags in DB'/> */}
 
                     {/* Button to upload Excel file */}
                     {/* <button className="bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105" onClick={handleFileUpload}>Upload File</button> */}
                 </div>
-
             </div>
 
             {/* Modal for adding a new user */}

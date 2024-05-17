@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ChatItem } from "react-chat-elements";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import SocketContext from '../../context/SocketContext';
-import "../../App.css"
+import "../../App.css";
 
 function ChatLists({ position }) {
     const apiUrl = import.meta.env.VITE_Backend_URL;
     const [conversations, setConversations] = useState([]);
     const [volunteers, setVolunteers] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showSearchInput, setShowSearchInput] = useState(false);
     const navigate = useNavigate();
 
     // import all context
@@ -31,7 +35,6 @@ function ChatLists({ position }) {
                 }
             });
             const data = await response.json();
-            // console.log(conversations);
             data.sort((a, b) => new Date(b.latestMessageDate) - new Date(a.latestMessageDate));
             setConversations(data);
         } catch (error) {
@@ -61,11 +64,14 @@ function ChatLists({ position }) {
         await fetchUnreadMessagesByUser();
     };
 
-
     useEffect(() => {
         fetchUnreadMessagesByUser();
-    }, [])
+    }, []);
 
+    // Filter volunteers based on search query
+    const filteredVolunteers = volunteers.filter(volunteer =>
+        volunteer.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="flex flex-col max-h-screen">
@@ -81,18 +87,41 @@ function ChatLists({ position }) {
                     onClick={() => handleChatItemClick(conversation.recipient._id)}
                 />
             ))}
-            {
-                position === 'right' && (
-                    <>
-                        <h1 className='p-4 bg-white'>Start Conversation...</h1>
-                        <hr />
-                    </>
-                )
-            }
-            {position === 'right' && volunteers.map((volunteer, index) => (
+            {position === 'right' && (
+                <>
+                    <div className="p-4 bg-white flex items-center justify-center">
+                        {showSearchInput ? (
+                             <>
+                             <input
+                                 type="text"
+                                 value={searchQuery}
+                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                 placeholder="Search Volunteers"
+                                 className="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none flex-1"
+                             />
+                             <FontAwesomeIcon
+                                 icon={faTimes}
+                                 className="text-gray-500 cursor-pointer ml-2 mb-2" 
+                                 onClick={() => {
+                                     setSearchQuery(''); 
+                                     setShowSearchInput(false); 
+                                 }}
+                             />
+                         </>
+                        ) : (
+                            <>
+                                <h1 className='flex-1'>Start Conversation...</h1>
+                                <FontAwesomeIcon icon={faSearch} className="text-gray-500 cursor-pointer" onClick={() => setShowSearchInput(true)} />
+                            </>
+                        )}
+                    </div>
+                    <hr />
+                </>
+            )}
+            {position === 'right' && filteredVolunteers.map((volunteer, index) => (
                 <ChatItem
                     key={index}
-                    avatar="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    avatar={volunteer.profile || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
                     alt={volunteer.name}
                     title={volunteer.name}
                     onClick={() => handleChatItemClick(volunteer._id)}

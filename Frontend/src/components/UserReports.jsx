@@ -311,7 +311,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 
-function UserReports({ userId }) {
+function UserReports({ userId, route }) {
     const apiUrl = import.meta.env.VITE_Backend_URL;
     const [reports, setReports] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
@@ -321,6 +321,7 @@ function UserReports({ userId }) {
     const [showManualScoreModal, setShowManualScoreModal] = useState(false);
     const [reportId, setReportId] = useState(null);
     const [reportType, setReportType] = useState(null);
+    const progress = route;
 
     useEffect(() => {
         // Fetch reports from the backend when the component mounts
@@ -430,7 +431,7 @@ function UserReports({ userId }) {
                         <th className="px-4 py-2">Report Type</th>
                         <th className="px-4 py-2">Manual Score</th>
                         <th className="px-4 py-2">View</th>
-                        <th className="px-4 py-2">Add Manual Score</th>
+                        <th className="px-4 py-2">{route == "progress" ? "Assigned Score" : "Add Manual Score"}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -449,12 +450,12 @@ function UserReports({ userId }) {
                                 &nbsp;&nbsp;
                                 <a href={`${apiUrl}/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View PDF</a>
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="border px-4 py-2 text-center">
                                 <button
                                     onClick={() => handleShowManualScoreModal(report._id, report.reportType)}
                                     className="text-blue-500 cursor-pointer"
                                 >
-                                    Add Manual Score
+                                    View
                                 </button>
                             </td>
                         </tr>
@@ -550,14 +551,14 @@ function UserReports({ userId }) {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-6 rounded-lg w-1/2 h-2/3 max-h-2/3 overflow-y-auto relative">
             <span className="text-2xl font-bold cursor-pointer absolute top-2 right-2" onClick={handleCloseModal}>&times;</span>
-            <h3 className="text-lg font-semibold mb-4">Add Manual Score</h3>
+            <h3 className="text-lg font-semibold mb-4">{route == "progress" ? "Detailed Score" : "Add Manual Score"}</h3>
             <table className="table-auto w-full">
                 <thead>
                     <tr>
                         <th className="px-4 py-2">Name</th>
                         <th className="px-4 py-2">Values</th>
                         <th className="px-4 py-2">Max Score</th>
-                        <th className="px-4 py-2">Score</th>
+                        <th className="px-4 py-2">{progress == "progress" ? "Assigned " :  ""}Score</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -588,20 +589,27 @@ function UserReports({ userId }) {
                                                 </td>
                                     <td className="border px-4 py-2">{selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'50':key==="penaltyScore"?'':'5'}</td>
                                     <td className="border px-2 py-2">
-                                        <input
-                                            type="number"
-                                            className="border-gray-300 rounded-md w-full p-2"
-                                            value={selectedReport[key]}
-                                            onChange={(e) => {
-                                                let inputValue = parseInt(e.target.value);
-                                                if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'50':'5'))) {
-                                                    setSelectedReport(prevReport => ({
-                                                        ...prevReport,
-                                                        [key]: inputValue
-                                                    }));
-                                                }
-                                            }}
-                                        />
+                                        {
+                                            route == "progress" 
+                                            ?
+                                            <p>{selectedReport[key]}</p>
+                                            :
+                                            <input
+                                                type="number"
+                                                className="border-gray-300 rounded-md w-full p-2"
+                                                value={selectedReport[key]}
+                                                disabled={route == "progress"}
+                                                onChange={(e) => {
+                                                    let inputValue = parseInt(e.target.value);
+                                                    if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'50':'5'))) {
+                                                        setSelectedReport(prevReport => ({
+                                                            ...prevReport,
+                                                            [key]: inputValue
+                                                        }));
+                                                    }
+                                                }}
+                                            />
+                                        }
                                     </td>
                                 </tr>
                             );
@@ -625,7 +633,11 @@ function UserReports({ userId }) {
                     </tr>
                 </tbody>
             </table>
+            {route == "progress" ? 
+            ""
+            : 
             <button onClick={handleAddManualScore} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit</button>
+            }
         </div>
     </div>
 )}

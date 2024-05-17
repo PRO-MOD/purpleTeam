@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ScoreTable from './ScoreTable';
 import { useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 function ScoresComponent() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -71,7 +73,8 @@ function ScoresComponent() {
     <div className='mx-16 my-12 '>
       <div className="flex flex-row items-center">
         <h1 className='text-3xl font-bold underline'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
-        <span className='ms-4'>Format ( Challenge Score / Manual Score )</span>
+        {/* <span className='ms-4'>Format ( Challenge Score / Manual Score )</span> */}
+        {isHomePage() ? "" : <a className='bg-blue-500 mx-4 px-4 py-1 text-white rounded ' href={`${apiUrl}/api/score/export`}>Export <FontAwesomeIcon className='ms-2' icon={faDownload} /></a> }
       </div>
       <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}

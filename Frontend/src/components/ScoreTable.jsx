@@ -45,10 +45,10 @@ function ScoreTable({ scores, loading, isHomePage }) {
               Name
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Challenge Score
+            Service Availability
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Manual Score
+            Incident Response
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Total Score

@@ -7,6 +7,76 @@ const Score = require('../models/score')
 const Report = require('../models/report')
 const IncidentReport = require('../models/IncidentReport')
 const notificationReport = require('../models/Notification')
+const xlsx = require('xlsx')
+
+// Endpoint to export scores and report counts to Excel
+router.get('/export', async (req, res) => {
+    try {
+        // Fetch scores from the database
+        const scores = await Score.find().populate('user', 'username');
+
+        // Fetch counts of reports submitted by each user from different report schemas
+        const reportCountsPromises = [
+            notificationReport.aggregate([
+                { $group: { _id: '$userId', notificationCount: { $sum: 1 } } }
+            ]),
+            Report.aggregate([
+                { $group: { _id: '$userId', reportCount: { $sum: 1 } } }
+            ]),
+            IncidentReport.aggregate([
+                { $group: { _id: '$userId', incidentCount: { $sum: 1 } } }
+            ])
+        ];
+
+        const [notificationCounts, reportCounts, incidentCounts] = await Promise.all(reportCountsPromises);
+        // console.log(notificationCounts);
+        // Prepare data for Excel
+        const data = scores.map(score => {
+            const userId = score.user._id;
+            // const username = score.user.username;
+
+            // Find the count of reports submitted by the user in each report schema
+            const notificationCount = notificationCounts.find(count => count._id.equals(userId))?.notificationCount || 0;
+            const reportCount = reportCounts.find(count => count._id.equals(userId))?.reportCount || 0;
+            const incidentCount = incidentCounts.find(count => count._id.equals(userId))?.incidentCount || 0;
+
+            return {
+                'Account ID': score.account_id,
+                'Name': score.name,
+                'Score': score.score,
+                'Manual Score': score.manualScore,
+                'Date': score.date,
+                'User ID': userId,
+                'Notification Count': notificationCount,
+                'Report Count': reportCount,
+                'Incident Count': incidentCount
+            };
+        });
+
+        // Create a new workbook and add a worksheet
+        const workbook = xlsx.utils.book_new();
+        const worksheet = xlsx.utils.json_to_sheet(data);
+
+        // Add the worksheet to the workbook
+        xlsx.utils.book_append_sheet(workbook, worksheet, 'Scores');
+
+        // Generate Excel file buffer
+        const excelBuffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+        // Set response headers for file download
+        res.set('Content-Disposition', 'attachment; filename=scores_with_reports.xlsx');
+        res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        // Send the Excel file buffer as response
+        res.send(excelBuffer);
+
+        console.log('Scores and report counts exported to Excel successfully.');
+    } catch (error) {
+        console.error('Error exporting scores and report counts to Excel:', error);
+        res.status(500).json({ message: 'Error exporting data to Excel' });
+    }
+});
+
 
 router.get('/getscores', async (req, res) => {
     try {
