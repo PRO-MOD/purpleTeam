@@ -86,9 +86,9 @@
 //     try {
 //       setLoading(true); // Set loading state to true
 //       setError(''); // Clear previous errors
-      
+
 //       const formDataToSend = new FormData(); // Create a FormData object
-      
+
 //       // Append all form data fields to the FormData object
 //       Object.entries(formData).forEach(([key, value]) => {
 //         // If the value is an array (e.g., pocScreenshots), append each item separately
@@ -100,12 +100,12 @@
 //           formDataToSend.append(key, value);
 //         }
 //       });
-  
+
 //       // // Now, append the images to the FormData object
 //       // formData.pocScreenshots.forEach((file) => {
 //       //   formDataToSend.append('pocScreenshots', file);
 //       // });
-  
+
 //       const response = await fetch(`${apiUrl}/api/reports/SITREP`, {
 //         method: 'POST',
 //         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
@@ -114,11 +114,11 @@
 //           'Auth-token': localStorage.getItem('Hactify-Auth-token')
 //         },
 //       });
-  
+
 //       if (!response.ok) {
 //         throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
 //       }
-  
+
 //       console.log('Form submitted successfully');
 //       alert('Response submitted successfully!');
 //       navigate('/');
@@ -129,7 +129,7 @@
 //       setLoading(false); // Set loading state to false regardless of success or failure
 //     }
 //   };
-  
+
 
 //   return (
 //     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
@@ -251,10 +251,10 @@
 //         </div>
 
 //         {/* 6. Communication */}
-       
+
 
 //         {/* 7. Future Planning */}
-        
+
 
 //         {/* 8. Additional Notes (Optional) */}
 //         <div>
@@ -320,6 +320,7 @@ function Report() {
 
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(''); // Error state
+  const [incidentData, setIncidentData] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -342,13 +343,46 @@ function Report() {
     }
   };
 
-  const handleSelectChange = (selectedOption, actionMeta) => {
+  const handleSelectChange = async (selectedOption, actionMeta) => {
     const { name } = actionMeta;
     setFormData((prevData) => ({
       ...prevData,
       [name]: selectedOption.value,
     }));
+
+    if (name === 'ID' && selectedOption) {
+      const transformedId = selectedOption.value.replace('IR', 'IN');
+      await fetchIncidentData(transformedId);
+    } else {
+      setIncidentData(null);
+    }
   };
+
+  const fetchIncidentData = async (incidentId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${apiUrl}/api/reports/notification/${incidentId}`, {
+        method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch incident data: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setIncidentData(data);
+    } catch (error) {
+      console.error('Error fetching incident data:', error);
+      setError('Failed to fetch incident data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -457,6 +491,14 @@ function Report() {
             required
           />
         </div>
+
+        {incidentData && (
+          <div className="mb-4">
+            <h3 className="text-xl mb-2 font-semibold text-gray-800">Incident Details:</h3>
+            <p>Description: {incidentData.description}</p>
+            <p>Location: {incidentData.location}</p>
+          </div>
+        )}
 
         {/* 1. Current Situation */}
         <div>

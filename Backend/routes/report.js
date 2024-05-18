@@ -275,7 +275,20 @@ async function drawImagesOnPage(page, imageUrls) {
   }
 }
 
-
+// Endpoint to fetch incident data by ID
+router.get('/notification/:id', async (req, res) => {
+  const incidentId = req.params.id;
+  try {
+    const incident = await notificationModel.findOne({ ID: incidentId });
+    if (!incident) {
+      return res.status(404).json({ message: 'Incident not found' });
+    }
+    res.json(incident);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // Route to get scores and reports data for a specific user
 router.get('/specific/:userId', async (req, res) => {
