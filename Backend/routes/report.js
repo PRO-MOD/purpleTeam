@@ -62,7 +62,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const pocScreenshots = req.files;
 
     // Use req.files to access multiple uploaded screenshots
-    const reportType = "SITREP";
+    const reportType = "IRREP";
     const userId = req.user.id;
 
     const photoUrls = [];
@@ -334,7 +334,7 @@ router.get('/update/:reportType/:reportId', async (req, res) => {
     
 
 
-    if (reportType == "SITREP") {
+    if (reportType == "IRREP") {
       const reportsSIT= await reportModel.findById(reportId);
       if (!reportsSIT) {
         return res.status(404).json({ error: 'Report not found' });
@@ -344,7 +344,7 @@ router.get('/update/:reportType/:reportId', async (req, res) => {
       res.status(200).json(reportsSIT);
 
     }
-    else if (reportType == "IRREP") {
+    else if (reportType == "SITREP") {
       const reportsINC = await incidentModel.findById(reportId);
       if (!reportsINC) {
         return res.status(404).json({ error: 'Report not found' });
@@ -493,7 +493,7 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
       
 
       // console.log(totalManualScore);
-      if (reportType == "SITREP") {
+      if (reportType == "IRREP") {
         const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
       report.manualScore = totalManualScore;
       report.penalty=penalty;
@@ -503,7 +503,7 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
        
   
       // }
-      else if (reportType == "IRREP") {
+      else if (reportType == "SITREP") {
         const report = await incidentModel.findByIdAndUpdate(reportId, reportData, { new: true });
       report.manualScore = totalManualScore;
       report.penalty=penalty;

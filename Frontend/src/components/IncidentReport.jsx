@@ -27,7 +27,7 @@ function IncidentReport() {
     updates: '',
     pocScreenshots: [],
     pdfName: '',
-    ReportType:'IRREP',
+    ReportType:'SITREP',
     userId: '', 
     other:'',
   });
@@ -91,7 +91,7 @@ function IncidentReport() {
 
       const apiUrl = import.meta.env.VITE_Backend_URL;
   
-      const response = await fetch(`${apiUrl}/api/reports/IRREP`, {
+      const response = await fetch(`${apiUrl}/api/reports/SITREP`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
@@ -118,7 +118,7 @@ function IncidentReport() {
 
   return (
 <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
-  <h2 className="text-3xl mb-4 text-center font-bold text-brown-650">Incident Report Form</h2>
+  <h2 className="text-3xl mb-4 text-center font-bold text-brown-650">SITREP Form</h2>
   {error && <div className="text-red-500 mb-4">Error: {error}</div>}
   <form onSubmit={handleSubmit}>
     {/* 1. Incident Overview */}

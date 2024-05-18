@@ -313,7 +313,7 @@ function Report() {
     currentOperations: '',
     pocScreenshots: [],
     pdfName: '',
-    reportType: 'SITREP',
+    reportType: 'IRREP',
     userId: '',
     // Make sure to provide a valid user ID here
   });
@@ -370,7 +370,7 @@ function Report() {
         }
       });
 
-      const response = await fetch(`${apiUrl}/api/reports/SITREP`, {
+      const response = await fetch(`${apiUrl}/api/reports/IRREP`, {
         method: 'POST',
         body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
@@ -441,7 +441,7 @@ function Report() {
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-3xl mb-8 text-center font-bold text-brown-650">SITREP Report Form</h2>
+      <h2 className="text-3xl mb-8 text-center font-bold text-brown-650">IRREP Form</h2>
       {error && <div className="text-red-500 mb-4">Error: {error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
 

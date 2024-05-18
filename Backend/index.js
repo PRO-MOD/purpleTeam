@@ -90,9 +90,9 @@ handleSocket(io);
 app.use('/api/auth', require('./routes/auth.js'))
 app.use('/api/score', require('./routes/score.js'))
 
-app.use('/api/reports/SITREP', require('./routes/report.js'))
+app.use('/api/reports/IRREP', require('./routes/report.js'))
 app.use('/api/reports/Notification', require('./routes/notification.js'))
-app.use('/api/reports/IRREP', require('./routes/IncidentReport.js'))
+app.use('/api/reports/SITREP', require('./routes/IncidentReport.js'))
 
 app.use('/api/reports', require('./routes/report.js')) // get report sit
 

@@ -18,11 +18,11 @@ export default function UserHomePage() {
       <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/notification')}>
           <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>1. Add Notification Report
         </button> 
-        <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/SITREP')}>
-          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>2. Add SITREP Report
+        <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/IRREP')}>
+          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>2. Add IRREP Report
         </button>
-        <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/incident')}>
-          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>3. Add IRREP Report
+        <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/SITREP')}>
+          <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>3. Add SITREP Report
         </button>
        
       </div>

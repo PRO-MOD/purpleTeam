@@ -67,7 +67,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     } = req.body;
 
     const pocScreenshots = req.files; // Use req.files to access multiple uploaded screenshots
-    const reportType = "IRREP";
+    const reportType = "SITREP";
     const userId = req.user.id;
 
     const photoUrls = [];

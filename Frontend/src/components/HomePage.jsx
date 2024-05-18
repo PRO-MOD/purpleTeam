@@ -65,8 +65,8 @@ function HomePage() {
               <Route exact path='/scores' element={<ProtectedRoute Component={ScoresComponent}/>} />
               {/* <Route exact path='/scores1' element={<ProtectedRoute Component={ScorePage1}/>} /> */}
               <Route exact path='/UserHome' element={<UserHomePage />} />
-              <Route exact path='/UserHome/report/SITREP' element={<Report />} />
-              <Route exact path='/UserHome/report/incident' element={<IncidentReport />} />
+              <Route exact path='/UserHome/report/SITREP' element={<IncidentReport />} />
+              <Route exact path='/UserHome/report/IRREP' element={<Report />} />
               <Route exact path='/attacks' element={<ChallengeSubmissions />} />
               {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
               <Route exact path='/UserHome/report/notification' element={<Notification />} />
