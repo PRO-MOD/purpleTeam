@@ -57,9 +57,13 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       Status,
       currentOperations,
       notes,
+      IDN,
+      descriptionN,
+      locationN,
     } = req.body;
 
     const pocScreenshots = req.files;
+    
 
     // Use req.files to access multiple uploaded screenshots
     const reportType = "IRREP";
@@ -96,6 +100,9 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
       pdfName,
       reportType,
       userId,
+      IDN,
+      descriptionN,
+      locationN,
     });
     await formData.save();
 
@@ -103,7 +110,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
 
     // Load PDF file
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'incident (1).pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'Incidentfinal.pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
     const options = { timeZone: 'Asia/Kolkata' };
@@ -115,6 +122,9 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const dateField = form.getTextField('Date');
     const timeField = form.getTextField('Time');
     const ID1=form.getTextField('ID');
+    const IDN1=form.getTextField('IDN');
+    const descriptionN1=form.getTextField('descriptionN');
+    const locationN1=form.getTextField('locationN');
     const Description = form.getTextField('Description');
     const Threat = form.getDropdown('Threat Level');
     const Aoc = form.getTextField('Area of Concern');
@@ -136,6 +146,9 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     dateField.setText(currentDate);
     timeField.setText(currentTime);
     ID1.setText(ID);
+    IDN1.setText(IDN);
+    descriptionN1.setText(descriptionN);
+    locationN1.setText(locationN);
     Description.setText(description);
     Threat.select(threatLevel);
     Aoc.setText(areasOfConcern);

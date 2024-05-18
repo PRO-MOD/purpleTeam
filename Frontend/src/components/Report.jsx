@@ -315,6 +315,9 @@ function Report() {
     pdfName: '',
     reportType: 'IRREP',
     userId: '',
+    IDN: '',
+  descriptionN: '',
+  locationN: '',
     // Make sure to provide a valid user ID here
   });
 
@@ -358,6 +361,33 @@ function Report() {
     }
   };
 
+  // const fetchIncidentData = async (incidentId) => {
+  //   try {
+  //     setLoading(true);
+  //     setError('');
+  //     setIncidentData(null);
+  //     const response = await fetch(`${apiUrl}/api/reports/notification/${incidentId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to fetch Notification Report data: ${response.status} ${response.statusText}`);
+  //     }
+
+  //     const data = await response.json();
+  //     setIncidentData(data);
+  //   } catch (error) {
+  //     console.error('Error fetching incident data:', error);
+  //     setError('Failed to fetch Notification Report data. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchIncidentData = async (incidentId) => {
     try {
       setLoading(true);
@@ -370,13 +400,19 @@ function Report() {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(`Failed to fetch Notification Report data: ${response.status} ${response.statusText}`);
       }
-
+  
       const data = await response.json();
       setIncidentData(data);
+      setFormData((prevData) => ({
+        ...prevData,
+        IDN: data.ID,
+        descriptionN: data.description,
+        locationN: data.location,
+      }));
     } catch (error) {
       console.error('Error fetching incident data:', error);
       setError('Failed to fetch Notification Report data. Please try again.');
@@ -384,6 +420,7 @@ function Report() {
       setLoading(false);
     }
   };
+  
 
 
   const handleSubmit = async (e) => {
@@ -497,8 +534,22 @@ function Report() {
         {incidentData && (
           <div className="mb-4">
             <h3 className="text-xl mb-2 font-semibold text-gray-800">Incident Details:</h3>
+            {/* <p>ID:{incidentData.ID}</p>
             <p>Description: {incidentData.description}</p>
-            <p>Location: {incidentData.location}</p>
+            <p>Location: {incidentData.location}</p> */}
+            <div>
+            <label className="block mb-1 text-gray-700">ID:</label>
+            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="IDN" value={incidentData.ID} disabled />
+          </div>
+          <div>
+            <label className="block mb-1 text-gray-700">Description:</label>
+            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="descriptionN" value={incidentData.description} disabled />
+          </div>
+          <div>
+            <label className="block mb-1 text-gray-700">Location:</label>
+            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="locationN" value={incidentData.location} disabled />
+          </div>
+            
           </div>
         )}
 

@@ -169,6 +169,9 @@ const reportSchema = new mongoose.Schema({
   
     },
     penalty:{type: String, required: false},
+    IDN:{type: String, required: false},
+    descriptionN:{type: String, required: false},
+    locationN:{type: String, required: false},
 });
 
 
