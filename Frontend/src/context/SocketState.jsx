@@ -116,7 +116,8 @@ const playNotificationSound = () => {
 
   return (
     <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser, challenge }}>
-      {modalIsOpen && <p className="bg-red-500 text-white w-full py-2">Red Team Captured {challenge}</p>}
+      {modalIsOpen && <p className="bg-red-500 text-white w-full py-2 absolute left-[13%] ps-4">Red Team Captured {challenge}</p>}
+      {/* <p className="bg-red-500 text-white w-full py-2 absolute left-[13%] ps-4">Red Team Captured</p> */}
       {props.children}
     </SocketContext.Provider>
   )
