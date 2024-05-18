@@ -361,6 +361,8 @@ function Report() {
   const fetchIncidentData = async (incidentId) => {
     try {
       setLoading(true);
+      setError('');
+      setIncidentData(null);
       const response = await fetch(`${apiUrl}/api/reports/notification/${incidentId}`, {
         method: 'GET',
         headers: {
@@ -370,14 +372,14 @@ function Report() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch incident data: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to fetch Notification Report data: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
       setIncidentData(data);
     } catch (error) {
       console.error('Error fetching incident data:', error);
-      setError('Failed to fetch incident data. Please try again.');
+      setError('Failed to fetch Notification Report data. Please try again.');
     } finally {
       setLoading(false);
     }
