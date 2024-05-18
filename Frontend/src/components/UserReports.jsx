@@ -575,10 +575,10 @@ function UserReports({ userId, route }) {
                                     }):
                                                     key === 'penaltyScore' ? (
                                                         <div>
-                                                        <span className="font-semibold text-red-700">Remark: </span>
-                                                        <input
+                                                        <span className="font-semibold text-red-700  ">Remark: </span>
+                                                        {/* <input
                                                             type="text"
-                                                            className={`border-gray-300 rounded-md w-full p-2 ${key === 'penaltyScore' ? 'text-red-500' : ''}`}
+                                                            className={`border-gray-300 rounded-md w-full p-2  ${key === 'penaltyScore' ? 'text-red-500' : ''}`}
                                                             value={selectedReport.penalty || ''}
                                                             onChange={(e) => {
                                                                 const inputValue = e.target.value;
@@ -587,7 +587,22 @@ function UserReports({ userId, route }) {
                                                                     penalty: inputValue
                                                                 }));
                                                             }}
-                                                        />
+                                                        /> */}
+                                                        <textarea
+    className={`border-gray-300 rounded-md w-full p-2 resize-none  ${key === 'penaltyScore' ? 'text-red-500' : ''}`}
+    disabled={route == "progress"}
+    value={selectedReport.penalty || ''}
+    onChange={(e) => {
+        const inputValue = e.target.value;
+        setSelectedReport(prevReport => ({
+            ...prevReport,
+            penalty: inputValue
+        }));
+    }}
+    rows={4}
+    style={{overflowY: 'auto'}}
+/>
+
                                                     </div>
                                                     ) : (
                                                         selectedReport[key.replace('Score', '')]

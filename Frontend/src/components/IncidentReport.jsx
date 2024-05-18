@@ -125,12 +125,10 @@ function IncidentReport() {
     <div className="mb-4">
             <label className="block mb-1 text-gray-700">Incident ID:<span className="text-red-500 ml-1">*</span></label>
             <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="ID" value={formData.ID} onChange={handleInputChange} required>
-              <option value="">Select Threat Level</option>
-              <option value="Low">Low</option>
-              <option value="Guarded">Guarded</option>
-              <option value="Elevated">Elevated</option>
-              <option value="High">High</option>
-              <option value="Severe">Severe</option>
+            <option value="">Select Incident ID</option>
+            <option value="IR-01-FN">IR-01-FN</option>
+            <option value="IR-02-FN">IR-02-FN</option>
+            <option value="IR-03-FN">IR-03-FN</option>
             </select>
           </div>
     <h3 className="text-xl mb-2">1. Incident Overview</h3>
@@ -296,20 +294,20 @@ function IncidentReport() {
     <h3 className="text-xl mb-2">5. Communication</h3>
     {/* Internal Notification */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Internal Notification:<span className="text-red-500 ml-1">*</span></label>
+      <label className="block mb-1 text-gray-700">Internal Notification:</label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="internalNotification" value={formData.internalNotification} onChange={handleInputChange} placeholder='List of team members or stakeholders notified' />
     </div>
 
     {/* External Notification */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">External Notification:<span className="text-red-500 ml-1">*</span></label>
+      <label className="block mb-1 text-gray-700">External Notification:</label>
       <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="externalNotification" value={formData.externalNotification} onChange={handleInputChange}  placeholder='List of external parties or authorities notified, if applicable'/>
     </div>
 
     {/* Updates */}
     <div className="mb-4">
-      <label className="block mb-1 text-gray-700">Updates:<span className="text-red-500 ml-1">*</span></label>
-      <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="updates" value={formData.updates} onChange={handleInputChange} required  placeholder='Frequency and content of updates provided to stakeholders'/>
+      <label className="block mb-1 text-gray-700">Updates:</label>
+      <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="updates" value={formData.updates} onChange={handleInputChange}  placeholder='Frequency and content of updates provided to stakeholders'/>
     </div>
 
 
@@ -338,7 +336,13 @@ function IncidentReport() {
     </div>
 
     {/* Submit Button */}
-    <button className="w-full bg-brown-650  text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" type="submit" disabled={loading}>Submit</button>
+    <button
+          type="submit"
+          className="w-full bg-brown-650 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
+          disabled={loading}
+        >
+          {loading ? 'Submitting...' : 'Submit'}
+        </button>
   </form>
 </div>
 
