@@ -127,9 +127,8 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     currentDate = new Date(formData.createdAt).toLocaleDateString('en-IN', options);
     currentTime = new Date(formData.createdAt).toLocaleTimeString('en-IN', options);
 
-    const pdfFilePath = path.join(__dirname, '..', 'public', 'SITREP .pdf'); // Path to original PDF file
+    const pdfFilePath = path.join(__dirname, '..', 'public', 'SITREP  (1).pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
-
     const form = pdfDoc.getForm();
 
     const dateField = form.getTextField('Date');

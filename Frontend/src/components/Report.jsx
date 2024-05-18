@@ -499,18 +499,10 @@ function Report() {
     { value: 'IR-03-010', label: 'IR-03-010' },
   ];
 
-  const threatLevelOptions = [
-    { value: 'Low', label: 'Low' },
-    { value: 'Guarded', label: 'Guarded' },
-    { value: 'Elevated', label: 'Elevated' },
-    { value: 'High', label: 'High' },
-    { value: 'Severe', label: 'Severe' },
-  ];
-
-  const statusOptions = [
-    { value: 'Ongoing', label: 'Ongoing' },
-    { value: 'Not Identified', label: 'Not Identified' },
-  ];
+  // const statusOptions = [
+  //   { value: 'Ongoing', label: 'Ongoing' },
+  //   { value: 'Not Identified', label: 'Not Identified' },
+  // ];
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
@@ -563,7 +555,7 @@ function Report() {
           </div>
 
           {/* Threat Level */}
-          <div>
+          {/* <div>
             <label className="block mb-1 text-gray-700">Threat Level:<span className="text-red-500 ml-1">*</span></label>
             <Select
               name="threatLevel"
@@ -573,6 +565,17 @@ function Report() {
               isClearable
               required
             />
+          </div> */}
+           <div>
+            <label className="block mb-1 text-gray-700">Threat Level:<span className="text-red-500 ml-1">*</span></label>
+            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="threatLevel" value={formData.threatLevel} onChange={handleInputChange} required>
+              <option value="">Select Threat Level</option>
+              <option value="Low">Low</option>
+              <option value="Guarded">Guarded</option>
+              <option value="Elevated">Elevated</option>
+              <option value="High">High</option>
+              <option value="Severe">Severe</option>
+            </select>
           </div>
 
           {/* Areas of Concern */}
@@ -614,7 +617,7 @@ function Report() {
           </div>
 
           {/* Status */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block mb-1 text-gray-700">Status:<span className="text-red-500 ml-1">*</span></label>
             <Select
               name="Status"
@@ -624,6 +627,14 @@ function Report() {
               isClearable
               required
             />
+          </div> */}
+          <div className="mb-4">
+            <label className="block mb-1 text-gray-700">Status:<span className="text-red-500 ml-1">*</span></label>
+            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="Status" value={formData.Status} onChange={handleInputChange} required>
+              <option value="">Select Status</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Not Identified">Not Identified</option>
+            </select>
           </div>
         </div>
 
