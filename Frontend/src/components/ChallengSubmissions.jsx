@@ -1,29 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import SocketContext from '../context/SocketContext';
 
 function ChallengeSubmissions() {
     const apiUrl = import.meta.env.VITE_Backend_URL;
-    const [submissions, setSubmissions] = useState([]);
+    // const [submissions, setSubmissions] = useState([]);
+    
+  const { submissions, fetchSubmissions } = useContext(SocketContext);
 
     useEffect(() => {
-        // Fetch submissions from backend endpoint
-        fetch(`${apiUrl}/api/challenge/challengesubmissions`, {
-            headers: {
-                "Auth-token": localStorage.getItem('Hactify-Auth-token'),
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch submissions');
-                }
-                return response.json();
-            })
-            .then(data => {
-                setSubmissions(data);
-            })
-            .catch(error => {
-                console.error('Error fetching submissions:', error);
-            });
+        fetchSubmissions();
     }, []);
 
     // Function to format date as string

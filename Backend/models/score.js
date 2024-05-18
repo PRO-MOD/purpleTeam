@@ -29,4 +29,4 @@ const scoreSchema = new mongoose.Schema({
 });
 
 // Create a Score model from the schema
-module.exports = mongoose.model('score2', scoreSchema);
+module.exports = mongoose.model('score', scoreSchema);

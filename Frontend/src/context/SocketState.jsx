@@ -14,6 +14,9 @@ const SocketState = (props) => {
   const [modalIsOpen, setModalIsOpen] = useState(false); // State for modal visibility
   const [challenge, setChallenge] = useState(''); // State for challenge name
   const [timeoutId, setTimeoutId] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
+
+  
 
 
   // Fetch user
@@ -59,6 +62,7 @@ const SocketState = (props) => {
       }, 10000);
 
       setTimeoutId(newTimeoutId);
+      fetchSubmissions();
     });
 
     socket?.on('getMessage', message => {
@@ -109,6 +113,29 @@ const SocketState = (props) => {
     }
   };
 
+  const fetchSubmissions = async () => {
+    fetch(`${apiUrl}/api/challenge/challengesubmissions`, {
+      headers: {
+          "Auth-token": localStorage.getItem('Hactify-Auth-token'),
+          'Content-Type': 'application/json',
+      }
+  })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Failed to fetch submissions');
+          }
+          return response.json();
+      })
+      .then(data => {
+          // Sort submissions by date in descending order
+          const sortedSubmissions = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+          setSubmissions(sortedSubmissions);
+      })
+      .catch(error => {
+          console.error('Error fetching submissions:', error);
+      });
+  };
+
   const [unreadCounts, setUnreadCounts] = useState({});
   // Function to fetch unread messages counts by user ID
   const fetchUnreadMessagesByUser = async () => {
@@ -135,7 +162,7 @@ const SocketState = (props) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser, challenge }}>
+    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, submissions, fetchUnreadMessagesByUser, challenge, fetchSubmissions }}>
       {modalIsOpen && <p className="bg-red-500 text-white text-center w-full py-2 absolute left-[13%] ps-4">Red Team Captured {challenge}</p>}
       {/* <p className="bg-red-500 text-white w-full py-2 text-center absolute left-[13%] ps-4">Red Team Captured</p> */}
       {props.children}

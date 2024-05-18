@@ -41,12 +41,10 @@ router.get('/export', async (req, res) => {
             const incidentCount = incidentCounts.find(count => count._id.equals(userId))?.incidentCount || 0;
 
             return {
-                'Account ID': score.account_id,
                 'Name': score.name,
-                'Score': score.score,
-                'Manual Score': score.manualScore,
-                'Date': score.date,
-                'User ID': userId,
+                'SERVICE AVAILABILITY': score.score,
+                'INCIDENT RESPONSE': score.manualScore,
+                'Total': score.score + score.manualScore,
                 'Notification Count': notificationCount,
                 'Report Count': reportCount,
                 'Incident Count': incidentCount
@@ -209,7 +207,7 @@ router.get('/getscores1', async (req, res) => {
                         $set: {
                             name: score.name,
                             account_id: score.account_id,
-                            score: 3000 - score.score,
+                            score: 12000 - score.score,
                             manualScore: totalManualScore // Update manual score
                         }
                     },
