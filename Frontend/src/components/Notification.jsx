@@ -309,7 +309,7 @@ function Notification() {
             options={incidentIdOptions}
             value={incidentIdOptions.find(option => option.value === formData.ID)}
             onChange={handleSelectChange}
-            isClearable
+            // isClearable
             required
           />
         </div>

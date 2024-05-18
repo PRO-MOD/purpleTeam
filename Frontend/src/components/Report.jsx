@@ -526,7 +526,7 @@ function Report() {
             options={incidentIdOptions}
             value={incidentIdOptions.find(option => option.value === formData.ID)}
             onChange={handleSelectChange}
-            isClearable
+            // isClearable
             required
           />
         </div>
@@ -570,7 +570,7 @@ function Report() {
               options={threatLevelOptions}
               value={threatLevelOptions.find(option => option.value === formData.threatLevel)}
               onChange={handleSelectChange}
-              isClearable
+              // isClearable
               required
             />
           </div>
@@ -621,7 +621,7 @@ function Report() {
               options={statusOptions}
               value={statusOptions.find(option => option.value === formData.Status)}
               onChange={handleSelectChange}
-              isClearable
+              // isClearable
               required
             />
           </div>
