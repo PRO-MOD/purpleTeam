@@ -86,7 +86,7 @@ const SideNavbar = () => {
                 <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faShieldHalved} size="xl" />
                 </div>
-                <p className="text-lg">Attacks</p>
+                <p className="text-lg">Notification</p>
               </Link>
              
                {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>

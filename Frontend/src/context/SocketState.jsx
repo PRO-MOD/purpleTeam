@@ -13,6 +13,7 @@ const SocketState = (props) => {
   const [messages, setMessages] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false); // State for modal visibility
   const [challenge, setChallenge] = useState(''); // State for challenge name
+  const [timeoutId, setTimeoutId] = useState(null);
 
 
   // Fetch user
@@ -20,7 +21,7 @@ const SocketState = (props) => {
     const newSocket = io('http://localhost:8080'); // || 'http://15.206.26.38:8080/'
     setSocket(newSocket);
     setUserId(userID);
-    console.log("userId: >> "+userId+" userID: >> "+userID);
+    console.log("userId: >> " + userId + " userID: >> " + userID);
     newSocket.emit('addUser', userID);
     return () => {
       newSocket.disconnect();
@@ -45,33 +46,52 @@ const SocketState = (props) => {
       console.log('Challenge solved:', data);
       setChallenge(data.challenge);
       setModalIsOpen(true);
+
+      // Clear any existing timeout
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
+      // Set a new timeout to clear the challenge and close the modal after 10 seconds
+      const newTimeoutId = setTimeout(() => {
+        setChallenge('');
+        setModalIsOpen(false);
+      }, 10000);
+
+      setTimeoutId(newTimeoutId);
     });
 
     socket?.on('getMessage', message => {
-        if (!window.location.href.includes('/chat')) {
-            // Play notification sound
-            playNotificationSound();
-            fetchUnreadMessages();
-        }
-        else {
-            // playNotificationSound();
-            const timestamp = new Date();
-            const messageWithTimestamp = { ...message, timestamp };
-            setMessages(prevMessages => [...prevMessages, messageWithTimestamp]);
-            fetchUnreadMessagesByUser();
-            fetchUnreadMessages();
-        }
+      if (!window.location.href.includes('/chat')) {
+        // Play notification sound
+        playNotificationSound();
+        fetchUnreadMessages();
+      }
+      else {
+        // playNotificationSound();
+        const timestamp = new Date();
+        const messageWithTimestamp = { ...message, timestamp };
+        setMessages(prevMessages => [...prevMessages, messageWithTimestamp]);
+        fetchUnreadMessagesByUser();
+        fetchUnreadMessages();
+      }
     });
     fetchUnreadMessages();
 
-}, [socket]);
+    // Clean up timeout on component unmount
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [socket]);
 
-const playNotificationSound = () => {
+  const playNotificationSound = () => {
     // Play notification sound
     console.log("heel notification");
     const notificationSound = new Audio(Notification);
     notificationSound.play();
-};
+  };
 
   const fetchUnreadMessages = async () => {
     try {
@@ -92,20 +112,20 @@ const playNotificationSound = () => {
   const [unreadCounts, setUnreadCounts] = useState({});
   // Function to fetch unread messages counts by user ID
   const fetchUnreadMessagesByUser = async () => {
-      try {
-          const response = await fetch(`${apiUrl}/api/chat/unread-messages-users`, {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-                  "Auth-token": localStorage.getItem('Hactify-Auth-token') // Assuming you have a token stored in localStorage
-              }
-          });
-          const data = await response.json();
-          setUnreadCounts(data.unreadMessagesByUser);
-      } catch (error) {
-          console.error('Error fetching unread messages by user:', error);
-          return 0; // Return 0 in case of an error
-      }
+    try {
+      const response = await fetch(`${apiUrl}/api/chat/unread-messages-users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "Auth-token": localStorage.getItem('Hactify-Auth-token') // Assuming you have a token stored in localStorage
+        }
+      });
+      const data = await response.json();
+      setUnreadCounts(data.unreadMessagesByUser);
+    } catch (error) {
+      console.error('Error fetching unread messages by user:', error);
+      return 0; // Return 0 in case of an error
+    }
   };
 
 
@@ -116,8 +136,8 @@ const playNotificationSound = () => {
 
   return (
     <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, fetchUnreadMessagesByUser, challenge }}>
-      {modalIsOpen && <p className="bg-red-500 text-white w-full py-2 absolute left-[13%] ps-4">Red Team Captured {challenge}</p>}
-      {/* <p className="bg-red-500 text-white w-full py-2 absolute left-[13%] ps-4">Red Team Captured</p> */}
+      {modalIsOpen && <p className="bg-red-500 text-white text-center w-full py-2 absolute left-[13%] ps-4">Red Team Captured {challenge}</p>}
+      {/* <p className="bg-red-500 text-white w-full py-2 text-center absolute left-[13%] ps-4">Red Team Captured</p> */}
       {props.children}
     </SocketContext.Provider>
   )

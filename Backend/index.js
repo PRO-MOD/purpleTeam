@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const crypto = require('crypto');
 const Score = require('./models/score.js')
-const ChallengeSolve = require('./models/ChallengeSolved.js'); 
+const ChallengeSolve = require('./models/ChallengeSolved.js');
 require('dotenv').config();
 const io = require('socket.io')(8080, {
   cors: {
@@ -18,59 +18,59 @@ const chatRouter = require('./routes/chat').router;
 let users = []
 // let isUserIdAvailable = false;
 const handleSocket = (io) => {
-    io.on('connection', (socket) => {
-        
-        socket.on('addUser', (userId) => {
-            console.log('user connected', socket.id);
-            console.log('userId: >>'+userId);
-            if (userId) {
-                // console.log("hello");
-                // Add the user to the active users list only if userId is available
-                const isUserExist = users.find((user) => user.userId === userId);
-                if (!isUserExist) {
-                    // console.log("hello1");
-                    const newUser = { userId, socketId: socket.id };
-                    users.push(newUser);
-                    io.emit('getUsers', users);
-                }
-            }
-        });
+  io.on('connection', (socket) => {
 
-        // Define the 'sendMessage' event handler
-        socket.on('sendMessage', ({ senderId, recipient, content, images }) => {
-            const receiver = users.find((user) => user.userId == recipient);
-            const sender = users.find((user) => user.userId == senderId);
-            try {
-                if (receiver) {
-                    io.to(receiver.socketId).to(sender.socketId).emit('getMessage', {
-                        sender: senderId,
-                        content,
-                        recipient,
-                        images,
-                    });
-                } else {
-                    io.to(sender.socketId).emit('getMessage', {
-                        sender: senderId,
-                        content,
-                        recipient,
-                        images,
-                    });
-                }
-            } catch (error) {
-                console.error('Error handling sendMessage event:', error);
-            }
-        });
-
-        socket.on('disconnect', () => {
-            users = users.filter((user) => user.socketId !== socket.id);
-            io.emit('getUsers', users);
-        });
+    socket.on('addUser', (userId) => {
+      console.log('user connected', socket.id);
+      console.log('userId: >>' + userId);
+      if (userId) {
+        // console.log("hello");
+        // Add the user to the active users list only if userId is available
+        const isUserExist = users.find((user) => user.userId === userId);
+        if (!isUserExist) {
+          // console.log("hello1");
+          const newUser = { userId, socketId: socket.id };
+          users.push(newUser);
+          io.emit('getUsers', users);
+        }
+      }
     });
 
-    // Handle errors from Socket.IO
-    io.on('error', (error) => {
-        console.error('Socket.IO Error:', error);
+    // Define the 'sendMessage' event handler
+    socket.on('sendMessage', ({ senderId, recipient, content, images }) => {
+      const receiver = users.find((user) => user.userId == recipient);
+      const sender = users.find((user) => user.userId == senderId);
+      try {
+        if (receiver) {
+          io.to(receiver.socketId).to(sender.socketId).emit('getMessage', {
+            sender: senderId,
+            content,
+            recipient,
+            images,
+          });
+        } else {
+          io.to(sender.socketId).emit('getMessage', {
+            sender: senderId,
+            content,
+            recipient,
+            images,
+          });
+        }
+      } catch (error) {
+        console.error('Error handling sendMessage event:', error);
+      }
     });
+
+    socket.on('disconnect', () => {
+      users = users.filter((user) => user.socketId !== socket.id);
+      io.emit('getUsers', users);
+    });
+  });
+
+  // Handle errors from Socket.IO
+  io.on('error', (error) => {
+    console.error('Socket.IO Error:', error);
+  });
 };
 
 // handleSocket(io);
@@ -162,7 +162,11 @@ app.post('/', async (req, res) => {
       if (match) {
         console.log(`User ${score.name} solved challenge ${match.challenge.name}`);
 
-        if (!ChallengeSolve.find({solve_id: match.id})) {
+
+        // Check if a ChallengeSolve document already exists with the given solve_id
+        const existingChallengeSolve = await ChallengeSolve.findOne({ solve_id: match.id });
+
+        if (!existingChallengeSolve) {
           // Create a new ChallengeSolve document
           const challengeSolve = new ChallengeSolve({
             userId: score.user,
@@ -171,7 +175,7 @@ app.post('/', async (req, res) => {
             date: match.date,
             solve_id: match.id
           });
-  
+
           // Save the ChallengeSolve document to the database
           await challengeSolve.save();
         }
@@ -179,7 +183,7 @@ app.post('/', async (req, res) => {
         // Emit event to the user socket
         const user = users.find(user => user.userId == score.user);
         console.log(score.user);
-        console.log("Users: "+users);
+        console.log("Users: " + users);
         if (user) {
           // console.log("socketId:" +user.socketId);
           io.to(user.socketId).emit('challengeSolved', { challenge: match.challenge.name });
