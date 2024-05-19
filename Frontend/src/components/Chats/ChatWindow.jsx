@@ -182,7 +182,7 @@ function ChatWindow() {
             }
             currentGroup.messages.push(message);
         });
-        console.log(groupedMessages);
+        // console.log(groupedMessages);
 
         return groupedMessages;
     };
