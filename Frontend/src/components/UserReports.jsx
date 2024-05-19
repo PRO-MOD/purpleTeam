@@ -622,7 +622,7 @@ function UserReports({ userId, route }) {
                                                 disabled={route == "progress"}
                                                 onChange={(e) => {
                                                     let inputValue = parseInt(e.target.value);
-                                                    if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':key=="penaltyScore"?'1000':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'50':'5'))) {
+                                                    if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'30':key=="penaltyScore"?'1000':selectedReport.reportType=="SITREP"?'20':selectedReport.reportType=="IRREP"?'10':'5'))) {
                                                         setSelectedReport(prevReport => ({
                                                             ...prevReport,
                                                             [key]: inputValue
