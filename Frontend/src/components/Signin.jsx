@@ -664,8 +664,7 @@ const Signin = () => {
             </div>
 
             {/* Sign-in div */}
-            <img src="\cyber .jpg" alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
-            
+            <img src="\Cyber Suraksha.png" alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
             <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-8">
             <div className="mb-8 text-center">
                    <h1 className='block text-brown-500 text-2xl font-bold mb-2'>Defend the Flag</h1>

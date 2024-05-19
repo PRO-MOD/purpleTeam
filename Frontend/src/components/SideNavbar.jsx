@@ -54,7 +54,7 @@ const SideNavbar = () => {
     <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 font-serif">
       {/* Logo Section */}
       <div className="flex flex-row items-center justify-center py-4 px-0 ">
-        <img src="\cyber .jpg" alt="Logo" className="" />
+        <img src="\Cyber Suraksha.png" alt="Logo" className="" />
         {/* <p className=" text-orange  uppercase invisible lg:visible">Hacktify</p> */}
       </div>
       <hr className="mx-2" />
