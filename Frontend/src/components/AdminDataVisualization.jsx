@@ -12,7 +12,7 @@ function AdminDataVisualization() {
                 width: '98vw',
                 height: '100vh',
             }}
-                src="https://charts.mongodb.com/charts-cyber_suraksha-ibxyqpa/embed/dashboards?id=42dac8e8-7a9a-4355-ac47-e56e5d842866&theme=light&autoRefresh=true&maxDataAge=3600&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed&attribution=false">
+                src="https://charts.mongodb.com/charts-cyber_suraksha-ibxyqpa/embed/dashboards?id=42dac8e8-7a9a-4355-ac47-e56e5d842866&theme=light&autoRefresh=true&maxDataAge=300&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed&attribution=false">
             </iframe>
         </div>
     )
