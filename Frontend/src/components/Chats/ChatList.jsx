@@ -44,7 +44,7 @@ function ChatLists({ position }) {
 
     const fetchVolunteers = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/auth/getallVolunteer`, {
+            const response = await fetch(`${apiUrl}/api/auth/getusersall`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ function ChatLists({ position }) {
     );
 
     return (
-        <div className="flex flex-col max-h-screen">
+        <div className="flex flex-col overflow-y-scroll">
             {position === 'left' && conversations.map((conversation, index) => (
                 <ChatItem
                     key={index}

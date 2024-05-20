@@ -127,6 +127,17 @@ router.get('/getallusers', async (req, res) => {
   }
 });
 
+// Route to fetch all users
+router.get('/getusersall', async (req, res) => {
+  try {
+    const users = await User.find(); // Exclude password field
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Define the route to handle removing users from the volunteer's assigned teams
 router.post('/removeUsers/:volunteerId', async (req, res) => {
   const { volunteerId } = req.params;
