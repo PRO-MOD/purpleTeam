@@ -163,7 +163,7 @@ const SocketState = (props) => {
 
   return (
     <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, submissions, fetchUnreadMessagesByUser, challenge, fetchSubmissions }}>
-      {modalIsOpen && <p className="bg-red-500 text-white text-center w-full py-2 absolute left-[13%] ps-4">Red Team Captured {challenge}</p>}
+      {modalIsOpen && <p className="bg-red-500 text-white text-center w-full py-2 absolute left-[13%] ps-4 z-10">Red Team Captured {challenge}</p>}
       {/* <p className="bg-red-500 text-white w-full py-2 text-center absolute left-[13%] ps-4">Red Team Captured</p> */}
       {props.children}
     </SocketContext.Provider>

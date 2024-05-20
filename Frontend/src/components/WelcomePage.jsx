@@ -2,7 +2,7 @@ import React from 'react';
 
 const Welcome = () => {
     return (
-        <div className="relative h-screen flex flex-col items-center bg-white">
+        <div className="h-screen flex flex-col items-center bg-white -z-50">
             {/* Header */}
 
             {/* Main Content */}
