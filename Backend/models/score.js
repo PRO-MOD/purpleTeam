@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { read } = require('xlsx');
 
 // Define the Score schema
 const scoreSchema = new mongoose.Schema({
@@ -21,6 +22,10 @@ const scoreSchema = new mongoose.Schema({
   },
   date: {
     type: Date
+  },
+  read: {
+    type: Boolean,
+    default: false
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

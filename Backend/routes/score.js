@@ -148,7 +148,7 @@ router.get('/getscores', async (req, res) => {
 router.get('/getscores1', async (req, res) => {
     try {
         // Fetch user information from your database
-        const users = await User.find({role: "BT"}, 'name'); // Assuming you only need name to match users
+        const users = await User.find({ role: "BT" }, 'name'); // Assuming you only need name to match users
 
         // Extract names of users from the database
         const userNames = users.map(user => user.name);
@@ -157,8 +157,8 @@ router.get('/getscores1', async (req, res) => {
         const apiUrl = process.env.CTFD_apiUrl;
 
         // Define your access token obtained from CTFd
-        const accessToken = process.env.CTFD_accessToken; 
-        
+        const accessToken = process.env.CTFD_accessToken;
+
         // Make a GET request to the CTFd API endpoint for the scoreboard
         const response = await axios.get(apiUrl, {
             headers: {
@@ -177,7 +177,7 @@ router.get('/getscores1', async (req, res) => {
 
         // Filter scores to include only scores for users present in your database
         const filteredScores = scores.filter(score => userNames.includes(score.name));
-
+        
         // Update scores and manual scores in the database
         for (const score of filteredScores) {
             const user = await User.findOne({ name: score.name });
@@ -193,12 +193,16 @@ router.get('/getscores1', async (req, res) => {
 
                 // Calculate the sum of manual scores from the reports
                 let totalManualScore = 0;
+                let allReportsHaveManualScore = true;
                 for (const reportType of reports) {
                     // Iterate through each report
                     for (const report of reportType) {
-                    totalManualScore += report.manualScore || 0; // Add the manual score to the total
+                        if (report.manualScore == null) {
+                            allReportsHaveManualScore = false;
+                        }
+                        totalManualScore += report.manualScore || 0; // Add the manual score to the total
+                    }
                 }
-            }
 
                 // Update the score and manual score for the user in the Score collection
                 await Score.findOneAndUpdate(
@@ -208,7 +212,8 @@ router.get('/getscores1', async (req, res) => {
                             name: score.name,
                             account_id: score.account_id,
                             score: 12000 - score.score,
-                            manualScore: totalManualScore // Update manual score
+                            manualScore: totalManualScore, // Update manual score
+                            read: allReportsHaveManualScore
                         }
                     },
                     { upsert: true, new: true } // Create a new document if it doesn't exist

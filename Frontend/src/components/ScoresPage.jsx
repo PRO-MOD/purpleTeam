@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ScoreTable from './ScoreTable';
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faCheckDouble, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 
 function ScoresComponent() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -75,6 +75,7 @@ function ScoresComponent() {
         <h1 className='text-3xl font-bold underline'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
         {/* <span className='ms-4'>Format ( Challenge Score / Manual Score )</span> */}
         {isHomePage() ? "" : <a className='bg-blue-500 mx-4 px-4 py-1 text-white rounded ' href={`${apiUrl}/api/score/export`}>Export <FontAwesomeIcon className='ms-2' icon={faDownload} /></a> }
+        {isHomePage() ? "" : <>Checking Pending <FontAwesomeIcon icon={faList} className='mx-2 text-red-500' /> / All Checked <FontAwesomeIcon icon={faCheckDouble} className='mx-2 text-green-500' /> </> }
       </div>
       <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}

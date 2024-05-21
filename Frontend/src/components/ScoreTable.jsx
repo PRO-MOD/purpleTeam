@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Loading from './Loading';
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckDouble, faCheckToSlot, faCrop, faList } from '@fortawesome/free-solid-svg-icons';
+
 
 function ScoreTable({ scores, loading, isHomePage }) {
   const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -53,6 +56,9 @@ function ScoreTable({ scores, loading, isHomePage }) {
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Total Score
             </th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Checked
+            </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -81,6 +87,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore == null ? 'Not entered' : user.manualScore}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score + (user.manualScore || 0)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.read ? <FontAwesomeIcon icon={faCheckDouble} className='text-green-500' /> : <FontAwesomeIcon icon={faList} className='text-red-500' />}</td>
                 </tr>
               ))) : <tr><td colSpan="4" className='px-6 py-4 text-center'>No Record Found</td></tr>
           )}
