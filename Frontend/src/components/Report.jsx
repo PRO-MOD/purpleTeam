@@ -293,7 +293,7 @@
 // export default Report;
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 
@@ -466,48 +466,50 @@ function Report() {
       setLoading(false); // Set loading state to false regardless of success or failure
     }
   };
+  
+  const [submittedIds, setSubmittedIds] = useState([]);
+
+  useEffect(() => {
+    fetchSubmittedIds();
+  }, []);
+
+  const fetchSubmittedIds = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/reports/userSubmittedIds`, {
+        headers: {
+          'Content-Type': 'application/json',
+          "Auth-token": localStorage.getItem('Hactify-Auth-token')
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch submitted IDs');
+      }
+      const data = await response.json();
+      setSubmittedIds(data);
+    } catch (error) {
+      console.error('Error fetching submitted IDs:', error);
+      setError('Failed to fetch submitted IDs');
+    }
+  };
+  
   const incidentIdOptions = [
-    { value: 'IR-01-001', label: 'IR-01-001' },
-    { value: 'IR-01-002', label: 'IR-01-002' },
-    { value: 'IR-01-003', label: 'IR-01-003' },
-    { value: 'IR-01-004', label: 'IR-01-004' },
-    { value: 'IR-01-005', label: 'IR-01-005' },
-    { value: 'IR-01-006', label: 'IR-01-006' },
-    { value: 'IR-01-007', label: 'IR-01-007' },
-    { value: 'IR-01-008', label: 'IR-01-008' },
-    { value: 'IR-01-009', label: 'IR-01-009' },
-    { value: 'IR-01-010', label: 'IR-01-010' },
-    { value: 'IR-01-011', label: 'IR-01-011' },
-    { value: 'IR-02-001', label: 'IR-02-001' },
-    { value: 'IR-02-002', label: 'IR-02-002' },
-    { value: 'IR-02-003', label: 'IR-02-003' },
-    { value: 'IR-02-004', label: 'IR-02-004' },
-    { value: 'IR-02-005', label: 'IR-02-005' },
-    { value: 'IR-02-006', label: 'IR-02-006' },
-    { value: 'IR-02-007', label: 'IR-02-007' },
-    { value: 'IR-02-008', label: 'IR-02-008' },
-    { value: 'IR-02-009', label: 'IR-02-009' },
-    { value: 'IR-03-001', label: 'IR-03-001' },
-    { value: 'IR-03-002', label: 'IR-03-002' },
-    { value: 'IR-03-003', label: 'IR-03-003' },
-    { value: 'IR-03-004', label: 'IR-03-004' },
-    { value: 'IR-03-005', label: 'IR-03-005' },
-    { value: 'IR-03-006', label: 'IR-03-006' },
-    { value: 'IR-03-007', label: 'IR-03-007' },
-    { value: 'IR-03-008', label: 'IR-03-008' },
-    { value: 'IR-03-009', label: 'IR-03-009' },
-    { value: 'IR-03-010', label: 'IR-03-010' },
-  ];
-
-  // const statusOptions = [
-  //   { value: 'Ongoing', label: 'Ongoing' },
-  //   { value: 'Not Identified', label: 'Not Identified' },
-  // ];
-
+    'IR-01-001', 'IR-01-002', 'IR-01-003', 'IR-01-004', 'IR-01-005',
+    'IR-01-006', 'IR-01-007', 'IR-01-008', 'IR-01-009', 'IR-01-010',
+    'IR-01-011', 'IR-02-001', 'IR-02-002', 'IR-02-003', 'IR-02-004',
+    'IR-02-005', 'IR-02-006', 'IR-02-007', 'IR-02-008', 'IR-02-009',
+    'IR-03-001', 'IR-03-002', 'IR-03-003', 'IR-03-004', 'IR-03-005',
+    'IR-03-006', 'IR-03-007', 'IR-03-008', 'IR-03-009', 'IR-03-010',
+  ].map(id => ({
+    value: id,
+    label: id,
+    isDisabled: submittedIds.includes(id),
+  }));
+  
+  
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
       <h2 className="text-3xl mb-8 text-center font-bold text-brown-650">IRREP Form</h2>
-      {error && <div className="text-red-500 mb-4">Error: {error}</div>}
+      {error && <div className="text-red-500 mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
 
         {/* Incident ID */}

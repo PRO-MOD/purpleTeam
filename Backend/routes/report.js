@@ -194,6 +194,22 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
   }
 });
 
+// GET route to fetch IDs for which the user has submitted reports
+router.get('/userSubmittedIds', fetchuser, async (req, res) => {
+  const userId = req.user.id; // Assuming you have the user's ID in the request
+
+  try {
+      // Find all reports submitted by the user and get unique IDs
+      const submittedIds = await reportModel.distinct('ID', { userId });
+
+      // Send the list of submitted IDs in JSON format
+      res.json(submittedIds);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Function to draw images on a page
 // async function drawImagesOnPage(page, imageUrls) {
 //    const margin = 50; // Margin for images
