@@ -20,6 +20,7 @@ import ProtectedRoute from './ProtectedRoute';
 import UserProgress from './UserProgress';
 import ChallengeSubmissions from './ChallengSubmissions';
 import Welcome from './WelcomePage';
+import NewReportSubmission from './NewReportUpdates'
 
 function HomePage() {
     const navigate = useNavigate();
@@ -64,6 +65,7 @@ function HomePage() {
               <Route exact path='/createuser' element={<AddUsers />} />
               <Route exact path='/assignTeams' element={<AssignTeams />} />
               <Route exact path='/scores' element={<ProtectedRoute Component={ScoresComponent}/>} />
+              <Route exact path='/updates' element={<ProtectedRoute Component={NewReportSubmission}/>} />
               {/* <Route exact path='/scores1' element={<ProtectedRoute Component={ScorePage1}/>} /> */}
               <Route exact path='/UserHome' element={<UserHomePage />} />
               <Route exact path='/UserHome/report/SITREP' element={<IncidentReport />} />

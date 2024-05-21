@@ -14,6 +14,7 @@ const notificationModel = require('../models/Notification');
 const { log } = require('util');
 const http = require('http');
 const https = require('https');
+const NewReportUpdate = require('../models/NewReportUpdate');
 
 // Multer storage and upload configuration
 const storage = multer.memoryStorage();
@@ -22,20 +23,20 @@ const upload = multer({ storage });
 
 async function fetchImageAsBuffer(url) {
   return new Promise((resolve, reject) => {
-      const protocol = url.startsWith('https') ? https : http;
+    const protocol = url.startsWith('https') ? https : http;
 
-      protocol.get(url, response => {
-          if (response.statusCode !== 200) {
-              reject(new Error(`Failed to fetch image, status code: ${response.statusCode}`));
-              return;
-          }
+    protocol.get(url, response => {
+      if (response.statusCode !== 200) {
+        reject(new Error(`Failed to fetch image, status code: ${response.statusCode}`));
+        return;
+      }
 
-          const chunks = [];
-          response.on('data', chunk => chunks.push(chunk));
-          response.on('end', () => resolve(Buffer.concat(chunks)));
-      }).on('error', error => {
-          reject(error);
-      });
+      const chunks = [];
+      response.on('data', chunk => chunks.push(chunk));
+      response.on('end', () => resolve(Buffer.concat(chunks)));
+    }).on('error', error => {
+      reject(error);
+    });
   });
 }
 
@@ -63,7 +64,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     } = req.body;
 
     const pocScreenshots = req.files;
-    
+
 
     // Use req.files to access multiple uploaded screenshots
     const reportType = "IRREP";
@@ -107,8 +108,6 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     await formData.save();
 
 
-
-
     // Load PDF file
     const pdfFilePath = path.join(__dirname, '..', 'public', 'Incidentfinal (2).pdf'); // Path to original PDF file
     const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
@@ -121,10 +120,10 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
     const dateField = form.getTextField('Date');
     const timeField = form.getTextField('Time');
-    const ID1=form.getTextField('ID');
-    const IDN1=form.getTextField('IDN');
-    const descriptionN1=form.getTextField('descriptionN');
-    const locationN1=form.getTextField('locationN');
+    const ID1 = form.getTextField('ID');
+    const IDN1 = form.getTextField('IDN');
+    const descriptionN1 = form.getTextField('descriptionN');
+    const locationN1 = form.getTextField('locationN');
     const Description = form.getTextField('Description');
     const Threat = form.getDropdown('Threat Level');
     const Aoc = form.getTextField('Area of Concern');
@@ -135,7 +134,7 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
     const Status1 = form.getDropdown('Status');
     // const MR = form.getTextField('Mitigration Recommendations');
     const CO = form.getTextField('Current Operations');
-  
+
     // const RA = form.getTextField('Risk Assessment');
     // const CP = form.getTextField('Continuity Planning');
     const notes1 = form.getTextField('Notes');
@@ -167,25 +166,32 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 
     form.flatten();
 
-    
-        // Add a new page
-       const numPagesNeeded = Math.ceil(photoUrls.length / 2);
 
-       // Add new pages for images
-       for (let i = 0; i < numPagesNeeded; i++) {
-           const page = pdfDoc.addPage();
-           await drawImagesOnPage(page, photoUrls.slice(i * 2, (i + 1) * 2));
-       }
+    // Add a new page
+    const numPagesNeeded = Math.ceil(photoUrls.length / 2);
 
-       // Save modified PDF
-       const modifiedPdfBytes = await pdfDoc.save();
-       fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
+    // Add new pages for images
+    for (let i = 0; i < numPagesNeeded; i++) {
+      const page = pdfDoc.addPage();
+      await drawImagesOnPage(page, photoUrls.slice(i * 2, (i + 1) * 2));
+    }
 
-       res.status(201).json({ message: 'Form data saved successfully' });
-   } catch (error) {
-       console.error(error);
-       res.status(500).json({ error: 'Internal server error' });
-   }
+    // Save modified PDF
+    const modifiedPdfBytes = await pdfDoc.save();
+    fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
+
+    // Create a new record for report submission
+    const newReportUpdate = await new NewReportUpdate({
+      userId: userId, 
+      ID: ID,
+    });
+    await newReportUpdate.save();
+
+    res.status(201).json({ message: 'Form data saved successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Function to draw images on a page
@@ -226,26 +232,26 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
 function getImageFormat(fileName) {
   const extension = fileName.split('.').pop().toLowerCase();
   if (extension === 'png') {
-      return 'png';
+    return 'png';
   } else if (extension === 'jpg' || extension === 'jpeg') {
-      return 'jpeg';
+    return 'jpeg';
   } else if (extension === 'tif' || extension === 'tiff') {
-      return 'tiff';
+    return 'tiff';
   } else {
-      return null; // Unsupported format
+    return null; // Unsupported format
   }
 }
 
 // Function to embed images into the PDF document based on their format
 async function embedImage(page, imageBytes, format) {
   if (format === 'png') {
-      return page.doc.embedPng(imageBytes);
+    return page.doc.embedPng(imageBytes);
   } else if (format === 'jpeg' || format === 'jpg') {
-      return page.doc.embedJpg(imageBytes);
+    return page.doc.embedJpg(imageBytes);
   } else if (format === 'tiff' || format === 'tif') {
-      return page.doc.embedTiff(imageBytes);
+    return page.doc.embedTiff(imageBytes);
   } else {
-      throw new Error('Unsupported image format');
+    throw new Error('Unsupported image format');
   }
 }
 
@@ -258,33 +264,33 @@ async function drawImagesOnPage(page, imageUrls) {
   let y = pageHeight - margin;
 
   for (const imageUrl of imageUrls) {
-      const imageBytes = await fetchImageAsBuffer(imageUrl);
-      if (imageBytes) {
-          const format = getImageFormat(imageUrl); // Determine image format
-          if (!format) {
-              console.error(`Unsupported image format for ${imageUrl}`);
-              continue;
-          }
-
-          const image = await embedImage(page, imageBytes, format); // Embed the image into the document
-          const scaleFactor = (pageWidth - 2 * margin) / image.width;
-          const scaledWidth = (pageWidth - 2 * margin);
-          const scaledHeight = image.height * scaleFactor;
-
-          page.drawImage(image, {
-              x: x,
-              y: y - scaledHeight,
-              width: scaledWidth,
-              height: scaledHeight,
-          });
-
-          x += scaledWidth + margin;
-          if (x + scaledWidth > pageWidth - margin) {
-              x = margin;
-              y -= scaledHeight + margin;
-              if (y < margin) break;
-          }
+    const imageBytes = await fetchImageAsBuffer(imageUrl);
+    if (imageBytes) {
+      const format = getImageFormat(imageUrl); // Determine image format
+      if (!format) {
+        console.error(`Unsupported image format for ${imageUrl}`);
+        continue;
       }
+
+      const image = await embedImage(page, imageBytes, format); // Embed the image into the document
+      const scaleFactor = (pageWidth - 2 * margin) / image.width;
+      const scaledWidth = (pageWidth - 2 * margin);
+      const scaledHeight = image.height * scaleFactor;
+
+      page.drawImage(image, {
+        x: x,
+        y: y - scaledHeight,
+        width: scaledWidth,
+        height: scaledHeight,
+      });
+
+      x += scaledWidth + margin;
+      if (x + scaledWidth > pageWidth - margin) {
+        x = margin;
+        y -= scaledHeight + margin;
+        if (y < margin) break;
+      }
+    }
   }
 }
 
@@ -348,25 +354,25 @@ router.get('/getAllReports', fetchuser, async (req, res) => {
 
 // Route to get details of a specific report by ID
 router.get('/update/:reportType/:reportId', async (req, res) => {
-   try {
+  try {
     const reportId = req.params.reportId;
-    const reportType=req.params.reportType;
+    const reportType = req.params.reportType;
 
     // console.log(reportType);
 
     // Fetch the report from the database by ID
     // const report = await reportModel.findById(reportId);
-  
-    
-    
+
+
+
 
 
     if (reportType == "IRREP") {
-      const reportsSIT= await reportModel.findById(reportId);
+      const reportsSIT = await reportModel.findById(reportId);
       if (!reportsSIT) {
         return res.status(404).json({ error: 'Report not found' });
       }
-  
+
       // Send the report details in the response
       res.status(200).json(reportsSIT);
 
@@ -376,7 +382,7 @@ router.get('/update/:reportType/:reportId', async (req, res) => {
       if (!reportsINC) {
         return res.status(404).json({ error: 'Report not found' });
       }
-  
+
       // Send the report details in the response
       res.status(200).json(reportsINC);
 
@@ -386,23 +392,23 @@ router.get('/update/:reportType/:reportId', async (req, res) => {
       if (!reportsNOT) {
         return res.status(404).json({ error: 'Report not found' });
       }
-  
+
       // Send the report details in the response
       res.status(200).json(reportsNOT);
     }
-    }
+  }
   // console.log("hello");
 
   // if (!report) {
   //         return res.status(404).json({ error: 'Report not found' });
   //       }
-    
+
   //       // Send the report details in the response
-        // res.status(200).json(report);
+  // res.status(200).json(report);
 
 
 
-   catch (error) {
+  catch (error) {
     console.error('Error fetching report details:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -512,58 +518,58 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
   // console.log(updatedData);
 
   try {
-      // Extract total manual score from the request body
-      const { totalManualScore, ...reportData } = updatedData;
-      const { penalty }=updatedData;
-      // console.log(totalManualScore);
+    // Extract total manual score from the request body
+    const { totalManualScore, ...reportData } = updatedData;
+    const { penalty } = updatedData;
+    // console.log(totalManualScore);
 
-      
 
-      // console.log(totalManualScore);
-      if (reportType == "IRREP") {
-        const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
+
+    // console.log(totalManualScore);
+    if (reportType == "IRREP") {
+      const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
       report.manualScore = totalManualScore;
-      report.penalty=penalty;
-            await report.save();
-            return res.json({ message: 'Manual score updated successfully', report });
-      }
-       
-  
-      // }
-      else if (reportType == "SITREP") {
-        const report = await incidentModel.findByIdAndUpdate(reportId, reportData, { new: true });
-      report.manualScore = totalManualScore;
-      report.penalty=penalty;
-            await report.save();
-           
-            return res.json({ message: 'Manual score updated successfully', report });
-       
-      }
-      else {
-        const report = await notificationModel.findByIdAndUpdate(reportId, reportData, { new: true });
-      report.manualScore = totalManualScore;
-      report.penalty=penalty;
-            await report.save();
-            return res.json({ message: 'Manual score updated successfully', report });
-       
-      }  
-
-      // Find the report by ID and update its data
-      // const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
-      // report.manualScore = totalManualScore;
-      //       await report.save();
-
-      // if (!report) {
-      //     return res.status(404).json({ message: 'Report not found' });
-      // }
-      // return res.json({ message: 'Manual score updated successfully', report });
-
-      // Optionally, perform any additional processing or validation here
+      report.penalty = penalty;
+      await report.save();
+      return res.json({ message: 'Manual score updated successfully', report });
     }
-      
-   catch (error) {
-      console.error('Error updating manual score:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+
+
+    // }
+    else if (reportType == "SITREP") {
+      const report = await incidentModel.findByIdAndUpdate(reportId, reportData, { new: true });
+      report.manualScore = totalManualScore;
+      report.penalty = penalty;
+      await report.save();
+
+      return res.json({ message: 'Manual score updated successfully', report });
+
+    }
+    else {
+      const report = await notificationModel.findByIdAndUpdate(reportId, reportData, { new: true });
+      report.manualScore = totalManualScore;
+      report.penalty = penalty;
+      await report.save();
+      return res.json({ message: 'Manual score updated successfully', report });
+
+    }
+
+    // Find the report by ID and update its data
+    // const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
+    // report.manualScore = totalManualScore;
+    //       await report.save();
+
+    // if (!report) {
+    //     return res.status(404).json({ message: 'Report not found' });
+    // }
+    // return res.json({ message: 'Manual score updated successfully', report });
+
+    // Optionally, perform any additional processing or validation here
+  }
+
+  catch (error) {
+    console.error('Error updating manual score:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });
 

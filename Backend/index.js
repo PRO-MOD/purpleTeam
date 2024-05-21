@@ -94,7 +94,8 @@ app.use('/api/reports/IRREP', require('./routes/report.js'))
 app.use('/api/reports/Notification', require('./routes/notification.js'))
 app.use('/api/reports/SITREP', require('./routes/IncidentReport.js'))
 
-app.use('/api/reports', require('./routes/report.js')) // get report sit
+app.use('/api/reports', require('./routes/report.js'))
+app.use('/api/updates', require('./routes/NewReportUpdate.js'))
 
 app.use('/api/notes', require('./routes/notes.js'))
 app.use('/api/flags', require('./routes/flags.js'))

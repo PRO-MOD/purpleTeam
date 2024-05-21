@@ -79,7 +79,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
                   >{user.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore || 'Not entered'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore == null ? 'Not entered' : user.manualScore}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score + (user.manualScore || 0)}</td>
                 </tr>
               ))) : <tr><td colSpan="4" className='px-6 py-4 text-center'>No Record Found</td></tr>

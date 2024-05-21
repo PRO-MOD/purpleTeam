@@ -12,6 +12,7 @@ const User = require('../models/User');
 const score = require('../models/score');
 const http = require('http');
 const https = require('https');
+const NewReportUpdate = require('../models/NewReportUpdate');
 
 // Multer storage and upload configuration
 const storage = multer.memoryStorage();
@@ -83,52 +84,59 @@ router.post('/', fetchuser, upload.array('pocScreenshots', 5), async (req, res) 
         const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfFilePath));
 
         const options = { timeZone: 'Asia/Kolkata' };
-            currentDate = new Date(formData.createdAt).toLocaleDateString('en-IN', options);
-            currentTime = new Date(formData.createdAt).toLocaleTimeString('en-IN', options);
-        
-        
-            const form = pdfDoc.getForm();
-        
-            const dateField = form.getTextField('Date');
-            const timeField = form.getTextField('Time');
-            const ID1 = form.getTextField('ID');
-            const description1 = form.getTextField('Description');
-            const location1 = form.getTextField('Location');
-            const notes1 = form.getTextField('Notes');
-        
-        
-        
-            dateField.setText(currentDate);
-            timeField.setText(currentTime);
-            description1.setText(description);
-            ID1.setText(ID);
-            // type1.setText(type);
-            location1.setText(location);
-            notes1.setText(notes);
-        
-        
-        
-            form.flatten();
-        
+        currentDate = new Date(formData.createdAt).toLocaleDateString('en-IN', options);
+        currentTime = new Date(formData.createdAt).toLocaleTimeString('en-IN', options);
 
-       // Calculate number of pages needed based on the number of images
-       const numPagesNeeded = Math.ceil(photoUrls.length / 2);
 
-       // Add new pages for images
-       for (let i = 0; i < numPagesNeeded; i++) {
-           const page = pdfDoc.addPage();
-           await drawImagesOnPage(page, photoUrls.slice(i * 2, (i + 1) * 2));
-       }
+        const form = pdfDoc.getForm();
 
-       // Save modified PDF
-       const modifiedPdfBytes = await pdfDoc.save();
-       fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
+        const dateField = form.getTextField('Date');
+        const timeField = form.getTextField('Time');
+        const ID1 = form.getTextField('ID');
+        const description1 = form.getTextField('Description');
+        const location1 = form.getTextField('Location');
+        const notes1 = form.getTextField('Notes');
 
-       res.status(201).json({ message: 'Form data saved successfully' });
-   } catch (error) {
-       console.error(error);
-       res.status(500).json({ error: 'Internal server error' });
-   }
+
+
+        dateField.setText(currentDate);
+        timeField.setText(currentTime);
+        description1.setText(description);
+        ID1.setText(ID);
+        // type1.setText(type);
+        location1.setText(location);
+        notes1.setText(notes);
+
+
+
+        form.flatten();
+
+
+        // Calculate number of pages needed based on the number of images
+        const numPagesNeeded = Math.ceil(photoUrls.length / 2);
+
+        // Add new pages for images
+        for (let i = 0; i < numPagesNeeded; i++) {
+            const page = pdfDoc.addPage();
+            await drawImagesOnPage(page, photoUrls.slice(i * 2, (i + 1) * 2));
+        }
+
+        // Save modified PDF
+        const modifiedPdfBytes = await pdfDoc.save();
+        fs.writeFileSync(path.join(__dirname, '..', 'uploads', pdfName), modifiedPdfBytes);
+
+        // Create a new record for report submission
+        const newReportUpdate = await new NewReportUpdate({
+            userId: userId,
+            ID: ID,
+        });
+        await newReportUpdate.save();
+
+        res.status(201).json({ message: 'Form data saved successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
