@@ -70,7 +70,7 @@ function ChatLists({ position }) {
 
     // Filter volunteers based on search query
     const filteredVolunteers = volunteers.filter(volunteer =>
-        volunteer.name.toLowerCase().includes(searchQuery.toLowerCase())
+        volunteer.name && volunteer.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
