@@ -31,7 +31,7 @@ function ScoresComponent() {
     fetchScores();
 
     // Fetching scores periodically every 5 minutes
-    const interval = setInterval(fetchScores, 300000); // 300000 milliseconds = 5 minutes
+    const interval = setInterval(fetchScores, 60000); // 300000 milliseconds = 5 minutes
 
     // Clear interval on component unmount to avoid memory leaks
     return () => clearInterval(interval);

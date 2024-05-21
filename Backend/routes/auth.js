@@ -130,7 +130,7 @@ router.get('/getallusers', async (req, res) => {
 // Route to fetch all users
 router.get('/getusersall', async (req, res) => {
   try {
-    const users = await User.find(); // Exclude password field
+    const users = await User.find().select("-password"); // Exclude password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
