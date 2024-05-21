@@ -473,30 +473,30 @@ function Report() {
     { value: 'IR-01-004', label: 'IR-01-004' },
     { value: 'IR-01-005', label: 'IR-01-005' },
     { value: 'IR-01-006', label: 'IR-01-006' },
-    { value: 'IR-01-007', label: 'IR-01-007' },
-    { value: 'IR-01-008', label: 'IR-01-008' },
-    { value: 'IR-01-009', label: 'IR-01-009' },
-    { value: 'IR-01-010', label: 'IR-01-010' },
-    { value: 'IR-01-011', label: 'IR-01-011' },
-    { value: 'IR-02-001', label: 'IR-02-001' },
-    { value: 'IR-02-002', label: 'IR-02-002' },
-    { value: 'IR-02-003', label: 'IR-02-003' },
-    { value: 'IR-02-004', label: 'IR-02-004' },
-    { value: 'IR-02-005', label: 'IR-02-005' },
-    { value: 'IR-02-006', label: 'IR-02-006' },
-    { value: 'IR-02-007', label: 'IR-02-007' },
-    { value: 'IR-02-008', label: 'IR-02-008' },
-    { value: 'IR-02-009', label: 'IR-02-009' },
-    { value: 'IR-03-001', label: 'IR-03-001' },
-    { value: 'IR-03-002', label: 'IR-03-002' },
-    { value: 'IR-03-003', label: 'IR-03-003' },
-    { value: 'IR-03-004', label: 'IR-03-004' },
-    { value: 'IR-03-005', label: 'IR-03-005' },
-    { value: 'IR-03-006', label: 'IR-03-006' },
-    { value: 'IR-03-007', label: 'IR-03-007' },
-    { value: 'IR-03-008', label: 'IR-03-008' },
-    { value: 'IR-03-009', label: 'IR-03-009' },
-    { value: 'IR-03-010', label: 'IR-03-010' },
+    // { value: 'IR-01-007', label: 'IR-01-007' },
+    // { value: 'IR-01-008', label: 'IR-01-008' },
+    // { value: 'IR-01-009', label: 'IR-01-009' },
+    // { value: 'IR-01-010', label: 'IR-01-010' },
+    // { value: 'IR-01-011', label: 'IR-01-011' },
+    // { value: 'IR-02-001', label: 'IR-02-001' },
+    // { value: 'IR-02-002', label: 'IR-02-002' },
+    // { value: 'IR-02-003', label: 'IR-02-003' },
+    // { value: 'IR-02-004', label: 'IR-02-004' },
+    // { value: 'IR-02-005', label: 'IR-02-005' },
+    // { value: 'IR-02-006', label: 'IR-02-006' },
+    // { value: 'IR-02-007', label: 'IR-02-007' },
+    // { value: 'IR-02-008', label: 'IR-02-008' },
+    // { value: 'IR-02-009', label: 'IR-02-009' },
+    // { value: 'IR-03-001', label: 'IR-03-001' },
+    // { value: 'IR-03-002', label: 'IR-03-002' },
+    // { value: 'IR-03-003', label: 'IR-03-003' },
+    // { value: 'IR-03-004', label: 'IR-03-004' },
+    // { value: 'IR-03-005', label: 'IR-03-005' },
+    // { value: 'IR-03-006', label: 'IR-03-006' },
+    // { value: 'IR-03-007', label: 'IR-03-007' },
+    // { value: 'IR-03-008', label: 'IR-03-008' },
+    // { value: 'IR-03-009', label: 'IR-03-009' },
+    // { value: 'IR-03-010', label: 'IR-03-010' },
   ];
 
   // const statusOptions = [
@@ -662,7 +662,7 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">8. POC (Screenshots)</h3>
           <div>
             <label className="block mb-1 text-gray-700">Screenshots (up to 5):</label>
-            <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshot" multiple onChange={handleInputChange} />
+            <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshot" multiple  accept="image/*" onChange={handleInputChange} />
           </div>
         </div>
 

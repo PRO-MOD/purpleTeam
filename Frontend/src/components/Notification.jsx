@@ -269,30 +269,30 @@ function Notification() {
     { value: 'IN-01-004', label: 'IN-01-004' },
     { value: 'IN-01-005', label: 'IN-01-005' },
     { value: 'IN-01-006', label: 'IN-01-006' },
-    { value: 'IN-01-007', label: 'IN-01-007' },
-    { value: 'IN-01-008', label: 'IN-01-008' },
-    { value: 'IN-01-009', label: 'IN-01-009' },
-    { value: 'IN-01-010', label: 'IN-01-010' },
-    { value: 'IN-01-011', label: 'IN-01-011' },
-    { value: 'IN-02-001', label: 'IN-02-001' },
-    { value: 'IN-02-002', label: 'IN-02-002' },
-    { value: 'IN-02-003', label: 'IN-02-003' },
-    { value: 'IN-02-004', label: 'IN-02-004' },
-    { value: 'IN-02-005', label: 'IN-02-005' },
-    { value: 'IN-02-006', label: 'IN-02-006' },
-    { value: 'IN-02-007', label: 'IN-02-007' },
-    { value: 'IN-02-008', label: 'IN-02-008' },
-    { value: 'IN-02-009', label: 'IN-02-009' },
-    { value: 'IN-03-001', label: 'IN-03-001' },
-    { value: 'IN-03-002', label: 'IN-03-002' },
-    { value: 'IN-03-003', label: 'IN-03-003' },
-    { value: 'IN-03-004', label: 'IN-03-004' },
-    { value: 'IN-03-005', label: 'IN-03-005' },
-    { value: 'IN-03-006', label: 'IN-03-006' },
-    { value: 'IN-03-007', label: 'IN-03-007' },
-    { value: 'IN-03-008', label: 'IN-03-008' },
-    { value: 'IN-03-009', label: 'IN-03-009' },
-    { value: 'IN-03-010', label: 'IN-03-010' },
+    // { value: 'IN-01-007', label: 'IN-01-007' },
+    // { value: 'IN-01-008', label: 'IN-01-008' },
+    // { value: 'IN-01-009', label: 'IN-01-009' },
+    // { value: 'IN-01-010', label: 'IN-01-010' },
+    // { value: 'IN-01-011', label: 'IN-01-011' },
+    // { value: 'IN-02-001', label: 'IN-02-001' },
+    // { value: 'IN-02-002', label: 'IN-02-002' },
+    // { value: 'IN-02-003', label: 'IN-02-003' },
+    // { value: 'IN-02-004', label: 'IN-02-004' },
+    // { value: 'IN-02-005', label: 'IN-02-005' },
+    // { value: 'IN-02-006', label: 'IN-02-006' },
+    // { value: 'IN-02-007', label: 'IN-02-007' },
+    // { value: 'IN-02-008', label: 'IN-02-008' },
+    // { value: 'IN-02-009', label: 'IN-02-009' },
+    // { value: 'IN-03-001', label: 'IN-03-001' },
+    // { value: 'IN-03-002', label: 'IN-03-002' },
+    // { value: 'IN-03-003', label: 'IN-03-003' },
+    // { value: 'IN-03-004', label: 'IN-03-004' },
+    // { value: 'IN-03-005', label: 'IN-03-005' },
+    // { value: 'IN-03-006', label: 'IN-03-006' },
+    // { value: 'IN-03-007', label: 'IN-03-007' },
+    // { value: 'IN-03-008', label: 'IN-03-008' },
+    // { value: 'IN-03-009', label: 'IN-03-009' },
+    // { value: 'IN-03-010', label: 'IN-03-010' },
   ];
 
   return (
@@ -357,6 +357,7 @@ function Notification() {
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500"
             type="file"
             name="pocScreenshots"
+            accept="image/*"
             multiple
             onChange={handleInputChange}
           />

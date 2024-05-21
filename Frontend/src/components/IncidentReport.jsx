@@ -332,7 +332,7 @@ function IncidentReport() {
     {/* POC Screenshots */}
     <div className="mb-4">
       <label className="block mb-1 text-gray-700">POC Screenshots (up to 5):</label>
-      <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshots" multiple onChange={handleInputChange} />
+      <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshots" multiple accept="image/*" onChange={handleInputChange} />
     </div>
 
     {/* Submit Button */}
