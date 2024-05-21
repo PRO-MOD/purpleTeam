@@ -494,11 +494,7 @@ function Report() {
   
   const incidentIdOptions = [
     'IR-01-001', 'IR-01-002', 'IR-01-003', 'IR-01-004', 'IR-01-005',
-    'IR-01-006', 'IR-01-007', 'IR-01-008', 'IR-01-009', 'IR-01-010',
-    'IR-01-011', 'IR-02-001', 'IR-02-002', 'IR-02-003', 'IR-02-004',
-    'IR-02-005', 'IR-02-006', 'IR-02-007', 'IR-02-008', 'IR-02-009',
-    'IR-03-001', 'IR-03-002', 'IR-03-003', 'IR-03-004', 'IR-03-005',
-    'IR-03-006', 'IR-03-007', 'IR-03-008', 'IR-03-009', 'IR-03-010',
+    'IR-01-006'
   ].map(id => ({
     value: id,
     label: id,
@@ -664,7 +660,7 @@ function Report() {
           <h3 className="text-xl mb-2 font-semibold text-gray-800">8. POC (Screenshots)</h3>
           <div>
             <label className="block mb-1 text-gray-700">Screenshots (up to 5):</label>
-            <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshot" multiple onChange={handleInputChange} />
+            <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshot" multiple  accept="image/*" onChange={handleInputChange} />
           </div>
         </div>
 

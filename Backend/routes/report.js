@@ -344,7 +344,7 @@ router.get('/specific/:userId', async (req, res) => {
     }
 
     // Return the scores and reports data in JSON format
-    res.json({ scores, "SITREP_Report": reports, "IRREP_Report": incidentReport, "Notification_Report": NotificationReport });
+    res.json({ scores, "IRREP_Report": reports, "SITREP_Report": incidentReport, "Notification_Report": NotificationReport });
   } catch (error) {
     console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Internal Server Error' });

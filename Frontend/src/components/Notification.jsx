@@ -288,11 +288,7 @@ function Notification() {
 
   const incidentIdOptions = [
     'IN-01-001', 'IN-01-002', 'IN-01-003', 'IN-01-004', 'IN-01-005',
-    'IN-01-006', 'IN-01-007', 'IN-01-008', 'IN-01-009', 'IN-01-010',
-    'IN-01-011', 'IN-02-001', 'IN-02-002', 'IN-02-003', 'IN-02-004',
-    'IN-02-005', 'IN-02-006', 'IN-02-007', 'IN-02-008', 'IN-02-009',
-    'IN-03-001', 'IN-03-002', 'IN-03-003', 'IN-03-004', 'IN-03-005',
-    'IN-03-006', 'IN-03-007', 'IN-03-008', 'IN-03-009', 'IN-03-010',
+    'IN-01-006'
   ].map(id => ({
     value: id,
     label: id,
@@ -361,6 +357,7 @@ function Notification() {
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500"
             type="file"
             name="pocScreenshots"
+            accept="image/*"
             multiple
             onChange={handleInputChange}
           />
@@ -380,4 +377,3 @@ function Notification() {
 }
 
 export default Notification;
-

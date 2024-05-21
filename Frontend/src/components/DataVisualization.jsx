@@ -20,6 +20,9 @@ const DataVisualization = ({ jsonData }) => {
         if (!jsonData) return;
 
         // Calculate counts for each report type
+        // const sitrepCount = jsonData.SITREP_Report.length;
+        // const irrepCount = jsonData.IRREP_Report.length;
+        // const notificationCount = jsonData.Notification_Report.length;
         const sitrepCount = jsonData.SITREP_Report.length;
         const irrepCount = jsonData.IRREP_Report.length;
         const notificationCount = jsonData.Notification_Report.length;
