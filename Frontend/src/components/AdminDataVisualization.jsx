@@ -12,7 +12,7 @@ function AdminDataVisualization() {
                 width: '98vw',
                 height: '100vh',
             }}
-                src="https://charts.mongodb.com/charts-hacktify_internship-ttsqd/embed/dashboards?id=72796993-2e4e-43ba-9453-3a5334723e61&theme=light&autoRefresh=true&maxDataAge=60&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed">
+                src="https://charts.mongodb.com/charts-cyber_suraksha-ibxyqpa/embed/dashboards?id=42dac8e8-7a9a-4355-ac47-e56e5d842866&theme=light&autoRefresh=true&maxDataAge=300&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed&attribution=false">
             </iframe>
         </div>
     )

@@ -19,6 +19,7 @@ import ScorePage1 from './ScoresPage1';
 import ProtectedRoute from './ProtectedRoute';
 import UserProgress from './UserProgress';
 import ChallengeSubmissions from './ChallengSubmissions';
+import Welcome from './WelcomePage';
 
 function HomePage() {
     const navigate = useNavigate();
@@ -56,7 +57,7 @@ function HomePage() {
               ""
             }
             <Routes>
-              <Route exact path='/' element={<ScoresComponent/>} />
+              <Route exact path='/' element={<Welcome/>} />
               {/* <Route exact path='/personal/:userId' element={<UserDetails/>} /> */}
               <Route exact path='/progress' element={<UserProgress/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />

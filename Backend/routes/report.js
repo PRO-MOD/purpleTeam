@@ -289,10 +289,11 @@ async function drawImagesOnPage(page, imageUrls) {
 }
 
 // Endpoint to fetch incident data by ID
-router.get('/notification/:id', async (req, res) => {
+router.get('/notification/:id', fetchuser, async (req, res) => {
   const incidentId = req.params.id;
+  const userId = req.user.id;
   try {
-    const incident = await notificationModel.findOne({ ID: incidentId });
+    const incident = await notificationModel.findOne({ ID: incidentId, userId: userId });
     if (!incident) {
       return res.status(404).json({ message: 'Incident not found' });
     }
