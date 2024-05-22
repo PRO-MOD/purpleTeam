@@ -315,7 +315,7 @@ router.get('/notification/:id', fetchuser, async (req, res) => {
   const incidentId = req.params.id;
   const userId = req.user.id;
   try {
-    const incident = await notificationModel.findOne({ ID: incidentId, userId: userId });
+    const incident = await notificationModel.findOne({ ID: incidentId, userId: userId }).sort({ createdAt: -1 });;
     if (!incident) {
       return res.status(404).json({ message: 'Incident not found' });
     }
