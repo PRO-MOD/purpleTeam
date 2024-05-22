@@ -493,8 +493,8 @@ function Report() {
   };
   
   const incidentIdOptions = [
-    'IR-01-001', 'IR-01-002', 'IR-01-003', 'IR-01-004', 'IR-01-005',
-    'IR-01-006'
+    'IR-01-001', 'IR-01-006', 'IR-01-007', 'IR-01-008', 'IR-01-009',
+    'IR-01-010'
   ].map(id => ({
     value: id,
     label: id,

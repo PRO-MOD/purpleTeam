@@ -287,8 +287,8 @@ function Notification() {
   };
 
   const incidentIdOptions = [
-    'IN-01-001', 'IN-01-002', 'IN-01-003', 'IN-01-004', 'IN-01-005',
-    'IN-01-006'
+    'IN-01-001', 'IN-01-006', 'IN-01-007', 'IN-01-008', 'IN-01-009',
+    'IN-01-010'
   ].map(id => ({
     value: id,
     label: id,
