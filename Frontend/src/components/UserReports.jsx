@@ -608,38 +608,38 @@ function UserReports({ userId, route }) {
                                                             selectedReport[key.replace('Score', '')]
                                                         )}
                                                 </td>
-                                                <td className="border px-4 py-2">{selectedReport.reportType == "SITREP" && key == "pocScreenshotsScore" ? '0' : key == "penaltyScore" ? '' : selectedReport.reportType == "SITREP" ? '0' : selectedReport.reportType == "IRREP" ? '10' : key === "penaltyScore" ? '' : '5'}</td>
-                                                <td className="border px-2 py-2">
-                                                    {
-                                                        route == "progress"
-                                                            ?
-                                                            <p>{selectedReport[key]}</p>
-                                                            :
-                                                            <input
-                                                                type="number"
-                                                                className="border-gray-300 rounded-md w-full p-2"
-                                                                value={selectedReport[key]}
-                                                                disabled={route == "progress"}
-                                                                onChange={(e) => {
-                                                                    let inputValue = parseInt(e.target.value);
-                                                                    if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType == "SITREP" && key == "pocScreenshotsScore" ? '0' : key == "penaltyScore" ? '1000' : selectedReport.reportType == "SITREP" ? '0' : selectedReport.reportType == "IRREP" ? '10' : '5'))) {
-                                                                        setSelectedReport(prevReport => ({
-                                                                            ...prevReport,
-                                                                            [key]: inputValue
-                                                                        }));
-                                                                    }
-                                                                }}
-                                                            />
+                                    <td className="border px-4 py-2">{selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'0':key=="penaltyScore"?'':selectedReport.reportType=="SITREP"?'0':selectedReport.reportType=="IRREP"?'10':key==="penaltyScore"?'':'5'}</td>
+                                    <td className="border px-2 py-2">
+                                        {
+                                            route == "progress" 
+                                            ?
+                                            <p>{selectedReport[key]}</p>
+                                            :
+                                            <input
+                                                type="number"
+                                                className="border-gray-300 rounded-md w-full p-2"
+                                                value={selectedReport[key]}
+                                                disabled={route == "progress"}
+                                                onChange={(e) => {
+                                                    let inputValue = parseInt(e.target.value);
+                                                    if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'0':key=="penaltyScore"?'100000':selectedReport.reportType=="SITREP"?'0':selectedReport.reportType=="IRREP"?'10':'5'))) {
+                                                        setSelectedReport(prevReport => ({
+                                                            ...prevReport,
+                                                            [key]: inputValue
+                                                        }));
                                                     }
-                                                </td>
-                                            </tr>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                                <tr>
-                                    <td className="border px-4 py-2" colSpan="3">Total Manual Score</td>
-                                    {/* <td className="border px-4 py-2">
+                                                }}
+                                            />
+                                        }
+                                    </td>
+                                </tr>
+                            );
+                        }
+                        return null;
+                    })}
+                    <tr>
+                        <td className="border px-4 py-2" colSpan="3">Total Manual Score</td>
+                        {/* <td className="border px-4 py-2">
                             {selectedReport &&
                                 Object.entries(selectedReport)
                                     .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
