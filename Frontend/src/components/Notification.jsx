@@ -292,7 +292,6 @@ function Notification() {
   ].map(id => ({
     value: id,
     label: id,
-    isDisabled: submittedIds.includes(id),
   }));
 
   return (
