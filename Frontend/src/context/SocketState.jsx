@@ -38,7 +38,7 @@ const SocketState = (props) => {
 
       // Listen for 'getUsers' event
       socket.on('getUsers', users => {
-        console.log("Active Users :>> ", users);
+        console.log("Active Users :>> ", users.length);
       });
     }
   }, [socket]);
