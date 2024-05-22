@@ -72,13 +72,13 @@
 //             const totalManualScore = Object.entries(selectedReport)
 //                 .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
 //                 .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0);
-    
+
 //             // Add total manual score to the selected report object
 //             const reportWithTotalScore = {
 //                 ...selectedReport,
 //                 totalManualScore
 //             };
-    
+
 //             const response = await fetch(`${apiUrl}/api/reports/${reportId}/${reportType}/manual-score`, {
 //                 method: 'POST',
 //                 headers: {
@@ -96,13 +96,13 @@
 //             console.error('Error adding manual score:', error);
 //         }
 //     };
-    
+
 //     const handleShowManualScoreModal = (reportId, reportType) => {
 //         setShowManualScoreModal(true);
 //         setReportId(reportId);
 //         setReportType(reportType);
 //     };
-    
+
 
 //     return (
 //         <div className="container mx-auto">
@@ -131,7 +131,7 @@
 //                                     onClick={(event) => handlePhotoClick(event, report.pocScreenshots)}
 //                                     className="text-blue-500 cursor-pointer"
 //                                 />
-                                
+
 //                                 &nbsp;&nbsp;
 //                                 <a href={`${apiUrl}/uploads/${report.pdfName}`} target="_blank" rel="noopener noreferrer" className="text-blue-500">View PDF</a>
 //                             </td>
@@ -264,7 +264,7 @@
 //     onChange={(e) => {
 //         // Parse the input value as a number
 //         let inputValue = parseInt(e.target.value);
-        
+
 //         // Check if the input value is empty or within the range of 0 to 10
 //         if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= 50)) {
 //             // Update the selected report with the new score value
@@ -378,14 +378,14 @@ function UserReports({ userId, route }) {
         try {
             // Calculate total manual score
             const totalManualScore = Object.entries(selectedReport)
-            .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore' && key !== 'penaltyScore') // Exclude penaltyScore from sum
-                        .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0) - (selectedReport.penaltyScore || 0);
-            
-                // .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
-                // .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0);
+                .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore' && key !== 'penaltyScore') // Exclude penaltyScore from sum
+                .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0) - (selectedReport.penaltyScore || 0);
+
+            // .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
+            // .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0);
 
 
-               
+
 
             // Add total manual score to the selected report object
             const reportWithTotalScore = {
@@ -548,35 +548,35 @@ function UserReports({ userId, route }) {
                 </div>
             )} */}
             {showManualScoreModal && (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white p-6 rounded-lg w-1/2 h-2/3 max-h-2/3 overflow-y-auto relative">
-            <span className="text-2xl font-bold cursor-pointer absolute top-2 right-2" onClick={handleCloseModal}>&times;</span>
-            <h3 className="text-lg font-semibold mb-4">{route == "progress" ? "Detailed Score" : "Add Manual Score"}</h3>
-            <table className="table-auto w-full">
-                <thead>
-                    <tr>
-                        <th className="px-4 py-2">Name</th>
-                        <th className="px-4 py-2">Values</th>
-                        <th className="px-4 py-2">Max Score</th>
-                        <th className="px-4 py-2">{progress == "progress" ? "Assigned " :  ""}Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {selectedReport && Object.entries(selectedReport).map(([key, value]) => {
-                        const isScore = key.endsWith('Score') && key !== 'manualScore'; // Check if the key ends with 'Score' but not 'manualScore'
-                        if (isScore) {
-                            return (
-                                <tr key={key}>
-                                    <td className="border px-4 py-2">{key.replace('Score', '')}</td>
-                                    {/* <td className="border px-4 py-2 break-words max-w-xs">{selectedReport[key.replace('Score', '')]}</td> */}
-                                    <td className={`border px-4 py-2 break-words max-w-xs ${key=="pocScreenshotsScore"?"text-indigo-500":""}`}>
-                                    {key=="pocScreenshotsScore"?selectedReport[key.replace('Score', '')].map((data,index)=>{
-                                        return <div key={index+1} ><a href={data} target='_blank'>Screenshot {index+1}</a><br/></div>
-                                    }):
-                                                    key === 'penaltyScore' ? (
-                                                        <div>
-                                                        <span className="font-semibold text-red-700  ">Remark: </span>
-                                                        {/* <input
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg w-1/2 h-2/3 max-h-2/3 overflow-y-auto relative">
+                        <span className="text-2xl font-bold cursor-pointer absolute top-2 right-2" onClick={handleCloseModal}>&times;</span>
+                        <h3 className="text-lg font-semibold mb-4">{route == "progress" ? "Detailed Score" : "Add Manual Score"}</h3>
+                        <table className="table-auto w-full">
+                            <thead>
+                                <tr>
+                                    <th className="px-4 py-2">Name</th>
+                                    <th className="px-4 py-2">Values</th>
+                                    <th className="px-4 py-2">Max Score</th>
+                                    <th className="px-4 py-2">{progress == "progress" ? "Assigned " : ""}Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {selectedReport && Object.entries(selectedReport).map(([key, value]) => {
+                                    const isScore = key.endsWith('Score') && key !== 'manualScore'; // Check if the key ends with 'Score' but not 'manualScore'
+                                    if (isScore) {
+                                        return (
+                                            <tr key={key}>
+                                                <td className="border px-4 py-2">{key.replace('Score', '')}</td>
+                                                {/* <td className="border px-4 py-2 break-words max-w-xs">{selectedReport[key.replace('Score', '')]}</td> */}
+                                                <td className={`border px-4 py-2 break-words max-w-xs ${key == "pocScreenshotsScore" ? "text-indigo-500" : ""}`}>
+                                                    {key == "pocScreenshotsScore" ? selectedReport[key.replace('Score', '')].map((data, index) => {
+                                                        return <div key={index + 1} ><a href={data} target='_blank'>Screenshot {index + 1}</a><br /></div>
+                                                    }) :
+                                                        key === 'penaltyScore' ? (
+                                                            <div>
+                                                                <span className="font-semibold text-red-700  ">Remark: </span>
+                                                                {/* <input
                                                             type="text"
                                                             className={`border-gray-300 rounded-md w-full p-2  ${key === 'penaltyScore' ? 'text-red-500' : ''}`}
                                                             value={selectedReport.penalty || ''}
@@ -588,80 +588,80 @@ function UserReports({ userId, route }) {
                                                                 }));
                                                             }}
                                                         /> */}
-                                                        <textarea
-    className={`border-gray-300 rounded-md w-full p-2 resize-none  ${key === 'penaltyScore' ? 'text-red-500' : ''}`}
-    disabled={route == "progress"}
-    value={selectedReport.penalty || ''}
-    onChange={(e) => {
-        const inputValue = e.target.value;
-        setSelectedReport(prevReport => ({
-            ...prevReport,
-            penalty: inputValue
-        }));
-    }}
-    rows={4}
-    style={{overflowY: 'auto'}}
-/>
+                                                                <textarea
+                                                                    className={`border-gray-300 rounded-md w-full p-2 resize-none  ${key === 'penaltyScore' ? 'text-red-500' : ''}`}
+                                                                    disabled={route == "progress"}
+                                                                    value={selectedReport.penalty || ''}
+                                                                    onChange={(e) => {
+                                                                        const inputValue = e.target.value;
+                                                                        setSelectedReport(prevReport => ({
+                                                                            ...prevReport,
+                                                                            penalty: inputValue
+                                                                        }));
+                                                                    }}
+                                                                    rows={4}
+                                                                    style={{ overflowY: 'auto' }}
+                                                                />
 
-                                                    </div>
-                                                    ) : (
-                                                        selectedReport[key.replace('Score', '')]
-                                                    )}
+                                                            </div>
+                                                        ) : (
+                                                            selectedReport[key.replace('Score', '')]
+                                                        )}
                                                 </td>
-                                    <td className="border px-4 py-2">{selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'0':key=="penaltyScore"?'':selectedReport.reportType=="SITREP"?'0':selectedReport.reportType=="IRREP"?'10':key==="penaltyScore"?'':'5'}</td>
-                                    <td className="border px-2 py-2">
-                                        {
-                                            route == "progress" 
-                                            ?
-                                            <p>{selectedReport[key]}</p>
-                                            :
-                                            <input
-                                                type="number"
-                                                className="border-gray-300 rounded-md w-full p-2"
-                                                value={selectedReport[key]}
-                                                disabled={route == "progress"}
-                                                onChange={(e) => {
-                                                    let inputValue = parseInt(e.target.value);
-                                                    if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType=="SITREP" && key=="pocScreenshotsScore"?'0':key=="penaltyScore"?'1000':selectedReport.reportType=="SITREP"?'0':selectedReport.reportType=="IRREP"?'10':'5'))) {
-                                                        setSelectedReport(prevReport => ({
-                                                            ...prevReport,
-                                                            [key]: inputValue
-                                                        }));
+                                                <td className="border px-4 py-2">{selectedReport.reportType == "SITREP" && key == "pocScreenshotsScore" ? '0' : key == "penaltyScore" ? '' : selectedReport.reportType == "SITREP" ? '0' : selectedReport.reportType == "IRREP" ? '10' : key === "penaltyScore" ? '' : '5'}</td>
+                                                <td className="border px-2 py-2">
+                                                    {
+                                                        route == "progress"
+                                                            ?
+                                                            <p>{selectedReport[key]}</p>
+                                                            :
+                                                            <input
+                                                                type="number"
+                                                                className="border-gray-300 rounded-md w-full p-2"
+                                                                value={selectedReport[key]}
+                                                                disabled={route == "progress"}
+                                                                onChange={(e) => {
+                                                                    let inputValue = parseInt(e.target.value);
+                                                                    if (e.target.value === "" || (!isNaN(inputValue) && inputValue >= 0 && inputValue <= (selectedReport.reportType == "SITREP" && key == "pocScreenshotsScore" ? '0' : key == "penaltyScore" ? '1000' : selectedReport.reportType == "SITREP" ? '0' : selectedReport.reportType == "IRREP" ? '10' : '5'))) {
+                                                                        setSelectedReport(prevReport => ({
+                                                                            ...prevReport,
+                                                                            [key]: inputValue
+                                                                        }));
+                                                                    }
+                                                                }}
+                                                            />
                                                     }
-                                                }}
-                                            />
-                                        }
-                                    </td>
-                                </tr>
-                            );
-                        }
-                        return null;
-                    })}
-                    <tr>
-                        <td className="border px-4 py-2" colSpan="3">Total Manual Score</td>
-                        {/* <td className="border px-4 py-2">
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+                                    return null;
+                                })}
+                                <tr>
+                                    <td className="border px-4 py-2" colSpan="3">Total Manual Score</td>
+                                    {/* <td className="border px-4 py-2">
                             {selectedReport &&
                                 Object.entries(selectedReport)
                                     .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore')
                                     .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0)}
                         </td> */}
-                         <td className="border px-4 py-2">
-                            {selectedReport &&
-                                Object.entries(selectedReport)
-                                    .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore' && key !== 'penaltyScore') // Exclude penaltyScore from sum
-                                    .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0) - (selectedReport.penaltyScore || 0)} {/* Subtract penaltyScore */}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {route == "progress" ? 
-            ""
-            : 
-            <button onClick={handleAddManualScore} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit</button>
-            }
-        </div>
-    </div>
-)}
+                                    <td className="border px-4 py-2">
+                                        {selectedReport &&
+                                            Object.entries(selectedReport)
+                                                .filter(([key, value]) => key.endsWith('Score') && key !== 'manualScore' && key !== 'penaltyScore') // Exclude penaltyScore from sum
+                                                .reduce((total, [key, value]) => total + parseInt(value || 0, 10), 0) - (selectedReport.penaltyScore || 0)} {/* Subtract penaltyScore */}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {route == "progress" ?
+                            ""
+                            :
+                            <button onClick={handleAddManualScore} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit</button>
+                        }
+                    </div>
+                </div>
+            )}
 
         </div>
     );
