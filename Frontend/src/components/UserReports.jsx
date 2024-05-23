@@ -310,6 +310,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
+import StaticScore from './StaticScore';
 
 function UserReports({ userId, route }) {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -423,6 +424,7 @@ function UserReports({ userId, route }) {
     return (
         <div className="container mx-auto">
             <h2 className="text-2xl font-semibold my-4">User Reports</h2>
+            <StaticScore userId={userId}/>
             <table className="table-auto">
                 <thead>
                     <tr>

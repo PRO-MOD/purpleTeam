@@ -30,6 +30,10 @@ const scoreSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User' // Reference to the User schema
+  },
+  staticScore: {
+    type: Number,
+    default: null
   }
 });
 

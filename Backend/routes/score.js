@@ -7,7 +7,8 @@ const Score = require('../models/score')
 const Report = require('../models/report')
 const IncidentReport = require('../models/IncidentReport')
 const notificationReport = require('../models/Notification')
-const xlsx = require('xlsx')
+const xlsx = require('xlsx');
+const fetchuser = require('../middleware/fetchuser');
 
 // Endpoint to export scores and report counts to Excel
 router.get('/export', async (req, res) => {
@@ -330,5 +331,41 @@ router.get('/sum-manual-scores', async (req, res) => {
 });
 
 
+router.put('/assign-static-score/:userId', async (req, res) => {
+    try {
+      const { staticScore } = req.body;
+      const { userId } = req.params;
+  
+      if (typeof staticScore !== 'number') {
+        return res.status(400).send({ error: 'staticScore must be a number' });
+      }
+  
+      const score = await Score.findOne({ user: userId });
+  
+      if (!score) {
+        return res.status(404).send({ error: 'Score not found' });
+      }
+  
+      score.staticScore = staticScore;
+      await score.save();
+  
+      res.send(score);
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  });
+
+  router.get('/get-static-score/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const score = await Score.findOne({ user: userId });
+      if (!score) {
+        return res.status(404).send({ error: 'Score not found' });
+      }
+      res.send({ staticScore: score.staticScore });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  });
 
 module.exports = router;
