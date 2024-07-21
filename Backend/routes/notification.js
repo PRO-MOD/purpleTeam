@@ -155,38 +155,6 @@ router.get('/userSubmittedIds', fetchuser, async (req, res) => {
     }
 });
 
-// // Function to draw images on a page
-// async function drawImagesOnPage(page, imageUrls) {
-//    const margin = 50; // Margin for images
-//    const pageWidth = page.getWidth();
-//    const pageHeight = page.getHeight();
-//    let x = margin;
-//    let y = pageHeight - margin;
-
-//    for (const imageUrl of imageUrls) {
-//        const imageBytes = await fetchImageAsBuffer(imageUrl);
-//        if (imageBytes) {
-//            const image = await page.doc.embedPng(imageBytes); // Embed the image into the document
-//            const scaleFactor = (pageWidth - 2 * margin) / image.width;
-//            const scaledWidth = (pageWidth - 2 * margin);
-//            const scaledHeight = image.height * scaleFactor;
-
-//            page.drawImage(image, {
-//                x: x,
-//                y: y - scaledHeight,
-//                width: scaledWidth,
-//                height: scaledHeight,
-//            });
-
-//            x += scaledWidth + margin;
-//            if (x + scaledWidth > pageWidth - margin) {
-//                x = margin;
-//                y -= scaledHeight + margin;
-//                if (y < margin) break;
-//            }
-//        }
-//    }
-// }
 
 
 // Function to determine the image format based on file extension

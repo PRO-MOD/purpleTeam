@@ -210,39 +210,6 @@ router.get('/userSubmittedIds', fetchuser, async (req, res) => {
   }
 });
 
-// Function to draw images on a page
-// async function drawImagesOnPage(page, imageUrls) {
-//    const margin = 50; // Margin for images
-//    const pageWidth = page.getWidth();
-//    const pageHeight = page.getHeight();
-//    let x = margin;
-//    let y = pageHeight - margin;
-
-//    for (const imageUrl of imageUrls) {
-//        const imageBytes = await fetchImageAsBuffer(imageUrl);
-//        if (imageBytes) {
-//            const image = await page.doc.embedPng(imageBytes); // Embed the image into the document
-//            const scaleFactor = (pageWidth - 2 * margin) / image.width;
-//            const scaledWidth = (pageWidth - 2 * margin);
-//            const scaledHeight = image.height * scaleFactor;
-
-//            page.drawImage(image, {
-//                x: x,
-//                y: y - scaledHeight,
-//                width: scaledWidth,
-//                height: scaledHeight,
-//            });
-
-//            x += scaledWidth + margin;
-//            if (x + scaledWidth > pageWidth - margin) {
-//                x = margin;
-//                y -= scaledHeight + margin;
-//                if (y < margin) break;
-//            }
-//        }
-//    }
-// }
-
 
 // Function to determine the image format based on file extension
 function getImageFormat(fileName) {
@@ -451,81 +418,6 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
-// // POST route for adding manual score to a report
-// router.post('/:reportId/:reportType/manual-score', async (req, res) => {
-//   const reportId = req.params.reportId;
-//   const reportType = req.params.reportType;
-//   const score = req.body.score;
-//   // console.log(reportType);
-
-//   try {
-//     // Find the report by ID
-//     // const report = await reportModel.findById(reportId);
-
-//     const reportsSIT = await reportModel.findById(reportId);
-//     const reportsINC = await incidentModel.findById(reportId);
-//     const reportsNOT = await notificationModel.findById(reportId);
-//     // const reports =[...reportsSIT,...reportsINC,...reportsNOT];
-//     // if (!reports) {
-//     //   return res.status(404).json({ message: 'Report not found' });
-//     // }
-//     if (reportType == "SITREP") {
-//       reportsSIT.manualScore = score;
-//       await reportsSIT.save();
-
-//     }
-//     else if (reportType == "IRREP") {
-//       reportsINC.manualScore = score;
-//       await reportsINC.save();
-
-//     }
-//     else {
-//       reportsNOT.manualScore = score;
-
-//       await reportsNOT.save();
-
-//     }
-
-
-//     // Update the manual score field of the report
-//     // reports.manualScore = score;
-
-//     // Save the updated report
-
-
-
-//     return res.status(200).json({ message: 'Manual score added successfully' });
-//   } catch (error) {
-//     console.error('Error adding manual score:', error);
-//     return res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
-
-// Assuming you have already set up your Express app and mongoose models
-
-// Route to handle manual score update
-// router.post('/:reportId/:reportType/manual-score', async (req, res) => {
-//   const { reportId, reportType } = req.params;
-//   const updatedData = req.body;
-//   console.log(updatedData);
-
-//   try {
-//       // Find the report by ID and update its data
-//       const report = await reportModel.findByIdAndUpdate(reportId, updatedData, { new: true });
-
-//       if (!report) {
-//           return res.status(404).json({ message: 'Report not found' });
-//       }
-
-//       // Optionally, perform any additional processing or validation here
-
-//       return res.json({ message: 'Manual score updated successfully', report });
-//   } catch (error) {
-//       console.error('Error updating manual score:', error);
-//       return res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
-
 
 // Route to handle manual score update
 router.post('/:reportId/:reportType/manual-score', async (req, res) => {
@@ -570,17 +462,6 @@ router.post('/:reportId/:reportType/manual-score', async (req, res) => {
 
     }
 
-    // Find the report by ID and update its data
-    // const report = await reportModel.findByIdAndUpdate(reportId, reportData, { new: true });
-    // report.manualScore = totalManualScore;
-    //       await report.save();
-
-    // if (!report) {
-    //     return res.status(404).json({ message: 'Report not found' });
-    // }
-    // return res.json({ message: 'Manual score updated successfully', report });
-
-    // Optionally, perform any additional processing or validation here
   }
 
   catch (error) {
