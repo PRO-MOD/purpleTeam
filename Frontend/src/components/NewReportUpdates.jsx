@@ -59,6 +59,7 @@ function NewReportSubmission() {
                 {
                     newReports.length > 0 ?
                     newReports.map((report, i) => (
+                        report.userId && 
                         <p key={i} onClick={() => handleReportClick(report._id, report.userId._id)} className="bg-brown-650 text-white w-full py-2 my-2 ps-4 rounded-lg cursor-pointer">{report.userId.name} submitted a new report for {report.ID} {formatDate(report.createdAt)}</p>
                     ))
                     :

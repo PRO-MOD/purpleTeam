@@ -2,26 +2,39 @@ import React, { useEffect, useState } from 'react';
 import Loading from './Loading';
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckDouble, faCheckToSlot, faCrop, faList } from '@fortawesome/free-solid-svg-icons';
-
+import { faCheckDouble, faList, faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 
 function ScoreTable({ scores, loading, isHomePage }) {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
   const [sortedScores, setSortedScores] = useState([]);
+  const [sortConfig, setSortConfig] = useState({ key: 'totalScore', direction: 'descending' });
 
-  // Sort scores when scores or loading state changes
+  // Sort scores when scores, loading state, or sortConfig changes
   useEffect(() => {
     if (!loading && scores.length > 0) {
       const sorted = scores.slice().sort((a, b) => {
-        // Calculate total score for each user
         const totalScoreA = a.score + (a.manualScore || 0) + (a.staticScore || 0);
         const totalScoreB = b.score + (b.manualScore || 0) + (b.staticScore || 0);
-        return totalScoreB - totalScoreA; // Sort scores in descending order
+
+        if (sortConfig.key === 'name') {
+          const nameA = a.name.toLowerCase();
+          const nameB = b.name.toLowerCase();
+          if (nameA < nameB) return sortConfig.direction === 'ascending' ? -1 : 1;
+          if (nameA > nameB) return sortConfig.direction === 'ascending' ? 1 : -1;
+          return 0;
+        } else if (sortConfig.key === 'totalScore') {
+          return sortConfig.direction === 'ascending' ? totalScoreA - totalScoreB : totalScoreB - totalScoreA;
+        } else {
+          const keyA = a[sortConfig.key] || 0;
+          const keyB = b[sortConfig.key] || 0;
+          return sortConfig.direction === 'ascending' ? keyA - keyB : keyB - keyA;
+        }
       });
+
       setSortedScores(sorted);
     }
-  }, [scores, loading]);
+  }, [scores, loading, sortConfig]);
 
   const handleUserClick = async (userName) => {
     try {
@@ -41,28 +54,66 @@ function ScoreTable({ scores, loading, isHomePage }) {
     }
   };
 
+  const handleSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === 'ascending' ? faSortUp : faSortDown;
+    }
+    return faSort;
+  };
+
   return (
     <div className="flex flex-col">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center">
-              Rank
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center cursor-pointer"
+            >
+              Rank 
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              onClick={() => handleSort('name')}
+            >
+              Name <FontAwesomeIcon icon={getSortIcon('name')} />
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Service Availability
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              onClick={() => handleSort('score')}
+            >
+              Service Availability <FontAwesomeIcon icon={getSortIcon('score')} />
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Incident Response
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              onClick={() => handleSort('manualScore')}
+            >
+              Incident Response <FontAwesomeIcon icon={getSortIcon('manualScore')} />
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Static Score
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              onClick={() => handleSort('staticScore')}
+            >
+              Static Score <FontAwesomeIcon icon={getSortIcon('staticScore')} />
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Total Score
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              onClick={() => handleSort('totalScore')}
+            >
+              Total Score <FontAwesomeIcon icon={getSortIcon('totalScore')} />
             </th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Checked
@@ -72,7 +123,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
         <tbody className="bg-white divide-y divide-gray-200">
           {loading ? (
             <tr>
-              <td>
+              <td colSpan="7">
                 <Loading />
               </td>
             </tr>
@@ -82,15 +133,15 @@ function ScoreTable({ scores, loading, isHomePage }) {
                 <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                   <td className='flex flex-row justify-center items-center'>{index + 1}</td>
                   <td
-                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'
-                      }`}
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'}`}
                     onClick={() => {
                       if (isHomePage) {
                         return;
                       }
                       handleUserClick(user.name);
                     }}
-                  >{user.name}
+                  >
+                    {user.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore == null ? 'Not entered' : user.manualScore}</td>
@@ -98,7 +149,12 @@ function ScoreTable({ scores, loading, isHomePage }) {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score + (user.manualScore || 0) + (user.staticScore || 0)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.read ? <FontAwesomeIcon icon={faCheckDouble} className='text-green-500' /> : <FontAwesomeIcon icon={faList} className='text-red-500' />}</td>
                 </tr>
-              ))) : <tr><td colSpan="4" className='px-6 py-4 text-center'>No Record Found</td></tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className='px-6 py-4 text-center'>No Record Found</td>
+              </tr>
+            )
           )}
         </tbody>
       </table>
