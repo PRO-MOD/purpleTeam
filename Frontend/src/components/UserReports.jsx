@@ -117,7 +117,6 @@ function UserReports({ userId, route }) {
         <div className="container mx-auto">
             <h2 className="text-2xl font-semibold my-4">User Reports</h2>
             {route == "progress" ? "" : <StaticScore userId={userId}/>}
-            {/* <StaticScore userId={userId}/> */}
             <table className="table-auto">
                 <thead>
                     <tr>
