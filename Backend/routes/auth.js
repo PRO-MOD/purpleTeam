@@ -170,6 +170,24 @@ router.post('/removeUsers/:volunteerId', async (req, res) => {
   }
 });
 
+// DELETE endpoint to delete a user
+router.delete('/deleteuser/:userId', async (req, res) => {
+  try {
+      const userId = req.params.userId;
+      // Check if the user exists
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      // Perform the deletion
+      await User.findByIdAndDelete(userId);
+      res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 
 // Route to fetch all Volunteer
 router.get('/getallVolunteer', async (req, res) => {

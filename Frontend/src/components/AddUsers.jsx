@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CreateChallenge from './CreateChallenge';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 // import axios from 'axios';
 
 function AddUsers() {
@@ -131,6 +133,28 @@ function AddUsers() {
         }
     };
 
+    const deleteUser = async (userId, userType) => {
+        try {
+            const url = `${apiUrl}/api/auth/deleteuser/${userId}`;
+            const response = await fetch(url, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                // Remove the deleted user from the users or volunteers array
+                if (userType === 'user') {
+                    setUsers(users.filter(user => user._id !== userId));
+                } else {
+                    setVolunteers(volunteers.filter(volunteer => volunteer._id !== userId));
+                }
+                console.log('User deleted successfully');
+            } else {
+                console.error('Failed to delete user');
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
     return (
         <div className="m-12">
             <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
@@ -250,6 +274,7 @@ function AddUsers() {
                                 <td className="border border-gray-400 px-4 py-2">************</td>
                                 <td className="border border-gray-400 px-4 py-2">
                                     <button onClick={() => handleEditUser(user._id, "user")}>Edit</button>
+                                    <FontAwesomeIcon icon={faTrashCan} onClick={() => deleteUser(user._id, "user")}/>
                                 </td>
                             </tr>
                         ))}
@@ -277,6 +302,7 @@ function AddUsers() {
                                 <td className="border border-gray-400 px-4 py-2">************</td>
                                 <td className="border border-gray-400 px-4 py-2">
                                     <button onClick={() => handleEditUser(volunteer._id, "volunteer")}>Edit</button>
+                                    <FontAwesomeIcon icon={faTrashCan} onClick={() => deleteUser(volunteer._id, "volunteer")}/>
                                 </td>
                             </tr>
                         ))}

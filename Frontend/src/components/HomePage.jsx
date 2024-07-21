@@ -62,7 +62,7 @@ function HomePage() {
               {/* <Route exact path='/personal/:userId' element={<UserDetails/>} /> */}
               <Route exact path='/progress' element={<UserProgress/>} />
               <Route exact path='/home' element={<AdminDataVisualization/>} />
-              <Route exact path='/createuser' element={<AddUsers />} />
+              <Route exact path='/createuser' element={<ProtectedRoute Component={AddUsers}/>} />
               <Route exact path='/assignTeams' element={<AssignTeams />} />
               <Route exact path='/scores' element={<ProtectedRoute Component={ScoresComponent}/>} />
               <Route exact path='/updates' element={<ProtectedRoute Component={NewReportSubmission}/>} />
