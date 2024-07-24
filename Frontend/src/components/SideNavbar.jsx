@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved, faFileImage, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved, faFileImage, faFilePdf, faPuzzlePiece } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
 
@@ -34,11 +34,11 @@ const SideNavbar = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     if (userId) {
       creteSocket(userId);
     }
-  },[userId])
+  }, [userId])
 
   const handleLogout = () => {
     // Clear local storage and redirect to login pageuserId
@@ -88,8 +88,7 @@ const SideNavbar = () => {
                 </div>
                 <p className="text-lg">Notification</p>
               </Link>
-             
-               {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
+              {/* <Link to="/flag" className={`flex flex-col items-center justify-center py-4 hover:bg-gray-700 hover:text-white ${isActive("/flag") ? "bg-gray-700 text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center">
                   <FontAwesomeIcon icon={faNotesMedical} size="xl" />
                 </div>
@@ -133,18 +132,24 @@ const SideNavbar = () => {
             </>
           )}
         </ul>
+        <Link to={userRole === "WT" ? "/admin/challenges" : "challenges"} className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive(userRole === "WT" ? "/admin/challenges" : "challenges") ? "bg-brown-450  text-white" : ""}`}>
+          <div className="h-10 w-10 flex items-center justify-center px-2">
+            <FontAwesomeIcon icon={faPuzzlePiece} size="xl" />
+          </div>
+          <p className="text-lg">Challenges</p>
+        </Link>
         <Link to="/chat" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/chat") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center px-2">
-                  <FontAwesomeIcon icon={faComment} size="xl" />
-                </div>
-                <p className=" text-md flex flex-row items-center flex-wrap">Communication <span className="px-2 ms-2 text-sm text-green-800 rounded-lg bg-green-100 dark:bg-gray-800 dark:text-green-400">{unreadMessages ? unreadMessages.unreadMessagesCount : ""}</span></p>
-              </Link>
-              <Link to="/profile" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/profile") ? "bg-brown-450  text-white" : ""}`}>
-                <div className="h-10 w-10 flex items-center justify-center px-2">
-                  <FontAwesomeIcon icon={faUser} color="" size="xl" />
-                </div>
-                <p className=" text-lg">Profile</p>
-              </Link>
+          <div className="h-10 w-10 flex items-center justify-center px-2">
+            <FontAwesomeIcon icon={faComment} size="xl" />
+          </div>
+          <p className=" text-md flex flex-row items-center flex-wrap">Communication <span className="px-2 ms-2 text-sm text-green-800 rounded-lg bg-green-100 dark:bg-gray-800 dark:text-green-400">{unreadMessages ? unreadMessages.unreadMessagesCount : ""}</span></p>
+        </Link>
+        <Link to="/profile" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/profile") ? "bg-brown-450  text-white" : ""}`}>
+          <div className="h-10 w-10 flex items-center justify-center px-2">
+            <FontAwesomeIcon icon={faUser} color="" size="xl" />
+          </div>
+          <p className=" text-lg">Profile</p>
+        </Link>
         <button onClick={handleLogout} className="w-[100%] flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white">
           <div className="h-10 flex items-center justify-center px-2">
             <FontAwesomeIcon icon={faSignOutAlt} className="rotate-180" size="xl" />

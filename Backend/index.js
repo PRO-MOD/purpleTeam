@@ -102,6 +102,12 @@ app.use('/api/flags', require('./routes/flags.js'))
 app.use('/api/challenge', require('./routes/ctfdChallenge.js'))
 app.use('/api/chat', chatRouter)
 
+// routes for CTFdChallenges
+app.use('/api/challenges',require('./routes/CTFdChallenges/challenge.js'))
+app.use('/api/hints',require('./routes/CTFdChallenges/Hint.js'))
+app.use('/api/tags',  require('./routes/CTFdChallenges/tags'));
+app.use('/api/executecode',require('./routes/CTFdChallenges/runcode.js'))
+
 // Define webhook endpoint
 app.post('/api/webhook', (req, res) => {
   // Extract payload from request body
