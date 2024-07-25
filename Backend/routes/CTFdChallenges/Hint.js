@@ -93,4 +93,14 @@ router.delete('/:challengeId/hints/delete/:hintId', async (req, res) => {
   }
 });
 
+router.get('/hints/:id', async (req, res) => {
+  try {
+      const hints = await Hint.find({_id: req.params.id});
+      res.status(200).json(hints);
+  } catch (error) {
+      console.error('Error fetching challenges:', error);
+      res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
+  }
+});
+
 module.exports = router;

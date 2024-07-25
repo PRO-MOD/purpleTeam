@@ -1,139 +1,10 @@
 
-
-// import React, { useState } from 'react';
-// import CodeEditor from '../challenges/CodeEditor/CodeEditorFeild';
-// import SimpleMDE from 'react-simplemde-editor';
-// import 'easymde/dist/easymde.min.css';
-// import ReactMarkdown from 'react-markdown';
-// import gfm from 'remark-gfm';
-
-// const Modal = ({
-//   isOpen,
-//   onClose,
-//   challenge,
-//   answer,
-//   setAnswer,
-//   handleSubmit,
-//   attempts,
-//   feedback
-// }) => {
-//   const [formData, setFormData] = useState({ language: 'python', flag: '' });
-//   const [editorOutput, setEditorOutput] = useState('');
-
-//   const handleChange = (e) => {
-//     setFormData({
-//       ...formData,
-//       [e.target.name]: e.target.value,
-//     });
-//   };
-
-//   const handleCodeChange = (code) => {
-//     setFormData({ ...formData, flag: code });
-//   };
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//       <div className="bg-white p-8 rounded-lg shadow-lg max-w-full w-full md:max-w-3xl overflow-y-auto">
-//         <div className="flex justify-between items-center">
-//           <h2 className="text-2xl font-bold mx-auto">{challenge.name}</h2>
-//           <button onClick={onClose} className="ml-4">&times;</button>
-//         </div>
-//         <p className="text-xl mr-8 mt-4 text-center">{challenge.value}</p>
-//         <div className="mt-4">
-//           <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} />
-//         </div>
-
-//         {challenge.type === 'multiple_choice' ? (
-//           <div className="mt-4">
-//             {challenge.choices.map((choice, index) => (
-//               <div key={index} className="mt-2">
-//                 <input
-//                   type="radio"
-//                   id={`choice-${index}`}
-//                   name="choice"
-//                   value={choice}
-//                   onChange={(e) => setAnswer(e.target.value)}
-//                 />
-//                 <label htmlFor={`choice-${index}`} className="ml-2">
-//                   {choice}
-//                 </label>
-//               </div>
-//             ))}
-//           </div>
-//         ) : challenge.type === 'standard' || challenge.type === 'manual_verification' ? (
-//           <div className="mt-4">
-//             <textarea
-//               className="w-full p-2 border border-gray-300 rounded"
-//               rows="3"
-//               value={answer}
-//               onChange={(e) => setAnswer(e.target.value)}
-//             ></textarea>
-//           </div>
-//         ) : challenge.type === 'code' ? (
-//           <>
-//             <div className="mb-4">
-//               <label className="block text-gray-700" htmlFor="language">
-//                 Language:
-//                 <br />
-//                 <small className="form-text text-gray-500">
-//                   Write program to record Flag
-//                 </small>
-//               </label>
-//               <select
-//                 id="language"
-//                 name="language"
-//                 className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
-//                 value={formData.language}
-//                 onChange={handleChange}
-//               >
-//                 <option value="python">Python</option>
-//                 <option value="javascript">JavaScript</option>
-//                 <option value="java">Java</option>
-//               </select>
-//             </div>
-//             <CodeEditor
-//               language={formData.language}
-//               onCodeChange={handleCodeChange}
-//               setEditorOutput={setEditorOutput}
-//               formData={formData}
-//               setFormData={setFormData}
-//             />
-//           </>
-//         ) : null}
-
-//         <div className="mt-4 flex justify-between items-center">
-//           <span>{attempts}/3 attempts</span>
-//           <button
-//             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-//             onClick={handleSubmit}
-//           >
-//             Submit
-//           </button>
-//         </div>
-
-//         {feedback && <p className="mt-4 text-center">{feedback}</p>}
-//         {editorOutput && (
-//           <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-white">
-//             <h2 className="text-lg font-bold mb-2">Output:</h2>
-//             <pre className="overflow-auto">{editorOutput}</pre>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Modal;
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CodeEditor from '../challenges/CodeEditor/CodeEditorFeild';
 import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
-const apiUrl = import.meta.env.VITE_Backend_URL;
 
 const Modal = ({
   isOpen,
@@ -143,11 +14,141 @@ const Modal = ({
   setAnswer,
   handleSubmit,
   attempts,
-  feedback
+  feedback,
+  updatedValue,
+  setUpdatedValue,
+  solvedChallenges,
+
 }) => {
   const [formData, setFormData] = useState({ language: 'python', flag: '' });
   const [editorOutput, setEditorOutput] = useState('');
+  const [hintsModalOpen, setHintsModalOpen] = useState(false);
+  const [hints, setHints] = useState([]);
+  const [selectedHint, setSelectedHint] = useState(null);
+  const [usedHints, setUsedHints] = useState([]);
+  const [showWarning, setShowWarning] = useState(false);
+  const [showHintDetails, setShowHintDetails] = useState(false);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setHintsModalOpen(false);
+      setHints([]);
+      setSelectedHint(null);
+      setUsedHints([]);
+    } else {
+      fetchUsedHints();
+      fetchUserChallengeValue();
+    }
+  }, [isOpen, challenge]);
+
+  const fetchUserChallengeValue = async () => {
+    try {
+      const response = await fetch(`http://localhost:80/api/challenges/value/${challenge._id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setUpdatedValue(data.value);
+    } catch (error) {
+      console.error('Error fetching challenge value:', error);
+    }
+  };
+
+  const fetchUsedHints = async () => {
+    try {
+      const response = await fetch(`http://localhost:80/api/challenges/used-hints/${challenge._id}`,{
+        headers: {
+          'Content-Type': 'application/json',
+    'Auth-token': localStorage.getItem('Hactify-Auth-token')
+        },
+
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setUsedHints(data.map(hint => hint.hint_id));
+    } catch (error) {
+      console.error('Error fetching used hints:', error);
+    }
+  };
+
+  const fetchHints = async () => {
+    try {
+      const response = await fetch(`http://localhost:80/api/challenges/hints/${challenge._id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setHints(data[0].hints || []);
+      setHintsModalOpen(true);
+    } catch (error) {
+      console.error('Error fetching hints:', error);
+    }
+  };
+
+  const fetchHintDetails = async (hintId) => {
+    try {
+      const response = await fetch(`http://localhost:80/api/hints/hints/${hintId}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+  
+      if (data.length > 0) {
+        setSelectedHint(data[0]);
+        setShowHintDetails(false);
+        if (!usedHints.includes(hintId)) {
+          setShowWarning(true);
+        } else {
+          setShowWarning(false);
+          setShowHintDetails(true);
+        }
+      } else {
+        setSelectedHint(null);
+        setShowHintDetails(false);
+      }
+    }catch (error) {
+      console.error('Error fetching hint details:', error);
+    }
+  };
+  
+  const confirmUnlockHint = async () => {
+    if (!selectedHint) return;
+  
+    setShowWarning(false);
+    if (!usedHints.includes(selectedHint._id)) {
+      setUsedHints(prevHints => [...prevHints, selectedHint._id]);
+      const newValue = updatedValue - selectedHint.cost;
+      setUpdatedValue(newValue);
+      setShowHintDetails(true);
+  
+      try {
+        await fetch(`http://localhost:80/api/challenges/use-hint`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Auth-token': localStorage.getItem('Hactify-Auth-token')
+          },
+          body: JSON.stringify({
+            challengeId: challenge._id,
+            hintId: selectedHint._id,
+            newValue: newValue,
+          }),
+        });
+      } catch (error) {
+        console.error('Error recording hint usage:', error);
+      }
+    } else {
+      setShowHintDetails(true);
+    }
+  };
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -161,11 +162,13 @@ const Modal = ({
 
   const handleSubmission = () => {
     if (challenge.type === 'code') {
-      // If challenge type is 'code', submit the editor output as the answer
       setAnswer(editorOutput);
     }
-    handleSubmit(); // Call the handleSubmit function passed as prop
+    handleSubmit();
   };
+
+  const isSolved = solvedChallenges.includes(challenge._id);
+
   if (!isOpen) return null;
 
   return (
@@ -175,99 +178,113 @@ const Modal = ({
           <h2 className="text-2xl font-bold mx-auto">{challenge.name}</h2>
           <button onClick={onClose} className="ml-4">&times;</button>
         </div>
-        <p className="text-xl mr-8 mt-4 text-center">{challenge.value}</p>
+        <p className="text-xl mr-8 mt-4 text-center">Remaining Value: {updatedValue}</p>
+
         <div className="mt-4">
           <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} />
         </div>
 
-        {challenge.type === 'multiple_choice' ? (
+        {isSolved ? (
           <div className="mt-4">
-            {challenge.choices.map((choice, index) => (
-              <div key={index} className="mt-2">
-                <input
-                  type="radio"
-                  id={`choice-${index}`}
-                  name="choice"
-                  value={choice}
-                  onChange={(e) => setAnswer(e.target.value)}
-                />
-                <label htmlFor={`choice-${index}`} className="ml-2">
-                  {choice}
-                </label>
-              </div>
-            ))}
+            <p className="text-green-500">This challenge has already been solved by you!</p>
           </div>
-        ) : challenge.type === 'standard' || challenge.type === 'manual_verification' ? (
-          <div className="mt-4">
-            <textarea
-              className="w-full p-2 border border-gray-300 rounded"
-              rows="3"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-            ></textarea>
-          </div>
-        ) : challenge.type === 'code' ? (
+        ) : (
           <>
-            <div className="mb-4">
-              <label className="block text-gray-700" htmlFor="language">
-                Language:
-                <br />
-                <small className="form-text text-gray-500">
-                  Write program to record Flag
-                </small>
-              </label>
-              <select
-                id="language"
-                name="language"
-                className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
-                value={formData.language}
-                onChange={handleChange}
+            {challenge.type === 'multiple_choice' ? (
+              <div className="mt-4">
+                {challenge.choices.map((choice, index) => (
+                  <div key={index} className="mt-2">
+                    <input
+                      type="radio"
+                      id={`choice-${index}`}
+                      name="choice"
+                      value={choice}
+                      onChange={(e) => setAnswer(e.target.value)}
+                    />
+                    <label htmlFor={`choice-${index}`} className="ml-2">
+                      {choice}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            ) : challenge.type === 'standard' || challenge.type === 'manual_verification' ? (
+              <div className="mt-4">
+                <textarea
+                  className="w-full p-2 border border-gray-300 rounded"
+                  rows="3"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                ></textarea>
+              </div>
+            ) : challenge.type === 'code' ? (
+              <>
+                <div className="mb-4">
+                  <label className="block text-gray-700" htmlFor="language">
+                    Language:
+                    <br />
+                    <small className="form-text text-gray-500">
+                      Write program to record Flag
+                    </small>
+                  </label>
+                  <select
+                    id="language"
+                    name="language"
+                    className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                    value={formData.language}
+                    onChange={handleChange}
+                  >
+                    <option value="python">Python</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="java">Java</option>
+                  </select>
+                </div>
+                <CodeEditor
+                  language={formData.language}
+                  onCodeChange={handleCodeChange}
+                  setEditorOutput={setEditorOutput}
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+              </>
+            ) : null}
+
+            {challenge.files && challenge.files.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-lg font-bold">Files:</h3>
+                <ul className="list-disc list-inside mt-2">
+                  {challenge.files.map((fileName, index) => (
+                    <li key={index}>
+                      <a
+                        href={`http://localhost:80/uploads/${fileName}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {fileName}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="mt-4 flex justify-between items-center">
+              <button
+                className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-700"
+                onClick={fetchHints}
               >
-                <option value="python">Python</option>
-                <option value="javascript">JavaScript</option>
-                <option value="java">Java</option>
-              </select>
+                Hints
+              </button>
+              <span className="flex-grow"></span>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                onClick={handleSubmission}
+              >
+                Submit
+              </button>
             </div>
-            <CodeEditor
-              language={formData.language}
-              onCodeChange={handleCodeChange}
-              setEditorOutput={setEditorOutput}
-              formData={formData}
-              setFormData={setFormData}
-            />
           </>
-        ) : null}
-{challenge.files && challenge.files.length > 0 && (
-  <div className="mt-4">
-    <h3 className="text-lg font-bold">Files:</h3>
-    <ul className="list-disc list-inside mt-2">
-      {challenge.files.map((fileName, index) => (
-        <li key={index}>
-          <a
-            href={`${apiUrl}/uploads/${fileName}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            {fileName}  {/* Display file name */}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
-
-
-        <div className="mt-4 flex justify-between items-center">
-          <span>{attempts}/3 attempts</span>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-            onClick={handleSubmission}
-          >
-            Submit
-          </button>
-        </div>
+        )}
 
         {feedback && <p className="mt-4 text-center">{feedback}</p>}
         {editorOutput && (
@@ -277,9 +294,51 @@ const Modal = ({
           </div>
         )}
       </div>
+
+      {hintsModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-full w-full md:max-w-3xl overflow-y-auto">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold mx-auto">Hints</h2>
+              <button onClick={() => setHintsModalOpen(false)} className="ml-4">&times;</button>
+            </div>
+            <ul className="mt-4">
+              {hints.length > 0 ? (
+                hints.map((hint, index) => (
+                  <li key={index}>
+                    <button
+                      onClick={() => fetchHintDetails(hint)}
+                      className="text-blue-500 hover:underline"
+                    >
+                      Hint {index + 1}
+                    </button>
+                  </li>
+                ))
+              ) : (
+                <p>No hints available</p>
+              )}
+            </ul>
+
+            {selectedHint && showHintDetails && (
+              <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-white">
+                <h3 className="text-lg font-bold">Hint Details:</h3>
+                <p>{selectedHint.content}</p>
+                <p>Cost: {selectedHint.cost}</p>
+              </div>
+            )}
+
+            {selectedHint && showWarning && !usedHints.includes(selectedHint._id) && (
+              <div className="mt-4 p-4 border border-yellow-500 rounded-lg bg-yellow-100">
+                <p className="text-yellow-800">Unlocking this hint will deduct {selectedHint.cost} from your score. Proceed?</p>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2" onClick={confirmUnlockHint}>Proceed</button>
+                <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" onClick={() => setShowWarning(false)}>Cancel</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Modal;
-

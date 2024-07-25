@@ -34,7 +34,11 @@ const scoreSchema = new mongoose.Schema({
   staticScore: {
     type: Number,
     default: null
-  }
+  }, 
+  solvedChallenges: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'challenge'
+  }]
 });
 
 // Create a Score model from the schema
