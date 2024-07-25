@@ -20,6 +20,13 @@ const UserSchema = new Schema({
         required: true
     },
     date: { type: Date, default: Date.now },
+
+    challengeValues: [
+        {
+          challengeId: mongoose.Schema.Types.ObjectId,
+          value: Number,
+        },
+      ],
 });
 
 module.exports = mongoose.model("User", UserSchema);

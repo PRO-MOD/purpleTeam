@@ -10,6 +10,11 @@ const UserChallengePage = () => {
   const [answer, setAnswer] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [feedback, setFeedback] = useState(null);
+  const [updatedValue, setUpdatedValue] = useState(0);
+  const [solvedChallenges, setSolvedChallenges] = useState([]); // New state
+
+  
+ 
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -25,12 +30,33 @@ const UserChallengePage = () => {
       }
     };
 
+    const fetchSolvedChallenges = async () => {
+      try {
+        
+        const response = await fetch('http://localhost:80/api/challenges/solved',{
+        headers: {
+          'Content-Type': 'application/json',
+    'Auth-token': localStorage.getItem('Hactify-Auth-token')
+        },
+      });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setSolvedChallenges(data.map(solved => solved.challenge_id));
+      } catch (error) {
+        console.error('Error fetching solved challenges:', error);
+      }
+    };
+
     fetchChallenges();
+    fetchSolvedChallenges();
   }, []);
 
   const handleButtonClick = (challenge) => {
     setSelectedChallenge(challenge);
     setIsModalOpen(true);
+    setUpdatedValue(challenge.value);
   };
 
   const closeModal = () => {
@@ -40,64 +66,58 @@ const UserChallengePage = () => {
     setAttempts(0);
     setFeedback(null);
   };
-
-  const handleSubmit = () => {
-    if(selectedChallenge.type === 'manual_verification'){
+  
+  const handleSubmit = async () => {
+    if (selectedChallenge.type === 'manual_verification') {
       setFeedback('Your response is submitted for Review!');
-
-    }
-
-    if (selectedChallenge.type === 'code') {
-      // Handle code challenge submission
-     
-      
-      const isCorrect = answer.trim() === selectedChallenge.flag.trim();
-    
-
-      if (isCorrect) {
-        setFeedback('Correct answer!');
-        setChallenges(prevChallenges =>
-          prevChallenges.map(challenge =>
-            challenge._id === selectedChallenge._id
-              ? { ...challenge, solved_by_me: true }
-              : challenge
-          )
-        );
-      } else {
-        setAttempts(prev => prev + 1);
-        if (attempts + 1 >= 3) {
-          setFeedback('No more attempts left');
-          setTimeout(closeModal, 2000); // Close modal after 2 seconds
-        } else {
-          setFeedback('Wrong answer, try again.');
+    } else if (selectedChallenge.type === 'code' || selectedChallenge.type === 'standard' || selectedChallenge.type === 'multiple_choice') {
+      try {
+        
+        const response = await fetch('http://localhost/api/challenges/verify-answer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+      'Auth-token': localStorage.getItem('Hactify-Auth-token')
+          },
+          body: JSON.stringify({
+            challengeId: selectedChallenge._id,
+            answer,
+            updatedValue,
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      }
-    } else {
-      // Handle other challenge types (e.g., standard, multiple_choice)
-      const isCorrect = selectedChallenge.flag_data === 'case_sensitive'
-        ? answer === selectedChallenge.flag
-        : answer.toLowerCase() === selectedChallenge.flag.toLowerCase();
-
-      if (isCorrect) {
-        setFeedback('Correct answer!');
-        setChallenges(prevChallenges =>
-          prevChallenges.map(challenge =>
-            challenge._id === selectedChallenge._id
-              ? { ...challenge, solved_by_me: true }
-              : challenge
-          )
-        );
-      } else {
-        setAttempts(prev => prev + 1);
-        if (attempts + 1 >= 3) {
-          setFeedback('No more attempts left');
-          setTimeout(closeModal, 2000); // Close modal after 2 seconds
+  
+        const result = await response.json();
+  
+        if (result.correct) {
+          setFeedback('Correct answer!');
+          setChallenges(prevChallenges =>
+            prevChallenges.map(challenge =>
+              challenge._id === selectedChallenge._id
+                ? { ...challenge, solved_by_me: true }
+                : challenge
+            )
+          );
+          setTimeout(closeModal, 2000); // Close the modal after a delay
         } else {
-          setFeedback('Wrong answer, try again.');
+          setAttempts(prev => prev + 1);
+          if (attempts + 1 >= 3) {
+            setFeedback('No more attempts left');
+            setTimeout(closeModal, 2000); // Close the modal after a delay
+          } else {
+            setFeedback('Wrong answer, try again.');
+          }
         }
+      } catch (error) {
+        console.error('Error verifying answer:', error);
+        setFeedback('Error verifying answer');
       }
     }
   };
+  
 
   const groupByCategory = (challenges) => {
     return challenges.reduce((acc, challenge) => {
@@ -124,7 +144,7 @@ const UserChallengePage = () => {
                   key={index}
                   challenge={challenge}
                   onClick={handleButtonClick}
-                  solved={challenge.solved_by_me}
+                  solved={solvedChallenges.includes(challenge._id)} // Check if solved
                 />
               ))}
             </div>
@@ -141,6 +161,9 @@ const UserChallengePage = () => {
           handleSubmit={handleSubmit}
           attempts={attempts}
           feedback={feedback}
+          updatedValue={updatedValue}
+    setUpdatedValue={setUpdatedValue}
+    solvedChallenges={solvedChallenges} // Pass solved challenges
         />
       )}
     </>

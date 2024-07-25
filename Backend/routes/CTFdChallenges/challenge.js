@@ -3,6 +3,10 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs');
 const Challenge = require('../../models/CTFdChallenges/challenge');
+const fetchuser =require('../../middleware/fetchuser');
+const score = require('../../models/score');
+const ChallengeSolve =require('../../models/ChallengeSolved');
+const DetailHint =require('../../models/CTFdChallenges/detailhint');
 
 // POST route to create a new challenge
 router.post('/create', async (req, res) => {
@@ -33,7 +37,8 @@ router.post('/create', async (req, res) => {
 });
 
 // Multer configuration
-const upload = require('../../utils/CTFdChallenges/multerConfig')
+const upload = require('../../utils/CTFdChallenges/multerConfig');
+
 
 // POST route to update an existing challenge with additional data
 router.post('/update/:challengeId', upload.array('file', 5), async (req, res) => {
@@ -96,15 +101,28 @@ router.get('/details/:id', async (req, res) => {
     }
     });
 
-router.get('/all', async (req, res) => {
+    
+
+
+    router.get('/all', async (req, res) => {
+      try {
+          const visibleChallenges = await Challenge.find({ state: "visible" }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
+          res.status(200).json(visibleChallenges);
+      } catch (error) {
+          console.error('Error fetching challenges:', error);
+          res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
+      }
+  });
+
+  router.get('/hints/:id', async (req, res) => {
     try {
-        const visibleChallenges = await Challenge.find({ state: "visible" });
-        res.status(200).json(visibleChallenges);
+        const hints = await Challenge.find({_id: req.params.id}).select('hints');
+        res.status(200).json(hints);
     } catch (error) {
         console.error('Error fetching challenges:', error);
         res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
     }
-});
+  });
 
 
 router.get('/toDisplayAllChallenges', async (req, res) => {
@@ -286,5 +304,190 @@ router.put('/flags/:challengeId/edit/:index', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
+
+// router.post('/verify-answer',fetchuser, async (req, res) => {
+//   const { challengeId, answer, updatedValue } = req.body;
+//   console.log(updatedValue);
+ 
+
+//   try {
+//     const challenge = await Challenge.findById(challengeId);
+//     if (!challenge) {
+//       return res.status(404).json({ message: 'Challenge not found' });
+//     }
+
+//     const isCorrectAnswer = (answer, flags, flagData) => {
+//       for (let i = 0; i < flags.length; i++) {
+//         if (flagData[i] === 'case_sensitive') {
+//           if (answer.trim() === flags[i].trim()) {
+//             return true;
+//           }
+//         } else {
+//           if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
+//             return true;
+//           }
+//         }
+//       }
+//       return false;
+//     };
+
+//     const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
+
+//     if (isCorrect) {
+//       const userId = req.user.id;
+//       const userScore = await score.findOne({ user: userId });
+
+//       if (!userScore) {
+//         return res.status(404).json({ message: 'User score not found' });
+//       }
+
+//       userScore.score += updatedValue;
+
+//       await userScore.save();
+
+//       return res.json({ correct: isCorrect, newScore: userScore.score });
+//     }
+
+//     res.json({ correct: isCorrect });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// });
+
+
+
+router.post('/verify-answer', fetchuser, async (req, res) => {
+  const { challengeId, answer, updatedValue } = req.body;
+ console.log(updatedValue);
+
+  try {
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ message: 'Challenge not found' });
+    }
+
+    const isCorrectAnswer = (answer, flags, flagData) => {
+      for (let i = 0; i < flags.length; i++) {
+        if (flagData[i] === 'case_sensitive') {
+          if (answer.trim() === flags[i].trim()) {
+            return true;
+          }
+        } else {
+          if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
+
+    if (isCorrect) {
+      const userId = req.user.id;
+      let userScore = await score.findOne({ user: userId });
+
+      if (!userScore) {
+        return res.status(404).json({ message: 'User score not found' });
+      }
+
+      // Check if the challenge has already been solved by the user
+      const challengeSolved = await ChallengeSolve.findOne({ userId, challenge_id: challengeId });
+
+      if (!challengeSolved) {
+        // Update user score
+        userScore.score += updatedValue;
+        await userScore.save();
+
+        // Save challenge solve record
+        const newChallengeSolve = new ChallengeSolve({
+          userId,
+          challenge_id: challengeId,
+          challenge_name: challenge.name,
+          date: new Date(),
+        });
+
+        await newChallengeSolve.save();
+        console.log(userScore.score);
+
+        return res.json({ correct: isCorrect, newScore: userScore.score });
+      }
+
+      return res.json({ correct: isCorrect, newScore: userScore.score, message: 'Challenge already solved' });
+    }
+
+    res.json({ correct: isCorrect });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+router.get('/solved',fetchuser, async (req, res) => {
+  try {
+    const  userId = req.user.id;
+    const solvedChallenges = await ChallengeSolve.find({ userId }).select('challenge_id');
+    res.json(solvedChallenges);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+router.get('/used-hints/:challengeId',fetchuser, async (req, res) => {
+  try {
+    const { challengeId } = req.params;
+    const  userId = req.user.id;
+    const usedHints = await DetailHint.find({ user: userId, challengeId }).lean();
+    res.status(200).json(usedHints);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Route to save the used hint
+router.post('/use-hint',fetchuser, async (req, res) => {
+  try {
+    const {  challengeId, hintId,newValue } = req.body;
+    const  userId = req.user.id;
+    await DetailHint.findOneAndUpdate(
+      { user: userId, challengeId, hint_id: hintId },
+      { 
+        $set: { 
+          user: userId, 
+          challengeId, 
+          hint_id: hintId,
+          value: newValue
+        } 
+      },
+      { new: true, upsert: true }
+    );
+
+
+    res.status(200).json({ message: 'Hint usage recorded.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/value/:challengeId',fetchuser, async (req, res) => {
+  const { challengeId } = req.params;
+  const  userId = req.user.id;
+  
+
+  try {
+    const detailHint = await DetailHint.findOne({ user: userId, challengeId });
+    res.status(200).send({ value: detailHint ? detailHint.value : 100 });
+  } catch (error) {
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+
+
+
 
 module.exports = router;
