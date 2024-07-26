@@ -13,8 +13,8 @@ const UserChallengePage = () => {
   const [updatedValue, setUpdatedValue] = useState(0);
   const [solvedChallenges, setSolvedChallenges] = useState([]); // New state
 
-  
- 
+
+
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -32,13 +32,13 @@ const UserChallengePage = () => {
 
     const fetchSolvedChallenges = async () => {
       try {
-        
-        const response = await fetch('http://localhost:80/api/challenges/solved',{
-        headers: {
-          'Content-Type': 'application/json',
-    'Auth-token': localStorage.getItem('Hactify-Auth-token')
-        },
-      });
+
+        const response = await fetch('http://localhost:80/api/challenges/solved', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Auth-token': localStorage.getItem('Hactify-Auth-token')
+          },
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -66,18 +66,18 @@ const UserChallengePage = () => {
     setAttempts(0);
     setFeedback(null);
   };
-  
+
   const handleSubmit = async () => {
     if (selectedChallenge.type === 'manual_verification') {
       setFeedback('Your response is submitted for Review!');
     } else if (selectedChallenge.type === 'code' || selectedChallenge.type === 'standard' || selectedChallenge.type === 'multiple_choice') {
       try {
-        
+
         const response = await fetch('http://localhost/api/challenges/verify-answer', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-      'Auth-token': localStorage.getItem('Hactify-Auth-token')
+            'Auth-token': localStorage.getItem('Hactify-Auth-token')
           },
           body: JSON.stringify({
             challengeId: selectedChallenge._id,
@@ -85,13 +85,13 @@ const UserChallengePage = () => {
             updatedValue,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-  
+
         const result = await response.json();
-  
+
         if (result.correct) {
           setFeedback('Correct answer!');
           setChallenges(prevChallenges =>
@@ -117,7 +117,7 @@ const UserChallengePage = () => {
       }
     }
   };
-  
+
 
   const groupByCategory = (challenges) => {
     return challenges.reduce((acc, challenge) => {
@@ -162,8 +162,8 @@ const UserChallengePage = () => {
           attempts={attempts}
           feedback={feedback}
           updatedValue={updatedValue}
-    setUpdatedValue={setUpdatedValue}
-    solvedChallenges={solvedChallenges} // Pass solved challenges
+          setUpdatedValue={setUpdatedValue}
+          solvedChallenges={solvedChallenges} // Pass solved challenges
         />
       )}
     </>

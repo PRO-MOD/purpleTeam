@@ -14,7 +14,7 @@ function ScoresComponent() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/score/getscores1`);
+        const response = await fetch(`${apiUrl}/api/score/get-scores`);
         if (!response.ok) {
           throw new Error('Failed to fetch scores');
         }
