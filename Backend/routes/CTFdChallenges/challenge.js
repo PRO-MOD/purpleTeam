@@ -40,6 +40,8 @@ router.post('/create', async (req, res) => {
 // Multer configuration
 const upload = require('../../utils/CTFdChallenges/multerConfig');
 
+const upload = require('../../utils/CTFdChallenges/multerConfig');
+
 
 // POST route to update an existing challenge with additional data
 router.post('/update/:challengeId', upload.array('file', 5), async (req, res) => {
@@ -105,6 +107,23 @@ router.get('/details/:id', async (req, res) => {
     
 
 
+    
+
+
+    router.get('/all', async (req, res) => {
+      try {
+          const visibleChallenges = await Challenge.find({ state: "visible" }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
+          res.status(200).json(visibleChallenges);
+      } catch (error) {
+          console.error('Error fetching challenges:', error);
+          res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
+      }
+  });
+
+  router.get('/hints/:id', async (req, res) => {
+    try {
+        const hints = await Challenge.find({_id: req.params.id}).select('hints');
+        res.status(200).json(hints);
     router.get('/all', async (req, res) => {
       try {
           const visibleChallenges = await Challenge.find({ state: "visible" }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
@@ -123,6 +142,7 @@ router.get('/details/:id', async (req, res) => {
         console.error('Error fetching challenges:', error);
         res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
     }
+  });
   });
 
 
