@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import PageHeader from '../../navbar/PageHeader';
 import EditNavigation from './EditChallenge/EditNavigation';
 import Content from './EditChallenge/Content';
+import EditChallenge from './EditChallenge/EditChallenge';
 
 const ChallengeDetailsPage = () => {
   const { id } = useParams(); // Get challenge ID from URL params
@@ -45,7 +46,7 @@ const ChallengeDetailsPage = () => {
           </div>
         </div>
         <div className="w-1/2">
-          ss
+          <EditChallenge challenge={challenge}/>
         </div>
 
       </div>

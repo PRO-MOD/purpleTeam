@@ -20,7 +20,7 @@ const challengeSolveSchema = new mongoose.Schema({
   },
   solve_id: {
     type: String,
-    required: true,
+    required: false,
   }
 });
 
