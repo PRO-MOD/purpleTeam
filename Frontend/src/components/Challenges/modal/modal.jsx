@@ -204,6 +204,19 @@ const Modal = ({
 
   if (!isOpen) return null;
 
+  const renderImage = (props) => (
+    <img
+      src={props.src}
+      alt={props.alt}
+      style={{
+        maxWidth: '100%', // Ensures the image doesn't exceed the container width
+        maxHeight: '320px', // Set max height as needed
+        display: 'block',
+        margin: '0 auto',
+      }}
+    />
+  );
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-full w-full md:max-w-3xl overflow-y-auto">
@@ -214,7 +227,7 @@ const Modal = ({
         <p className="text-xl mr-8 mt-4 text-center">Remaining Value: {updatedValue}</p>
 
         <div className="mt-4">
-          <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} />
+          <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} components={{ img: renderImage }}/>
         </div>
 
         {isSolved ? (
