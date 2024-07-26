@@ -109,7 +109,7 @@ const SideNavbar = () => {
                 <div className="px-2">
                   <FontAwesomeIcon icon={faUserPlus} color="" size="xl" />
                 </div>
-                <p className="text-lg">Create User</p>
+                <p className="text-lg">Users</p>
               </Link>
               <Link to="/assignTeams" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/assignTeams") ? "bg-brown-450  text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center px-2">
