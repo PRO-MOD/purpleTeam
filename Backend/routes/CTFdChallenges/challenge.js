@@ -391,7 +391,7 @@ router.put('/flags/:challengeId/edit/:index', async (req, res) => {
 
 router.post('/verify-answer', fetchuser, async (req, res) => {
   const { challengeId, answer, updatedValue } = req.body;
- console.log(updatedValue);
+//  console.log(updatedValue);
 
   try {
     const challenge = await Challenge.findById(challengeId);
@@ -441,7 +441,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         });
 
         await newChallengeSolve.save();
-        console.log(userScore.score);
+        // console.log(userScore.score);
 
         return res.json({ correct: isCorrect, newScore: userScore.score });
       }
