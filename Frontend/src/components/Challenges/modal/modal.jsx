@@ -36,8 +36,9 @@ const Modal = ({
       setSelectedHint(null);
       setUsedHints([]);
     } else {
-      fetchUsedHints();
       fetchUserChallengeValue();
+
+      fetchUsedHints();
     }
   }, [isOpen, challenge]);
 
@@ -118,27 +119,57 @@ const Modal = ({
     }
   };
   
+  // const confirmUnlockHint = async () => {
+  //   if (!selectedHint) return;
+  
+  //   setShowWarning(false);
+  //   if (!usedHints.includes(selectedHint._id)) {
+  //     setUsedHints(prevHints => [...prevHints, selectedHint._id]);
+  //     const newValue = updatedValue - selectedHint.cost;
+  //     setUpdatedValue(newValue);
+  //     setShowHintDetails(true);
+  
+  //     try {
+  //       await fetch(`http://localhost:80/api/challenges/use-hint`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Auth-token': localStorage.getItem('Hactify-Auth-token')
+  //         },
+  //         body: JSON.stringify({
+  //           challengeId: challenge._id,
+  //           hintId: selectedHint._id,
+  //           newValue: newValue,
+  //         }),
+  //       });
+  //     } catch (error) {
+  //       console.error('Error recording hint usage:', error);
+  //     }
+  //   } else {
+  //     setShowHintDetails(true);
+  //   }
+  // };
+
+
   const confirmUnlockHint = async () => {
     if (!selectedHint) return;
-  
+
     setShowWarning(false);
     if (!usedHints.includes(selectedHint._id)) {
       setUsedHints(prevHints => [...prevHints, selectedHint._id]);
-      const newValue = updatedValue - selectedHint.cost;
-      setUpdatedValue(newValue);
+      setUpdatedValue(prevValue => prevValue - selectedHint.cost);
       setShowHintDetails(true);
-  
+
       try {
         await fetch(`http://localhost:80/api/challenges/use-hint`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Auth-token': localStorage.getItem('Hactify-Auth-token')
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           },
           body: JSON.stringify({
             challengeId: challenge._id,
             hintId: selectedHint._id,
-            newValue: newValue,
           }),
         });
       } catch (error) {
@@ -148,6 +179,8 @@ const Modal = ({
       setShowHintDetails(true);
     }
   };
+
+  
   
   const handleChange = (e) => {
     setFormData({

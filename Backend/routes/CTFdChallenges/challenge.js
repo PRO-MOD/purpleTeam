@@ -7,6 +7,7 @@ const fetchuser =require('../../middleware/fetchuser');
 const score = require('../../models/score');
 const ChallengeSolve =require('../../models/ChallengeSolved');
 const DetailHint =require('../../models/CTFdChallenges/detailhint');
+const Hint = require('../../models/CTFdChallenges/Hint');
 
 // POST route to create a new challenge
 router.post('/create', async (req, res) => {
@@ -61,6 +62,7 @@ router.put('/edit/:id', async (req, res) => {
 
 // Multer configuration
 const upload = require('../../utils/CTFdChallenges/multerConfig');
+
 
 
 // POST route to update an existing challenge with additional data
@@ -127,6 +129,9 @@ router.get('/details/:id', async (req, res) => {
     
 
 
+    
+
+
     router.get('/all', async (req, res) => {
       try {
           const visibleChallenges = await Challenge.find({ state: "visible" }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
@@ -137,6 +142,8 @@ router.get('/details/:id', async (req, res) => {
       }
   });
 
+ 
+
   router.get('/hints/:id', async (req, res) => {
     try {
         const hints = await Challenge.find({_id: req.params.id}).select('hints');
@@ -146,6 +153,7 @@ router.get('/details/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
     }
   });
+ 
 
 
 router.get('/toDisplayAllChallenges', async (req, res) => {
@@ -474,42 +482,69 @@ router.get('/used-hints/:challengeId',fetchuser, async (req, res) => {
 // Route to save the used hint
 router.post('/use-hint',fetchuser, async (req, res) => {
   try {
-    const {  challengeId, hintId,newValue } = req.body;
+    const {  challengeId, hintId } = req.body;
     const  userId = req.user.id;
-    await DetailHint.findOneAndUpdate(
-      { user: userId, challengeId, hint_id: hintId },
-      { 
-        $set: { 
-          user: userId, 
-          challengeId, 
-          hint_id: hintId,
-          value: newValue
-        } 
-      },
-      { new: true, upsert: true }
-    );
 
+    const challenge = await Challenge.findById(challengeId);
+    const challengevalue=challenge.value
+    if (!challengevalue) {
+      return res.status(404).json({ message: 'Challenge not found' });
+    }
 
+    const hintscore = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
+    var score=0;
+
+    if (!hintscore) {
+       score=challengevalue;
+    }
+    else{
+    score=hintscore.value;
+    }
+   
+
+    const hint=await Hint.findById(hintId);
+    const cost=hint.cost;
+    const value=score-cost;
+
+    // const hintscore = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
+    // const score=hintscore.value;
+    // // if (!challengevalue) {
+    // //   return res.status(404).json({ message: 'Challenge not found' });
+    // // }
+
+    // const hint=await Hint.findById(hintId);
+    // const cost=hint.cost;
+    // const value=score-cost;
+
+    const detailHint = new DetailHint({ user: userId, challengeId, hint_id: hintId,value });
+    await detailHint.save();
     res.status(200).json({ message: 'Hint usage recorded.' });
   } catch (err) {
+    console.error('Error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
-
-router.get('/value/:challengeId',fetchuser, async (req, res) => {
+router.get('/value/:challengeId', fetchuser, async (req, res) => {
   const { challengeId } = req.params;
-  const  userId = req.user.id;
-  
+  const userId = req.user.id;
 
   try {
-    const detailHint = await DetailHint.findOne({ user: userId, challengeId });
-    res.status(200).send({ value: detailHint ? detailHint.value : 100 });
+    // Find the entry with the lowest value for the given userId and challengeId
+
+
+    const challenge = await Challenge.findById(challengeId);
+    const challengevalue=challenge.value
+    const detailHint = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
+
+    // if (!detailHint) {
+    //   return res.status(404).send({ message: 'No progress found for this challenge' });
+    // }
+
+    res.status(200).send({ value: detailHint ? detailHint.value : challengevalue });
   } catch (error) {
     res.status(500).send({ message: 'Server error' });
   }
 });
-
-
 
 
 
