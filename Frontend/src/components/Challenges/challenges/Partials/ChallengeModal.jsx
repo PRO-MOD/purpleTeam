@@ -155,8 +155,8 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
                                     type="text"
                                     placeholder='Enter your flag'
                                     className="form-input block w-full sm:text-sm border border-gray-300 rounded-sm focus:ring focus:ring-green-200 outline-0 p-2 resize-none size-fit"
-                                    value={formData.flag}
-                                    disabled={selectedOption === 'code'}
+                                    value={selectedOption === 'dynamic' ? "flag{'dynamic'}" : formData.flag}
+                                    disabled={selectedOption === 'code' || selectedOption === 'dynamic'}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -172,6 +172,7 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
                                         value={formData.flag_data}
                                         onChange={handleChange}
                                     >
+                                        <option value="">--select--</option>
                                         <option value="case_sensitive">Case Sensitive</option>
                                         <option value="case_insensitive">Case Insensitive</option>
                                     </select>

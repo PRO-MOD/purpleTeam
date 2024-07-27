@@ -43,14 +43,6 @@ const CreateChallenge = () => {
                                 label="Multiple Choice"
                             />
                             <RadioCard
-                                id="manual_verification"
-                                name="type"
-                                value="manual_verification"
-                                checked={selectedOption === 'manual_verification'}
-                                onChange={handleChange}
-                                label="Manual Verification"
-                            />
-                            <RadioCard
                                 id="code"
                                 name="type"
                                 value="code"
@@ -65,6 +57,14 @@ const CreateChallenge = () => {
                                 checked={selectedOption === 'dynamic'}
                                 onChange={handleChange}
                                 label="Dynamic"
+                            />
+                            <RadioCard
+                                id="manual_verification"
+                                name="type"
+                                value="manual_verification"
+                                checked={selectedOption === 'manual_verification'}
+                                onChange={handleChange}
+                                label="Manual Verification"
                             />
                         </div>
                     </div>
