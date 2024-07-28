@@ -4,8 +4,12 @@ const path = require('path');
 const fs = require('fs');
 const Challenge = require('../../models/CTFdChallenges/challenge');
 const fetchuser =require('../../middleware/fetchuser');
+const User = require('../../models/User')
 const score = require('../../models/score');
 const ChallengeSolve =require('../../models/ChallengeSolved');
+const DetailHint =require('../../models/CTFdChallenges/detailhint');
+const Hint = require('../../models/CTFdChallenges/Hint');
+const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag')
 const User= require('../../models/User')
 
 
@@ -63,7 +67,8 @@ router.put('/edit/:id', async (req, res) => {
 
 // Multer configuration
 const upload = require('../../utils/CTFdChallenges/multerConfig');
-
+// import generateUniqueFlag function
+const generateUniqueFlag = require('../../utils/CTFdChallenges/generateUniqueFlag');
 
 
 // POST route to update an existing challenge with additional data
@@ -94,10 +99,27 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
 
       // Handle specific fields based on selectedOption (e.g., language for 'code', choices for 'multiple_choice')
       if (existingChallenge.type === 'code') {
-          existingChallenge.language = req.body.language;
+          existingChallenge.langauge = req.body.language;
       } else if (existingChallenge.type === 'multiple_choice') {
           existingChallenge.choices = JSON.parse(req.body.choices);
+      } else if (existingChallenge.type === 'dynamic') {
+        const users = await User.find({});
+        const flags = users.map(user => ({
+          userId: user._id,
+          flag: generateUniqueFlag(user._id, challengeId)
+        }));
+  
+        // Upsert the unique flags in the DynamicFlag collection
+        const dynamicFlagDoc = await DynamicFlag.findOneAndUpdate(
+          { challengeId },
+          { flags },
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+  
+        // Store the dynamicFlags ObjectId in the challenge
+        existingChallenge.dynamicFlags = dynamicFlagDoc._id;
       }
+  
 
       // Handle file uploads and update files array
       if (req.files && req.files.length > 0) {
@@ -130,6 +152,26 @@ router.get('/details/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
     }
     });
+
+    router.get('/type/:challengeId', async (req, res) => {
+      const { challengeId } = req.params;
+    
+      try {
+        const challenge = await Challenge.findById(challengeId).select('type');
+    
+        if (!challenge) {
+          return res.status(404).json({ error: 'Challenge not found' });
+        }
+    
+        res.json({ type: challenge.type });
+      } catch (error) {
+        console.error('Error fetching challenge type:', error);
+        res.status(500).json({ error: 'Server error' });
+      }
+    });
+
+
+    
 
     
     router.get('/all',fetchuser, async (req, res) => {

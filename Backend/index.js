@@ -104,6 +104,7 @@ app.use('/api/chat', chatRouter)
 
 // routes for CTFdChallenges
 app.use('/api/challenges',require('./routes/CTFdChallenges/challenge.js'))
+app.use('/api/dynamicFlags',require('./routes/CTFdChallenges/DynamicFlags.js'))
 app.use('/api/hints',require('./routes/CTFdChallenges/Hint.js'))
 
 app.use('/api/user',require('./routes/CTFdChallenges/user.js'))
