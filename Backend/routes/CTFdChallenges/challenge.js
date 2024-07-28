@@ -10,7 +10,6 @@ const ChallengeSolve =require('../../models/ChallengeSolved');
 const DetailHint =require('../../models/CTFdChallenges/detailhint');
 const Hint = require('../../models/CTFdChallenges/Hint');
 const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag')
-const User= require('../../models/User')
 
 
 
