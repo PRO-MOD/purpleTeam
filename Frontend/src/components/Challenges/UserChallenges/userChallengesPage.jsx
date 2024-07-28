@@ -99,13 +99,7 @@ const UserChallengePage = () => {
 
         if (result.correct) {
           setFeedback('Correct answer!');
-          setChallenges(prevChallenges =>
-            prevChallenges.map(challenge =>
-              challenge._id === selectedChallenge._id
-                ? { ...challenge, solved_by_me: true }
-                : challenge
-            )
-          );
+          setSolvedChallenges(prevSolved => [...prevSolved, selectedChallenge._id]); // Update solved challenges state
           setTimeout(closeModal, 2000); // Close the modal after a delay
         } else {
           setAttempts(prev => prev + 1);
