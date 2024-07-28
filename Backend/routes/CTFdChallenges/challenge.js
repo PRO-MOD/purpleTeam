@@ -6,6 +6,7 @@ const Challenge = require('../../models/CTFdChallenges/challenge');
 const fetchuser =require('../../middleware/fetchuser');
 const score = require('../../models/score');
 const ChallengeSolve =require('../../models/ChallengeSolved');
+const User= require('../../models/User')
 
 
 
@@ -76,7 +77,7 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
       }
 
       // Additional data to update
-      const { flag, flag_data, state } = req.body;
+      const { flag, flag_data, state,user_ids } = req.body;
 
       // Update challenge properties
       if (flag) {
@@ -104,6 +105,10 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
           existingChallenge.files = existingChallenge.files.concat(newFiles);
       }
 
+      if (user_ids) {
+        existingChallenge.user_ids = JSON.parse(user_ids);
+    }
+
       // Save the updated challenge
       const updatedChallenge = await existingChallenge.save();
 
@@ -127,14 +132,12 @@ router.get('/details/:id', async (req, res) => {
     });
 
     
+    router.get('/all',fetchuser, async (req, res) => {
 
+      const userId = req.user.id;
 
-    
-
-
-    router.get('/all', async (req, res) => {
       try {
-          const visibleChallenges = await Challenge.find({ state: "visible" }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
+          const visibleChallenges = await Challenge.find({ state: "visible", user_ids: { $in: [userId] } }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
           res.status(200).json(visibleChallenges);
       } catch (error) {
           console.error('Error fetching challenges:', error);
@@ -335,6 +338,116 @@ router.put('/flags/:challengeId/edit/:index', async (req, res) => {
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
+
+
+// router.get('/users/:id', async (req, res) => {
+//   try {
+//     const challenge = await Challenge.findById(req.params.id);
+//     if (!challenge) {
+//       return res.status(404).send('Challenge not found');
+//     }
+//     res.json({users: challenge.user_ids});
+//   } catch (error) {
+//     res.status(500).send('Error fetching challenge');
+//   }
+// });
+
+
+router.get('/users/:challengeId', async (req, res) => {
+  try {
+    const { challengeId } = req.params;
+    const challenge = await Challenge.findById(challengeId).populate('user_ids', 'name');
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+    res.json({ users: challenge.user_ids });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users', message: error.message });
+  }
+});
+
+// Add user to a challenge
+router.post('/users/:challengeId/add', async (req, res) => {
+  try {
+    const { challengeId } = req.params;
+    const { user_id } = req.body;
+
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+
+    // if (!mongoose.Types.ObjectId.isValid(user_id)) {
+    //   return res.status(400).json({ error: 'Invalid user ID' });
+    // }
+
+    if (challenge.user_ids.includes(user_id)) {
+      return res.status(400).json({ error: 'User already added' });
+    }
+
+    challenge.user_ids.push(user_id);
+    await challenge.save();
+
+    const user = await User.findById(user_id);
+    res.json({ user });
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ error: 'Failed to add user', message: error.message });
+  }
+});
+
+// Delete user from a challenge
+router.delete('/users/:challengeId/delete/:userId', async (req, res) => {
+  try {
+    const { challengeId, userId } = req.params;
+
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+
+    challenge.user_ids = challenge.user_ids.filter(id => id.toString() !== userId);
+    await challenge.save();
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user', message: error.message });
+  }
+});
+
+// Edit user in a challenge (replace old user with new user)
+router.put('/users/:challengeId/edit/:index', async (req, res) => {
+  try {
+    const { challengeId, index } = req.params;
+    const { user_id } = req.body;
+
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    if (index < 0 || index >= challenge.user_ids.length) {
+      return res.status(400).json({ error: 'Invalid index' });
+    }
+
+    challenge.user_ids[index] = user_id;
+    await challenge.save();
+
+    const user = await User.findById(user_id);
+    res.json({ user });
+  } catch (error) {
+    console.error('Error editing user:', error);
+    res.status(500).json({ error: 'Failed to edit user', message: error.message });
+  }
+});
+
 
 router.post('/verify-answer', fetchuser, async (req, res) => {
   const { challengeId, answer, updatedValue } = req.body;

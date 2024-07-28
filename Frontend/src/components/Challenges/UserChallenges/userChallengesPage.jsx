@@ -19,7 +19,12 @@ const UserChallengePage = () => {
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const response = await fetch('http://localhost:80/api/challenges/all');
+        const response = await fetch('http://localhost:80/api/challenges/all', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Auth-token': localStorage.getItem('Hactify-Auth-token')
+          },
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
