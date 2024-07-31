@@ -32,4 +32,50 @@ router.get('/display/:challengeId', async (req, res) => {
   }
 });
 
+// Edit a specific flag
+router.put('/edit/:challengeId', async (req, res) => {
+  const { challengeId } = req.params;
+  const { index, flag } = req.body;
+
+  try {
+    const dynamicFlags = await DynamicFlags.findOne({ challengeId });
+
+    if (!dynamicFlags || !dynamicFlags.flags[index]) {
+      return res.status(404).json({ error: 'Flag not found' });
+    }
+
+    // Update the flag
+    dynamicFlags.flags[index].flag = flag;
+    await dynamicFlags.save();
+
+    res.status(200).json({ message: 'Flag updated successfully', flag: dynamicFlags.flags[index] });
+  } catch (error) {
+    console.error('Error updating flag:', error);
+    res.status(500).json({ error: 'Failed to update flag' });
+  }
+});
+
+// Delete a specific flag
+router.delete('/delete/:challengeId', async (req, res) => {
+  const { challengeId } = req.params;
+  const { index } = req.body;
+
+  try {
+    const dynamicFlags = await DynamicFlags.findOne({ challengeId });
+
+    if (!dynamicFlags || !dynamicFlags.flags[index]) {
+      return res.status(404).json({ error: 'Flag not found' });
+    }
+
+    // Remove the flag
+    dynamicFlags.flags.splice(index, 1);
+    await dynamicFlags.save();
+
+    res.status(200).json({ message: 'Flag deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting flag:', error);
+    res.status(500).json({ error: 'Failed to delete flag' });
+  }
+});
+
 module.exports = router;
