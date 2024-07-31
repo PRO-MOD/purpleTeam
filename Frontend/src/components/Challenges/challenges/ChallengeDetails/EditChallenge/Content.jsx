@@ -3,6 +3,7 @@ import Files from './Contents/Files'
 import Flags from './Contents/Flags';
 import Hints from './Contents/Hints';
 import Tags from './Contents/Tags';
+import Users from './Contents/Users';
 // const Flags = () => <div>Flags Content</div>;
 const Topics = () => <div>Topics Content</div>;
 // const Tags = () => <div>Tags Content</div>;
@@ -23,6 +24,8 @@ const Content = ({ activeTab, challengeId }) => {
         return <Tags challengeId={challengeId} />;
       case 'Hints':
         return <Hints challengeId={challengeId} />;
+      case 'Users':
+        return <Users challengeId={challengeId} />;
       case 'Requirements':
         return <Requirements />;
       case 'Next':

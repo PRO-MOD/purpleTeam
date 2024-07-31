@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import CodeEditor from '../CodeEditor/CodeEditorFeild';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleMinus, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select';
 
 const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -12,11 +14,31 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
         state: 'hidden',
         language: 'python',
         choices: [''],
-        code: ''
+        code: '',
+        user_ids: []
+
     });
 
     const [editorOutput, setEditorOutput] = useState('');
     const [error, setError] = useState('');
+    const [users, setUsers] = useState([]);
+    const [selectAll, setSelectAll] = useState(false);
+
+
+    useEffect(() => {
+        // Fetch user data from the API
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch(`${apiUrl}/api/user/getallusers`);
+                const data = await response.json();
+                const userOptions = data.map(user => ({ value: user._id, label: user.name }));
+                setUsers([{ value: 'select-all', label: 'Select All' }, ...userOptions]);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+        fetchUsers();
+    }, [apiUrl]);
 
     const handleChange = (e) => {
         if (e.target.type === 'file') {
@@ -45,6 +67,29 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
         setFormData({ ...formData, code });
     };
 
+
+    const handleUserSelect = (selectedOptions) => {
+        if (selectedOptions && selectedOptions.some(option => option.value === 'select-all')) {
+            if (selectAll) {
+                setFormData({ ...formData, user_ids: [] });
+                setSelectAll(false);
+            } else {
+                setFormData({
+                    ...formData,
+                    user_ids: users.filter(user => user.value !== 'select-all').map(user => user.value)
+                });
+                setSelectAll(true);
+            }
+        } else {
+            setFormData({
+                ...formData,
+                user_ids: selectedOptions ? selectedOptions.map(option => option.value) : []
+            });
+            setSelectAll(false);
+        }
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -52,6 +97,8 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
         formDataToSend.append('flag', selectedOption === 'code' ? editorOutput.trim() : formData.flag);
         formDataToSend.append('flag_data', formData.flag_data);
         formDataToSend.append('state', formData.state);
+        formDataToSend.append('user_ids', JSON.stringify(formData.user_ids));
+
 
         if (selectedOption === 'code') {
             formDataToSend.append('language', formData.language);
@@ -250,6 +297,21 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
                                 </select>
                             </div>
 
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Assign to Users:
+                                </label>
+                                <Select
+                                    isMulti
+                                    options={users}
+                                    value={users.filter(user => formData.user_ids.includes(user.value))}
+                                    onChange={handleUserSelect}
+                                    className="mt-1 block w-full sm:text-sm border border-gray-300 rounded-sm"
+                                />
+                            </div>
+
+
                             <div className="mt-6">
                                 <button
                                     type="submit"
@@ -274,3 +336,6 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
 };
 
 export default ChallengeModal;
+
+
+

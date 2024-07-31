@@ -11,6 +11,8 @@ const DetailHint =require('../../models/CTFdChallenges/detailhint');
 const Hint = require('../../models/CTFdChallenges/Hint');
 const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag')
 
+
+
 // POST route to create a new challenge
 router.post('/create', async (req, res) => {
     try {
@@ -79,7 +81,7 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
       }
 
       // Additional data to update
-      const { flag, flag_data, state } = req.body;
+      const { flag, flag_data, state,user_ids } = req.body;
 
       // Update challenge properties
       if (flag) {
@@ -124,6 +126,10 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
           existingChallenge.files = existingChallenge.files.concat(newFiles);
       }
 
+      if (user_ids) {
+        existingChallenge.user_ids = JSON.parse(user_ids);
+    }
+
       // Save the updated challenge
       const updatedChallenge = await existingChallenge.save();
 
@@ -166,10 +172,13 @@ router.get('/details/:id', async (req, res) => {
 
     
 
+    
+    router.get('/all',fetchuser, async (req, res) => {
 
-    router.get('/all', async (req, res) => {
+      const userId = req.user.id;
+
       try {
-          const visibleChallenges = await Challenge.find({ state: "visible" }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
+          const visibleChallenges = await Challenge.find({ state: "visible", user_ids: { $in: [userId] } }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
           res.status(200).json(visibleChallenges);
       } catch (error) {
           console.error('Error fetching challenges:', error);
@@ -372,60 +381,122 @@ router.put('/flags/:challengeId/edit/:index', async (req, res) => {
 });
 
 
-// router.post('/verify-answer',fetchuser, async (req, res) => {
-//   const { challengeId, answer, updatedValue } = req.body;
-//   console.log(updatedValue);
- 
 
+// router.get('/users/:id', async (req, res) => {
 //   try {
-//     const challenge = await Challenge.findById(challengeId);
+//     const challenge = await Challenge.findById(req.params.id);
 //     if (!challenge) {
-//       return res.status(404).json({ message: 'Challenge not found' });
+//       return res.status(404).send('Challenge not found');
 //     }
-
-//     const isCorrectAnswer = (answer, flags, flagData) => {
-//       for (let i = 0; i < flags.length; i++) {
-//         if (flagData[i] === 'case_sensitive') {
-//           if (answer.trim() === flags[i].trim()) {
-//             return true;
-//           }
-//         } else {
-//           if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
-//             return true;
-//           }
-//         }
-//       }
-//       return false;
-//     };
-
-//     const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
-
-//     if (isCorrect) {
-//       const userId = req.user.id;
-//       const userScore = await score.findOne({ user: userId });
-
-//       if (!userScore) {
-//         return res.status(404).json({ message: 'User score not found' });
-//       }
-
-//       userScore.score += updatedValue;
-
-//       await userScore.save();
-
-//       return res.json({ correct: isCorrect, newScore: userScore.score });
-//     }
-
-//     res.json({ correct: isCorrect });
+//     res.json({users: challenge.user_ids});
 //   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
+//     res.status(500).send('Error fetching challenge');
 //   }
 // });
 
 
+router.get('/users/:challengeId', async (req, res) => {
+  try {
+    const { challengeId } = req.params;
+    const challenge = await Challenge.findById(challengeId).populate('user_ids', 'name');
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+    res.json({ users: challenge.user_ids });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users', message: error.message });
+  }
+});
+
+// Add user to a challenge
+router.post('/users/:challengeId/add', async (req, res) => {
+  try {
+    const { challengeId } = req.params;
+    const { user_id } = req.body;
+
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+
+    // if (!mongoose.Types.ObjectId.isValid(user_id)) {
+    //   return res.status(400).json({ error: 'Invalid user ID' });
+    // }
+
+    if (challenge.user_ids.includes(user_id)) {
+      return res.status(400).json({ error: 'User already added' });
+    }
+
+    challenge.user_ids.push(user_id);
+    await challenge.save();
+
+    const user = await User.findById(user_id);
+    res.json({ user });
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ error: 'Failed to add user', message: error.message });
+  }
+});
+
+// Delete user from a challenge
+router.delete('/users/:challengeId/delete/:userId', async (req, res) => {
+  try {
+    const { challengeId, userId } = req.params;
+
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+
+    challenge.user_ids = challenge.user_ids.filter(id => id.toString() !== userId);
+    await challenge.save();
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user', message: error.message });
+  }
+});
+
+// Edit user in a challenge (replace old user with new user)
+router.put('/users/:challengeId/edit/:index', async (req, res) => {
+  try {
+    const { challengeId, index } = req.params;
+    const { user_id } = req.body;
+
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    if (index < 0 || index >= challenge.user_ids.length) {
+      return res.status(400).json({ error: 'Invalid index' });
+    }
+
+    challenge.user_ids[index] = user_id;
+    await challenge.save();
+
+    const user = await User.findById(user_id);
+    res.json({ user });
+  } catch (error) {
+    console.error('Error editing user:', error);
+    res.status(500).json({ error: 'Failed to edit user', message: error.message });
+  }
+});
+
 
 router.post('/verify-answer', fetchuser, async (req, res) => {
   const { challengeId, answer, updatedValue } = req.body;
+<<<<<<< HEAD
+=======
+ console.log(updatedValue);
+
+>>>>>>> 96cfeb7e9956ce622f4cff22da410bf47da6353f
 
   try {
     const challenge = await Challenge.findById(challengeId);
@@ -469,6 +540,46 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       if (isCorrect) {
         return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res);
       }
+<<<<<<< HEAD
+=======
+      return false;
+    };
+
+    const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
+
+    if (isCorrect) {
+      const userId = req.user.id;
+      let userScore = await score.findOne({ user: userId });
+
+      if (!userScore) {
+        return res.status(404).json({ message: 'User score not found' });
+      }
+
+      // Check if the challenge has already been solved by the user
+      const challengeSolved = await ChallengeSolve.findOne({ userId, challenge_id: challengeId });
+
+      if (!challengeSolved) {
+        // Update user score
+        userScore.score += updatedValue;
+        await userScore.save();
+         console.log(userScore.score);
+
+        // Save challenge solve record
+        const newChallengeSolve = new ChallengeSolve({
+          userId,
+          challenge_id: challengeId,
+          challenge_name: challenge.name,
+          date: new Date(),
+        });
+
+        await newChallengeSolve.save();
+       
+
+        return res.json({ correct: isCorrect, newScore: userScore.score });
+      }
+
+      return res.json({ correct: isCorrect, newScore: userScore.score, message: 'Challenge already solved' });
+>>>>>>> 96cfeb7e9956ce622f4cff22da410bf47da6353f
     }
 
     res.json({ correct: false });
@@ -528,83 +639,6 @@ router.get('/solved',fetchuser, async (req, res) => {
   }
 });
 
-router.get('/used-hints/:challengeId',fetchuser, async (req, res) => {
-  try {
-    const { challengeId } = req.params;
-    const  userId = req.user.id;
-    const usedHints = await DetailHint.find({ user: userId, challengeId }).lean();
-    res.status(200).json(usedHints);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Route to save the used hint
-router.post('/use-hint',fetchuser, async (req, res) => {
-  try {
-    const {  challengeId, hintId } = req.body;
-    const  userId = req.user.id;
-
-    const challenge = await Challenge.findById(challengeId);
-    const challengevalue=challenge.value
-    if (!challengevalue) {
-      return res.status(404).json({ message: 'Challenge not found' });
-    }
-
-    const hintscore = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
-    var score=0;
-
-    if (!hintscore) {
-       score=challengevalue;
-    }
-    else{
-    score=hintscore.value;
-    }
-   
-
-    const hint=await Hint.findById(hintId);
-    const cost=hint.cost;
-    const value=score-cost;
-
-    // const hintscore = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
-    // const score=hintscore.value;
-    // // if (!challengevalue) {
-    // //   return res.status(404).json({ message: 'Challenge not found' });
-    // // }
-
-    // const hint=await Hint.findById(hintId);
-    // const cost=hint.cost;
-    // const value=score-cost;
-
-    const detailHint = new DetailHint({ user: userId, challengeId, hint_id: hintId,value });
-    await detailHint.save();
-    res.status(200).json({ message: 'Hint usage recorded.' });
-  } catch (err) {
-    console.error('Error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
-router.get('/value/:challengeId', fetchuser, async (req, res) => {
-  const { challengeId } = req.params;
-  const userId = req.user.id;
-
-  try {
-    // Find the entry with the lowest value for the given userId and challengeId
-
-
-    const challenge = await Challenge.findById(challengeId);
-    const challengevalue=challenge.value
-    const detailHint = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
-
-    // if (!detailHint) {
-    //   return res.status(404).send({ message: 'No progress found for this challenge' });
-    // }
-
-    res.status(200).send({ value: detailHint ? detailHint.value : challengevalue });
-  } catch (error) {
-    res.status(500).send({ message: 'Server error' });
-  }
-});
 
 
 

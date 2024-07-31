@@ -106,6 +106,8 @@ app.use('/api/chat', chatRouter)
 app.use('/api/challenges',require('./routes/CTFdChallenges/challenge.js'))
 app.use('/api/dynamicFlags',require('./routes/CTFdChallenges/DynamicFlags.js'))
 app.use('/api/hints',require('./routes/CTFdChallenges/Hint.js'))
+
+app.use('/api/user',require('./routes/CTFdChallenges/user.js'))
 app.use('/api/tags',  require('./routes/CTFdChallenges/tags'));
 app.use('/api/executecode',require('./routes/CTFdChallenges/runcode.js'))
 

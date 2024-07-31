@@ -61,8 +61,13 @@ const challengeSchema = new mongoose.Schema({
     },
     files: { type: [String], default: [] }, // Array of file paths or references
     tags: [String], // Array of tags
-    hints: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hint' }], // Array of hint strings
-    dynamicFlags: { type: mongoose.Schema.Types.ObjectId, ref: 'DynamicFlag' }
+    hints: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hint' }],// Array of hint strings
+    dynamicFlags: { type: mongoose.Schema.Types.ObjectId, ref: 'DynamicFlag' },
+
+    user_ids: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
+    }] // Array of user IDs
 });
 
 // Compile model from schema

@@ -44,7 +44,7 @@ const Modal = ({
 
   const fetchUserChallengeValue = async () => {
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/value/${challenge._id}`, {
+      const response = await fetch(`http://localhost:80/api/hints/value/${challenge._id}`, {
         headers: {
           'Content-Type': 'application/json',
           'Auth-token': localStorage.getItem('Hactify-Auth-token'),
@@ -62,7 +62,7 @@ const Modal = ({
 
   const fetchUsedHints = async () => {
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/used-hints/${challenge._id}`,{
+      const response = await fetch(`http://localhost:80/api/hints/used-hints/${challenge._id}`,{
         headers: {
           'Content-Type': 'application/json',
     'Auth-token': localStorage.getItem('Hactify-Auth-token')
@@ -93,6 +93,8 @@ const Modal = ({
     }
   };
 
+  
+
   const fetchHintDetails = async (hintId) => {
     try {
       const response = await fetch(`http://localhost:80/api/hints/hints/${hintId}`);
@@ -102,66 +104,59 @@ const Modal = ({
       const data = await response.json();
   
       if (data.length > 0) {
+        console.log(data[0]);
         setSelectedHint(data[0]);
-        setShowHintDetails(false);
-        if (!usedHints.includes(hintId)) {
-          setShowWarning(true);
-        } else {
-          setShowWarning(false);
-          setShowHintDetails(true);
-        }
+        setShowHintDetails(true);
       } else {
         setSelectedHint(null);
         setShowHintDetails(false);
       }
-    }catch (error) {
+    } catch (error) {
       console.error('Error fetching hint details:', error);
     }
   };
-  
-  // const confirmUnlockHint = async () => {
-  //   if (!selectedHint) return;
-  
-  //   setShowWarning(false);
-  //   if (!usedHints.includes(selectedHint._id)) {
-  //     setUsedHints(prevHints => [...prevHints, selectedHint._id]);
-  //     const newValue = updatedValue - selectedHint.cost;
-  //     setUpdatedValue(newValue);
-  //     setShowHintDetails(true);
-  
-  //     try {
-  //       await fetch(`http://localhost:80/api/challenges/use-hint`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Auth-token': localStorage.getItem('Hactify-Auth-token')
-  //         },
-  //         body: JSON.stringify({
-  //           challengeId: challenge._id,
-  //           hintId: selectedHint._id,
-  //           newValue: newValue,
-  //         }),
-  //       });
-  //     } catch (error) {
-  //       console.error('Error recording hint usage:', error);
-  //     }
-  //   } else {
-  //     setShowHintDetails(true);
-  //   }
-  // };
 
+  const fetchLockedHintDetails = async (hintId) => {
+    try {
+      const response = await fetch(`http://localhost:80/api/hints/locked/hints/${hintId}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+  
+      if (data.length > 0) {
+        return data[0]; // Return the full hint object
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching hint details:', error);
+      return null;
+    }
+  };
+  
+  
+  
+ 
 
   const confirmUnlockHint = async () => {
     if (!selectedHint) return;
-
+  
     setShowWarning(false);
-    if (!usedHints.includes(selectedHint._id)) {
-      setUsedHints(prevHints => [...prevHints, selectedHint._id]);
-      setUpdatedValue(prevValue => prevValue - selectedHint.cost);
+  
+    const hintDetails = await fetchLockedHintDetails(selectedHint); // Await for the hint details
+    
+    if (!hintDetails) return; // If no details are returned, exit the function
+    
+    setSelectedHint(hintDetails); // Set the selected hint to the full hint object
+  
+    if (!usedHints.includes(hintDetails._id)) { // Use hintDetails._id for the check
+      setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Use hintDetails._id
+      setUpdatedValue(prevValue => prevValue - hintDetails.cost); // Use hintDetails.cost
       setShowHintDetails(true);
-
+  
       try {
-        await fetch(`http://localhost:80/api/challenges/use-hint`, {
+        await fetch(`http://localhost:80/api/hints/use-hint`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -169,7 +164,7 @@ const Modal = ({
           },
           body: JSON.stringify({
             challengeId: challenge._id,
-            hintId: selectedHint._id,
+            hintId: hintDetails._id, // Use hintDetails._id
           }),
         });
       } catch (error) {
@@ -179,9 +174,9 @@ const Modal = ({
       setShowHintDetails(true);
     }
   };
+  
 
-  
-  
+ 
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -348,22 +343,31 @@ const Modal = ({
               <h2 className="text-2xl font-bold mx-auto">Hints</h2>
               <button onClick={() => setHintsModalOpen(false)} className="ml-4">&times;</button>
             </div>
-            <ul className="mt-4">
-              {hints.length > 0 ? (
-                hints.map((hint, index) => (
-                  <li key={index}>
-                    <button
-                      onClick={() => fetchHintDetails(hint)}
-                      className="text-blue-500 hover:underline"
-                    >
-                      Hint {index + 1}
-                    </button>
-                  </li>
-                ))
-              ) : (
-                <p>No hints available</p>
-              )}
-            </ul>
+           
+<ul className="mt-4">
+  {hints.length > 0 ? (
+    hints.map((hint, index) => (
+      <li key={index}>
+        <button
+          onClick={() => {
+            if (usedHints.includes(hint)) {
+              fetchHintDetails(hint);
+            } else {
+              setSelectedHint(hint);
+              setShowWarning(true);
+            }
+          }}
+          className="text-blue-500 hover:underline"
+        >
+          Hint {index + 1}
+        </button>
+      </li>
+    ))
+  ) : (
+    <p>No hints available</p>
+  )}
+</ul>
+
 
             {selectedHint && showHintDetails && (
               <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-white">
@@ -375,7 +379,7 @@ const Modal = ({
 
             {selectedHint && showWarning && !usedHints.includes(selectedHint._id) && (
               <div className="mt-4 p-4 border border-yellow-500 rounded-lg bg-yellow-100">
-                <p className="text-yellow-800">Unlocking this hint will deduct {selectedHint.cost} from your score. Proceed?</p>
+                <p className="text-yellow-800">Unlocking this hint will deduct cost from your score. Proceed?</p>
                 <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2" onClick={confirmUnlockHint}>Proceed</button>
                 <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" onClick={() => setShowWarning(false)}>Cancel</button>
               </div>
