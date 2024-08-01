@@ -103,7 +103,7 @@ const UserChallengePage = () => {
           setTimeout(closeModal, 2000); // Close the modal after a delay
         } else {
           setAttempts(prev => prev + 1);
-          if (attempts + 1 >= 3) {
+          if (attempts + 1 >= selectedChallenge.max_attempts) {
             setFeedback('No more attempts left');
             setTimeout(closeModal, 2000); // Close the modal after a delay
           } else {
