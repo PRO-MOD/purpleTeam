@@ -492,8 +492,11 @@ router.put('/users/:challengeId/edit/:index', async (req, res) => {
 
 router.post('/verify-answer', fetchuser, async (req, res) => {
   const { challengeId, answer, updatedValue } = req.body;
+<<<<<<< HEAD
+=======
  console.log(updatedValue);
 
+>>>>>>> 96cfeb7e9956ce622f4cff22da410bf47da6353f
 
   try {
     const challenge = await Challenge.findById(challengeId);
@@ -501,18 +504,44 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       return res.status(404).json({ message: 'Challenge not found' });
     }
 
-    const isCorrectAnswer = (answer, flags, flagData) => {
-      for (let i = 0; i < flags.length; i++) {
-        if (flagData[i] === 'case_sensitive') {
-          if (answer.trim() === flags[i].trim()) {
-            return true;
-          }
-        } else {
-          if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
-            return true;
+    const userId = req.user.id;
+
+    if (challenge.type === 'dynamic') {
+      // Dynamic flag verification
+      const dynamicFlags = await DynamicFlag.findOne({ challengeId, 'flags.userId': userId });
+
+      if (!dynamicFlags) {
+        return res.status(404).json({ message: 'Dynamic flag not found for this user' });
+      }
+
+      // Verify the user's dynamic flag
+      const userFlag = dynamicFlags.flags.find(flag => flag.userId.toString() === userId);
+      if (userFlag && userFlag.flag === answer.trim()) {
+        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res);
+      }
+    } else {
+      // Regular flag verification
+      const isCorrectAnswer = (answer, flags, flagData) => {
+        for (let i = 0; i < flags.length; i++) {
+          if (flagData[i] === 'case_sensitive') {
+            if (answer.trim() === flags[i].trim()) {
+              return true;
+            }
+          } else {
+            if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
+              return true;
+            }
           }
         }
+        return false;
+      };
+
+      const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
+      if (isCorrect) {
+        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res);
       }
+<<<<<<< HEAD
+=======
       return false;
     };
 
@@ -550,14 +579,53 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       }
 
       return res.json({ correct: isCorrect, newScore: userScore.score, message: 'Challenge already solved' });
+>>>>>>> 96cfeb7e9956ce622f4cff22da410bf47da6353f
     }
 
-    res.json({ correct: isCorrect });
+    res.json({ correct: false });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// Handle correct answer logic
+const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, res) => {
+  try {
+    let userScore = await score.findOne({ user: userId });
+
+    if (!userScore) {
+      return res.status(404).json({ message: 'User score not found' });
+    }
+
+    // Check if the challenge has already been solved by the user
+    const challengeSolved = await ChallengeSolve.findOne({ userId, challenge_id: challengeId });
+
+    if (!challengeSolved) {
+      // Update user score
+      userScore.score += updatedValue;
+      await userScore.save();
+
+      // Save challenge solve record
+      const newChallengeSolve = new ChallengeSolve({
+        userId,
+        challenge_id: challengeId,
+        challenge_name: challengeName,
+        date: new Date(),
+      });
+
+      await newChallengeSolve.save();
+
+      return res.json({ correct: true, newScore: userScore.score });
+    }
+
+    return res.json({ correct: true, newScore: userScore.score, message: 'Challenge already solved' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 
 router.get('/solved',fetchuser, async (req, res) => {

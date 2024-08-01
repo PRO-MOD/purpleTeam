@@ -8,8 +8,8 @@ const ChallengeButton = ({ challenge, onClick, solved }) => {
       <button
         onClick={() => onClick(challenge)}
         className={`${
-          solved ? 'bg-green-500' : 'bg-gray-800'
-        } text-white text-lg font-semibold py-6 px-12 rounded-lg shadow-lg w-full hover:bg-gray-700 transition duration-300`}
+          solved ? 'bg-green-500  hover:bg-green-400' : 'bg-gray-800 hover:bg-gray-700'
+        } text-white text-lg font-semibold py-6 px-12 rounded-lg shadow-lg w-full transition duration-300`}
       >
         {challenge.name}
         <div className="text-xl mt-2">{challenge.value}</div>

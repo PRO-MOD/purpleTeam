@@ -75,7 +75,7 @@ const UserChallengePage = () => {
   const handleSubmit = async () => {
     if (selectedChallenge.type === 'manual_verification') {
       setFeedback('Your response is submitted for Review!');
-    } else if (selectedChallenge.type === 'code' || selectedChallenge.type === 'standard' || selectedChallenge.type === 'multiple_choice') {
+    } else if (selectedChallenge.type === 'code' || selectedChallenge.type === 'standard' || selectedChallenge.type === 'multiple_choice' || selectedChallenge.type === 'dynamic') {
       try {
 
         const response = await fetch('http://localhost/api/challenges/verify-answer', {

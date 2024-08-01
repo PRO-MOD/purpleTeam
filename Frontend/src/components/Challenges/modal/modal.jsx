@@ -213,7 +213,7 @@ const Modal = ({
   );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-full w-full md:max-w-3xl overflow-y-auto">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold mx-auto">{challenge.name}</h2>
@@ -248,7 +248,7 @@ const Modal = ({
                   </div>
                 ))}
               </div>
-            ) : challenge.type === 'standard' || challenge.type === 'manual_verification' ? (
+            ) : challenge.type === 'standard' || challenge.type === 'manual_verification' || challenge.type === 'dynamic' ? (
               <div className="mt-4">
                 <textarea
                   className="w-full p-2 border border-gray-300 rounded"
