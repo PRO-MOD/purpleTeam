@@ -492,11 +492,6 @@ router.put('/users/:challengeId/edit/:index', async (req, res) => {
 
 router.post('/verify-answer', fetchuser, async (req, res) => {
   const { challengeId, answer, updatedValue } = req.body;
-<<<<<<< HEAD
-=======
- console.log(updatedValue);
-
->>>>>>> 96cfeb7e9956ce622f4cff22da410bf47da6353f
 
   try {
     const challenge = await Challenge.findById(challengeId);
@@ -505,6 +500,18 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
     }
 
     const userId = req.user.id;
+    const isCorrectAnswer = (answer, flags, flagData) => {
+      for (let i = 0; i < flags.length; i++) {
+        if (flagData[i] === 'case_sensitive') {
+          if (answer.trim() === flags[i].trim()) {
+            return true;
+          }
+        } else if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
+            return true;
+        }
+      }
+      return false;
+    };
 
     if (challenge.type === 'dynamic') {
       // Dynamic flag verification
@@ -521,28 +528,11 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       }
     } else {
       // Regular flag verification
-      const isCorrectAnswer = (answer, flags, flagData) => {
-        for (let i = 0; i < flags.length; i++) {
-          if (flagData[i] === 'case_sensitive') {
-            if (answer.trim() === flags[i].trim()) {
-              return true;
-            }
-          } else {
-            if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
-              return true;
-            }
-          }
-        }
-        return false;
-      };
-
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
       if (isCorrect) {
         return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res);
       }
-<<<<<<< HEAD
-=======
-      return false;
+      res.json({ correct: false });
     };
 
     const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
@@ -579,7 +569,6 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       }
 
       return res.json({ correct: isCorrect, newScore: userScore.score, message: 'Challenge already solved' });
->>>>>>> 96cfeb7e9956ce622f4cff22da410bf47da6353f
     }
 
     res.json({ correct: false });

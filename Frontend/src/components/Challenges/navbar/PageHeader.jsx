@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-const PageHeader = ({ pageTitle, route, challengeDetails }) => {
+const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails }) => {
   const location = useLocation();
   const pathName = location.pathname;
 
@@ -20,13 +20,17 @@ const PageHeader = ({ pageTitle, route, challengeDetails }) => {
             <p className="text-3xl font-semibold">{challengeDetails.name}</p>
             <p className="text-2xl font-medium text-gray-600">{challengeDetails.category}</p>
             <p className="text-2xl font-medium text-gray-600">{challengeDetails.type}</p>
-            <p className={`text-md text-white px-2 rounded-md ${challengeDetails.state === 'hidden' ? "bg-red-500": "bg-green-500"}`}>{challengeDetails.state.charAt(0).toUpperCase() + challengeDetails.state.slice(1)}</p>
-            <p className="text-2xl ">{challengeDetails.value} points</p>
+            {challengeDetails.state && (
+              <p className={`text-md text-white px-2 rounded-md ${challengeDetails.state === 'hidden' ? "bg-red-500" : "bg-green-500"}`}>
+                {challengeDetails.state.charAt(0).toUpperCase() + challengeDetails.state.slice(1)}
+              </p>
+            )}
+            <p className="text-2xl ">{challengeDetails.value}</p>
           </div>
         )}
-        {pathName === '/admin/challenges' && (
+        {pathName === checkRoute && (
           <Link to={route}>
-            <FontAwesomeIcon icon={faPlus} className='bg-gray-500 ms-4 p-4 rounded-full text-white cursor-pointer font-extrabold'/>
+            <FontAwesomeIcon icon={faPlus} className='bg-gray-500 ms-4 p-4 rounded-full text-white cursor-pointer font-extrabold' />
           </Link>
         )}
       </div>

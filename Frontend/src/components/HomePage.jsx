@@ -29,6 +29,10 @@ import LoginPage from './Challenges/Login/loginPage';
 import UserChallengePage from './Challenges/UserChallenges/userChallengesPage';
 import ChallengeDetailsPage from './Challenges/challenges/ChallengeDetails/ChallengeDetails';
 
+// import reports component
+import MainReportPage from './Reports/MainReportPage';
+import CreateReport from './Reports/CreateReport';
+import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
 
 function HomePage() {
   const navigate = useNavigate();
@@ -92,6 +96,11 @@ function HomePage() {
             <Route exact path='/challenges/:id' element={<ChallengeDetailsPage />} />
             <Route exact path='/login' element={<LoginPage />} />
             <Route exact path='/challenges' element={<UserChallengePage />} />
+            {/* Reports Route */}
+            <Route exact path='/admin/report' element={<MainReportPage />} />
+            <Route exact path='/admin/report/create' element={<CreateReport />} />
+            <Route exact path='/admin/report/details/:id' element={<ReportDetails />} />
+
           </Routes>
         </div>
       </div>
