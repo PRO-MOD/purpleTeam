@@ -8,7 +8,7 @@ router.post('/add/:id', async (req, res) => {
   try {
     const reportId = req.params.id;
 
-    const { text, type, options, index } = req.body;
+    const { text, type, options, index, maxScore } = req.body;
 
     // Verify the report type exists
     const reportExists = await Report.findById(reportId);
@@ -23,6 +23,7 @@ router.post('/add/:id', async (req, res) => {
       options,
       report: reportId,
       index,
+      maxScore
     });
 
     // Save the question to the database
@@ -39,7 +40,7 @@ router.post('/add/:id', async (req, res) => {
 // PUT route to update a question
 router.put('/edit/:id', async (req, res) => {
   const { id } = req.params; // Get the question ID from the URL parameters
-  const { text, type, options, index } = req.body; // Get the updated data from the request body
+  const { text, type, options, index, maxScore } = req.body; // Get the updated data from the request body
 
   try {
     // Find the question by ID and update it with the new data
@@ -49,7 +50,8 @@ router.put('/edit/:id', async (req, res) => {
         text,
         type,
         options,
-        index
+        index,
+        maxScore
       },
       { new: true } // Return the updated document
     );

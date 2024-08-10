@@ -6,6 +6,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
     const [type, setType] = useState(existingQuestion ? existingQuestion.type : "input");
     const [options, setOptions] = useState(existingQuestion ? existingQuestion.options.join(", ") : "");
     const [index, setIndex] = useState(existingQuestion ? existingQuestion.index : 0);
+    const [maxScore, setMaxScore] = useState(existingQuestion ? existingQuestion.maxScore : 0);
     const [message, setMessage] = useState("");
 
     useEffect(() => {
@@ -14,6 +15,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
             setType(existingQuestion.type);
             setOptions(existingQuestion.options.join(", "));
             setIndex(existingQuestion.index);
+            setMaxScore(existingQuestion.maxScore);
         }
     }, [existingQuestion]);
 
@@ -26,6 +28,8 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
             type,
             options: options.split(",").map((option) => option.trim()), // Split options into an array
             index,
+            maxScore,
+            report: reportId, // Ensure report ID is included
         };
 
         try {
@@ -52,6 +56,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
                     setType("input");
                     setOptions("");
                     setIndex(0);
+                    setMaxScore(0);
                 }
             } else {
                 setMessage(`Failed to ${existingQuestion ? "update" : "create"} question`);
@@ -94,7 +99,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
                     </select>
                 </div>
                 <InputField
-                    label="Options: "
+                    label="Options"
                     description="(comma-separated)"
                     type="text"
                     id="options"
@@ -107,8 +112,15 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
                     type="number"
                     id="index"
                     value={index}
-                    onChange={(e) => setIndex(e.target.value)}
+                    onChange={(e) => setIndex(Number(e.target.value))}
                     required
+                />
+                <InputField
+                    label="Max Score"
+                    type="number"
+                    id="maxScore"
+                    value={maxScore}
+                    onChange={(e) => setMaxScore(Number(e.target.value))}
                 />
                 <div className="flex justify-end space-x-4 mt-10">
                     <button

@@ -2,9 +2,8 @@ import React from 'react';
 
 // import components
 import Questions from './Content/Question/Questions';
+import ConfigMain from './Content/Config/ConfigMain';
 
-// const Questions = () => <div>Questions Content</div>;
-const Config = () => <div>Config Content</div>;
 const Stats = () => <div>Stats Content</div>;
 
 const Content = ({ activeTab, reportId }) => {
@@ -13,9 +12,9 @@ const Content = ({ activeTab, reportId }) => {
       case 'Questions':
         return <Questions reportId={reportId}/>;
       case 'Config':
-        return <Config challengeId={reportId}/>;
+        return <ConfigMain reportId={reportId}/>;
       case 'Stats':
-        return <Stats />;
+        return <Stats />
       default:
         return null;
     }
