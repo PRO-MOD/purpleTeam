@@ -96,7 +96,7 @@ const Files = ({ challengeId }) => {
             {files.map((file, index) => (
               <li key={index} className="flex justify-between items-center">
                 <a
-                  href={`/uploads/${file}`}
+                  href={`http://localhost/uploads/CTFdChallenges/${file}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"

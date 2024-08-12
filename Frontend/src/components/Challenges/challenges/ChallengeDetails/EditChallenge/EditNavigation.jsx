@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 
-const EditNavigation = ({activeTab, setActiveTab}) => {
+const EditNavigation = ({activeTab, setActiveTab, tabs}) => {
   // const [activeTab, setActiveTab] = useState('Files');
-
-  const tabs = ['Files', 'Flags', 'Topics', 'Tags', 'Hints', 'Requirements', 'Next', 'Users'];
 
   return (
     <div className="border-b border-indigo-200 m-8">

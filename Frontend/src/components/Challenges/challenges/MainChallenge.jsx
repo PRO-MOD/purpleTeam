@@ -12,7 +12,7 @@ import AllChallenges from './AllChallenges'
 const MainChallenge = () => {
   return (
     <>
-      <PageHeader pageTitle="Challenges" route="/admin/challenge/create"/>
+      <PageHeader pageTitle="Challenges" route="/admin/challenge/create" checkRoute='/admin/challenges'/>
       <AllChallenges />
     </>
   )

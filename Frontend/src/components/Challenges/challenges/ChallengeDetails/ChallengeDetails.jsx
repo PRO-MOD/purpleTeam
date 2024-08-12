@@ -27,6 +27,8 @@ const ChallengeDetailsPage = () => {
     return <div>Loading...</div>;
   }
 
+  const tabs = ['Files', 'Flags', 'Topics', 'Tags', 'Hints', 'Requirements', 'Next', 'Users'];
+
   return (
     <div className="w-full">
       <PageHeader
@@ -35,12 +37,12 @@ const ChallengeDetailsPage = () => {
           category: challenge.category,
           type: challenge.type,
           state: challenge.state,
-          value: challenge.value
+          value: `${challenge.value} points`
         }}
       />
       <div className="flex flex-row">
         <div className="w-1/2 flex flex-col">
-          <EditNavigation activeTab={activeTab} setActiveTab={setActiveTab}/>
+          <EditNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
           <div className="m-8">
             <Content activeTab={activeTab} challengeId={id} />
           </div>

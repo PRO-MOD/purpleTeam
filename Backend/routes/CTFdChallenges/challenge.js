@@ -67,7 +67,14 @@ router.put('/edit/:id', async (req, res) => {
 });
 
 // Multer configuration
-const upload = require('../../utils/CTFdChallenges/multerConfig');
+const createUploadMiddleware = require('../../utils/CTFdChallenges/multerConfig');
+// Define the upload path
+const uploadPath = path.join(__dirname, '../../uploads/CTFdChallenges');
+
+// Create multer upload middleware with dynamic path
+const upload = createUploadMiddleware(uploadPath);
+
+// const upload = require('../../utils/CTFdChallenges/multerConfig');
 // import generateUniqueFlag function
 const generateUniqueFlag = require('../../utils/CTFdChallenges/generateUniqueFlag');
 
@@ -275,8 +282,8 @@ router.delete('/deleteChallenges', async (req, res) => {
       await challenge.save();
   
       // Delete the file from the file system
-      const filePath = path.join(__dirname, '../uploads', req.params.filename);
-    //   console.log(filePath);
+      const filePath = path.join(__dirname, '../../uploads/CTFdChallenges/', req.params.filename);
+      // console.log(filePath);
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error('Error deleting file from filesystem:', err);
@@ -571,6 +578,18 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
     }
 
     const userId = req.user.id;
+    const isCorrectAnswer = (answer, flags, flagData) => {
+      for (let i = 0; i < flags.length; i++) {
+        if (flagData[i] === 'case_sensitive') {
+          if (answer.trim() === flags[i].trim()) {
+            return true;
+          }
+        } else if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
+            return true;
+        }
+      }
+      return false;
+    };
 
     if (challenge.type === 'dynamic') {
       // Dynamic flag verification
@@ -590,21 +609,6 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       }
     } else {
       // Regular flag verification
-      const isCorrectAnswer = (answer, flags, flagData) => {
-        for (let i = 0; i < flags.length; i++) {
-          if (flagData[i] === 'case_sensitive') {
-            if (answer.trim() === flags[i].trim()) {
-              return true;
-            }
-          } else {
-            if (answer.trim().toLowerCase() === flags[i].trim().toLowerCase()) {
-              return true;
-            }
-          }
-        }
-        return false;
-      };
-
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
       if (isCorrect) {
         return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res, answer);

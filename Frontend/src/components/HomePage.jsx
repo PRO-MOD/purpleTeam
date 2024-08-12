@@ -31,6 +31,10 @@ import ChallengeDetailsPage from './Challenges/challenges/ChallengeDetails/Chall
 import SubmissionTable from './Challenges/Submissions/submission';
 import Configuration from './Config/config';
 
+// import reports component
+import MainReportPage from './Reports/MainReportPage';
+import CreateReport from './Reports/CreateReport';
+import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
 
 function HomePage() {
   const navigate = useNavigate();

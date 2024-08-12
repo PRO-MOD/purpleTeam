@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import InfoTable from '../challenges/Partials/InfoTable';
 
 const AllChallenges = () => {
   const [challenges, setChallenges] = useState([]);
   const [selectedChallenges, setSelectedChallenges] = useState([]);
   const [searchField, setSearchField] = useState('name');
   const [searchQuery, setSearchQuery] = useState('');
-  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,9 +17,6 @@ const AllChallenges = () => {
         const response = await fetch('http://localhost:80/api/challenges/toDisplayAllChallenges');
         const data = await response.json();
         setChallenges(data);
-
-        const uniqueCategories = [...new Set(data.map(challenge => challenge.category))];
-        setCategories(uniqueCategories);
       } catch (error) {
         console.error('Error fetching challenges:', error);
       }
@@ -64,17 +61,14 @@ const AllChallenges = () => {
     const aValue = a[searchField];
     const bValue = b[searchField];
 
-    // Handle sorting by category (alphabetically)
     if (searchField === 'category') {
       return aValue.localeCompare(bValue);
     }
 
-    // Handle sorting by numeric fields (value)
     if (searchField === 'value') {
       return aValue - bValue;
     }
 
-    // Default to sorting by string fields (name, type, state)
     return aValue.localeCompare(bValue);
   });
 
@@ -82,17 +76,39 @@ const AllChallenges = () => {
     if (searchQuery === '') return true;
     return String(challenge[searchField]).toLowerCase().includes(searchQuery.toLowerCase());
   });
-  
-  function handleDetailsClick(challengeId, event) {
+
+  const handleDetailsClick = (challengeId, event) => {
     if (!event.target.closest('input[type="checkbox"]')) {
       navigate(`/challenges/${challengeId}`);
     }
-  }
+  };
+
+  const handleSelectAllChallenges = () => {
+    if (selectedChallenges.length === challenges.length) {
+      setSelectedChallenges([]);
+    } else {
+      setSelectedChallenges(challenges.map(challenge => challenge._id));
+    }
+  };
+
+  const handleAddChallenges = () => {
+    navigate('/admin/challenge/create');
+  };
+
+  const columns = [
+    { header: 'ID', accessor: '_id' },
+    { header: 'Name', accessor: 'name' },
+    { header: 'Value', accessor: 'value' },
+    { header: 'Category', accessor: 'category' },
+    { header: 'Type', accessor: 'type' },
+    { header: 'State', accessor: 'state' },
+  ];
+
   return (
     <div className="container mx-auto p-4 my-8 w-full">
       <div className="mb-4 mx-auto">
         <form className="flex flex-wrap justify-center gap-4">
-          <div className="">
+          <div>
             <select
               id="field"
               value={searchField}
@@ -121,48 +137,24 @@ const AllChallenges = () => {
       </div>
       <hr className="mx-8 my-4 " />
 
-      <div className='mb-8 flex flex-row justify-end h-[20px]'>
-        {selectedChallenges.length > 0 && (
-          <FontAwesomeIcon icon={faTrashCan} className='bg-red-400 text-white p-2 rounded-sm me-8' onClick={handleDeleteChallenges} />
-        )}
-      </div>
+      {challenges.length <= 0 && (
+        <div className="mb-8 flex flex-row justify-center items-center text-gray-700">
+          <span onClick={handleAddChallenges} className="cursor-pointer">
+            Add Challenges to View
+            <FontAwesomeIcon icon={faPlusCircle} className="mx-2" />
+          </span>
+        </div>
+      )}
 
-      <table className="text-sm text-left text-gray-500 dark:text-gray-400 w-[90%] mx-auto">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th className="py-2 px-4 border-b">ID</th>
-            <th className="py-2 px-4 border-b">Name</th>
-            <th className="py-2 px-4 border-b">Value</th>
-            <th className="py-2 px-4 border-b">Category</th>
-            <th className="py-2 px-4 border-b">Type</th>
-            <th className="py-2 px-4 border-b">State</th>
-            <th className="py-2 px-4 border-b"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredChallenges.map((challenge, index) => (
-            <tr
-              className="odd:bg-white even:bg-gray-50 dark:bg-gray-900 dark:even:bg-gray-800 border-b dark:border-gray-700 cursor-pointer"
-              key={challenge._id}
-              onClick={(event) => handleDetailsClick(challenge._id, event)} // Redirect on row click
-            >
-              <td className="py-2 px-4 border-b">{index + 1}</td>
-              <td className="py-2 px-4 border-b">{challenge.name}</td>
-              <td className="py-2 px-4 border-b">{challenge.value}</td>
-              <td className="py-2 px-4 border-b">{challenge.category}</td>
-              <td className="py-2 px-4 border-b">{challenge.type}</td>
-              <td className="py-2 px-4 border-b"><span className={`px-2 text-center rounded-sm text-white font-semibold ${challenge.state == "hidden" ? "bg-red-500" : "bg-green-500"}`}>{challenge.state.charAt(0).toUpperCase() + challenge.state.slice(1)}</span></td>
-              <td className="py-2 px-4 border-b">
-                <input
-                  type="checkbox"
-                  checked={selectedChallenges.includes(challenge._id)}
-                  onChange={() => handleSelectChallenge(challenge._id)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <InfoTable
+        data={filteredChallenges}
+        columns={columns}
+        onRowClick={handleDetailsClick}
+        selectedItems={selectedChallenges}
+        onItemSelect={handleSelectChallenge}
+        onSelectAll={handleSelectAllChallenges}
+        onDelete={handleDeleteChallenges}
+      />
     </div>
   );
 };

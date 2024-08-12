@@ -94,7 +94,7 @@ app.use('/api/reports/IRREP', require('./routes/report.js'))
 app.use('/api/reports/Notification', require('./routes/notification.js'))
 app.use('/api/reports/SITREP', require('./routes/IncidentReport.js'))
 
-app.use('/api/reports', require('./routes/report.js'))
+// app.use('/api/reports', require('./routes/report.js'))
 app.use('/api/updates', require('./routes/NewReportUpdate.js'))
 
 app.use('/api/notes', require('./routes/notes.js'))
@@ -106,10 +106,16 @@ app.use('/api/chat', chatRouter)
 app.use('/api/challenges',require('./routes/CTFdChallenges/challenge.js'))
 app.use('/api/dynamicFlags',require('./routes/CTFdChallenges/DynamicFlags.js'))
 app.use('/api/hints',require('./routes/CTFdChallenges/Hint.js'))
-
 app.use('/api/user',require('./routes/CTFdChallenges/user.js'))
 app.use('/api/tags',  require('./routes/CTFdChallenges/tags'));
 app.use('/api/executecode',require('./routes/CTFdChallenges/runcode.js'))
+
+// routes for report handling (new logic)
+app.use('/api/reports',require('./routes/Report/report.js'))
+app.use('/api/questions',require('./routes/Report/questions.js'))
+app.use('/api/reports/headers', require('./routes/Report/Config/Header.js'));
+app.use('/api/reports/footers', require('./routes/Report/Config/Footer.js'));
+app.use('/api/reportConfig', require('./routes/Report/Config/ReportConfig.js'));
 
 // Define webhook endpoint
 app.post('/api/webhook', (req, res) => {
