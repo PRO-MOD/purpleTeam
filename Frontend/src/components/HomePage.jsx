@@ -20,7 +20,7 @@ import ProtectedRoute from './ProtectedRoute';
 import UserProgress from './UserProgress';
 import ChallengeSubmissions from './ChallengSubmissions';
 import Welcome from './WelcomePage';
-import NewReportSubmission from './NewReportUpdates'
+import NewReportSubmission from './NewReportUpdates';
 
 // import of components
 import MainChallenge from './Challenges/challenges/MainChallenge'
@@ -28,6 +28,8 @@ import CreateChallenge from './Challenges/challenges/CreateChallenge';
 import LoginPage from './Challenges/Login/loginPage';
 import UserChallengePage from './Challenges/UserChallenges/userChallengesPage';
 import ChallengeDetailsPage from './Challenges/challenges/ChallengeDetails/ChallengeDetails';
+import SubmissionTable from './Challenges/Submissions/submission';
+import Configuration from './Config/config';
 
 
 function HomePage() {
@@ -92,7 +94,10 @@ function HomePage() {
             <Route exact path='/challenges/:id' element={<ChallengeDetailsPage />} />
             <Route exact path='/login' element={<LoginPage />} />
             <Route exact path='/challenges' element={<UserChallengePage />} />
+            <Route exact path='/submissions' element={<SubmissionTable />} />
+            <Route exact path='/config' element={<Configuration />} />
           </Routes>
+          
         </div>
       </div>
       {/* </Router> */}
