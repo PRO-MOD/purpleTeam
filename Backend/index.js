@@ -113,6 +113,7 @@ app.use('/api/executecode',require('./routes/CTFdChallenges/runcode.js'))
 // routes for report handling (new logic)
 app.use('/api/reports',require('./routes/Report/report.js'))
 app.use('/api/questions',require('./routes/Report/questions.js'))
+app.use('/api/responses',require('./routes/Report/UserResponse.js'))
 app.use('/api/reports/headers', require('./routes/Report/Config/Header.js'));
 app.use('/api/reports/footers', require('./routes/Report/Config/Footer.js'));
 app.use('/api/reportConfig', require('./routes/Report/Config/ReportConfig.js'));

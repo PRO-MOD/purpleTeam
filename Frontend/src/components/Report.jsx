@@ -1,163 +1,104 @@
 
 
 
+
+
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Select from 'react-select';
+import { useNavigate, useParams } from 'react-router-dom';
+import InputField from './Challenges/challenges/Partials/InputFeild'; // Ensure this component is updated to handle different input types
 
 function Report() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    ID: '',
-    description: '',
-    threatLevel: '',
-    areasOfConcern: '',
-    sources: '',
-    indicatorsOfCompromise: '',
-    recentVulnerabilities: '',
-    patchStatus: '',
-    Status: '',
-    currentOperations: '',
-    pocScreenshots: [],
-    pdfName: '',
-    reportType: 'IRREP',
-    userId: '',
-    IDN: '',
-  descriptionN: '',
-  locationN: '',
-    // Make sure to provide a valid user ID here
-  });
+  const { reportId } = useParams(); // Get the report ID from the URL
+  const [questions, setQuestions] = useState([]);
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(''); // Error state
-  const [incidentData, setIncidentData] = useState(null);
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch questions: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setQuestions(data);
+
+        // Initialize formData with empty values for each question
+        const initialFormData = data.reduce((acc, question) => {
+          acc[question._id] = question.type === 'checkbox' ? [] : ''; // Handle checkbox separately
+          return acc;
+        }, {});
+        setFormData(initialFormData);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+        setError('Failed to fetch questions. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, [reportId, apiUrl]);
 
   const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'pocScreenshot') {
-      // If input is for photos, check if the number of photos exceeds 5
-      if (formData.pocScreenshots.length >= 5) {
-        alert("You can't add more than 5 photos");
-        return;
-      }
-      setFormData((prevData) => ({
-        ...prevData,
-        pocScreenshots: [...prevData.pocScreenshots, ...files],
-      }));
-    } else {
-      // Otherwise, update form data normally
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleSelectChange = async (selectedOption, actionMeta) => {
-    const { name } = actionMeta;
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: selectedOption.value,
+      [name]: value,
     }));
-
-    if (name === 'ID' && selectedOption) {
-      const transformedId = selectedOption.value.replace('IR', 'IN');
-      await fetchIncidentData(transformedId);
-    } else {
-      setIncidentData(null);
-    }
   };
 
-  // const fetchIncidentData = async (incidentId) => {
-  //   try {
-  //     setLoading(true);
-  //     setError('');
-  //     setIncidentData(null);
-  //     const response = await fetch(`${apiUrl}/api/reports/notification/${incidentId}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Auth-token': localStorage.getItem('Hactify-Auth-token'),
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(`Failed to fetch Notification Report data: ${response.status} ${response.statusText}`);
-  //     }
-
-  //     const data = await response.json();
-  //     setIncidentData(data);
-  //   } catch (error) {
-  //     console.error('Error fetching incident data:', error);
-  //     setError('Failed to fetch Notification Report data. Please try again.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  const fetchIncidentData = async (incidentId) => {
-    try {
-      setLoading(true);
-      setError('');
-      setIncidentData(null);
-      const response = await fetch(`${apiUrl}/api/reports/notification/${incidentId}`, {
-        method: 'GET',
-        headers: {
-          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to fetch Notification Report data: ${response.status} ${response.statusText}`);
+  const handleCheckboxChange = (questionId, option) => {
+    setFormData((prevData) => {
+      const selectedOptions = prevData[questionId] || [];
+      if (selectedOptions.includes(option)) {
+        return {
+          ...prevData,
+          [questionId]: selectedOptions.filter((opt) => opt !== option),
+        };
+      } else {
+        return {
+          ...prevData,
+          [questionId]: [...selectedOptions, option],
+        };
       }
-  
-      const data = await response.json();
-      setIncidentData(data);
-      setFormData((prevData) => ({
-        ...prevData,
-        IDN: data.ID,
-        descriptionN: data.description,
-        locationN: data.location,
-      }));
-    } catch (error) {
-      console.error('Error fetching incident data:', error);
-      setError('Failed to fetch Notification Report data. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    });
   };
-  
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true); // Set loading state to true
-      setError(''); // Clear previous errors
+      setLoading(true);
+      setError('');
 
-      const formDataToSend = new FormData(); // Create a FormData object
+      // Transform formData to match backend schema
+      const responses = Object.keys(formData).map(questionId => ({
+        questionId,
+        answer: formData[questionId],
+      }));
 
-      // Append all form data fields to the FormData object
-      Object.entries(formData).forEach(([key, value]) => {
-        // If the value is an array (e.g., pocScreenshots), append each item separately
-        if (Array.isArray(value)) {
-          value.forEach((item) => {
-            formDataToSend.append(key, item);
-          });
-        } else {
-          formDataToSend.append(key, value);
-        }
-      });
-
-      const response = await fetch(`${apiUrl}/api/reports/IRREP`, {
+      const response = await fetch(`${apiUrl}/api/responses/ans`, {
         method: 'POST',
-        body: formDataToSend, // Use FormData object instead of JSON.stringify(formData)
         headers: {
-          // Remove 'Content-Type' header since it's automatically set by FormData
-          'Auth-token': localStorage.getItem('Hactify-Auth-token')
+          'Content-Type': 'application/json',
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
         },
+        body: JSON.stringify({
+          reportId,
+          responses,
+        }),
       });
 
       if (!response.ok) {
@@ -169,215 +110,109 @@ function Report() {
       navigate('/');
     } catch (error) {
       console.error('Error submitting form:', error);
-      setError('Failed to submit form. Please try again.'); // Set error message
+      setError('Failed to submit form. Please try again.');
     } finally {
-      setLoading(false); // Set loading state to false regardless of success or failure
+      setLoading(false);
     }
   };
-  
-  const [submittedIds, setSubmittedIds] = useState([]);
 
-  useEffect(() => {
-    fetchSubmittedIds();
-  }, []);
-
-  const fetchSubmittedIds = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/reports/userSubmittedIds`, {
-        headers: {
-          'Content-Type': 'application/json',
-          "Auth-token": localStorage.getItem('Hactify-Auth-token')
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch submitted IDs');
-      }
-      const data = await response.json();
-      setSubmittedIds(data);
-    } catch (error) {
-      console.error('Error fetching submitted IDs:', error);
-      setError('Failed to fetch submitted IDs');
-    }
-  };
-  
-  // const incidentIdOptions = [
-  //   'IR-01-001', 'IR-01-006', 'IR-01-007', 'IR-01-008', 'IR-01-009',
-  //   'IR-01-010'
-  const incidentIdOptions = [
-    'IR-02-001','IR-02-008','IR-02-009','IR-02-05',
-    'IR-01-001', 
-    'IR-01-006', 'IR-01-007', 'IR-01-008', 'IR-01-009', 'IR-01-010',
-    'IR-03-001', 'IR-03-002', 'IR-03-003', 'IR-03-004', 'IR-03-005',
-    'IR-03-006',
-  ].map(id => ({
-    value: id,
-    label: id,
-  }));
-  
-  
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-3xl mb-8 text-center font-bold text-brown-650">IRREP Form</h2>
+      <h2 className="text-3xl mb-8 text-center font-bold text-brown-650">Report Form</h2>
       {error && <div className="text-red-500 mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
-
-        {/* Incident ID */}
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">Incident ID:<span className="text-red-500 ml-1">*</span></label>
-          <Select
-            name="ID"
-            options={incidentIdOptions}
-            value={incidentIdOptions.find(option => option.value === formData.ID)}
-            onChange={handleSelectChange}
-            // isClearable
-            required
-          />
-        </div>
-
-        {incidentData && (
-          <div className="mb-4">
-            <h3 className="text-xl mb-2 font-semibold text-gray-800">Incident Details:</h3>
-            {/* <p>ID:{incidentData.ID}</p>
-            <p>Description: {incidentData.description}</p>
-            <p>Location: {incidentData.location}</p> */}
-            <div>
-            <label className="block mb-1 text-gray-700">ID:</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="IDN" value={incidentData.ID} disabled />
-          </div>
-          <div>
-            <label className="block mb-1 text-gray-700">Description:</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="descriptionN" value={incidentData.description} disabled />
-          </div>
-          <div>
-            <label className="block mb-1 text-gray-700">Location:</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="locationN" value={incidentData.location} disabled />
-          </div>
-            
-          </div>
-        )}
-
-        {/* 1. Current Situation */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">1. Current Situation</h3>
-          {/* Description */}
-          <div>
-            <label className="block mb-1 text-gray-700">Description:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="description" value={formData.description} onChange={handleInputChange} required placeholder='Brief summary of the current situation' />
-          </div>
-
-          {/* Threat Level */}
-          {/* <div>
-            <label className="block mb-1 text-gray-700">Threat Level:<span className="text-red-500 ml-1">*</span></label>
-            <Select
-              name="threatLevel"
-              options={threatLevelOptions}
-              value={threatLevelOptions.find(option => option.value === formData.threatLevel)}
-              onChange={handleSelectChange}
-              // isClearable
-              required
-            />
-          </div> */}
-           <div>
-            <label className="block mb-1 text-gray-700">Threat Level:<span className="text-red-500 ml-1">*</span></label>
-            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="threatLevel" value={formData.threatLevel} onChange={handleInputChange} required>
-              <option value="">Select Threat Level</option>
-              <option value="Low">Low</option>
-              <option value="Guarded">Guarded</option>
-              <option value="Elevated">Elevated</option>
-              <option value="High">High</option>
-              <option value="Severe">Severe</option>
-            </select>
-          </div>
-
-          {/* Areas of Concern */}
-          <div>
-            <label className="block mb-1 text-gray-700">Areas of Concern:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="areasOfConcern" value={formData.areasOfConcern} onChange={handleInputChange} placeholder='List of current security concerns or vulnerabilities' />
-          </div>
-        </div>
-
-        {/* 2. Threat Intelligence */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">2. Threat Intelligence</h3>
-          {/* Sources */}
-          <div>
-            <label className="block mb-1 text-gray-700">Sources:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="sources" value={formData.sources} onChange={handleInputChange} placeholder='List of sources for threat intelligence' />
-          </div>
-
-          {/* Indicators of Compromise */}
-          <div>
-            <label className="block mb-1 text-gray-700">Indicators of Compromise:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="indicatorsOfCompromise" value={formData.indicatorsOfCompromise} onChange={handleInputChange} placeholder='List of relevant IOCs' />
-          </div>
-        </div>
-
-        {/* 3. Vulnerability Management */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">3. Vulnerability Management</h3>
-          {/* Recent Vulnerabilities */}
-          <div>
-            <label className="block mb-1 text-gray-700">Recent Vulnerabilities:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="recentVulnerabilities" value={formData.recentVulnerabilities} onChange={handleInputChange} required placeholder='Summary of recently discovered vulnerabilities' />
-          </div>
-
-          {/* Patch Status */}
-          <div>
-            <label className="block mb-1 text-gray-700">Patch Status:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="patchStatus" value={formData.patchStatus} onChange={handleInputChange} required placeholder='Overview of patching efforts and status' />
-          </div>
-
-          {/* Status */}
-          {/* <div className="mb-4">
-            <label className="block mb-1 text-gray-700">Status:<span className="text-red-500 ml-1">*</span></label>
-            <Select
-              name="Status"
-              options={statusOptions}
-              value={statusOptions.find(option => option.value === formData.Status)}
-              onChange={handleSelectChange}
-              // isClearable
-              required
-            />
-          </div> */}
-          <div className="mb-4">
-            <label className="block mb-1 text-gray-700">Status:<span className="text-red-500 ml-1">*</span></label>
-            <select className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="Status" value={formData.Status} onChange={handleInputChange} required>
-              <option value="">Select Status</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Not Identified">Not Identified</option>
-            </select>
-          </div>
-        </div>
-
-        {/* 4. Security Operations */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">4. Security Operations</h3>
-          {/* Current Operations */}
-          <div>
-            <label className="block mb-1 text-gray-700">Current Operations:<span className="text-red-500 ml-1">*</span></label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none  focus:border-brown-500" name="currentOperations" value={formData.currentOperations} onChange={handleInputChange} required placeholder='Overview of ongoing security operations or activities' />
-          </div>
-        </div>
-
-        {/* 7. Additional Notes (Optional) */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">7. Additional Notes</h3>
-          <div>
-            <label className="block mb-1 text-gray-700">Additional Notes (optional)</label>
-            <textarea className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" name="notes" value={formData.notes} onChange={handleInputChange} placeholder='Space for any additional comments or observations' />
-          </div>
-        </div>
-
-        {/* 8. POC (Screenshots) */}
-        <div>
-          <h3 className="text-xl mb-2 font-semibold text-gray-800">8. POC (Screenshots)</h3>
-          <div>
-            <label className="block mb-1 text-gray-700">Screenshots (up to 5):</label>
-            <input className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-brown-500" type="file" name="pocScreenshot" multiple  accept="image/*" onChange={handleInputChange} />
-          </div>
-        </div>
-
-        <button type="submit" className="w-full bg-brown-650  text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
+        {loading && <div>Loading questions...</div>}
+        {!loading && questions.map((question) => {
+          switch (question.type) {
+            case 'input':
+              return (
+                <InputField
+                  key={question._id}
+                  label={question.text}
+                  type="text"
+                  id={question._id}
+                  name={question._id}
+                  placeholder="Enter your answer"
+                  value={formData[question._id] || ''}
+                  onChange={handleInputChange}
+                />
+              );
+            case 'checkbox':
+              return (
+                <div key={question._id}>
+                  <label className="block text-gray-700">{question.text}:</label>
+                  {question.options.map((option) => (
+                    <div key={option} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={option}
+                        name={question._id}
+                        checked={(formData[question._id] || []).includes(option)}
+                        onChange={() => handleCheckboxChange(question._id, option)}
+                      />
+                      <label htmlFor={option} className="ml-2">{option}</label>
+                    </div>
+                  ))}
+                </div>
+              );
+            case 'dropdown':
+              return (
+                <div key={question._id}>
+                  <label className="block text-gray-700">{question.text}:</label>
+                  <select
+                    id={question._id}
+                    name={question._id}
+                    value={formData[question._id] || ''}
+                    onChange={handleInputChange}
+                    className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                  >
+                    <option value="">Select an option</option>
+                    {question.options.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            case 'textarea':
+              return (
+                <div key={question._id}>
+                  <label className="block text-gray-700">{question.text}:</label>
+                  <textarea
+                    id={question._id}
+                    name={question._id}
+                    value={formData[question._id] || ''}
+                    onChange={handleInputChange}
+                    placeholder="Enter your answer"
+                    className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                  />
+                </div>
+              );
+            case 'mcq':
+              return (
+                <div key={question._id}>
+                  <label className="block text-gray-700">{question.text}:</label>
+                  {question.options.map((option) => (
+                    <div key={option} className="flex items-center">
+                      <input
+                        type="radio"
+                        id={option}
+                        name={question._id}
+                        value={option}
+                        checked={formData[question._id] === option}
+                        onChange={handleInputChange}
+                      />
+                      <label htmlFor={option} className="ml-2">{option}</label>
+                    </div>
+                  ))}
+                </div>
+              );
+            default:
+              return null;
+          }
+        })}
+        <button type="submit" className="w-full bg-brown-650 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit'}
+        </button>
       </form>
     </div>
   );

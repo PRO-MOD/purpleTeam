@@ -35,6 +35,7 @@ import Configuration from './Config/config';
 import MainReportPage from './Reports/MainReportPage';
 import CreateReport from './Reports/CreateReport';
 import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
+import UserReports from './UserReports';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -83,11 +84,13 @@ function HomePage() {
             {/* <Route exact path='/scores1' element={<ProtectedRoute Component={ScorePage1}/>} /> */}
             <Route exact path='/UserHome' element={<UserHomePage />} />
             <Route exact path='/UserHome/report/SITREP' element={<IncidentReport />} />
-            <Route exact path='/UserHome/report/IRREP' element={<Report />} />
+            <Route exact path='/UserHome/report/:reportId' element={<Report />} />
             <Route exact path='/attacks' element={<ChallengeSubmissions />} />
             {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
             <Route exact path='/UserHome/report/notification' element={<Notification />} />
-            <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails} />} />
+            {/* <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails} />} /> */}
+            <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserReports} />} />
+
             <Route exact path="/notes" element={<Home showAlert={showAlert} />} />
             <Route exact path="/chat/*" element={<ChatMainPage />} />
             <Route exact path="/flag" element={<FetchEncryptedFlag />} />
@@ -100,6 +103,9 @@ function HomePage() {
             <Route exact path='/challenges' element={<UserChallengePage />} />
             <Route exact path='/submissions' element={<SubmissionTable />} />
             <Route exact path='/config' element={<Configuration />} />
+            <Route exact path='/admin/report' element={<MainReportPage />} />
+            <Route exact path='/admin/report/create' element={<CreateReport />} />
+            <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
           </Routes>
           
         </div>
