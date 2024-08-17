@@ -134,7 +134,7 @@ router.put('/update/:responseId', async (req, res) => {
 
     // Find the corresponding Score document by user reference
     const score = await Score.findOne({ user: response.userId });
-  
+  console.log(score.manualScore);
 
     if (score) {
       // Add finalScore from UserResponse to manualScore in Score
@@ -142,6 +142,7 @@ router.put('/update/:responseId', async (req, res) => {
 
       // Save the updated Score document
       await score.save();
+      console.log(score.manualScore);
       
     }
 

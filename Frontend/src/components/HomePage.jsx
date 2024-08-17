@@ -88,8 +88,8 @@ function HomePage() {
             <Route exact path='/attacks' element={<ChallengeSubmissions />} />
             {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
             <Route exact path='/UserHome/report/notification' element={<Notification />} />
-            {/* <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails} />} /> */}
-            <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserReports} />} />
+            <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails} />} />
+            {/* <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserReports} />} /> */}
 
             <Route exact path="/notes" element={<Home showAlert={showAlert} />} />
             <Route exact path="/chat/*" element={<ChatMainPage />} />
