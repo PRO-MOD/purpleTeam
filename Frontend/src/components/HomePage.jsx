@@ -20,7 +20,7 @@ import ProtectedRoute from './ProtectedRoute';
 import UserProgress from './UserProgress';
 import ChallengeSubmissions from './ChallengSubmissions';
 import Welcome from './WelcomePage';
-import NewReportSubmission from './NewReportUpdates'
+import NewReportSubmission from './NewReportUpdates';
 
 // import of components
 import MainChallenge from './Challenges/challenges/MainChallenge'
@@ -28,11 +28,14 @@ import CreateChallenge from './Challenges/challenges/CreateChallenge';
 import LoginPage from './Challenges/Login/loginPage';
 import UserChallengePage from './Challenges/UserChallenges/userChallengesPage';
 import ChallengeDetailsPage from './Challenges/challenges/ChallengeDetails/ChallengeDetails';
+import SubmissionTable from './Challenges/Submissions/submission';
+import Configuration from './Config/config';
 
 // import reports component
 import MainReportPage from './Reports/MainReportPage';
 import CreateReport from './Reports/CreateReport';
 import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
+import UserReports from './UserReports';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -81,11 +84,13 @@ function HomePage() {
             {/* <Route exact path='/scores1' element={<ProtectedRoute Component={ScorePage1}/>} /> */}
             <Route exact path='/UserHome' element={<UserHomePage />} />
             <Route exact path='/UserHome/report/SITREP' element={<IncidentReport />} />
-            <Route exact path='/UserHome/report/IRREP' element={<Report />} />
+            <Route exact path='/UserHome/report/:reportId' element={<Report />} />
             <Route exact path='/attacks' element={<ChallengeSubmissions />} />
             {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
             <Route exact path='/UserHome/report/notification' element={<Notification />} />
             <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails} />} />
+            {/* <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserReports} />} /> */}
+
             <Route exact path="/notes" element={<Home showAlert={showAlert} />} />
             <Route exact path="/chat/*" element={<ChatMainPage />} />
             <Route exact path="/flag" element={<FetchEncryptedFlag />} />
@@ -96,12 +101,13 @@ function HomePage() {
             <Route exact path='/challenges/:id' element={<ChallengeDetailsPage />} />
             <Route exact path='/login' element={<LoginPage />} />
             <Route exact path='/challenges' element={<UserChallengePage />} />
-            {/* Reports Route */}
+            <Route exact path='/submissions' element={<SubmissionTable />} />
+            <Route exact path='/config' element={<Configuration />} />
             <Route exact path='/admin/report' element={<MainReportPage />} />
             <Route exact path='/admin/report/create' element={<CreateReport />} />
-            <Route exact path='/admin/report/details/:id' element={<ReportDetails />} />
-
+            <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
           </Routes>
+          
         </div>
       </div>
       {/* </Router> */}

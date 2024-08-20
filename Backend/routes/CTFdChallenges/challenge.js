@@ -9,7 +9,9 @@ const score = require('../../models/score');
 const ChallengeSolve =require('../../models/ChallengeSolved');
 const DetailHint =require('../../models/CTFdChallenges/detailhint');
 const Hint = require('../../models/CTFdChallenges/Hint');
-const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag')
+const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag');
+const Submission =require('../../models/CTFdChallenges/Submission');
+const Logo=require('../../models/CTFdChallenges/Logo');
 
 
 
@@ -446,7 +448,8 @@ router.post('/users/:challengeId/add', async (req, res) => {
   }
 });
 
-// Delete user from a challenge
+
+
 router.delete('/users/:challengeId/delete/:userId', async (req, res) => {
   try {
     const { challengeId, userId } = req.params;
@@ -456,7 +459,14 @@ router.delete('/users/:challengeId/delete/:userId', async (req, res) => {
       return res.status(404).json({ error: 'Challenge not found' });
     }
 
-    challenge.user_ids = challenge.user_ids.filter(id => id.toString() !== userId);
+    // // Ensure userId is a valid ObjectId
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //   return res.status(400).json({ error: 'Invalid user ID' });
+    // }
+
+    // Filter out the user to be deleted
+    challenge.user_ids = challenge.user_ids.filter(id => id && id.toString() !== userId);
+
     await challenge.save();
 
     res.json({ message: 'User deleted successfully' });
@@ -465,6 +475,7 @@ router.delete('/users/:challengeId/delete/:userId', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete user', message: error.message });
   }
 });
+
 
 // Edit user in a challenge (replace old user with new user)
 router.put('/users/:challengeId/edit/:index', async (req, res) => {
@@ -497,8 +508,68 @@ router.put('/users/:challengeId/edit/:index', async (req, res) => {
 });
 
 
+
 router.post('/verify-answer', fetchuser, async (req, res) => {
+
+
+
+  const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, res) => {
+    try {
+      let userScore = await score.findOne({ user: userId });
+  
+      if (!userScore) {
+        return res.status(404).json({ message: 'User score not found' });
+      }
+  
+    
+      
+        // Update user score
+        userScore.score += updatedValue;
+        await userScore.save();
+  
+        const newSubmission = new Submission({
+          userId: userId,
+          challengeId: challengeId,
+          answer: answer,
+          isCorrect: true,
+          date: new Date(),
+        });
+    
+        await newSubmission.save();
+  
+        
+  
+      return res.json({ correct: true, newScore: userScore.score, message: 'Challenge already solved' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+
+  
+    const handleIncorrectAnswer = async (userId, challengeId, answer, res) => {
+      try {
+        // Save submission
+        const newSubmission = new Submission({
+          userId: userId ,
+          challengeId:challengeId ,
+          answer: answer,
+          isCorrect: false,
+          date: new Date(),
+        });
+  
+        await newSubmission.save();
+
+        return res.json({ correct: false });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
   const { challengeId, answer, updatedValue } = req.body;
+
+
 
   try {
     const challenge = await Challenge.findById(challengeId);
@@ -531,109 +602,109 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       // Verify the user's dynamic flag
       const userFlag = dynamicFlags.flags.find(flag => flag.userId.toString() === userId);
       if (userFlag && userFlag.flag === answer.trim()) {
-        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res);
+        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res, answer);
+      }
+      else{
+        return handleIncorrectAnswer(userId, challengeId, answer, res);
       }
     } else {
       // Regular flag verification
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
       if (isCorrect) {
-        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res);
-      }
-      res.json({ correct: false });
-    };
-
-    const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
-
-    if (isCorrect) {
-      const userId = req.user.id;
-      let userScore = await score.findOne({ user: userId });
-
-      if (!userScore) {
-        return res.status(404).json({ message: 'User score not found' });
+        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res, answer);
       }
 
-      // Check if the challenge has already been solved by the user
-      const challengeSolved = await ChallengeSolve.findOne({ userId, challenge_id: challengeId });
-
-      if (!challengeSolved) {
-        // Update user score
-        userScore.score += updatedValue;
-        await userScore.save();
-         console.log(userScore.score);
-
-        // Save challenge solve record
-        const newChallengeSolve = new ChallengeSolve({
-          userId,
-          challenge_id: challengeId,
-          challenge_name: challenge.name,
-          date: new Date(),
-        });
-
-        await newChallengeSolve.save();
-       
-
-        return res.json({ correct: isCorrect, newScore: userScore.score });
+      else {
+        return handleIncorrectAnswer(userId, challengeId, answer, res);
       }
-
-      return res.json({ correct: isCorrect, newScore: userScore.score, message: 'Challenge already solved' });
     }
 
-    res.json({ correct: false });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Handle correct answer logic
-const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, res) => {
-  try {
-    let userScore = await score.findOne({ user: userId });
 
-    if (!userScore) {
-      return res.status(404).json({ message: 'User score not found' });
-    }
 
-    // Check if the challenge has already been solved by the user
-    const challengeSolved = await ChallengeSolve.findOne({ userId, challenge_id: challengeId });
-
-    if (!challengeSolved) {
-      // Update user score
-      userScore.score += updatedValue;
-      await userScore.save();
-
-      // Save challenge solve record
-      const newChallengeSolve = new ChallengeSolve({
-        userId,
-        challenge_id: challengeId,
-        challenge_name: challengeName,
-        date: new Date(),
-      });
-
-      await newChallengeSolve.save();
-
-      return res.json({ correct: true, newScore: userScore.score });
-    }
-
-    return res.json({ correct: true, newScore: userScore.score, message: 'Challenge already solved' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
 
 
 
 router.get('/solved',fetchuser, async (req, res) => {
   try {
     const  userId = req.user.id;
-    const solvedChallenges = await ChallengeSolve.find({ userId }).select('challenge_id');
+    // const solvedChallenges = await Submission.find({ userId, isCorrect:true}).select('challengeId');
+    const solvedChallenges = await Submission.find({ userId, isCorrect: true }).select('challengeId');
     res.json(solvedChallenges);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
+
+router.get('/submissions', async (req, res) => {
+  try {
+    // const challengeId = req.params.challengeId;
+    const incorrectSubmissions = await Submission.find()
+      .populate('userId', 'name')
+      .populate('challengeId', 'name')
+      .select('userId challengeId answer date isCorrect');
+
+    res.json(incorrectSubmissions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// Add a new route to delete submissions
+router.delete('/submissions/delete', async (req, res) => {
+  try {
+    const { submissionIds } = req.body;
+    await Submission.deleteMany({ _id: { $in: submissionIds } });
+    res.json({ message: 'Submissions deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
+router.post('/updateLogo', upload.single('logo'), async (req, res) => {
+  try {
+    const { title } = req.body;
+    const url = req.file ? `/uploads/CTFdChallenges/${req.file.filename}` : null;
+
+    // Create a new logo entry
+    const newLogo = new Logo({ url, title });
+    await newLogo.save();
+
+    res.status(200).json({ success: true, message: 'Logo and title updated successfully!' });
+  } catch (error) {
+    console.error('Error updating logo and title:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+router.get('/getLogoUrl', async (req, res) => {
+  try {
+    // Find the most recent logo entry
+    const logo = await Logo.findOne().sort({ createdAt: -1 });
+
+    if (logo) {
+      res.json({
+        url: logo.url,
+        title: logo.title
+      });
+    } else {
+      res.status(404).json({ message: 'Logo not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching logo URL:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 
 

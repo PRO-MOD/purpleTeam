@@ -18,6 +18,7 @@ const Modal = ({
   updatedValue,
   setUpdatedValue,
   solvedChallenges,
+  totalAttempts,
 
 }) => {
   const [formData, setFormData] = useState({ language: 'python', flag: '' });
@@ -310,12 +311,15 @@ const Modal = ({
             )}
 
             <div className="mt-4 flex justify-between items-center">
+           
               <button
                 className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-700"
                 onClick={fetchHints}
               >
                 Hints
               </button>
+              {/* <span className='flex justify-center w-full'>{attempts}/{totalAttempts} attempts</span> */}
+
               <span className="flex-grow"></span>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"

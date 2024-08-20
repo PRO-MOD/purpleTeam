@@ -413,4 +413,26 @@ router.put('/assign-static-score/:userId', async (req, res) => {
     }
   });
 
+
+
+  router.get('/score/:id', async (req, res) => {
+    try {
+      // Find the score document by account_id or user_id
+      const score = await Score.findOne( { user: req.params.id });
+  
+      if (!score) {
+        return res.status(404).json({ error: 'Score not found' });
+      }
+  
+      // Extract the required fields
+      const { manualScore, score: baseScore, staticScore } = score;
+  
+      // Send the extracted fields as the response
+      res.json({ manualScore, score: baseScore, staticScore });
+    } catch (err) {
+      console.error('Error fetching score:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
 module.exports = router;

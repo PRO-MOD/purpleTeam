@@ -12,23 +12,23 @@ const Questions = ({ reportId }) => {
     const [editingQuestion, setEditingQuestion] = useState(null);
 
     useEffect(() => {
-        const fetchQuestions = async () => {
-            try {
-                const response = await fetch(`http://localhost:80/api/questions/for/${reportId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch questions');
-                }
-                const data = await response.json();
-                setQuestions(data.sort((a, b) => a.index - b.index));
-            } catch (error) {
-                setError('Failed to load questions');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchQuestions();
     }, [reportId]);
+
+    const fetchQuestions = async () => {
+        try {
+            const response = await fetch(`http://localhost:80/api/questions/for/${reportId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch questions');
+            }
+            const data = await response.json();
+            setQuestions(data.sort((a, b) => a.index - b.index));
+        } catch (error) {
+            setError('Failed to load questions');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleEdit = (question) => {
         setEditingQuestion(question);
@@ -54,13 +54,14 @@ const Questions = ({ reportId }) => {
         setEditingQuestion(null);
     };
 
-    const handleQuestionSubmit = (newQuestion) => {
+    const handleQuestionSubmit = async (newQuestion)  => {
         if (editingQuestion) {
             setQuestions(questions.map((question) =>
                 question._id === newQuestion._id ? newQuestion : question
             ));
         } else {
             setQuestions([...questions, newQuestion].sort((a, b) => a.index - b.index));
+            await fetchQuestions();
         }
         handleModalClose();
     };

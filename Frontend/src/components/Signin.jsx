@@ -13,6 +13,12 @@ const Signin = () => {
         password: ''
     });
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+      const [logoUrl, setLogoUrl] = useState('');
+  const [title, setTitle] = useState('');
+
+
     useEffect(() => {
         const authToken = localStorage.getItem('Hactify-Auth-token');
         if (authToken) {
@@ -20,8 +26,27 @@ const Signin = () => {
         }
     }, [navigate]);
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/challenges/getLogoUrl`);
+        const data = await response.json();
+        if (response.ok) {
+          setLogoUrl(`${apiUrl}${data.url}`);
+          setTitle(data.title);
+          console.log(data.title);
+        } else {
+          console.error('Error fetching logo and title:', data.error);
+        }
+      } catch (error) {
+        console.error('Error during fetch:', error);
+      }
+    };
+
+    fetchConfig();
+  }, [apiUrl]);
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,14 +87,14 @@ const Signin = () => {
                 {/* <img src="\cyber .jpg" alt="Hacktify Logo" className="h-16 w-32 " /> */}
                 
                 {/* Heading */}
-                <h1 className="text-2xl font-bold ">Cyber Suraksha Platform </h1>
+                <h1 className="text-2xl font-bold ">{title}</h1>
                 
                 {/* Placeholder for the right side */}
                 <div></div>
             </div>
 
             {/* Sign-in div */}
-            <img src="\Cyber Suraksha.png" alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
+            <img src={logoUrl} alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
             <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-8">
             <div className="mb-8 text-center">
                    <h1 className='block text-brown-500 text-2xl font-bold mb-2'>Defend the Flag</h1>
@@ -127,3 +152,4 @@ const Signin = () => {
 };
 
 export default Signin;
+

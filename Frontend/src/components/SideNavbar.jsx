@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved, faFileImage, faFilePdf, faPuzzlePiece } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser, faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved, faFileImage, faFilePdf, faPuzzlePiece} from "@fortawesome/free-solid-svg-icons";
+
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
 
@@ -8,6 +9,7 @@ const SideNavbar = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState();
+  const [logoUrl, setLogoUrl] = useState(null);
   // const [unreadMessages, setUnreadMessages] = useState(null);
   const navigate = useNavigate();
   const { creteSocket, unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
@@ -15,6 +17,7 @@ const SideNavbar = () => {
   useEffect(() => {
     fetchUserRole();
     fetchUnreadMessages();
+    fetchLogoUrl();
   }, []);
 
   const fetchUserRole = async () => {
@@ -33,6 +36,19 @@ const SideNavbar = () => {
       console.error("Error fetching user role:", error);
     }
   };
+
+  const fetchLogoUrl = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/challenges/getLogoUrl`, {
+        method: 'GET',
+      });
+      const data = await response.json();
+      setLogoUrl(`${apiUrl}${data.url}`);
+    } catch (error) {
+      console.error('Error fetching logo URL:', error);
+    }
+  };
+
 
   useEffect(() => {
     if (userId) {
@@ -53,8 +69,8 @@ const SideNavbar = () => {
   return (
     <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 font-serif">
       {/* Logo Section */}
-      <div className="flex flex-row items-center justify-center py-2 px-0 ">
-        <img src="\Cyber Suraksha.png" alt="Logo" className="" />
+      <div className="flex flex-row items-center justify-center py-4 px-0  h-32">
+        <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
         {/* <p className=" text-orange  uppercase invisible lg:visible">Hacktify</p> */}
       </div>
       <hr className="mx-2" />
@@ -117,7 +133,14 @@ const SideNavbar = () => {
                 </div>
                 <p className=" text-lg">View All</p>
               </Link>
-              <Link to="/scores" className={`flex flex-row items-center justify-start px-0 py-2 hover:bg-brown-450  hover:text-white ${isActive("/scores") ? "bg-brown-450  text-white" : ""}`}>
+
+              <Link to="/submissions" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/assignTeams") ? "bg-brown-450  text-white" : ""}`}>
+                <div className="h-10 w-10 flex items-center justify-center px-2">
+                  <FontAwesomeIcon icon={faCalendar} size="xl" />
+                </div>
+                <p className=" text-lg">Submissions</p>
+              </Link>
+              <Link to="/scores" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/scores") ? "bg-brown-450  text-white" : ""}`}>
                 <div className="h-10 w-10 flex items-center justify-center px-2">
                   <FontAwesomeIcon icon={faRankingStar} size="xl" />
                 </div>
@@ -144,13 +167,22 @@ const SideNavbar = () => {
           </div>
           <p className="text-lg">Challenges</p>
         </Link>
-        <Link to="/chat" className={`flex flex-row items-center justify-start px-0 py-2 hover:bg-brown-450  hover:text-white ${isActive("/chat") ? "bg-brown-450  text-white" : ""}`}>
+
+        
+        <Link to="/chat" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/chat") ? "bg-brown-450  text-white" : ""}`}>
           <div className="h-10 w-10 flex items-center justify-center px-2">
             <FontAwesomeIcon icon={faComment} size="xl" />
           </div>
           <p className=" text-md flex flex-row items-center flex-wrap">Communication <span className="px-2 ms-2 text-sm text-green-800 rounded-lg bg-green-100 dark:bg-gray-800 dark:text-green-400">{unreadMessages ? unreadMessages.unreadMessagesCount : ""}</span></p>
         </Link>
-        <Link to="/profile" className={`flex flex-row items-center justify-start px-0 py-2 hover:bg-brown-450  hover:text-white ${isActive("/profile") ? "bg-brown-450  text-white" : ""}`}>
+
+        <Link to="/config" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/config") ? "bg-brown-450  text-white" : ""}`}>
+          <div className="h-10 w-10 flex items-center justify-center px-2">
+            <FontAwesomeIcon icon={faCog} color="" size="xl" />
+          </div>
+          <p className=" text-lg">Config</p>
+        </Link>
+        <Link to="/profile" className={`flex flex-row items-center justify-start px-0 py-4 hover:bg-brown-450  hover:text-white ${isActive("/profile") ? "bg-brown-450  text-white" : ""}`}>
           <div className="h-10 w-10 flex items-center justify-center px-2">
             <FontAwesomeIcon icon={faUser} color="" size="xl" />
           </div>

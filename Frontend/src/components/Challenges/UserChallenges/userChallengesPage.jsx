@@ -12,6 +12,7 @@ const UserChallengePage = () => {
   const [feedback, setFeedback] = useState(null);
   const [updatedValue, setUpdatedValue] = useState(0);
   const [solvedChallenges, setSolvedChallenges] = useState([]); // New state
+  const [totalAttempts, setTotalAttempts] = useState(0);
 
 
 
@@ -48,7 +49,8 @@ const UserChallengePage = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setSolvedChallenges(data.map(solved => solved.challenge_id));
+        
+        setSolvedChallenges(data.map(solved => solved.challengeId));
       } catch (error) {
         console.error('Error fetching solved challenges:', error);
       }
@@ -62,6 +64,7 @@ const UserChallengePage = () => {
     setSelectedChallenge(challenge);
     setIsModalOpen(true);
     setUpdatedValue(challenge.value);
+    setTotalAttempts(challenge.max_attempts);
   };
 
   const closeModal = () => {
@@ -78,7 +81,7 @@ const UserChallengePage = () => {
     } else if (selectedChallenge.type === 'code' || selectedChallenge.type === 'standard' || selectedChallenge.type === 'multiple_choice' || selectedChallenge.type === 'dynamic') {
       try {
 
-        const response = await fetch('http://localhost/api/challenges/verify-answer', {
+        const response = await fetch('http://localhost:80/api/challenges/verify-answer', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -99,11 +102,11 @@ const UserChallengePage = () => {
 
         if (result.correct) {
           setFeedback('Correct answer!');
-          setSolvedChallenges(prevSolved => [...prevSolved, selectedChallenge._id]);
+          setSolvedChallenges(prevSolved => [...prevSolved, selectedChallenge._id]); // Update solved challenges state
           setTimeout(closeModal, 2000); // Close the modal after a delay
         } else {
           setAttempts(prev => prev + 1);
-          if (attempts + 1 >= 3) {
+          if (selectedChallenge.max_attempts !== 0 && attempts + 1 >= selectedChallenge.max_attempts) {
             setFeedback('No more attempts left');
             setTimeout(closeModal, 2000); // Close the modal after a delay
           } else {
@@ -129,6 +132,7 @@ const UserChallengePage = () => {
   };
 
   const groupedChallenges = groupByCategory(challenges);
+ 
 
   return (
     <>
@@ -163,6 +167,7 @@ const UserChallengePage = () => {
           updatedValue={updatedValue}
           setUpdatedValue={setUpdatedValue}
           solvedChallenges={solvedChallenges} // Pass solved challenges
+          totalAttempts={totalAttempts}
         />
       )}
     </>
