@@ -117,6 +117,7 @@ app.use('/api/responses',require('./routes/Report/UserResponse.js'))
 app.use('/api/reports/headers', require('./routes/Report/Config/Header.js'));
 app.use('/api/reports/footers', require('./routes/Report/Config/Footer.js'));
 app.use('/api/reportConfig', require('./routes/Report/Config/ReportConfig.js'));
+app.use('/api/generatePDF', require('./routes/Report/generatePDF.js'));
 
 // Define webhook endpoint
 app.post('/api/webhook', (req, res) => {

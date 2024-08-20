@@ -42,6 +42,7 @@ router.get('/all/:userId', async (req, res) => {
     const formattedResponses = responses.map(response => {
       const createdAt = moment(response.createdAt).tz('Asia/Kolkata');
       return {
+        reportId: response.reportId._id,
         reportName: response.reportId.name,
         responseDate: createdAt.format('YYYY-MM-DD'),
         responseTime: createdAt.format('HH:mm:ss'),

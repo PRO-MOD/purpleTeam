@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 
 function UserReports({ userId }) {
@@ -9,12 +7,10 @@ function UserReports({ userId }) {
   const [assignedScores, setAssignedScores] = useState([]);
   const [penalty, setPenalty] = useState(0);
   
-
-  // Ensure apiUrl is defined correctly
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
   useEffect(() => {
-    if (!userId) return; // Exit if userId is not available
+    if (!userId) return;
 
     fetch(`${apiUrl}/api/responses/all/${userId}`, {
       method: 'GET',
@@ -40,7 +36,6 @@ function UserReports({ userId }) {
       .then(data => {
         setSelectedReport(data);
         console.log('Response Data:', data);
-        // Ensure questionId is included in the response items
         setAssignedScores(data.responses.map(response => ({
           ...response,
           assignedScore: response.assignedScore || 0
@@ -49,6 +44,28 @@ function UserReports({ userId }) {
         setShowModal(true);
       })
       .catch(err => console.error('Error fetching response details:', err));
+  };
+  
+  const viewReport = (reportId, userId, responseId) => {
+    console.log(reportId, userId, responseId);
+    
+    fetch(`${apiUrl}/api/generatePDF/generateReport/${reportId}/${userId}/${responseId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': localStorage.getItem('Hactify-Auth-token'),
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.fileName) {
+          const pdfUrl = `${apiUrl}/uploads/Report/${data.fileName}`;
+          window.open(pdfUrl, '_blank');
+        } else {
+          console.error('Failed to generate or retrieve PDF');
+        }
+      })
+      .catch(err => console.error('Error viewing report:', err));
   };
   
   const handleScoreChange = (index, value) => {
@@ -64,9 +81,8 @@ function UserReports({ userId }) {
   };
 
   const handleUpdateScores = () => {
-    // Check the assignedScores array to ensure it includes questionId
     const updatedResponses = assignedScores.map(({ questionId, assignedScore }) => ({
-      questionId, // This should be included in the object
+      questionId,
       assignedScore
     }));
   
@@ -131,6 +147,7 @@ function UserReports({ userId }) {
               </td>
               <td className="px-4 py-2 border-b">
                 <button 
+                  onClick={() => viewReport(report.reportId, userId, report._id)} 
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
                   View
@@ -143,7 +160,7 @@ function UserReports({ userId }) {
 
       {showModal && selectedReport && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[80%] overflow-y-scroll">
             <h3 className="text-xl font-semibold mb-4">{selectedReport.reportName}</h3>
             <p className="mb-2">Date: {selectedReport.responseDate}</p>
             <p className="mb-4">Time: {selectedReport.responseTime}</p>
@@ -192,28 +209,29 @@ function UserReports({ userId }) {
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan="3" className="px-4 py-2 border-b font-semibold">Final Score:</td>
-                  <td className="px-4 py-2 border-b">
+                  <td colSpan="3" className="px-4 py-2 font-semibold">Final Score:</td>
+                  <td className="px-4 py-2">
                     {assignedScores.reduce((sum, { assignedScore }) => sum + assignedScore, 0) - penalty}
                   </td>
                 </tr>
               </tfoot>
             </table>
-            <button 
-              onClick={handleUpdateScores} 
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Save Scores
-            </button>
-            <button 
-              onClick={() => setShowModal(false)} 
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2"
-            >
-              Close
-            </button>
+            <div className="text-right">
+              <button 
+                onClick={handleUpdateScores} 
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
+              >
+                Update
+              </button>
+              <button 
+                onClick={() => setShowModal(false)} 
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
-
       )}
     </div>
   );

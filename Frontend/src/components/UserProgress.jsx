@@ -101,7 +101,7 @@ function UserProgress() {
         };
 
         getUserRole();
-    }, [fetchUserRole]);
+    }, []);
 
     useEffect(() => {
         if (user._id) {
