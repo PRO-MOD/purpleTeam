@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 
 function UserReports({ userId, route }) {
@@ -13,7 +11,6 @@ function UserReports({ userId, route }) {
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
   useEffect(() => {
-    if (!userId) return;
     if (!userId) return;
 
     fetch(`${apiUrl}/api/responses/all/${userId}`, {
@@ -48,6 +45,29 @@ function UserReports({ userId, route }) {
       })
       .catch(err => console.error('Error fetching response details:', err));
   };
+
+  const viewReport = (reportId, userId, responseId) => {
+    console.log(reportId, userId, responseId);
+    
+    fetch(`${apiUrl}/api/generatePDF/generateReport/${reportId}/${userId}/${responseId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': localStorage.getItem('Hactify-Auth-token'),
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.fileName) {
+          const pdfUrl = `${apiUrl}/uploads/Report/${data.fileName}`;
+          window.open(pdfUrl, '_blank');
+        } else {
+          console.error('Failed to generate or retrieve PDF');
+        }
+      })
+      .catch(err => console.error('Error viewing report:', err));
+  };
+  
 
   const handleScoreChange = (index, value) => {
     setAssignedScores(prevScores => {
@@ -128,7 +148,7 @@ function UserReports({ userId, route }) {
               </td>
               <td className="px-4 py-2 border-b">
                 <button
-                  // onClick={() => viewDetails(report._id)}
+                 onClick={() => viewReport(report.reportId, userId, report._id)} 
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
                   View

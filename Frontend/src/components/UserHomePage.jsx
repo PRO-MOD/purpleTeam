@@ -1,46 +1,31 @@
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faPlus } from "@fortawesome/free-solid-svg-icons";
-// import ReportTable from './AllReports';
-
-// export default function UserHomePage() {
-//   const navigateTo = (route) => {
-//     window.location.href = route;
-//   };
-
-//   return (
-//     <div className="">
-//       <div className="text-center py-8">
-//         <h1 className="text-4xl font-bold text-brown-650 mb-4 py-4">Submit Report</h1>
-//         <hr className='mx-12 border-black'/>
-//       </div>
-//       <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 px-4 py-4">
-
-//       <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/notification')}>
-//           <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>1. Add Notification Report
-//         </button> 
-//         <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/IRREP')}>
-//           <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>2. Add IRREP Report
-//         </button>
-//         <button className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" onClick={() => navigateTo('/UserHome/report/SITREP')}>
-//           <span className="mx-2"><FontAwesomeIcon icon={faPlus} /></span>3. Add SITREP Report
-//         </button>
-       
-//       </div>
-//       <ReportTable/>
-//     </div>
-//   );
-// }
 
 
-import { useEffect, useState } from 'react';
+
+import { useEffect, useState, useContext } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import ReportTable from './AllReports';
+import UserReports from './UserReports';
+import AuthContext from '../context/AuthContext';
 
 export default function UserHomePage() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [reports, setReports] = useState([]);
+  const context = useContext(AuthContext);
+  
+  const { user, fetchUserRole } = context;
 
+
+  useEffect(() => {
+    const getUserRole = async () => {
+        try {
+            await fetchUserRole();
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+        }
+    };
+
+    getUserRole();
+}, []);
   // Fetch reports from the backend
   useEffect(() => {
     const fetchReports = async () => {
@@ -83,7 +68,7 @@ export default function UserHomePage() {
         ))}
 
       </div>
-      <ReportTable/>
+      <UserReports userId={user._id} route="progress" />
     </div>
   );
 }
