@@ -14,6 +14,7 @@ function UserReports({ userId, route }) {
 
   useEffect(() => {
     if (!userId) return;
+    if (!userId) return;
 
     fetch(`${apiUrl}/api/responses/all/${userId}`, {
       method: 'GET',
@@ -140,7 +141,7 @@ function UserReports({ userId, route }) {
 
       {showModal && selectedReport && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[80%] overflow-y-scroll">
             <h3 className="text-xl font-semibold mb-4">{selectedReport.reportName}</h3>
             <p className="mb-2">Date: {selectedReport.responseDate}</p>
             <p className="mb-4">Time: {selectedReport.responseTime}</p>
@@ -194,8 +195,8 @@ function UserReports({ userId, route }) {
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan="3" className="px-4 py-2 border-b font-semibold">Final Score:</td>
-                  <td className="px-4 py-2 border-b">
+                  <td colSpan="3" className="px-4 py-2 font-semibold">Final Score:</td>
+                  <td className="px-4 py-2">
                     {assignedScores.reduce((sum, { assignedScore }) => sum + assignedScore, 0) - penalty}
                   </td>
                 </tr>
