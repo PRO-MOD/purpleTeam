@@ -110,6 +110,9 @@ router.put('/update/:responseId', async (req, res) => {
       return res.status(404).json({ error: 'Response not found' });
     }
 
+    const scoreDifference = finalScore - (response.finalScore || 0);
+
+
     // Create a mapping of questionIds to responses
     const responseMap = response.responses.reduce((map, item) => {
       map[item.questionId.toString()] = item; // Assuming questionId is stored as an ObjectId
@@ -131,18 +134,17 @@ router.put('/update/:responseId', async (req, res) => {
 
     // Save the updated response
     await response.save();
-
+    
     // Find the corresponding Score document by user reference
-    const score = await Score.findOne({ user: response.userId });
-  console.log(score.manualScore);
-
+    const score = await Score.findOne({ user: response.userId.toString() });
+ 
+    
     if (score) {
       // Add finalScore from UserResponse to manualScore in Score
-      score.manualScore = (score.manualScore || 0) + finalScore;
-
+      score.manualScore = (score.manualScore || 0) + scoreDifference;
       // Save the updated Score document
       await score.save();
-      console.log(score.manualScore);
+    
       
     }
 

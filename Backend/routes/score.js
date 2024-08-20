@@ -237,64 +237,64 @@ router.get('/getscores1', async (req, res) => {
 router.get('/get-scores', async (req, res) => {
     try {
         // Fetch scores from the Scores collection
-        const scoresData = await Score.find();
+        // const scoresData = await Score.find();
 
-        // Update scores and manual scores in the database
-        for (const score of scoresData) {
-            const user = await User.findOne({ name: score.name });
-            if (user) {
-                // Fetch all the reports belonging to the user
-                const reports = await Promise.all([
-                    Report.find({ userId: user._id }),
-                    IncidentReport.find({ userId: user._id }),
-                    notificationReport.find({ userId: user._id })
-                ]);
+        // // Update scores and manual scores in the database
+        // for (const score of scoresData) {
+        //     const user = await User.findOne({ name: score.name });
+        //     if (user) {
+        //         // Fetch all the reports belonging to the user
+        //         const reports = await Promise.all([
+        //             Report.find({ userId: user._id }),
+        //             IncidentReport.find({ userId: user._id }),
+        //             notificationReport.find({ userId: user._id })
+        //         ]);
 
-                // console.log(reports);
+        //         // console.log(reports);
 
-                // Calculate the sum of manual scores from the reports
-                let totalManualScore = 0;
-                let allReportsHaveManualScore = true;
-                for (const reportType of reports) {
-                    // Iterate through each report
-                    for (const report of reportType) {
-                        if (report.manualScore == null) {
-                            allReportsHaveManualScore = false;
-                        }
-                        totalManualScore += report.manualScore || 0; // Add the manual score to the total
-                    }
-                }
+        //         // Calculate the sum of manual scores from the reports
+        //         let totalManualScore = 0;
+        //         let allReportsHaveManualScore = true;
+        //         for (const reportType of reports) {
+        //             // Iterate through each report
+        //             for (const report of reportType) {
+        //                 if (report.manualScore == null) {
+        //                     allReportsHaveManualScore = false;
+        //                 }
+        //                 totalManualScore += report.manualScore || 0; // Add the manual score to the total
+        //             }
+        //         }
 
-                // Update the score and manual score for the user in the Score collection
-                await Score.findOneAndUpdate(
-                    { user: user._id },
-                    {
-                        $set: {
-                            name: score.name,
-                            // account_id: score.account_id,
-                            score: 12000 - score.score,
-                            manualScore: totalManualScore, // Update manual score
-                            read: allReportsHaveManualScore
-                        }
-                    },
-                    { upsert: true, new: true } // Create a new document if it doesn't exist
-                );
-            }
-        }
-
-
-        // Initialize an object to store scores by user name
-        // const scoresByUser = {};
-
-        // Organize scores by user name
-        // scoresData.forEach(scores => {
-        //     const { name, score, manualScore,staticScore,read, date } = scores;
-        //     console.log(scores);
-        //     if (!scoresByUser[name]) {
-        //         scoresByUser[name] = [];
+        //         // Update the score and manual score for the user in the Score collection
+        //         await Score.findOneAndUpdate(
+        //             { user: user._id },
+        //             {
+        //                 $set: {
+        //                     name: score.name,
+        //                     // account_id: score.account_id,
+        //                     score: 12000 - score.score,
+        //                     manualScore: totalManualScore, // Update manual score
+        //                     read: allReportsHaveManualScore
+        //                 }
+        //             },
+        //             { upsert: true, new: true } // Create a new document if it doesn't exist
+        //         );
         //     }
-        //     scoresByUser[name].push(scores);
-        // });
+        // }
+
+
+        // // Initialize an object to store scores by user name
+        // // const scoresByUser = {};
+
+        // // Organize scores by user name
+        // // scoresData.forEach(scores => {
+        // //     const { name, score, manualScore,staticScore,read, date } = scores;
+        // //     console.log(scores);
+        // //     if (!scoresByUser[name]) {
+        // //         scoresByUser[name] = [];
+        // //     }
+        // //     scoresByUser[name].push(scores);
+        // // });
         const scores = await Score.find();
         // Send the organized scores back as the response
         res.json(scores);
@@ -425,10 +425,10 @@ router.put('/assign-static-score/:userId', async (req, res) => {
       }
   
       // Extract the required fields
-      const { manualScore, score: baseScore, staticScore } = score;
+      const { manualScore, score: baseScore } = score;
   
       // Send the extracted fields as the response
-      res.json({ manualScore, score: baseScore, staticScore });
+      res.json({ manualScore, score: baseScore });
     } catch (err) {
       console.error('Error fetching score:', err);
       res.status(500).json({ error: 'Internal Server Error' });

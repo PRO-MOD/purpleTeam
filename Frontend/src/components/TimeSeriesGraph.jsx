@@ -15,147 +15,97 @@ const TimeSeriesChart = ({ jsonData }) => {
         }
     };
 
-    useEffect(() => {
-        if (!jsonData) return;
-
-        // Extract timestamps from report data for each report type
-        const sitrepTimestamps = jsonData.SITREP_Report.map(report => new Date(report.createdAt).toLocaleDateString());
-        const irrepTimestamps = jsonData.IRREP_Report.map(report => new Date(report.createdAt).toLocaleDateString());
-        const notificationTimestamps = jsonData.Notification_Report.map(report => new Date(report.createdAt).toLocaleDateString());
-
-        // Count reports created on each date for each report type
-        const sitrepReportCounts = sitrepTimestamps.reduce((countMap, date) => {
-            countMap[date] = (countMap[date] || 0) + 1;
-            return countMap;
-        }, {});
-        const irrepReportCounts = irrepTimestamps.reduce((countMap, date) => {
-            countMap[date] = (countMap[date] || 0) + 1;
-            return countMap;
-        }, {});
-        const notificationReportCounts = notificationTimestamps.reduce((countMap, date) => {
-            countMap[date] = (countMap[date] || 0) + 1;
-            return countMap;
-        }, {});
-
-        // Combine timestamps from all report types and sort them
-        const allTimestamps = [...new Set([...sitrepTimestamps, ...irrepTimestamps, ...notificationTimestamps])];
-        const sortedDates = allTimestamps.sort((a, b) => new Date(a) - new Date(b));
-
-        // Extract counts for each report type in sorted order
-        const sitrepData = sortedDates.map(date => sitrepReportCounts[date] || 0);
-        const irrepData = sortedDates.map(date => irrepReportCounts[date] || 0);
-        const notificationData = sortedDates.map(date => notificationReportCounts[date] || 0);
-
-        // Create time series line chart
-        createChart(timeSeriesChartRef, 'line', sortedDates, [
-            {
-                label: 'SITREP Reports',
-                data: sitrepData,
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2
-            },
-            {
-                label: 'IRREP Reports',
-                data: irrepData,
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2
-            },
-            {
-                label: 'Notification Reports',
-                data: notificationData,
-                borderColor: 'rgba(255, 206, 86, 1)',
-                borderWidth: 2
-            }
-        ]);
-    }, [jsonData]);
-
     // Function to create a new chart
-    const createChart = (ref, type, labels, datasets, options = {}) => {
+    const createChart = (ref, labels, datasets) => {
         destroyChart(ref);
         const canvas = ref.current;
         const ctx = canvas.getContext('2d');
-        return new Chart(ctx, {
-            type: type,
+        new Chart(ctx, {
+            type: 'line',
             data: {
                 labels: labels,
                 datasets: datasets
             },
-            options: options
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                return `${context.dataset.label}: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Count'
+                        }
+                    }
+                }
+            }
         });
-    };
-
-    // Function to count reports by timestamp
-    const countReportsByTimestamp = (timestamps) => {
-        return timestamps.reduce((countMap, timestamp) => {
-            const date = timestamp.toLocaleDateString();
-            const time = timestamp.toLocaleTimeString();
-            const dateTime = `${date} ${time}`;
-            countMap[dateTime] = (countMap[dateTime] || 0) + 1;
-            return countMap;
-        }, {});
     };
 
     useEffect(() => {
-        createTimeSeriesChart();
-    }, [jsonData]);
-
-    const createTimeSeriesChart = () => {
         if (!jsonData) return;
 
-        // Extract timestamps from report data for each report type
-        const sitrepTimestamps = jsonData.SITREP_Report.map(report => new Date(report.createdAt));
-        const irrepTimestamps = jsonData.IRREP_Report.map(report => new Date(report.createdAt));
-        const notificationTimestamps = jsonData.Notification_Report.map(report => new Date(report.createdAt));
+        // Aggregate reports by report name
+        const aggregateReports = (reports) => {
+            return reports.reduce((acc, report) => {
+                const date = report.responseDate; // Use the responseDate directly
+                if (!acc[date]) {
+                    acc[date] = {};
+                }
+                acc[date][report.reportName] = (acc[date][report.reportName] || 0) + 1;
+                return acc;
+            }, {});
+        };
 
-        // Combine timestamps from all report types
-        const allTimestamps = [...sitrepTimestamps, ...irrepTimestamps, ...notificationTimestamps];
+        // Aggregate reports for each report type
+        const allReports = jsonData.flatMap(report => ({
+            reportName: report.reportName,
+            responseDate: report.responseDate // Use responseDate
+        }));
 
-        // Sort timestamps
-        allTimestamps.sort((a, b) => a - b);
+        const reportCounts = aggregateReports(allReports);
 
-        // Extract dates and times from sorted timestamps
-        const sortedDates = allTimestamps.map(timestamp => {
-            const date = timestamp.toLocaleDateString();
-            const time = timestamp.toLocaleTimeString();
-            return `${date} ${time}`;
-        });
+        // Extract unique dates and sort them
+        const allDates = [...new Set(Object.keys(reportCounts))].sort();
 
-        // Count reports created on each date for each report type
-        const sitrepReportCounts = countReportsByTimestamp(sitrepTimestamps);
-        const irrepReportCounts = countReportsByTimestamp(irrepTimestamps);
-        const notificationReportCounts = countReportsByTimestamp(notificationTimestamps);
+        // Prepare data for the chart
+        const reportTypes = [...new Set(allReports.map(report => report.reportName))];
+        const datasets = reportTypes.map(type => ({
+            label: `${type} Reports`,
+            data: allDates.map(date => reportCounts[date]?.[type] || 0),
+            borderColor: getRandomColor(),
+            borderWidth: 2,
+            fill: false
+        }));
 
-        // Filter out entries with zero counts
-        const filteredDates = sortedDates.filter(date => 
-            sitrepReportCounts[date] !== 0 || irrepReportCounts[date] !== 0 || notificationReportCounts[date] !== 0
-        );
+        // Create chart
+        createChart(timeSeriesChartRef, allDates, datasets);
+    }, [jsonData]);
 
-        // Extract counts for each report type in filtered dates
-        const sitrepData = filteredDates.map(date => sitrepReportCounts[date] || 0);
-        const irrepData = filteredDates.map(date => irrepReportCounts[date] || 0);
-        const notificationData = filteredDates.map(date => notificationReportCounts[date] || 0);
-
-        // Create time series line chart
-        createChart(timeSeriesChartRef, 'line', filteredDates, [
-            {
-                label: 'SITREP Reports',
-                data: sitrepData,
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2
-            },
-            {
-                label: 'IRREP Reports',
-                data: irrepData,
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2
-            },
-            {
-                label: 'Notification Reports',
-                data: notificationData,
-                borderColor: 'rgba(255, 206, 86, 1)',
-                borderWidth: 2
-            }
-        ]);
+    // Function to generate random colors for the chart
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     };
 
     return (

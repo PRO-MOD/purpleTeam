@@ -186,7 +186,7 @@ function UserDetails() {
           {jsonData && scoreData && 
           <div className='flex flex-row flex-wrap justify-center items-center'>
             <DataVisualization jsonData={jsonData} scoreData={scoreData} />
-            {/* <TimeSeriesGraph jsonData={jsonData} /> */}
+            <TimeSeriesGraph jsonData={jsonData} />
           </div>
           }
           <UserReports userId={userId} />

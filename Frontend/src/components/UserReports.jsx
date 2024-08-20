@@ -1,20 +1,19 @@
 
 
+
 import React, { useState, useEffect } from 'react';
 
-function UserReports({ userId }) {
+function UserReports({ userId, route }) {
   const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [assignedScores, setAssignedScores] = useState([]);
   const [penalty, setPenalty] = useState(0);
-  
 
-  // Ensure apiUrl is defined correctly
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
   useEffect(() => {
-    if (!userId) return; // Exit if userId is not available
+    if (!userId) return;
 
     fetch(`${apiUrl}/api/responses/all/${userId}`, {
       method: 'GET',
@@ -39,18 +38,16 @@ function UserReports({ userId }) {
       .then(res => res.json())
       .then(data => {
         setSelectedReport(data);
-        console.log('Response Data:', data);
-        // Ensure questionId is included in the response items
         setAssignedScores(data.responses.map(response => ({
           ...response,
-          assignedScore: response.assignedScore || 0
+          assignedScore: response.assignedScore || 0,
         })));
         setPenalty(data.penaltyScore || 0);
         setShowModal(true);
       })
       .catch(err => console.error('Error fetching response details:', err));
   };
-  
+
   const handleScoreChange = (index, value) => {
     setAssignedScores(prevScores => {
       const updatedScores = [...prevScores];
@@ -64,15 +61,14 @@ function UserReports({ userId }) {
   };
 
   const handleUpdateScores = () => {
-    // Check the assignedScores array to ensure it includes questionId
     const updatedResponses = assignedScores.map(({ questionId, assignedScore }) => ({
-      questionId, // This should be included in the object
-      assignedScore
+      questionId,
+      assignedScore,
     }));
-  
+
     const totalAssignedScore = assignedScores.reduce((sum, { assignedScore }) => sum + assignedScore, 0);
     const finalScore = totalAssignedScore - penalty;
-  
+
     fetch(`${apiUrl}/api/responses/update/${selectedReport._id}`, {
       method: 'PUT',
       headers: {
@@ -82,12 +78,11 @@ function UserReports({ userId }) {
       body: JSON.stringify({
         updatedResponses,
         penaltyScore: penalty,
-        finalScore
+        finalScore,
       }),
     })
       .then(res => res.json())
       .then(result => {
-        console.log('Update result:', result);
         if (result.error) {
           console.error('Error updating scores:', result.error);
           return;
@@ -99,7 +94,7 @@ function UserReports({ userId }) {
       })
       .catch(err => console.error('Error updating scores:', err));
   };
-  
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">User Reports</h2>
@@ -122,20 +117,22 @@ function UserReports({ userId }) {
               <td className="px-4 py-2 border-b">{report.responseTime}</td>
               <td className="px-4 py-2 border-b">{report.finalScore || 0}</td>
               <td className="px-4 py-2 border-b">
-                <button 
-                  onClick={() => viewDetails(report._id)} 
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                >
-                  Assign
-                </button>
+              <button
+  onClick={() => viewDetails(report._id)}
+  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+>
+  {route === 'progress' ? 'Detailed Score' : 'Assign'}
+</button>
+
               </td>
               <td className="px-4 py-2 border-b">
-                <button 
+                <button
+                  // onClick={() => viewDetails(report._id)}
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
                   View
                 </button>
-              </td> 
+              </td>
             </tr>
           ))}
         </tbody>
@@ -163,13 +160,15 @@ function UserReports({ userId }) {
                     <td className="px-4 py-2 border-b">{response.answer}</td>
                     <td className="px-4 py-2 border-b">{response.maxScore}</td>
                     <td className="px-4 py-2 border-b">
-                      <input
-                        type="number"
-                        value={response.assignedScore}
-                        onChange={(e) => handleScoreChange(index, Number(e.target.value))}
-                        className="w-full px-2 py-1 border border-gray-300 rounded"
-                      />
-                    </td>
+  <input
+    type="number"
+    value={response.assignedScore}
+    onChange={(e) => handleScoreChange(index, Number(e.target.value))}
+    className="w-full px-2 py-1 border border-gray-300 rounded"
+    disabled={route === 'progress'}
+  />
+</td>
+
                   </tr>
                 ))}
               </tbody>
@@ -183,12 +182,15 @@ function UserReports({ userId }) {
                 <tr>
                   <td colSpan="3" className="px-4 py-2 border-b font-semibold">Penalty:</td>
                   <td className="px-4 py-2 border-b">
-                    <input
-                      type="number"
-                      value={penalty}
-                      onChange={(e) => handlePenaltyChange(Number(e.target.value))}
-                      className="w-full px-2 py-1 border border-gray-300 rounded"
-                    />
+
+                      <input
+                        type="number"
+                        value={penalty}
+                        onChange={(e) => handlePenaltyChange(Number(e.target.value))}
+                        className="w-full px-2 py-1 border border-gray-300 rounded"
+                        disabled={route === 'progress'}
+
+                      />
                   </td>
                 </tr>
                 <tr>
@@ -199,21 +201,22 @@ function UserReports({ userId }) {
                 </tr>
               </tfoot>
             </table>
-            <button 
-              onClick={handleUpdateScores} 
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Save Scores
-            </button>
-            <button 
-              onClick={() => setShowModal(false)} 
+            {route !== 'progress' && (
+              <button
+                onClick={handleUpdateScores}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Save Scores
+              </button>
+            )}
+            <button
+              onClick={() => setShowModal(false)}
               className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2"
             >
               Close
             </button>
           </div>
         </div>
-
       )}
     </div>
   );
