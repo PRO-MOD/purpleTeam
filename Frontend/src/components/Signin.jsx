@@ -30,12 +30,11 @@ const Signin = () => {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/challenges/getLogoUrl`);
+        const response = await fetch(`${apiUrl}/api/config/eventDetails`);
         const data = await response.json();
         if (response.ok) {
           setLogoUrl(`${apiUrl}${data.url}`);
           setTitle(data.title);
-          console.log(data.title);
         } else {
           console.error('Error fetching logo and title:', data.error);
         }

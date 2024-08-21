@@ -6,12 +6,9 @@ const Challenge = require('../../models/CTFdChallenges/challenge');
 const fetchuser =require('../../middleware/fetchuser');
 const User = require('../../models/User')
 const score = require('../../models/score');
-const ChallengeSolve =require('../../models/ChallengeSolved');
-const DetailHint =require('../../models/CTFdChallenges/detailhint');
-const Hint = require('../../models/CTFdChallenges/Hint');
 const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag');
 const Submission =require('../../models/CTFdChallenges/Submission');
-const Logo=require('../../models/CTFdChallenges/Logo');
+
 
 
 
@@ -625,11 +622,6 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
   }
 });
 
-
-
-
-
-
 router.get('/solved',fetchuser, async (req, res) => {
   try {
     const  userId = req.user.id;
@@ -641,72 +633,6 @@ router.get('/solved',fetchuser, async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
-
-router.get('/submissions', async (req, res) => {
-  try {
-    // const challengeId = req.params.challengeId;
-    const incorrectSubmissions = await Submission.find()
-      .populate('userId', 'name')
-      .populate('challengeId', 'name')
-      .select('userId challengeId answer date isCorrect');
-
-    res.json(incorrectSubmissions);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-});
-
-// Add a new route to delete submissions
-router.delete('/submissions/delete', async (req, res) => {
-  try {
-    const { submissionIds } = req.body;
-    await Submission.deleteMany({ _id: { $in: submissionIds } });
-    res.json({ message: 'Submissions deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-});
-
-
-router.post('/updateLogo', upload.single('logo'), async (req, res) => {
-  try {
-    const { title } = req.body;
-    const url = req.file ? `/uploads/CTFdChallenges/${req.file.filename}` : null;
-
-    // Create a new logo entry
-    const newLogo = new Logo({ url, title });
-    await newLogo.save();
-
-    res.status(200).json({ success: true, message: 'Logo and title updated successfully!' });
-  } catch (error) {
-    console.error('Error updating logo and title:', error);
-    res.status(500).json({ success: false, error: 'Internal Server Error' });
-  }
-});
-
-router.get('/getLogoUrl', async (req, res) => {
-  try {
-    // Find the most recent logo entry
-    const logo = await Logo.findOne().sort({ createdAt: -1 });
-
-    if (logo) {
-      res.json({
-        url: logo.url,
-        title: logo.title
-      });
-    } else {
-      res.status(404).json({ message: 'Logo not found' });
-    }
-  } catch (error) {
-    console.error('Error fetching logo URL:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-
-
 
 
 module.exports = router;

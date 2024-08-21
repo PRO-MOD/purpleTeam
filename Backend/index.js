@@ -109,6 +109,11 @@ app.use('/api/hints',require('./routes/CTFdChallenges/Hint.js'))
 app.use('/api/user',require('./routes/CTFdChallenges/user.js'))
 app.use('/api/tags',  require('./routes/CTFdChallenges/tags'));
 app.use('/api/executecode',require('./routes/CTFdChallenges/runcode.js'))
+app.use('/api/submissions',require('./routes/CTFdChallenges/Submission.js'))
+
+//routes for configurations 
+
+app.use('/api/config',require('./routes/Config/Config.js'));
 
 // routes for report handling (new logic)
 app.use('/api/reports',require('./routes/Report/report.js'))

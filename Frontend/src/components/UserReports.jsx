@@ -140,7 +140,7 @@ function UserReports({ userId, route }) {
               <td className="px-4 py-2 border-b">
               <button
   onClick={() => viewDetails(report._id)}
-  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+  className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
 >
   {route === 'progress' ? 'Detailed Score' : 'Assign'}
 </button>
@@ -149,7 +149,7 @@ function UserReports({ userId, route }) {
               <td className="px-4 py-2 border-b">
                 <button
                  onClick={() => viewReport(report.reportId, userId, report._id)} 
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
                 >
                   View
                 </button>
@@ -225,7 +225,7 @@ function UserReports({ userId, route }) {
             {route !== 'progress' && (
               <button
                 onClick={handleUpdateScores}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
               >
                 Save Scores
               </button>

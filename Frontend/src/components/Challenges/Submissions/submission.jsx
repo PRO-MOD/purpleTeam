@@ -12,7 +12,7 @@ const SubmissionTable = () => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await fetch('http://localhost:80/api/challenges/submissions');
+        const response = await fetch('http://localhost:80/api/submissions/all');
         const data = await response.json();
         setSubmissions(data);
       } catch (error) {
@@ -41,7 +41,7 @@ const SubmissionTable = () => {
 
   const handleDeleteSelected = async () => {
     try {
-      await fetch('http://localhost:80/api/challenges/submissions/delete', {
+      await fetch('http://localhost:80/api/submissions/delete', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
