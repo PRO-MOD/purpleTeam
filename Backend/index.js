@@ -110,6 +110,7 @@ app.use('/api/user',require('./routes/CTFdChallenges/user.js'))
 app.use('/api/tags',  require('./routes/CTFdChallenges/tags'));
 app.use('/api/executecode',require('./routes/CTFdChallenges/runcode.js'))
 app.use('/api/submissions',require('./routes/CTFdChallenges/Submission.js'))
+app.use('/api/docker', require('./routes/CTFdChallenges/Docker.js'));
 
 //routes for configurations 
 
