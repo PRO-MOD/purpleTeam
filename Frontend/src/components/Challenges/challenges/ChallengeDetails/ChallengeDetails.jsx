@@ -50,7 +50,6 @@ const ChallengeDetailsPage = () => {
         <div className="w-1/2">
           <EditChallenge challenge={challenge}/>
         </div>
-
       </div>
 
     </div>

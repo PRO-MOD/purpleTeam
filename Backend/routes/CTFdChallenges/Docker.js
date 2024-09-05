@@ -10,11 +10,90 @@ const router = express.Router();
 router.get('/images', async (req, res) => {
     try {
         const images = await dockerUtils.listDockerImages();
-        res.json(images);
+        const data = [];
+
+        // Use for...of for asynchronous processing
+        for (const ele of images) {
+            const element = await Image.findOne({ imageName: ele });
+            if (element) {
+                data.push({ name: ele, port: element.port });
+            } else {
+                data.push({ name: ele, port: null }); // Handle case where no port is found
+            }
+        }
+
+        res.json(data);
     } catch (error) {
         res.status(500).json({ error: 'Error listing Docker images' });
     }
 });
+
+router.get('/images/:challengeId', async (req, res) => {
+    const { challengeId } = req.params;
+
+    try {
+        if (!challengeId) {
+            return res.status(400).json({ error: 'Challenge ID is required.' });
+        }
+
+        // Fetch Docker images associated with the specific challengeId from the Image model
+        const imageDocs = await Image.find({ challengeId });
+
+        if (imageDocs.length == 0) {
+            return res.status(200).json([]);
+        }
+
+        const data = [];
+
+        for (const imageDoc of imageDocs) {
+            const ele = imageDoc.imageName;
+
+            // If image exists in Docker, add it to the data array
+            const dockerImageExists = await dockerUtils.checkImageExists(ele); 
+            if (dockerImageExists) {
+                data.push({ _id: imageDoc._id,name: ele, port: imageDoc.port });
+            }
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({ error: 'No images found for this challenge.' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error listing Docker images:', error);
+        res.status(500).json({ error: 'Error listing Docker images' });
+    }
+});
+
+router.put('/edit/images/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { port } = req.body;
+  
+      // Validate request body
+      if (!port) {
+        return res.status(400).json({ error: 'Image name and port are required.' });
+      }
+  
+      // Find and update the Docker image
+      const updatedImage = await Image.findByIdAndUpdate(
+        id,
+        { port },
+        { new: true } // Return the updated document
+      );
+  
+      if (!updatedImage) {
+        return res.status(404).json({ error: 'Docker image not found.' });
+      }
+  
+      // Respond with the updated image
+      res.json(updatedImage);
+    } catch (error) {
+      console.error('Error updating Docker image:', error);
+      res.status(500).json({ error: 'Internal server error.' });
+    }
+  });
 
 // Route to get details of a specific Docker image
 router.get('/details/images', async (req, res) => {
@@ -53,6 +132,30 @@ router.post('/images/pull', async (req, res) => {
     } catch (error) {
         console.error('Error pulling image or saving to database:', error);
         res.status(500).json({ error: `Error pulling image ${imageName}` });
+    }
+});
+
+// Delete Docker image and remove from the database
+router.delete('/images/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Find the image by ID
+        const imageDoc = await Image.findById(id);
+        if (!imageDoc) {
+            return res.status(404).json({ error: 'Image not found.' });
+        }
+
+        // Delete the Docker image and associated containers
+        await dockerUtils.deleteDockerImage(imageDoc.imageName);
+
+        // Remove the image from the database
+        await Image.findByIdAndDelete(id);
+
+        res.status(200).json({ message: 'Image and associated containers deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting Docker image:', error);
+        res.status(500).json({ error: 'Error deleting Docker image.' });
     }
 });
 
