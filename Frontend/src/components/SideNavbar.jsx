@@ -403,7 +403,7 @@ const SideNavbar = () => {
       {(userRole === "WT" || (userRole === "BT" && visibilitySettings.communication === 'yes')) && (
                 <Link to="/chat" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/chat") ? "bg-brown-450 text-white" : ""}`}>
                   <FontAwesomeIcon icon={faComment} size="xl" className="mr-4" />
-                  <p className="text-lg">Communication</p>
+                  <p className="text-lg">Communicate</p>
                   {unreadMessages > 0 && (
                     <span className="ml-2 rounded-full bg-red-500 text-white text-sm font-semibold px-2 py-1">{unreadMessages}</span>
                   )}

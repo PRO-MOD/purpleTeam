@@ -107,7 +107,7 @@ const SocketState = (props) => {
         },
       });
       const userData = await response.json();
-      setUnreadMessages(userData);
+      setUnreadMessages(userData.unreadMessagesCount);
     } catch (error) {
       console.error("Error fetching user role:", error);
     }

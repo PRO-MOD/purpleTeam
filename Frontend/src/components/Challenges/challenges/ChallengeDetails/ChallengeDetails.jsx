@@ -27,7 +27,7 @@ const ChallengeDetailsPage = () => {
     return <div>Loading...</div>;
   }
 
-  const tabs = ['Files', 'Flags', 'Topics', 'Tags', 'Hints', 'Requirements', 'Next', 'Users'];
+  const tabs = ['Files', 'Flags', 'Topics', 'Tags', 'Hints', 'Requirements', 'Next', 'Users', 'Config'];
 
   return (
     <div className="w-full">
