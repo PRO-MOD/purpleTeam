@@ -158,4 +158,59 @@ router.put('/update/:responseId', async (req, res) => {
 
 
 
+router.get('/unique-reports', async (req, res) => {
+  try {
+    // Aggregation pipeline
+    const results = await UserResponse.aggregate([
+      {
+        $lookup: {
+          from: 'users', // Name of the collection for User model
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $lookup: {
+          from: 'newreports', // Name of the collection for NewReport model
+          localField: 'reportId',
+          foreignField: '_id',
+          as: 'report'
+        }
+      },
+      {
+        $unwind: '$user'
+      },
+      {
+        $unwind: '$report'
+      },
+      {
+        $group: {
+          _id: {
+            reportName: '$report.name'
+          },
+          users: {
+            $push: {
+              userName: '$user.name',
+              createdAt: '$createdAt'
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          reportName: '$_id.reportName',
+          users: 1
+        }
+      }
+    ]);
+
+    res.json(results);
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch reports.' });
+  }
+});
+
 module.exports = router;

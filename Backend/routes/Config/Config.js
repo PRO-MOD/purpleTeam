@@ -78,20 +78,51 @@ router.get('/eventDetails', async (req, res) => {
   }
 });
 
-router.get('/getVisibilitySettings', async (req, res) => {
+// router.get('/getVisibilitySettings', async (req, res) => {
+//   try {
+//       const config = await Config.findOne();
+//       res.json({ settings: config.visibilitySettings });
+//   } catch (error) {
+//       res.status(500).json({ message: 'Error fetching visibility settings' });
+//   }
+// });
+
+// router.post('/setVisibilitySettings', async (req, res) => {
+//   const { section, visibility } = req.body;
+//   try {
+//       const config = await Config.findOne();
+//       config.visibilitySettings[section] = visibility;
+//       await config.save();
+//       res.status(200).json({ message: 'Visibility setting updated' });
+//   } catch (error) {
+//       res.status(500).json({ message: 'Error updating visibility setting' });
+//   }
+// });
+
+
+// Get visibility settings for a specific team
+router.get('/getVisibilitySettings/:team', async (req, res) => {
+  const { team } = req.params;
   try {
       const config = await Config.findOne();
-      res.json({ settings: config.visibilitySettings });
+      if (!config || !config.visibilitySettings[team]) {
+          return res.status(404).json({ message: 'Team not found or visibility settings not configured.' });
+      }
+      res.json({ settings: config.visibilitySettings[team] });
   } catch (error) {
       res.status(500).json({ message: 'Error fetching visibility settings' });
   }
 });
 
+// Update visibility settings for a specific team and section
 router.post('/setVisibilitySettings', async (req, res) => {
-  const { section, visibility } = req.body;
+  const { team, section, visibility } = req.body;
   try {
       const config = await Config.findOne();
-      config.visibilitySettings[section] = visibility;
+      if (!config || !config.visibilitySettings[team]) {
+          return res.status(404).json({ message: 'Team not found or visibility settings not configured.' });
+      }
+      config.visibilitySettings[team][section] = visibility;
       await config.save();
       res.status(200).json({ message: 'Visibility setting updated' });
   } catch (error) {
