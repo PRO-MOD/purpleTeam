@@ -59,6 +59,16 @@ const challengeSchema = new mongoose.Schema({
     choices: {
         type: [String], default: []
     },
+
+    initial: {
+        type: Number
+    },
+    minimum: {
+        type: Number,
+    },
+    decay: {
+        type: Number
+    },
     files: { type: [String], default: [] }, // Array of file paths or references
     tags: [String], // Array of tags
     hints: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hint' }],// Array of hint strings

@@ -108,6 +108,9 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
       } else if (existingChallenge.type === 'multiple_choice') {
           existingChallenge.choices = JSON.parse(req.body.choices);
       } else if (existingChallenge.type === 'dynamic') {
+        existingChallenge.initial=req.body.initial;
+        existingChallenge.minimum=req.body.minimum;
+        existingChallenge.decay=req.body.decay;
         const users = await User.find({});
         const flags = users.map(user => ({
           userId: user._id,
@@ -510,7 +513,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
 
 
 
-  const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, res) => {
+  const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, answer, res) => {
     try {
       let userScore = await score.findOne({ user: userId });
   
@@ -518,7 +521,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         return res.status(404).json({ message: 'User score not found' });
       }
   
-    
+    console.log(updatedValue);
       
         // Update user score
         userScore.score += updatedValue;
@@ -599,7 +602,23 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       // Verify the user's dynamic flag
       const userFlag = dynamicFlags.flags.find(flag => flag.userId.toString() === userId);
       if (userFlag && userFlag.flag === answer.trim()) {
-        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res, answer);
+
+        let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
+
+        // Fetch dynamic scoring values from the challenge document
+        let initial = challenge.initial
+        let minimum = challenge.minimum
+        let decay = challenge.decay 
+
+        // Calculate the dynamic score
+        let value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
+
+        // Ensure value doesn't drop below the minimum
+        if (value < minimum) {
+          value = minimum;
+        }
+
+        return handleCorrectAnswer(userId, challengeId, challenge.name, value, answer, res);
       }
       else{
         return handleIncorrectAnswer(userId, challengeId, answer, res);
