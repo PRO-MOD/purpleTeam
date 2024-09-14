@@ -5,6 +5,10 @@ const SubmissionSchema = new mongoose.Schema({
   challengeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Challenge', required: true },
   answer: { type: String, required: true },
   isCorrect: { type: Boolean, required: true },
+  attempt: { // New field to track attempt count
+    type: Number,
+    default: 0,
+  },
   date: { type: Date, default: Date.now }
 });
 

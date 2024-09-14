@@ -526,12 +526,16 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         // Update user score
         userScore.score += updatedValue;
         await userScore.save();
+
+        // Count previous attempts for this user and challenge
+    const previousAttempts = await Submission.countDocuments({ userId, challengeId });
   
         const newSubmission = new Submission({
           userId: userId,
           challengeId: challengeId,
           answer: answer,
           isCorrect: true,
+          attempt: previousAttempts + 1,
           date: new Date(),
         });
     
@@ -549,12 +553,16 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
   
     const handleIncorrectAnswer = async (userId, challengeId, answer, res) => {
       try {
+
+        // Count previous attempts for this user and challenge
+    const previousAttempts = await Submission.countDocuments({ userId, challengeId });
         // Save submission
         const newSubmission = new Submission({
           userId: userId ,
           challengeId:challengeId ,
           answer: answer,
           isCorrect: false,
+          attempt: previousAttempts + 1, 
           date: new Date(),
         });
   
@@ -652,6 +660,20 @@ router.get('/solved',fetchuser, async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+
+router.get('/attempts/:challengeId', fetchuser, async (req, res) => {
+  const { challengeId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const attempts = await Submission.countDocuments({ userId, challengeId });
+    res.json({ attempts });
+  } catch (error) {
+    console.error('Error fetching attempts:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 
 module.exports = router;

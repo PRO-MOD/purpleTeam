@@ -14,9 +14,6 @@ const UserChallengePage = () => {
   const [solvedChallenges, setSolvedChallenges] = useState([]); // New state
   const [totalAttempts, setTotalAttempts] = useState(0);
 
-
-
-
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
@@ -60,12 +57,42 @@ const UserChallengePage = () => {
     fetchSolvedChallenges();
   }, []);
 
-  const handleButtonClick = (challenge) => {
+  // const handleButtonClick = (challenge) => {
+  //   setSelectedChallenge(challenge);
+  //   setIsModalOpen(true);
+  //   setUpdatedValue(challenge.value);
+  //   setTotalAttempts(challenge.max_attempts);
+
+    
+  // };
+
+  const handleButtonClick = async (challenge) => {
     setSelectedChallenge(challenge);
     setIsModalOpen(true);
     setUpdatedValue(challenge.value);
     setTotalAttempts(challenge.max_attempts);
+  
+    try {
+      // Fetch the number of attempts for the selected challenge
+      const response = await fetch(`http://localhost:80/api/challenges/attempts/${challenge._id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-token': localStorage.getItem('Hactify-Auth-token')
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      setAttempts(data.attempts); // Set the fetched attempt count
+    } catch (error) {
+      console.error('Error fetching attempts:', error);
+    }
   };
+  
+  
 
   const closeModal = () => {
     setIsModalOpen(false);
