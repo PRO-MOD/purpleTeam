@@ -435,4 +435,54 @@ router.put('/assign-static-score/:userId', async (req, res) => {
     }
   });
 
+  router.get('/highest-scores', async (req, res) => {
+    try {
+      // Find the user with the highest manual score
+      const highestManualScore = await Score.findOne().sort({ manualScore: -1 }).populate('user').exec();
+  
+      // Find the user with the highest score
+      const highestScore = await Score.findOne().sort({ score: -1 }).populate('user').exec();
+  
+      res.json({
+        highestManualScore: highestManualScore ? highestManualScore.name : null,
+        highestScore: highestScore ? highestScore.name : null,
+      });
+    } catch (error) {
+      console.error('Error fetching highest scores:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch highest scores.' });
+    }
+  });
+
+  // API to get the score of each user
+router.get('/user-scores', async (req, res) => {
+    try {
+      // Fetch all users with their scores
+      const userScores = await Score.find().select('name score').exec();
+  
+      res.json({
+        success: true,
+        userScores
+      });
+    } catch (error) {
+      console.error('Error fetching user scores:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch user scores.' });
+    }
+  });
+
+
+  router.get('/user-manualscores', async (req, res) => {
+    try {
+      // Fetch all users with their scores
+      const userScores = await Score.find().select('name manualScore').exec();
+  
+      res.json({
+        success: true,
+        userScores
+      });
+    } catch (error) {
+      console.error('Error fetching user scores:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch user scores.' });
+    }
+  });
+
 module.exports = router;

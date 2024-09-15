@@ -22,7 +22,7 @@ function ProtectedRoute({ Component }) {
 
     useEffect(() => {
         // Redirect if user is not logged in or does not have required role
-        if (!user || user.role !== "WT") {
+        if (!user || user.role !== "WT" ) {
             navigate("/signin");
         }
     }, [user, navigate]);
