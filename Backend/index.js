@@ -2,14 +2,29 @@ const connectToMongo = require('./db')
 const express = require('express')
 const cors = require('cors')
 const crypto = require('crypto');
+const http = require('http');
 const Score = require('./models/score.js')
 const ChallengeSolve = require('./models/ChallengeSolved.js');
 require('dotenv').config();
-const io = require('socket.io')(8080, {
+
+connectToMongo();
+const app = express();
+app.use(cors());
+const port = 80;
+
+app.use(express.json());
+app.use("/uploads", express.static("uploads"));
+
+
+// Create an HTTP server using express app
+const server = http.createServer(app);
+
+const io = require('socket.io')(server, {
   cors: {
     origin: '*'
   }
 })
+
 // const { router: chatRouter, handleSocket, users } = require('./routes/chat');
 const chatRouter = require('./routes/chat').router;
 // console.log("Users from Index.js >> "+users);
@@ -72,17 +87,6 @@ const handleSocket = (io) => {
     console.error('Socket.IO Error:', error);
   });
 };
-
-// handleSocket(io);
-
-connectToMongo();
-const app = express()
-app.use(cors())
-const port = 80
-
-app.use(express.json())
-
-app.use("/uploads", express.static("uploads"))
 
 // Call the handleSocket function with the io instance
 handleSocket(io);
@@ -230,6 +234,6 @@ app.get("/hello", (req, res) => {
   res.send("hello")
 })
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Listening on port: ${port}`)
 })
