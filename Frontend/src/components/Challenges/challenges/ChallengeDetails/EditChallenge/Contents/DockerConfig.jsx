@@ -12,6 +12,7 @@ const DockerManager = ({ challengeId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false); // State for confirmation modal
   const [imageToDelete, setImageToDelete] = useState(null); // State to hold the image ID for deletion
+  const [isLoading, setIsLoading] = useState(false);
 
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
@@ -41,9 +42,10 @@ const DockerManager = ({ challengeId }) => {
       return;
     }
 
+    setIsLoading(true);
     try {
-      const url = isEditMode 
-        ? `${apiUrl}/api/docker/edit/images/${currentImage._id}` 
+      const url = isEditMode
+        ? `${apiUrl}/api/docker/edit/images/${currentImage._id}`
         : `${apiUrl}/api/docker/images/pull`;
 
       const method = isEditMode ? 'PUT' : 'POST';
@@ -53,10 +55,10 @@ const DockerManager = ({ challengeId }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          imageName: currentImage.name.trim(), 
-          challengeId, 
-          port: currentImage.port 
+        body: JSON.stringify({
+          imageName: currentImage.name.trim(),
+          challengeId,
+          port: currentImage.port
         }),
       });
 
@@ -70,6 +72,8 @@ const DockerManager = ({ challengeId }) => {
     } catch (error) {
       setMessage(isEditMode ? 'Error updating image.' : 'Error pulling image.');
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -247,10 +251,19 @@ const DockerManager = ({ challengeId }) => {
             <div className="flex justify-end">
               <button
                 onClick={handleSaveImage}
-                className="bg-blue-500 text-white p-2 rounded-sm mr-2"
+                className="bg-blue-500 text-white p-2 rounded-sm mr-2 flex flex-row items-center justify-center"
+                disabled={isLoading}
               >
-                {isEditMode ? 'Save Changes' : 'Add Image'}
+                {isLoading ? (
+                  <>
+                    Loading...
+                    <img src="/loading.gif" alt="Loading..." className="w-[20px] h-[20px] ml-2" />
+                  </>
+                ) : (
+                  isEditMode ? 'Save Changes' : 'Add Image'
+                )}
               </button>
+
               <button
                 onClick={handleCancel}
                 className="bg-gray-600 text-white p-2 rounded-sm"
@@ -264,7 +277,7 @@ const DockerManager = ({ challengeId }) => {
 
       {confirmDelete && (
         <ConfirmationModal
-          message="Are you sure you want to delete this image?"
+          message={`Are you sure you want to delete the image "${images.length > 0 && images.map((image) => (image.name)).join(",")}"?`}
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
         />

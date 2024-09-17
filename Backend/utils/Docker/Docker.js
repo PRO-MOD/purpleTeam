@@ -51,44 +51,53 @@ const pullDockerImage = async (imageName) => {
         const image = docker.getImage(imageName);
         const imageDetails = await image.inspect();
 
-        // console.log(`Image ${imageName} already exists locally.`);
+        console.log(`Image ${imageName} already exists locally.`);
         return imageDetails;
     } catch (err) {
         console.log(`Image ${imageName} not found locally. Pulling from Docker Hub...`);
 
-        // Pull image from Docker Hub
-        await docker.pull(imageName, (err, stream) => {
-            if (err) {
-                console.error('Error pulling image:', err);
-                return;
-            }
-
-            // Follow the progress of pulling the image
-            docker.modem.followProgress(stream, onFinished, onProgress);
-
-            // Define the callback for when the pull is completed
-            function onFinished(err, output) {
-                if (err) {
-                    console.error('Error after pulling the image:', err);
-                    return;
+        // Return a promise for pulling the image
+        return new Promise((resolve, reject) => {
+            docker.pull(imageName, (error, stream) => {
+                if (error) {
+                    console.error('Error pulling image:', error);
+                    return reject(error);
                 }
-                console.log(`Image ${imageName} pulled successfully.`);
-            }
 
-            // Define a function to track the progress of pulling the image
-            function onProgress(event) {
-                if (event.progressDetail && event.progressDetail.total) {
-                    const current = event.progressDetail.current || 0;
-                    const total = event.progressDetail.total;
-                    const percentage = ((current / total) * 100).toFixed(2);
-                    // console.log(`Progress: ${percentage}% (${current}/${total})`);
-                } else if (event) {
-                    // console.log(event.status);
+                // Follow the progress of pulling the image
+                docker.modem.followProgress(
+                    stream,
+                    (err, output) => {
+                        if (err) {
+                            console.error('Error after pulling the image:', err);
+                            return reject(err);
+                        }
+                        console.log(`Image ${imageName} pulled successfully.`);
+
+                        // After pulling, return the image details
+                        docker.getImage(imageName).inspect()
+                            .then((details) => resolve(details))
+                            .catch((err) => reject(err));
+                    },
+                    onProgress
+                );
+
+                // Function to track the progress of pulling the image
+                function onProgress(event) {
+                    if (event.progressDetail && event.progressDetail.total) {
+                        const current = event.progressDetail.current || 0;
+                        const total = event.progressDetail.total;
+                        const percentage = ((current / total) * 100).toFixed(2);
+                        console.log(`Progress: ${percentage}% (${current}/${total})`);
+                    } else if (event) {
+                        // console.log(event.status);
+                    }
                 }
-            }
+            });
         });
     }
 };
+
 
 const deleteDockerImage = async (imageName) => {
     try {

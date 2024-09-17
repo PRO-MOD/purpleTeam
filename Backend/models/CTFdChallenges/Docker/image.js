@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const imageSchema = new mongoose.Schema({
     imageName: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     port: {
         type: Number,
