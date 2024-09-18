@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import SocketContext from '../../context/SocketContext';
 import "../../App.css";
+import AuthContext from '../../context/AuthContext';
 
 function ChatLists({ position }) {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -14,6 +15,22 @@ function ChatLists({ position }) {
     const [showSearchInput, setShowSearchInput] = useState(false);
     const navigate = useNavigate();
 
+    const context = useContext(AuthContext);
+    const { user, fetchUserRole } = context;
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      const getUserRole = async () => {
+        try {
+          await fetchUserRole();
+        } catch (error) {
+          setError('Error fetching user role');
+        }
+      };
+  
+      getUserRole();
+    }, []);
+
     // import all context
     const { unreadMessages, fetchUnreadMessages, unreadCounts, fetchUnreadMessagesByUser } = useContext(SocketContext);
 
@@ -21,9 +38,9 @@ function ChatLists({ position }) {
         if (position === 'left') {
             fetchConversations();
         } else if (position === 'right') {
-            fetchVolunteers();
+           { user && ( fetchVolunteers() )}
         }
-    }, [position]);
+    }, [position, user]);
 
     const fetchConversations = async () => {
         try {
@@ -42,21 +59,47 @@ function ChatLists({ position }) {
         }
     };
 
+    // const fetchVolunteers = async () => {
+    //     try {
+    //         const response = await fetch(`${apiUrl}/api/auth/getusersall`, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 "Auth-token": localStorage.getItem('Hactify-Auth-token') // Assuming you have a token stored in localStorage
+    //             }
+    //         });
+    //         const data = await response.json();
+    //         setVolunteers(data);
+    //     } catch (error) {
+    //         console.error('Error fetching volunteers:', error);
+    //     }
+    // };
+
     const fetchVolunteers = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/auth/getusersall`, {
+           
+            const userRole = user.role 
+    
+            // Determine the correct API based on the user's role
+            const apiEndpoint = userRole === 'BT' 
+                ? `${apiUrl}/api/auth/getWhiteUsersall` 
+                : `${apiUrl}/api/auth/getusersall`;
+    
+            const response = await fetch(apiEndpoint, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     "Auth-token": localStorage.getItem('Hactify-Auth-token') // Assuming you have a token stored in localStorage
                 }
             });
+    
             const data = await response.json();
-            setVolunteers(data);
+            setVolunteers(data); // Assuming setVolunteers is the method to update state with the fetched data
         } catch (error) {
             console.error('Error fetching volunteers:', error);
         }
     };
+    
 
     const handleChatItemClick = async (recipientId) => {
         navigate(`/chat/${recipientId}`);

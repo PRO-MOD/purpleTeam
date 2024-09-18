@@ -9,6 +9,9 @@ const EditChallenge = ({ challenge }) => {
   const [description, setDescription] = useState(challenge.description);
   const [connectionInfo, setConnectionInfo] = useState(challenge.connectionInfo);
   const [value, setValue] = useState(challenge.value);
+  const [initial, setInitial] = useState(challenge.initial || 0);
+  const [minimum, setMinimum] = useState(challenge.minimum || 0);
+  const [decay, setDecay] = useState(challenge.decay || 0);
   const [max_attempts, setMax_attempts] = useState(challenge.max_attempts || 0);
   const [state, setState] = useState(challenge.state);
   const [loading, setLoading] = useState(false);
@@ -30,6 +33,9 @@ const EditChallenge = ({ challenge }) => {
         value,
         max_attempts,
         state,
+        initial,
+        minimum,
+        decay
       };
 
       const response = await fetch(`${apiUrl}/api/challenges/edit/${challenge._id}`, {
@@ -135,6 +141,58 @@ const EditChallenge = ({ challenge }) => {
             className="form-control block w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200 outline-0"
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="initial" className="block text-sm font-medium text-gray-700">
+          initial
+            <small className="block text-gray-500">
+            The starting value for a challenge
+            </small>
+          </label>
+          <input
+            type="number"
+            id="initial"
+            name="initail"
+            className="form-control block w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200 outline-0"
+            value={initial}
+            onChange={(e) => setInitial(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="minimum" className="block text-sm font-medium text-gray-700">
+          Minimum
+            <small className="block text-gray-500">
+            The minimum amount of points a challenge can be
+            </small>
+          </label>
+          <input
+            type="number"
+            id="minimum"
+            name="minimum"
+            className="form-control block w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200 outline-0"
+            value={minimum}
+            onChange={(e) => setMinimum(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="initial" className="block text-sm font-medium text-gray-700">
+          decay
+            <small className="block text-gray-500">
+            How many solves before the challenge reaches its minimum value
+            </small>
+          </label>
+          <input
+            type="number"
+            id="decay"
+            name="decay"
+            className="form-control block w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200 outline-0"
+            value={decay}
+            onChange={(e) => setDecay(e.target.value)}
             required
           />
         </div>

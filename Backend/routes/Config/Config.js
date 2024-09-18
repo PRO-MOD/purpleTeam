@@ -78,27 +78,6 @@ router.get('/eventDetails', async (req, res) => {
   }
 });
 
-// router.get('/getVisibilitySettings', async (req, res) => {
-//   try {
-//       const config = await Config.findOne();
-//       res.json({ settings: config.visibilitySettings });
-//   } catch (error) {
-//       res.status(500).json({ message: 'Error fetching visibility settings' });
-//   }
-// });
-
-// router.post('/setVisibilitySettings', async (req, res) => {
-//   const { section, visibility } = req.body;
-//   try {
-//       const config = await Config.findOne();
-//       config.visibilitySettings[section] = visibility;
-//       await config.save();
-//       res.status(200).json({ message: 'Visibility setting updated' });
-//   } catch (error) {
-//       res.status(500).json({ message: 'Error updating visibility setting' });
-//   }
-// });
-
 
 // Get visibility settings for a specific team
 router.get('/getVisibilitySettings/:team', async (req, res) => {
@@ -129,6 +108,46 @@ router.post('/setVisibilitySettings', async (req, res) => {
       res.status(500).json({ message: 'Error updating visibility setting' });
   }
 });
+
+router.get('/mode', async (req, res) => {
+  try {
+    const config = await Config.findOne(); // Assuming there's only one config document
+    if (!config) {
+      return res.status(404).json({ success: false, message: 'Config not found.' });
+    }
+    res.json({ success: true, mode: config.mode });
+  } catch (error) {
+    console.error('Error fetching mode:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch mode.' });
+  }
+});
+
+// Set Mode API
+router.post('/mode', async (req, res) => {
+  const { mode } = req.body;
+
+  // Validate mode
+  if (!['ctfd', 'purpleTeam'].includes(mode)) {
+    return res.status(400).json({ success: false, message: 'Invalid mode value.' });
+  }
+
+  try {
+    const config = await Config.findOne(); // Assuming there's only one config document
+    if (!config) {
+      return res.status(404).json({ success: false, message: 'Config not found.' });
+    }
+
+    // Update mode
+    config.mode = mode;
+    await config.save();
+
+    res.json({ success: true, message: 'Mode updated successfully.', mode: config.mode });
+  } catch (error) {
+    console.error('Error updating mode:', error);
+    res.status(500).json({ success: false, message: 'Failed to update mode.' });
+  }
+});
+
 
 
 module.exports = router;

@@ -4,33 +4,104 @@ const UserResponse = require('../../models/Report/UserResponse');
 const fetchuser = require('../../middleware/fetchuser');
 const moment = require('moment-timezone');
 const Score= require('../../models/score');
+const multer = require('multer');
+const path = require('path');
 
-router.post('/ans', fetchuser, async (req, res) => {
-  const userId = req.user.id;
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Path where files will be stored
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext); // Unique filename
+  },
+});
+
+const upload = multer({ storage });
+
+// Function to validate MongoDB ObjectId
+router.post('/ans', fetchuser, upload.any(), async (req, res) => {
   try {
-    const { reportId, responses } = req.body;
+    const { reportId } = req.body;
+    const userId = req.user.id; 
+    const responses = req.body.responses;
+    let responseArray = [];
 
-    if (!reportId || !userId || !Array.isArray(responses)) {
-      return res.status(400).json({ error: 'Invalid input data' });
-    }
+    // Ensure that responses exist
+    if (responses) {
+      // Process each response and validate questionId
+      for (let questionId in responses) {
+        if (!questionId) {
+          return res.status(400).json({ message: `Missing questionId for response.` });
+        }
 
-    for (const response of responses) {
-      if (!response.questionId || response.answer === undefined) {
-        return res.status(400).json({ error: 'Each response must include questionId and answer' });
+        const answer = responses[questionId];
+
+        // Check if questionId already exists in responseArray
+        let existingResponse = responseArray.find(response => response.questionId === questionId);
+        if (existingResponse) {
+          // If the response exists, and it's an array, push the new answer
+          if (Array.isArray(existingResponse.answer)) {
+            existingResponse.answer.push(answer);
+          } else {
+            existingResponse.answer = [existingResponse.answer, answer];
+          }
+        } else {
+          // Create new response for this questionId
+          responseArray.push({
+            questionId: questionId,
+            answer: answer
+          });
+        }
       }
     }
 
+    // Handle file uploads (if any) and validate questionId for each file
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        // Extract questionId from fieldname (assuming format: `responses[questionId]`)
+        const match = file.fieldname.match(/\[(.*?)\]/); // Matches text inside square brackets
+        const questionId = match ? match[1] : null;
+
+        if (!questionId) {
+          return res.status(400).json({ message: 'Missing questionId for file upload.' });
+        }
+
+        // Find the existing entry for the questionId
+        let existingResponse = responseArray.find(response => response.questionId === questionId);
+
+        if (existingResponse) {
+          // If an entry exists, and the answer is an array, append the file path to it
+          if (Array.isArray(existingResponse.answer)) {
+            existingResponse.answer.push(file.path);
+          } else {
+            // Otherwise, convert the existing answer to an array and add the file path
+            existingResponse.answer = [existingResponse.answer, file.path];
+          }
+        } else {
+          // If no entry exists, create a new one with the file path
+          responseArray.push({
+            questionId: questionId,
+            answer: file.path // Store the file path
+          });
+        }
+      });
+    }
+
+    // Save the new user response
     const newResponse = new UserResponse({
-      reportId,
-      userId,
-      responses,
+      reportId: reportId,
+      userId: userId,
+      responses: responseArray,
     });
 
     await newResponse.save();
-    res.status(201).json({ message: 'Responses saved successfully' });
+
+    res.status(200).json({ message: 'Form submitted successfully', data: newResponse });
   } catch (error) {
-    console.error('Error saving responses:', error);
-    res.status(500).json({ error: 'Failed to save responses' });
+    console.error('Error submitting form:', error);
+    res.status(500).json({ message: 'Failed to submit form', error: error.message });
   }
 });
 
@@ -212,5 +283,40 @@ router.get('/unique-reports', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch reports.' });
   }
 });
+
+
+router.get('/images/:responseId', async (req, res) => {
+  const { responseId } = req.params;
+
+  try {
+    // Find the user response by ID
+    const userResponse = await UserResponse.findById(responseId).exec();
+    
+    if (!userResponse) {
+      return res.status(404).json({ success: false, message: 'User response not found.' });
+    }
+
+    // Extract image paths from the responses array
+    const imagePaths = userResponse.responses
+      .flatMap(response => {
+        if (Array.isArray(response.answer)) {
+          // If answer is an array, filter and return image paths
+          return response.answer.filter(path =>
+            typeof path === 'string' && (path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg'))
+          );
+        } else if (typeof response.answer === 'string' && (response.answer.endsWith('.png') || response.answer.endsWith('.jpg') || response.answer.endsWith('.jpeg'))) {
+          // If answer is a string, check if it's an image path
+          return [response.answer];
+        }
+        return [];
+      });
+
+    res.json({ success: true, images: imagePaths });
+  } catch (error) {
+    console.error('Error fetching response images:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch images.' });
+  }
+});
+
 
 module.exports = router;

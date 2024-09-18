@@ -96,6 +96,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
                         <option value="dropdown">Dropdown</option>
                         <option value="textarea">Textarea</option>
                         <option value="mcq">Multiple Choice</option>
+                        <option value="image">Image</option>
                     </select>
                 </div>
                 <InputField

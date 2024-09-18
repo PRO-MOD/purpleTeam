@@ -1,6 +1,6 @@
+
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const path = require('path');
 
 const PDFUtils = {
   // Function to add header and footer to each page
@@ -24,8 +24,73 @@ const PDFUtils = {
       if (pageConfig && pageConfig.text) {
         doc.text(pageConfig.text, { align: 'center', y: pageConfig.coordinateY || 200, margin: pageConfig.margin || 50 });
       }
-    })
+    });
   },
+
+  // Function to check if the path is an image (based on file extension)
+  isImage: (filePath) => {
+    return /\.(png|jpg|jpeg)$/i.test(filePath);
+  },
+
+  // Function to handle rendering images for answers with height management
+  // renderImages: (doc, images) => {
+  //   const pageHeight = doc.page.height;
+  //   const margin = 50;
+  //   const footerHeight = 60;
+  //   const maxImageHeight = 400;  // Maximum height for each image
+
+  //   images.forEach(imagePath => {
+  //     if (PDFUtils.isImage(imagePath)) {
+  //       // Calculate the remaining space on the page
+  //       const availableHeight = pageHeight - doc.y - footerHeight - margin;
+
+  //       // If the image doesn't fit in the remaining space, start a new page
+  //       if (availableHeight < maxImageHeight) {
+  //         doc.addPage();
+  //       }
+
+  //       // Render the image
+  //       doc.image(imagePath, { fit: [500, maxImageHeight], align: 'center' });
+        
+
+  //       // Add some spacing after the image
+  //       doc.moveDown(1);  // Ensure there's enough gap between images or other content
+  //     }
+  //   });
+  // },
+
+  renderImages: (doc, images) => {
+    const pageHeight = doc.page.height;
+    const margin = 50;
+    const footerHeight = 60;
+    const maxImageHeight = 300;  // Maximum height for each image
+  
+    images.forEach(imagePath => {
+      if (PDFUtils.isImage(imagePath)) {
+        // Calculate the remaining space on the page
+        const availableHeight = pageHeight - doc.y - footerHeight - margin;
+  
+        // If the image doesn't fit in the remaining space, start a new page
+        if (availableHeight < maxImageHeight) {
+          doc.addPage();
+        }
+  
+        // Render the image
+        doc.image(imagePath, { fit: [500, maxImageHeight], align: 'center' });
+  
+        // Add 400 units of vertical space after the image
+        const spaceAfterImage = 300;
+  
+        // Check if adding space would cause overflow, if so, move to new page
+        if (pageHeight - doc.y - footerHeight - margin < spaceAfterImage) {
+          doc.addPage();
+        } else {
+          doc.y += spaceAfterImage; // Manually add 400 units of space after the image
+        }
+      }
+    });
+  },
+  
 
   // Function to generate the PDF
   generatePDF: async (questions, userResponse, outputFilePath, headerImagePath, footerImagePath, firstPageConfig, lastPageConfig, enablePageNumber) => {
@@ -52,25 +117,57 @@ const PDFUtils = {
       doc.on('pageAdded', () => {
         PDFUtils.addTemplate(doc, { imagePath: headerImagePath }, { imagePath: footerImagePath }); // Add template for each new page
         y = headerHeight + 40;
-
       });
+
+      // questions.forEach((question, index) => {
+      //   const questionText = `Q${question.index + 1}. ${question.text}`;
+      //   const answer = userResponse.responses[index].answer;
+
+      //   doc.text(questionText, margin, y);
+      //   y = doc.y + 10; // Update y to the current vertical position after adding question text
+
+      //   // Check if the answer is an image or array of images
+      //   if (Array.isArray(answer) && answer.every(a => PDFUtils.isImage(a))) {
+      //     PDFUtils.renderImages(doc, answer); // Render all images
+      //   } else if (PDFUtils.isImage(answer)) {
+      //     PDFUtils.renderImages(doc, [answer]); // Render the single image
+      //   } else {
+      //     // Render text answer if it's not an image
+      //     const responseText = `Ans: ${Array.isArray(answer) ? answer.join(", ") : answer}`;
+      //     doc.text(responseText, { align: 'left', continued: false });
+      //   }
+
+      //   y = doc.y + 10; // Update y to the current vertical position after adding response text or image
+      // });
 
       questions.forEach((question, index) => {
         const questionText = `Q${question.index + 1}. ${question.text}`;
-        const responseText = `Ans: ${Array.isArray(userResponse.responses[index].answer)
-          ? userResponse.responses[index].answer.join(", ")
-          : userResponse.responses[index].answer}`;
-
+        const answer = userResponse.responses[index]?.answer; // Safely access the answer
+      
         doc.text(questionText, margin, y);
         y = doc.y + 10; // Update y to the current vertical position after adding question text
-
-        doc.text(responseText, {
-          align: 'left',
-          continued: false // Ends the paragraph here
-        });
-
-        y = doc.y + 10; // Update y to the current vertical position after adding response text
+      
+        // Check if the answer is missing or empty
+        if (!answer) {
+          doc.text('No response submitted', { align: 'left', continued: false });
+        }
+        // Check if the answer is an array of images
+        else if (Array.isArray(answer) && answer.every(a => PDFUtils.isImage(a))) {
+          PDFUtils.renderImages(doc, answer); // Render all images
+        }
+        // Check if the answer is a single image
+        else if (PDFUtils.isImage(answer)) {
+          PDFUtils.renderImages(doc, [answer]); // Render the single image
+        } 
+        // Render text answer if it's not an image
+        else {
+          const responseText = `Ans: ${Array.isArray(answer) ? answer.join(", ") : answer}`;
+          doc.text(responseText, { align: 'left', continued: false });
+        }
+      
+        y = doc.y + 10; // Update y to the current vertical position after adding response text or image
       });
+      
 
       // Handle the last page content if configured
       if (lastPageConfig) {

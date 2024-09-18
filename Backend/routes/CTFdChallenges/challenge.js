@@ -236,6 +236,28 @@ router.delete('/deleteChallenges', async (req, res) => {
     }
   });
 
+
+  router.delete('/delete/:id', async (req, res) => {
+    const { id } = req.params; // Extract the challenge ID from the URL parameters
+  
+    if (!id) {
+      return res.status(400).json({ error: 'No ID provided. Please provide a valid challenge ID.' });
+    }
+  
+    try {
+      const result = await Challenge.findByIdAndDelete(id);
+      
+      if (!result) {
+        return res.status(404).json({ message: 'Challenge not found.' });
+      }
+  
+      res.status(200).json({ message: 'Challenge deleted successfully.' });
+    } catch (error) {
+      console.error('Error deleting challenge:', error);
+      res.status(500).json({ error: 'Failed to delete challenge', message: error.message });
+    }
+  });
+  
   router.get('/files/:id', async (req, res) => {
     try {
       const challenge = await Challenge.findById(req.params.id);
@@ -536,6 +558,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
           answer: answer,
           isCorrect: true,
           attempt: previousAttempts + 1,
+          points:updatedValue,
           date: new Date(),
         });
     
@@ -563,6 +586,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
           answer: answer,
           isCorrect: false,
           attempt: previousAttempts + 1, 
+          points: 0,
           date: new Date(),
         });
   
@@ -609,28 +633,77 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
 
       // Verify the user's dynamic flag
       const userFlag = dynamicFlags.flags.find(flag => flag.userId.toString() === userId);
+      // if (userFlag && userFlag.flag === answer.trim()) {
+      
+      //     let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
+      
+      //     // Fetch dynamic scoring values from the challenge document
+      //     let initial = challenge.initial;
+      //     let minimum = challenge.minimum;
+      //     let decay = challenge.decay;
+      
+      //     // Calculate the dynamic score for the current correct answer
+      //     let value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
+      
+      //     // Ensure value doesn't drop below the minimum
+      //     if (value < minimum) {
+      //         value = minimum;
+      //     }
+      
+      //     // Calculate the value for the next correct answer
+      //     let nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
+      //     if (nextval < minimum) {
+      //         nextval = minimum;
+      //     }
+
+      //     const challenge= await Challenge.findById(challengeId);
+
+      //     challenge.value=nextval;
+      //     await challenge.save();
+          
+      //   return handleCorrectAnswer(userId, challengeId, challenge.name, value, answer, res);
+      // }
+      // else{
+      //   return handleIncorrectAnswer(userId, challengeId, answer, res);
+      // }
+
       if (userFlag && userFlag.flag === answer.trim()) {
-
-        let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
-
+        // Fetch the challenge document from the database first
+        const challenge = await Challenge.findById(challengeId);
+        
         // Fetch dynamic scoring values from the challenge document
-        let initial = challenge.initial
-        let minimum = challenge.minimum
-        let decay = challenge.decay 
-
-        // Calculate the dynamic score
+        let initial = challenge.initial;
+        let minimum = challenge.minimum;
+        let decay = challenge.decay;
+        
+        // Calculate the number of correct answers
+        let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
+    
+        // Calculate the dynamic score for the current correct answer
         let value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
-
+        
         // Ensure value doesn't drop below the minimum
         if (value < minimum) {
-          value = minimum;
+            value = minimum;
         }
-
+        
+        // Calculate the value for the next correct answer
+        let nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
+        if (nextval < minimum) {
+            nextval = minimum;
+        }
+    
+        // Update the challenge document with the new value
+        challenge.value = nextval;
+        await challenge.save();
+        
+        // Handle the correct answer
         return handleCorrectAnswer(userId, challengeId, challenge.name, value, answer, res);
-      }
-      else{
+    } else {
+        // Handle the incorrect answer
         return handleIncorrectAnswer(userId, challengeId, answer, res);
-      }
+    }
+    
     } else {
       // Regular flag verification
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);

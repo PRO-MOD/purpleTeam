@@ -64,7 +64,7 @@ const challengeSchema = new mongoose.Schema({
         type: Number
     },
     minimum: {
-        type: Number,
+        type: Number
     },
     decay: {
         type: Number
