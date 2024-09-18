@@ -29,6 +29,21 @@ const getImageDetails = async (imageName) => {
     }
 };
 
+const checkImageExists = async (imageName) => {
+    try {
+        // List all images from Docker
+        const images = await docker.listImages();
+        
+        // Check if the specified image name exists in the list
+        return images.some(image => {
+            return image.RepoTags && image.RepoTags.includes(imageName)
+        });
+    } catch (error) {
+        console.error('Error checking if Docker image exists:', error);
+        throw new Error('Docker image check failed');
+    }
+};
+
 // Check if an image exists, if not, pull it
 const pullDockerImage = async (imageName) => {
     try {
@@ -72,6 +87,40 @@ const pullDockerImage = async (imageName) => {
                 }
             }
         });
+    }
+};
+
+const deleteDockerImage = async (imageName) => {
+    try {
+        // Get the list of containers using the image
+        const containers = await docker.listContainers({ all: true });
+
+        // Stop and remove containers using the image
+        for (const containerInfo of containers) {
+            if (containerInfo.Image === imageName) {
+                const container = docker.getContainer(containerInfo.Id);
+                
+                // Stop the container
+                await container.stop();
+                console.log(`Stopped container ${containerInfo.Id}`);
+                
+                // Remove the container
+                await container.remove();
+                console.log(`Removed container ${containerInfo.Id}`);
+            }
+        }
+
+        // Pull the image
+        const image = docker.getImage(imageName);
+
+        // Remove the image
+        await image.remove();
+
+        console.log(`Docker image ${imageName} deleted successfully.`);
+        return true;
+    } catch (error) {
+        console.error(`Error deleting Docker image ${imageName}:`, error);
+        throw new Error('Failed to delete Docker image.');
     }
 };
 
@@ -148,6 +197,8 @@ module.exports = {
     listDockerImages,
     getImageDetails,
     pullDockerImage,
+    deleteDockerImage,
     generateUrl,
-    stopContainer
+    stopContainer,
+    checkImageExists
 }

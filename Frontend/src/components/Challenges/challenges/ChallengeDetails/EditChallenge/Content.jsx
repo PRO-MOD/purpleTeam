@@ -4,6 +4,7 @@ import Flags from './Contents/Flags';
 import Hints from './Contents/Hints';
 import Tags from './Contents/Tags';
 import Users from './Contents/Users';
+import DockerManager from './Contents/DockerConfig';
 // const Flags = () => <div>Flags Content</div>;
 const Topics = () => <div>Topics Content</div>;
 // const Tags = () => <div>Tags Content</div>;
@@ -31,7 +32,7 @@ const Content = ({ activeTab, challengeId }) => {
       case 'Next':
         return <Next />;
       case 'Config':
-        return <>Config</>;
+        return <DockerManager challengeId={challengeId} />;
       default:
         return null;
     }

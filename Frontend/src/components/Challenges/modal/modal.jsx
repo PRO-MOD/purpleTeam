@@ -21,6 +21,7 @@ const Modal = ({
   totalAttempts,
 
 }) => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const [formData, setFormData] = useState({ language: 'python', flag: '' });
   const [editorOutput, setEditorOutput] = useState('');
   const [hintsModalOpen, setHintsModalOpen] = useState(false);
@@ -29,6 +30,8 @@ const Modal = ({
   const [usedHints, setUsedHints] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
   const [showHintDetails, setShowHintDetails] = useState(false);
+  const [message, setMessage] = useState('');
+  const [containerData, setContainerData] = useState({});
 
   useEffect(() => {
     if (!isOpen) {
@@ -213,6 +216,57 @@ const Modal = ({
     />
   );
 
+  // create individual containers
+  const handleCreateContainer = async (challengeId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/docker/create/container`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-token': localStorage.getItem('Hactify-Auth-token')
+        },
+        body: JSON.stringify({ challengeId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create container.');
+      }
+
+      setContainerData(data);
+    } catch (error) {
+      setMessage('Error creating container.');
+      console.error('Error creating container:', error);
+    }
+  };
+
+  // stop running container
+  const handleDeleteContainer = async (containerId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/docker/stop/container`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ containerId }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to stop container.');
+      }
+  
+      setMessage(`Container stopped successfully.`);
+      setContainerData({});
+    } catch (error) {
+      setMessage(`Error stopping container: ${error.message}`);
+      console.error('Error stopping container:', error);
+    }
+  };
+  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-full w-full md:max-w-3xl overflow-y-auto">
@@ -255,6 +309,23 @@ const Modal = ({
               </div>
             ) : challenge.type === 'standard' || challenge.type === 'manual_verification' || challenge.type === 'dynamic' ? (
               <div className="mt-4">
+                {
+                  challenge.type === 'dynamic' ? 
+                  <div className="flex flex-row">
+                    <button className='bg-green-500 rounded p-2 mb-2 text-white ' onClick={() => handleCreateContainer(challenge._id)}>Start server</button>
+                    {message && <p>{message && message}</p>}
+                    {containerData && containerData.url && 
+                    <div className="flex flex-col">
+                      Use below link to get Flag
+                      <a href={containerData.url} className='text-indigo-500' target='_black'>Get Flag</a>
+                      <button className='bg-red-500 rounded p-2 my-2 text-white' onClick={() => handleDeleteContainer(containerData.containerId)}>Stop server</button>
+                    </div>
+                    }
+                    
+                  </div>
+                  : 
+                  ""
+                }
                 <textarea
                   className="w-full p-2 border border-gray-300 rounded"
                   rows="3"
