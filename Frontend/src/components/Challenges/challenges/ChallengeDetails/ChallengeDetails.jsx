@@ -1,5 +1,8 @@
+
+
+
 // import React, { useEffect, useState } from 'react';
-// import { useParams } from 'react-router-dom';
+// import { useParams, useNavigate } from 'react-router-dom';
 // import PageHeader from '../../navbar/PageHeader';
 // import EditNavigation from './EditChallenge/EditNavigation';
 // import Content from './EditChallenge/Content';
@@ -9,6 +12,7 @@
 //   const { id } = useParams(); // Get challenge ID from URL params
 //   const [challenge, setChallenge] = useState(null);
 //   const [activeTab, setActiveTab] = useState('Files');
+//   const navigate = useNavigate();
 
 //   useEffect(() => {
 //     const fetchChallenge = async () => {
@@ -23,6 +27,20 @@
 
 //     fetchChallenge();
 //   }, [id]);
+
+//   const handleDelete = async () => {
+//     try {
+//       await fetch(`http://localhost:80/api/challenges/delete/${id}`, { method: 'DELETE' });
+//       navigate('/challenges'); // Redirect to challenges page after deletion
+//     } catch (error) {
+//       console.error('Error deleting challenge:', error);
+//     }
+//   };
+
+//   const handleSubmissions = () => {
+//     navigate(`/challenges/submissions/${id}`);
+//   };
+
 //   if (!challenge) {
 //     return <div>Loading...</div>;
 //   }
@@ -39,20 +57,20 @@
 //           state: challenge.state,
 //           value: `${challenge.value} points`
 //         }}
+//         onDelete={handleDelete}    // Pass delete handler
+//         onSubmissions={handleSubmissions}  // Pass submissions handler
 //       />
 //       <div className="flex flex-row">
 //         <div className="w-1/2 flex flex-col">
-//           <EditNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
+//           <EditNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
 //           <div className="m-8">
 //             <Content activeTab={activeTab} challengeId={id} />
 //           </div>
 //         </div>
 //         <div className="w-1/2">
-//           <EditChallenge challenge={challenge}/>
+//           <EditChallenge challenge={challenge} />
 //         </div>
-
 //       </div>
-
 //     </div>
 //   );
 // };
@@ -66,11 +84,13 @@ import PageHeader from '../../navbar/PageHeader';
 import EditNavigation from './EditChallenge/EditNavigation';
 import Content from './EditChallenge/Content';
 import EditChallenge from './EditChallenge/EditChallenge';
+import ConfirmationModal from '../Partials/ConfirmationModal'; // Import the modal component
 
 const ChallengeDetailsPage = () => {
   const { id } = useParams(); // Get challenge ID from URL params
   const [challenge, setChallenge] = useState(null);
   const [activeTab, setActiveTab] = useState('Files');
+  const [showModal, setShowModal] = useState(false); // State for showing the modal
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -100,6 +120,19 @@ const ChallengeDetailsPage = () => {
     navigate(`/challenges/submissions/${id}`);
   };
 
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    await handleDelete();
+    handleCloseModal();
+  };
+
   if (!challenge) {
     return <div>Loading...</div>;
   }
@@ -116,9 +149,16 @@ const ChallengeDetailsPage = () => {
           state: challenge.state,
           value: `${challenge.value} points`
         }}
-        onDelete={handleDelete}    // Pass delete handler
+        onDelete={handleOpenModal}    // Pass function to open modal
         onSubmissions={handleSubmissions}  // Pass submissions handler
       />
+      {showModal && (
+        <ConfirmationModal
+          message="Are you sure you want to delete this challenge? This action cannot be undone."
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCloseModal}
+        />
+      )}
       <div className="flex flex-row">
         <div className="w-1/2 flex flex-col">
           <EditNavigation activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />

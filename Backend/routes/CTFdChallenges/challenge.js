@@ -574,29 +574,56 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
   };
 
   
-    const handleIncorrectAnswer = async (userId, challengeId, answer, res) => {
-      try {
-
-        // Count previous attempts for this user and challenge
-    const previousAttempts = await Submission.countDocuments({ userId, challengeId });
-        // Save submission
-        const newSubmission = new Submission({
-          userId: userId ,
-          challengeId:challengeId ,
-          answer: answer,
-          isCorrect: false,
-          attempt: previousAttempts + 1, 
-          points: 0,
-          date: new Date(),
-        });
+  const handleIncorrectAnswer = async (userId, challengeId, answer, res) => {
+    try {
+      // Count previous attempts for this user and challenge
+      const previousAttempts = await Submission.countDocuments({ userId, challengeId });
   
-        await newSubmission.save();
-
-        return res.json({ correct: false });
-      } catch (error) {
-        console.error(error);
+      // Fetch the challenge details
+      const challenge = await Challenge.findById(challengeId);
+      if (!challenge) {
+        return res.status(404).json({ message: 'Challenge not found' });
       }
-    };
+  
+      let isCheating = false; // Default to not cheating
+  
+      // Check if the challenge type is dynamic
+      if (challenge.type === 'dynamic') {
+        // Fetch the flags for this dynamic challenge from the DynamicFlag schema
+        const dynamicFlag = await DynamicFlag.findOne({ challengeId: challengeId });
+  
+        if (dynamicFlag) {
+          const flags = dynamicFlag.flags.map(flagEntry => flagEntry.flag); // Extract flags from entries
+         
+  
+          // Check if the answer matches any of the flags
+          isCheating = flags.includes(answer);
+          
+        }
+      }
+  
+      // Save the submission with cheating status
+      const newSubmission = new Submission({
+        userId: userId,
+        challengeId: challengeId,
+        answer: answer,
+        isCorrect: false,
+        attempt: previousAttempts + 1,
+        points: 0,
+        date: new Date(),
+        cheating: isCheating
+      });
+  
+      await newSubmission.save();
+  
+      return res.json({ correct: false, cheating: isCheating });
+    } catch (error) {
+      console.error('Error handling incorrect answer:', error);
+      return res.status(500).json({ success: false, message: 'An error occurred while processing the submission.' });
+    }
+  };
+  
+  
 
 
   const { challengeId, answer, updatedValue } = req.body;
@@ -696,9 +723,11 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         // Update the challenge document with the new value
         challenge.value = nextval;
         await challenge.save();
+
+        let min=Math.min(value, updatedValue);
         
         // Handle the correct answer
-        return handleCorrectAnswer(userId, challengeId, challenge.name, value, answer, res);
+        return handleCorrectAnswer(userId, challengeId, challenge.name, min, answer, res);
     } else {
         // Handle the incorrect answer
         return handleIncorrectAnswer(userId, challengeId, answer, res);

@@ -117,7 +117,7 @@ router.get('/getscores', async (req, res) => {
                     // Update the existing score document
                     existingScore.name = score.name;
                     existingScore.account_id = score.account_id;
-                    existingScore.score = 1000 - score.score;
+                    existingScore.score = score.score;
                     // existingScore.manualScore = 0;
                     await existingScore.save();
                 } else {
@@ -125,7 +125,7 @@ router.get('/getscores', async (req, res) => {
                     await Score.create({
                         name: score.name,
                         account_id: score.account_id,
-                        score: 1000 - score.score,
+                        score: score.score,
                         manualScore: 0,
                         user: user._id,
                         date: new Date() // Insert the current date

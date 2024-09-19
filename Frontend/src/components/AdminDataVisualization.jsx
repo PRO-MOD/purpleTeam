@@ -395,9 +395,7 @@ function AdminDataVisualization() {
           </div>
           )}
 
-
            {mode==='ctfd' &&(
-
            <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={challengeTypeOptions} series={challengeTypeSeries} type="bar" height={320} />
           </div>
@@ -407,7 +405,7 @@ function AdminDataVisualization() {
 
        
 
-        {mode==='purpleTeam' && (
+        {/* {mode==='purpleTeam' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {reportTimeSeries.map((chart, index) => (
             <div key={index} className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
@@ -415,10 +413,35 @@ function AdminDataVisualization() {
             </div>
           ))}
         </div>
-          )}
+          )} */}
+
+{mode === 'purpleTeam' && (
+  <div
+    className={`grid gap-8 mb-8 ${
+      reportTimeSeries.length === 1
+        ? 'grid-cols-1'
+        : reportTimeSeries.length === 2
+        ? 'grid-cols-2'
+        : reportTimeSeries.length === 3
+        ? 'grid-cols-1 md:grid-cols-2'
+        : 'grid-cols-1 md:grid-cols-2' // This will cover 4+ graphs
+    }`}
+  >
+    {reportTimeSeries.map((chart, index) => (
+      <div
+        key={index}
+        className="border border-gray-300 rounded-lg bg-white shadow-lg p-6"
+        style={{ gridColumn: reportTimeSeries.length === 3 && index === 0 ? 'span 2' : 'span 1' }}
+      >
+        <ApexCharts options={chart.options} series={chart.series} type="line" height={320} />
+      </div>
+    ))}
+  </div>
+)}
+
 
         
-{mode==='purpleTeam' && (
+{/* {mode==='purpleTeam' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {userPieCharts.map((chart, index) => (
             <div key={index} className="border border-gray-300 rounded-lg bg-white shadow-lg p-6 flex items-center">
@@ -433,7 +456,39 @@ function AdminDataVisualization() {
           ))}
         </div>
 
+)} */}
+
+
+{mode === 'purpleTeam' && (
+  <div
+    className={`grid gap-8 mb-8 ${
+      userPieCharts.length === 1
+        ? 'grid-cols-1'
+        : userPieCharts.length === 2
+        ? 'grid-cols-2'
+        : userPieCharts.length === 3
+        ? 'grid-cols-1 md:grid-cols-2'
+        : 'grid-cols-1 md:grid-cols-2' // Covers 4+ charts
+    }`}
+  >
+    {userPieCharts.map((chart, index) => (
+      <div
+        key={index}
+        className="border border-gray-300 rounded-lg bg-white shadow-lg p-6 flex items-center"
+        style={{ gridColumn: userPieCharts.length === 3 && index === 0 ? 'span 2' : 'span 1' }}
+      >
+        <div className="w-2/3">
+          <ApexCharts options={chart.options} series={chart.series} type="pie" height={320} />
+        </div>
+        <div className="w-1/3 pl-6 text-center">
+          <p className="text-lg font-semibold text-gray-800">Total Submissions:</p>
+          <p className="text-2xl font-bold text-gray-900">{chart.totalSubmissions}</p>
+        </div>
+      </div>
+    ))}
+  </div>
 )}
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 mt-8">
           <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">

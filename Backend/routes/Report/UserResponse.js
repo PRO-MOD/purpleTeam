@@ -21,19 +21,116 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Function to validate MongoDB ObjectId
+// router.post('/ans', fetchuser, upload.any(), async (req, res) => {
+//   try {
+//     const { reportId } = req.body;
+//     const userId = req.user.id; 
+//     const responses = req.body.responses;
+//     let responseArray = [];
+
+//     // Ensure that responses exist
+//     if (responses) {
+//       // Process each response and validate questionId
+//       for (let questionId in responses) {
+//         if (!questionId) {
+//           return res.status(400).json({ message: `Missing questionId for response.` });
+//         }
+
+//         const answer = responses[questionId];
+
+//         // Check if questionId already exists in responseArray
+//         let existingResponse = responseArray.find(response => response.questionId === questionId);
+//         if (existingResponse) {
+//           // If the response exists, and it's an array, push the new answer
+//           if (Array.isArray(existingResponse.answer)) {
+//             existingResponse.answer.push(answer);
+//           } else {
+//             existingResponse.answer = [existingResponse.answer, answer];
+//           }
+//         } else {
+//           // Create new response for this questionId
+//           responseArray.push({
+//             questionId: questionId,
+//             answer: answer
+//           });
+//         }
+//       }
+//     }
+
+//     // Handle file uploads (if any) and validate questionId for each file
+//     if (req.files && req.files.length > 0) {
+//       req.files.forEach((file) => {
+
+
+//  // Check if the file is an image
+//     const isImage = file.mimetype.startsWith('image/');
+    
+//     if (!isImage) {
+//       return res.status(400).json({ message: 'Only image files are allowed.' });
+//     }
+
+//         // Extract questionId from fieldname (assuming format: `responses[questionId]`)
+//         const match = file.fieldname.match(/\[(.*?)\]/); // Matches text inside square brackets
+//         const questionId = match ? match[1] : null;
+
+//         if (!questionId) {
+//           return res.status(400).json({ message: 'Missing questionId for file upload.' });
+//         }
+
+//         // Find the existing entry for the questionId
+//         let existingResponse = responseArray.find(response => response.questionId === questionId);
+
+//         if (existingResponse) {
+//           // If an entry exists, and the answer is an array, append the file path to it
+//           if (Array.isArray(existingResponse.answer)) {
+//             existingResponse.answer.push(file.path);
+//           } else {
+//             // Otherwise, convert the existing answer to an array and add the file path
+//             existingResponse.answer = [existingResponse.answer, file.path];
+//           }
+//         } else {
+//           // If no entry exists, create a new one with the file path
+//           responseArray.push({
+//             questionId: questionId,
+//             answer: file.path // Store the file path
+//           });
+//         }
+//       });
+//     }
+
+//     // Save the new user response
+//     const newResponse = new UserResponse({
+//       reportId: reportId,
+//       userId: userId,
+//       responses: responseArray,
+//     });
+
+//     await newResponse.save();
+
+//     res.status(200).json({ message: 'Form submitted successfully', data: newResponse });
+//   } catch (error) {
+//     console.error('Error submitting form:', error);
+//     res.status(500).json({ message: 'Failed to submit form', error: error.message });
+//   }
+// });
+
+
+
 router.post('/ans', fetchuser, upload.any(), async (req, res) => {
   try {
     const { reportId } = req.body;
-    const userId = req.user.id; 
+    const userId = req.user.id;
     const responses = req.body.responses;
     let responseArray = [];
+    let errors = [];
 
     // Ensure that responses exist
     if (responses) {
       // Process each response and validate questionId
       for (let questionId in responses) {
         if (!questionId) {
-          return res.status(400).json({ message: `Missing questionId for response.` });
+          errors.push(`Missing questionId for response.`);
+          continue; // Skip this iteration
         }
 
         const answer = responses[questionId];
@@ -60,12 +157,20 @@ router.post('/ans', fetchuser, upload.any(), async (req, res) => {
     // Handle file uploads (if any) and validate questionId for each file
     if (req.files && req.files.length > 0) {
       req.files.forEach((file) => {
+        // Check if the file is an image
+        const isImage = file.mimetype.startsWith('image/');
+        if (!isImage) {
+          errors.push('Only image files are allowed.');
+          return; // Skip this iteration
+        }
+
         // Extract questionId from fieldname (assuming format: `responses[questionId]`)
         const match = file.fieldname.match(/\[(.*?)\]/); // Matches text inside square brackets
         const questionId = match ? match[1] : null;
 
         if (!questionId) {
-          return res.status(400).json({ message: 'Missing questionId for file upload.' });
+          errors.push('Missing questionId for file upload.');
+          return; // Skip this iteration
         }
 
         // Find the existing entry for the questionId
@@ -89,6 +194,11 @@ router.post('/ans', fetchuser, upload.any(), async (req, res) => {
       });
     }
 
+    // Check if there are any errors collected
+    if (errors.length > 0) {
+      return res.status(400).json({ message: 'Validation errors', errors: errors });
+    }
+
     // Save the new user response
     const newResponse = new UserResponse({
       reportId: reportId,
@@ -104,6 +214,7 @@ router.post('/ans', fetchuser, upload.any(), async (req, res) => {
     res.status(500).json({ message: 'Failed to submit form', error: error.message });
   }
 });
+
 
 router.get('/all/:userId', async (req, res) => {
   try {

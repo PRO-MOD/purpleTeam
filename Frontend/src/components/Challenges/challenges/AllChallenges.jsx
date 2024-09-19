@@ -1,14 +1,19 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import InfoTable from '../challenges/Partials/InfoTable';
+import ConfirmationModal from './Partials/ConfirmationModal';
+
 
 const AllChallenges = () => {
   const [challenges, setChallenges] = useState([]);
   const [selectedChallenges, setSelectedChallenges] = useState([]);
   const [searchField, setSearchField] = useState('name');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showModal, setShowModal] = useState(false); // State for showing the modal
+  const [deletionAction, setDeletionAction] = useState(null); // State to track the deletion action
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,28 +38,42 @@ const AllChallenges = () => {
     );
   };
 
-  const handleDeleteChallenges = async () => {
-    try {
-      const response = await fetch('http://localhost:80/api/challenges/deleteChallenges', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ids: selectedChallenges }),
-      });
+  const handleDeleteChallenges = () => {
+    setDeletionAction(() => async () => {
+      try {
+        const response = await fetch('http://localhost:80/api/challenges/deleteChallenges', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ids: selectedChallenges }),
+        });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result.message);
+        if (response.ok) {
+          const result = await response.json();
+          console.log(result.message);
 
-        setChallenges(prevChallenges => prevChallenges.filter(challenge => !selectedChallenges.includes(challenge._id)));
-        setSelectedChallenges([]);
-      } else {
-        console.error('Error deleting challenges:', await response.json());
+          setChallenges(prevChallenges => prevChallenges.filter(challenge => !selectedChallenges.includes(challenge._id)));
+          setSelectedChallenges([]);
+        } else {
+          console.error('Error deleting challenges:', await response.json());
+        }
+      } catch (error) {
+        console.error('Error deleting challenges:', error);
       }
-    } catch (error) {
-      console.error('Error deleting challenges:', error);
+    });
+    setShowModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deletionAction) {
+      await deletionAction();
     }
+    setShowModal(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowModal(false);
   };
 
   const sortedChallenges = [...challenges].sort((a, b) => {
@@ -144,6 +163,14 @@ const AllChallenges = () => {
             <FontAwesomeIcon icon={faPlusCircle} className="mx-2" />
           </span>
         </div>
+      )}
+
+      {showModal && (
+        <ConfirmationModal
+          message="Are you sure you want to delete the selected challenges? This action cannot be undone."
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
       )}
 
       <InfoTable

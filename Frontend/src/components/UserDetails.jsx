@@ -1,14 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import UserReports from './UserReports';
 import SubmissionTable from './Challenges/Submissions/submission';
 import ReportDataVisualization from './DataVisualization/reportDataVisualization';
 import ChallengesDataVisualization from './DataVisualization/challengesDataVisualization';
-
+import StaticScore from './StaticScore';
 
 function UserDetails() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -16,9 +15,10 @@ function UserDetails() {
   const [user, setUser] = useState(null);
   const [jsonData, setJsonData] = useState(null);
   const [scoreData, setScoreData] = useState(null);
-  const [submissionData, setSubmissionData]=useState(null);
-  const [submissionTypes, setSubmissionTypes]=useState(null);
-  const[mode,setMode]=useState("purpleTeam");
+  const [submissionData, setSubmissionData] = useState(null);
+  const [submissionTypes, setSubmissionTypes] = useState(null);
+  const [mode, setMode] = useState("purpleTeam");
+  const [selectedTab, setSelectedTab] = useState('reports'); // New state for tab selection
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,12 +71,10 @@ function UserDetails() {
         });
         const data = await response.json();
         setMode(data.mode);
-       
       } catch (error) {
         console.error('Error fetching mode:', error);
       }
     };
-
 
     const fetchSubmissions = async () => {
       try {
@@ -112,8 +110,6 @@ function UserDetails() {
     navigate(-1);
   };
 
-  
-
   return (
     <div className="container mx-auto px-4 py-8">
       <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8">
@@ -134,19 +130,55 @@ function UserDetails() {
               </div>
             </div>
           </div>
-     {mode==='purpleTeam' &&(
-          <ReportDataVisualization jsonData={jsonData} scoreData={scoreData} />
+          <br/>
+<div >
+{<StaticScore userId={userId}/>}
+</div>
+         
 
-        )}
-          <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
-      
- 
+          {/* Show challenges content directly if mode is 'ctfd' */}
+          {mode === 'ctfd' ? (
+            <>
+              <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+              <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
+              <SubmissionTable userId={userId} />
+            </>
+          ) : (
+            <>
+              {/* Buttons for switching between Reports and Challenges */}
+              <div className="flex justify-center space-x-4 my-6">
+                <button
+                  onClick={() => setSelectedTab('reports')}
+                  className={`px-4 py-2 mr-2 ${selectedTab === 'reports' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                >
+                  Reports
+                </button>
+                <button
+                  onClick={() => setSelectedTab('challenges')}
+                  className={`px-4 py-2 ${selectedTab === 'challenges' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                >
+                  Challenges
+                </button>
+              </div>
 
-         { mode=='purpleTeam' &&(  <UserReports userId={userId} /> )}
-<br/>
-         <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
-          <SubmissionTable userId={userId}/> 
-        </div> 
+              {/* Conditional rendering based on selected tab */}
+              {selectedTab === 'reports' &&  (
+                <>
+                  <ReportDataVisualization jsonData={jsonData} scoreData={scoreData} />
+                  <UserReports userId={userId} />
+                </>
+              )}
+
+              {selectedTab === 'challenges' && (
+                <>
+                  <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+                  <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
+                  <SubmissionTable userId={userId} />
+                </>
+              )}
+            </>
+          )}
+        </div>
       ) : (
         <p>Loading...</p>
       )}

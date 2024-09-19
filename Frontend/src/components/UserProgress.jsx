@@ -18,6 +18,7 @@ function UserProgress() {
     const [submissionTypes, setSubmissionTypes]=useState(null);
     const [jsonData, setJsonData] = useState(null);
     const [scoreData, setScoreData] = useState(null);
+    const [selectedTab, setSelectedTab] = useState('reports'); // New state for tab selection
 
 
     useEffect(() => {
@@ -94,18 +95,49 @@ function UserProgress() {
                             </div>
                         </div>
                     </div>
-                    {mode==='purpleTeam' &&(
-          <ReportDataVisualization jsonData={jsonData} scoreData={scoreData} />
 
-        )}
-          <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+ {/* Show challenges content directly if mode is 'ctfd' */}
+ {mode === 'ctfd' ? (
+            <>
+              <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+              <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
+              <SubmissionTable userId={user._id} />
+            </>
+          ) : (
+            <>
+              {/* Buttons for switching between Reports and Challenges */}
+              <div className="flex justify-center space-x-4 my-6">
+                <button
+                  onClick={() => setSelectedTab('reports')}
+                  className={`px-4 py-2 mr-2 ${selectedTab === 'reports' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                >
+                  Reports
+                </button>
+                <button
+                  onClick={() => setSelectedTab('challenges')}
+                  className={`px-4 py-2 ${selectedTab === 'challenges' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                >
+                  Challenges
+                </button>
+              </div>
 
+              {/* Conditional rendering based on selected tab */}
+              {selectedTab === 'reports' && (
+                <>
+                  <ReportDataVisualization jsonData={jsonData} scoreData={scoreData} />
+                  <UserReports userId={user._id} route="progress" />
+                </>
+              )}
 
-                   { mode=='purpleTeam' &&(  <UserReports userId={user._id} route="progress"/> )}
-
-                   <br/>
-         <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
-                    <SubmissionTable userId={user._id}/> 
+              {selectedTab === 'challenges' && (
+                <>
+                  <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+                  <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
+                  <SubmissionTable userId={user._id} />
+                </>
+              )}
+            </>
+          )}
                 </div>
             ) : (
                 <p>Loading...</p>

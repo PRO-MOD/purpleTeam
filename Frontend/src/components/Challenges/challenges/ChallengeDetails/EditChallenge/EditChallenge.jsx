@@ -144,7 +144,7 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
-
+{challenge.type==='dynamic' && (
         <div className="form-group">
           <label htmlFor="initial" className="block text-sm font-medium text-gray-700">
           initial
@@ -162,6 +162,9 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
+        )}
+
+{challenge.type==='dynamic' &&(
         <div className="form-group">
           <label htmlFor="minimum" className="block text-sm font-medium text-gray-700">
           Minimum
@@ -179,8 +182,11 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
+)}
+
+{challenge.type==='dynamic' &&(
         <div className="form-group">
-          <label htmlFor="initial" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="decay" className="block text-sm font-medium text-gray-700">
           decay
             <small className="block text-gray-500">
             How many solves before the challenge reaches its minimum value
@@ -196,6 +202,7 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
+)}
         <div className="form-group">
           <label htmlFor="max_attempts" className="block text-sm font-medium text-gray-700">
             Max Attempts
