@@ -1,10 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const GeneralSettings = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
+
+  // Fetch current title and description on component mount
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/config/eventDetails`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setTitle(data.title || '');
+          setDescription(data.description || '');
+        } else {
+          setMessage('Failed to fetch event details.');
+        }
+      } catch (error) {
+        console.error('Error fetching event details:', error);
+        setMessage('An error occurred while fetching event details.');
+      }
+    };
+
+    fetchEventDetails();
+  }, [apiUrl]);
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);

@@ -30,6 +30,7 @@ import UserChallengePage from './Challenges/UserChallenges/userChallengesPage';
 import ChallengeDetailsPage from './Challenges/challenges/ChallengeDetails/ChallengeDetails';
 import SubmissionTable from './Challenges/Submissions/submission';
 import Configuration from './Config/config';
+import ChallengesSubmissions from './Challenges/Submissions/challengeSubmission';
 
 // import reports component
 import MainReportPage from './Reports/MainReportPage';
@@ -106,6 +107,7 @@ function HomePage() {
             <Route exact path='/admin/report' element={<MainReportPage />} />
             <Route exact path='/admin/report/create' element={<CreateReport />} />
             <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
+            <Route exact path='/challenges/submissions/:id' element={<ChallengesSubmissions/>}/>
           </Routes>
           
         </div>

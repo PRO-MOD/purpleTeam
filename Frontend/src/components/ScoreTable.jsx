@@ -9,13 +9,38 @@ function ScoreTable({ scores, loading, isHomePage }) {
   const navigate = useNavigate();
   const [sortedScores, setSortedScores] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: 'totalScore', direction: 'descending' });
+  const [mode, setMode] = useState(''); // State to store the mode
+
+  // Fetch the mode from the API
+  useEffect(() => {
+    const fetchMode = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/config/mode`);
+        if (response.ok) {
+          const data = await response.json();
+          setMode(data.mode);
+        } else {
+          console.error('Failed to fetch mode');
+        }
+      } catch (error) {
+        console.error('Error fetching mode:', error);
+      }
+    };
+
+    fetchMode();
+  }, [apiUrl]);
 
   // Sort scores when scores, loading state, or sortConfig changes
   useEffect(() => {
     if (!loading && scores.length > 0) {
       const sorted = scores.slice().sort((a, b) => {
-        const totalScoreA = a.score + (a.manualScore || 0) + (a.staticScore || 0);
-        const totalScoreB = b.score + (b.manualScore || 0) + (b.staticScore || 0);
+        let totalScoreA = a.score;
+        let totalScoreB = b.score;
+
+        if (mode === 'purpleTeam') {
+          totalScoreA += (a.manualScore || 0) + (a.staticScore || 0);
+          totalScoreB += (b.manualScore || 0) + (b.staticScore || 0);
+        }
 
         if (sortConfig.key === 'name') {
           const nameA = a.name.toLowerCase();
@@ -34,7 +59,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
 
       setSortedScores(sorted);
     }
-  }, [scores, loading, sortConfig]);
+  }, [scores, loading, sortConfig, mode]);
 
   const handleUserClick = async (userName) => {
     try {
@@ -94,20 +119,24 @@ function ScoreTable({ scores, loading, isHomePage }) {
             >
               Service Availability <FontAwesomeIcon icon={getSortIcon('score')} />
             </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-              onClick={() => handleSort('manualScore')}
-            >
-              Incident Response <FontAwesomeIcon icon={getSortIcon('manualScore')} />
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-              onClick={() => handleSort('staticScore')}
-            >
-              Static Score <FontAwesomeIcon icon={getSortIcon('staticScore')} />
-            </th>
+            {mode === 'purpleTeam' && (
+              <>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort('manualScore')}
+                >
+                  Incident Response <FontAwesomeIcon icon={getSortIcon('manualScore')} />
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort('staticScore')}
+                >
+                  Static Score <FontAwesomeIcon icon={getSortIcon('staticScore')} />
+                </th>
+              </>
+            )}
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -115,15 +144,17 @@ function ScoreTable({ scores, loading, isHomePage }) {
             >
               Total Score <FontAwesomeIcon icon={getSortIcon('totalScore')} />
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Checked
-            </th>
+            {mode === 'purpleTeam' && (
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Checked
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {loading ? (
             <tr>
-              <td colSpan="7">
+              <td colSpan={mode === 'purpleTeam' ? 7 : 4}>
                 <Loading />
               </td>
             </tr>
@@ -144,15 +175,25 @@ function ScoreTable({ scores, loading, isHomePage }) {
                     {user.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore == null ? 'Not entered' : user.manualScore}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.staticScore == null ? 'Not entered' : user.staticScore}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score + (user.manualScore || 0) + (user.staticScore || 0)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.read ? <FontAwesomeIcon icon={faCheckDouble} className='text-green-500' /> : <FontAwesomeIcon icon={faList} className='text-red-500' />}</td>
+                  {mode === 'purpleTeam' && (
+                    <>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore == null ? 'Not entered' : user.manualScore}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.staticScore == null ? 'Not entered' : user.staticScore}</td>
+                    </>
+                  )}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {mode === 'purpleTeam' ? user.score + (user.manualScore || 0) + (user.staticScore || 0) : user.score}
+                  </td>
+                  {mode === 'purpleTeam' && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {user.read ? <FontAwesomeIcon icon={faCheckDouble} className='text-green-500' /> : <FontAwesomeIcon icon={faList} className='text-red-500' />}
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="7" className='px-6 py-4 text-center'>No Record Found</td>
+                <td colSpan={mode === 'purpleTeam' ? 7 : 4} className='px-6 py-4 text-center'>No Record Found</td>
               </tr>
             )
           )}

@@ -22,6 +22,12 @@ const NavBar = ({ activeSection, setActiveSection }) => {
         >
           Access
         </button>
+        <button
+          className={`text-left pb-2 border-b-2 ${activeSection === 'mode' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-blue-500'}`}
+          onClick={() => setActiveSection('mode')}
+        >
+          Mode
+        </button>
       </nav>
     </div>
   );

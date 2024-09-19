@@ -1,8 +1,6 @@
 
 
 
-
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import InputField from './Challenges/challenges/Partials/InputFeild'; // Ensure this component is updated to handle different input types
@@ -15,7 +13,7 @@ function Report() {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
+  
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -33,11 +31,16 @@ function Report() {
         }
 
         const data = await response.json();
+        console.log(data);
         setQuestions(data);
 
         // Initialize formData with empty values for each question
         const initialFormData = data.reduce((acc, question) => {
-          acc[question._id] = question.type === 'checkbox' ? [] : ''; // Handle checkbox separately
+          if (question.type === 'checkbox' || question.type === 'image') {
+            acc[question._id] = [];
+          } else {
+            acc[question._id] = '';
+          }
           return acc;
         }, {});
         setFormData(initialFormData);
@@ -77,32 +80,46 @@ function Report() {
     });
   };
 
+  const handleImageChange = (e, questionId) => {
+    const files = Array.from(e.target.files);
+    setFormData((prevData) => ({
+      ...prevData,
+      [questionId]: files,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       setError('');
 
-      // Transform formData to match backend schema
-      const responses = Object.keys(formData).map(questionId => ({
-        questionId,
-        answer: formData[questionId],
-      }));
+      const formDataToSend = new FormData();
+      formDataToSend.append('reportId', reportId);
+
+      Object.keys(formData).forEach(questionId => {
+        const value = formData[questionId];
+        if (Array.isArray(value)) {
+          value.forEach((file, index) => {
+            formDataToSend.append(`responses[${questionId}]`, file);
+          });
+        } else {
+          formDataToSend.append(`responses[${questionId}]`, value);
+        }
+      });
 
       const response = await fetch(`${apiUrl}/api/responses/ans`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Auth-token': localStorage.getItem('Hactify-Auth-token'),
         },
-        body: JSON.stringify({
-          reportId,
-          responses,
-        }),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
+        alert(response.statusText);
         throw new Error(`Failed to submit form: ${response.status} ${response.statusText}`);
+        
       }
 
       console.log('Form submitted successfully');
@@ -204,6 +221,21 @@ function Report() {
                       <label htmlFor={option} className="ml-2">{option}</label>
                     </div>
                   ))}
+                </div>
+              );
+            case 'image':
+              return (
+                <div key={question._id}>
+                  <label className="block text-gray-700">{question.text}:</label>
+                  <input
+                    type="file"
+                    id={question._id}
+                    name={question._id}
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handleImageChange(e, question._id)}
+                    className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                  />
                 </div>
               );
             default:

@@ -206,19 +206,23 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
 
+
 const SideNavbar = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState();
   const [logoUrl, setLogoUrl] = useState(null);
+  const[mode,setMode]=useState("purpleTeam");
   const [visibilitySettings, setVisibilitySettings] = useState({});
   const navigate = useNavigate();
   const { creteSocket, unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
+
 
   useEffect(() => {
     fetchUserRole();
     fetchUnreadMessages();
     fetchLogoUrl();
+    fetchMode();
   }, []);
 
   useEffect(() => {
@@ -255,6 +259,21 @@ const SideNavbar = () => {
       console.error('Error fetching logo URL:', error);
     }
   };
+
+
+  const fetchMode = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/config/mode`, {
+        method: 'GET',
+      });
+      const data = await response.json();
+      setMode(data.mode);
+     
+    } catch (error) {
+      console.error('Error fetching mode:', error);
+    }
+  };
+ 
 
   const fetchVisibilitySettings = async (team) => {
     try {
@@ -294,7 +313,7 @@ const SideNavbar = () => {
       {/* Navigation Section */}
       <div className="flex-1 text-center">
         <ul className="space-y-1">
-          {userRole && visibilitySettings.dashboard === 'yes' && (
+          { mode==='purpleTeam'&&userRole && visibilitySettings.dashboard === 'yes' && (
             <Link to="/UserHome" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/UserHome") ? "bg-brown-450 text-white" : ""}`}>
               <FontAwesomeIcon icon={faCircleUser} size="xl" className="mr-4" />
               <p className="text-lg">Dashboard</p>
@@ -306,7 +325,7 @@ const SideNavbar = () => {
               <p className="text-lg">Notes</p>
             </Link>
           )}
-          {userRole && visibilitySettings.progress === 'yes' && (
+          { userRole && visibilitySettings.progress === 'yes' && (
             <Link to="/progress" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/progress") ? "bg-brown-450 text-white" : ""}`}>
               <FontAwesomeIcon icon={faChartColumn} size="xl" className="mr-4" />
               <p className="text-lg">Progress</p>
@@ -318,7 +337,7 @@ const SideNavbar = () => {
               <p className="text-lg">Notification</p>
             </Link>
           )}
-          {userRole && visibilitySettings.home==='yes' && (
+          { userRole && visibilitySettings.home==='yes' && (
            
               <Link to="/home" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/home") ? "bg-brown-450 text-white" : ""}`}>
                 <FontAwesomeIcon icon={faHome} size="xl" className="mr-4" />
@@ -349,14 +368,14 @@ const SideNavbar = () => {
                 <p className="text-lg">Scores</p>
               </Link>
              )}
-               {userRole && visibilitySettings.newReports==='yes' && (
+               {mode==='purpleTeam'&&userRole && visibilitySettings.newReports==='yes' && (
               <Link to="/updates" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/updates") ? "bg-brown-450 text-white" : ""}`}>
                 <FontAwesomeIcon icon={faFilePdf} size="xl" className="mr-4" />
                 <p className="text-lg">New Reports</p>
               </Link>
                )}
 
-{userRole && visibilitySettings.reportConfig ==='yes' && (
+{mode==='purpleTeam'&& userRole && visibilitySettings.reportConfig ==='yes' && (
             <Link to={userRole === "WT" ? "/admin/report" : "/report"} className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive(userRole === "WT" ? "/admin/report" : "/report") ? "bg-brown-450 text-white" : ""}`}>
              <FontAwesomeIcon icon={faWrench} size="xl" className="mr-4" />
               <p className="text-lg">Report Config</p>

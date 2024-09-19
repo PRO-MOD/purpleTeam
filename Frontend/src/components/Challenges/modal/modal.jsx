@@ -287,7 +287,11 @@ const Modal = ({
           <div className="mt-4">
             <p className="text-green-500">This challenge has already been solved by you!</p>
           </div>
-        ) : (
+        ) : (attempts >= totalAttempts && totalAttempts !== 0) ? (
+          <div className="mt-4">
+            <p className="text-red-500">You are out of attempts!</p>
+          </div>
+        ) :(
           <>
             {challenge.type === 'multiple_choice' ? (
               <div className="mt-4">
@@ -394,7 +398,14 @@ const Modal = ({
               >
                 Hints
               </button>
-              {/* <span className='flex justify-center w-full'>{attempts}/{totalAttempts} attempts</span> */}
+              
+              {totalAttempts !== 0 && (
+              <span className='flex justify-center w-full'>
+              {attempts}/{totalAttempts}
+              </span>
+              )}
+
+
 
               <span className="flex-grow"></span>
               <button
