@@ -63,11 +63,15 @@ const challengeSchema = new mongoose.Schema({
     tags: [String], // Array of tags
     hints: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hint' }],// Array of hint strings
     dynamicFlags: { type: mongoose.Schema.Types.ObjectId, ref: 'DynamicFlag' },
-
     user_ids: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User'
-    }] // Array of user IDs
+    }], // Array of user IDs
+    dockerImage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image',
+        default: null
+    },
 });
 
 // Compile model from schema

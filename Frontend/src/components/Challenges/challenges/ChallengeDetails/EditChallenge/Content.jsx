@@ -31,7 +31,7 @@ const Content = ({ activeTab, challengeId }) => {
         return <Requirements />;
       case 'Next':
         return <Next />;
-      case 'Config':
+      case 'Docker':
         return <DockerManager challengeId={challengeId} />;
       default:
         return null;

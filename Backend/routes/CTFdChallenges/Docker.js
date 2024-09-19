@@ -3,6 +3,7 @@ const dockerUtils = require('../../utils/Docker/Docker');
 const Image = require('../../models/CTFdChallenges/Docker/image');
 const fetchuser = require('../../middleware/fetchuser');
 const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag');
+const Challenge = require('../../models/CTFdChallenges/challenge');
 
 const router = express.Router();
 
@@ -16,9 +17,9 @@ router.get('/images', async (req, res) => {
         for (const ele of images) {
             const element = await Image.findOne({ imageName: ele });
             if (element) {
-                data.push({ name: ele, port: element.port });
+                data.push({ _id: element._id, name: ele, port: element.port });
             } else {
-                data.push({ name: ele, port: null }); // Handle case where no port is found
+                data.push({ _id: element._id, name: ele, port: null }); // Handle case where no port is found
             }
         }
 
@@ -36,35 +37,42 @@ router.get('/images/:challengeId', async (req, res) => {
             return res.status(400).json({ error: 'Challenge ID is required.' });
         }
 
-        // Fetch Docker images associated with the specific challengeId from the Image model
-        const imageDocs = await Image.find({ challengeId });
+        // Fetch the challenge with the specified challengeId and populate dockerImage field
+        const challenge = await Challenge.findById(challengeId).populate('dockerImage');
 
-        if (imageDocs.length == 0) {
-            return res.status(200).json([]);
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found.' });
         }
 
-        const data = [];
-
-        for (const imageDoc of imageDocs) {
-            const ele = imageDoc.imageName;
-
-            // If image exists in Docker, add it to the data array
-            const dockerImageExists = await dockerUtils.checkImageExists(ele); 
-            if (dockerImageExists) {
-                data.push({ _id: imageDoc._id,name: ele, port: imageDoc.port });
-            }
+        // Check if dockerImage is populated
+        const dockerImage = challenge.dockerImage;
+        if (!dockerImage) {
+            return res.status(200).json([]); // No dockerImage found for the challenge
         }
 
-        if (data.length === 0) {
-            return res.status(404).json({ error: 'No images found for this challenge.' });
+        const imageName = dockerImage.imageName;
+        const port = dockerImage.port;
+
+        // Check if the Docker image exists
+        const dockerImageExists = await dockerUtils.checkImageExists(imageName);
+        if (!dockerImageExists) {
+            return res.status(404).json({ error: 'Docker image not found.' });
         }
 
-        res.json(data);
+        // Respond with the Docker image information
+        const data = {
+            _id: dockerImage._id,
+            name: imageName,
+            port: port
+        };
+
+        res.json([data]);
     } catch (error) {
-        console.error('Error listing Docker images:', error);
-        res.status(500).json({ error: 'Error listing Docker images' });
+        console.error('Error fetching Docker images:', error);
+        res.status(500).json({ error: 'Error fetching Docker images' });
     }
 });
+
 
 router.put('/edit/images/:id', async (req, res) => {
     try {
@@ -108,32 +116,78 @@ router.get('/details/images', async (req, res) => {
 
 // Route to pull a Docker image
 router.post('/images/pull', async (req, res) => {
-    const { imageName, challengeId, port } = req.body;
+    const { imageName, port } = req.body;
 
-    if (!imageName || !challengeId) {
-        return res.status(400).json({ error: 'Image name and challenge ID are required' });
+    if (!imageName) {
+        return res.status(400).json({ error: 'Image name is required' });
     }
 
     try {
         // Pull the Docker image
         await dockerUtils.pullDockerImage(imageName);
 
-        // Save the image details to the database
+        // Check if the image already exists in the database
+        const existingImage = await Image.findOne({ imageName });
+
+        if (existingImage) {
+            // If the image already exists, return a message indicating so
+            return res.status(500).json({ error: `Image ${imageName} already exists` });
+        }
+
+        // Save the image details to the database after successful pull
         const image = new Image({
             imageName,
             port,
-            challengeId,
             status: 'pulled'
         });
 
         await image.save();
 
-        res.json({ message: `Image ${imageName} pulled and saved successfully` });
+        res.status(201).json({ message: `Image ${imageName} pulled and saved successfully` });
     } catch (error) {
         console.error('Error pulling image or saving to database:', error);
-        res.status(500).json({ error: `Error pulling image ${imageName}` });
+        res.status(500).json({ error: `Error pulling image ${imageName}: ${error.message}` });
     }
 });
+
+// route to assign challenges a Docker Image
+router.post('/challenges/assignImage', async (req, res) => {
+    const { challengeId, imageId } = req.body;
+
+    if (!challengeId || !imageId) {
+        return res.status(400).json({ error: 'Challenge ID and Image ID are required' });
+    }
+
+    try {
+        // Find the image by ID
+        const image = await Image.findById(imageId);
+        if (!image) {
+            return res.status(404).json({ error: 'Image not found' });
+        }
+
+        // Find the challenge by ID
+        const challenge = await Challenge.findById(challengeId);
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found' });
+        }
+
+        // Check if the challenge type is dynamic
+        if (challenge.type !== 'dynamic') {
+            return res.status(400).json({ error: 'Image can only be assigned to dynamic challenges' });
+        }
+
+        // Assign the image to the challenge
+        challenge.dockerImage = imageId;
+        await challenge.save();
+
+        res.json({ message: `Image assigned to challenge successfully` });
+    } catch (error) {
+        console.error('Error assigning image to challenge:', error);
+        res.status(500).json({ error: 'Error assigning image to challenge' });
+    }
+});
+
+
 
 // Delete Docker image and remove from the database
 router.delete('/images/:id', async (req, res) => {
@@ -164,41 +218,44 @@ router.post('/create/container', fetchuser, async (req, res) => {
     const { challengeId } = req.body;
 
     try {
-        // Step 1: Find image for the given challengeId
-        const image = await Image.findOne({ challengeId });
+        // Step 1: Find the challenge by challengeId
+        const challenge = await Challenge.findById(challengeId)
+            .populate('dockerImage'); // Populate the dockerImage field with Image details
 
-        if (!image) {
-            return res.status(404).json({ error: 'Image not found for the provided challengeId' });
+        if (!challenge) {
+            return res.status(404).json({ error: 'Challenge not found for the provided challengeId' });
         }
 
-        const userId = req.user.id;
+        if (!challenge.dockerImage) {
+            return res.status(404).json({ error: 'Docker image not found for this challenge' });
+        }
 
-        // Step 2: Fetch user challenge flag for the given challengeId
+        // Step 2: Extract the image information from the challenge
+        const { imageName, port } = challenge.dockerImage;
+
+        if (!imageName || !port) {
+            return res.status(400).json({ error: 'Image information is incomplete (missing name or port)' });
+        }
+
+        // Step 3: Fetch user challenge flag
+        const userId = req.user.id;
         const userChallenge = await DynamicFlag.findOne(
             {
-                challengeId: challengeId, // Find the document with this challengeId
-                "flags.userId": userId    // Filter for the userId in the flags array
+                challengeId: challengeId,
+                "flags.userId": userId
             },
-            { "flags.$": 1 }  // Only return the matched flag from the array
+            { "flags.$": 1 } // Only return the matched flag from the array
         );
 
         if (!userChallenge || !userChallenge.flags.length) {
             return res.status(404).json({ error: 'User flag not found for this challenge' });
         }
 
-        // Step 3: Extract the user flag
+        // Step 4: Extract the user flag
         const userFlag = userChallenge.flags.map(f => f.flag).join(', ');
 
         if (!userFlag) {
             return res.status(400).json({ error: 'User does not have any flag for this challenge' });
-        }
-
-        // Step 4: Get image name and port
-        const imageName = image && image.imageName;
-        const port = image && image.port;
-
-        if (!imageName || !port) {
-            return res.status(400).json({ error: 'Image information is incomplete (missing name or port)' });
         }
 
         // Step 5: Create flags object
@@ -223,6 +280,7 @@ router.post('/create/container', fetchuser, async (req, res) => {
         }
     }
 });
+
 
 
 router.post('/stop/container', async (req, res) => {

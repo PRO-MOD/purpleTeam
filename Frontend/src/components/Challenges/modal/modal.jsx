@@ -32,6 +32,8 @@ const Modal = ({
   const [showHintDetails, setShowHintDetails] = useState(false);
   const [message, setMessage] = useState('');
   const [containerData, setContainerData] = useState({});
+  const [isServerStopped, setIsServerStopped] = useState(false);
+
 
   useEffect(() => {
     if (!isOpen) {
@@ -66,10 +68,10 @@ const Modal = ({
 
   const fetchUsedHints = async () => {
     try {
-      const response = await fetch(`http://localhost:80/api/hints/used-hints/${challenge._id}`,{
+      const response = await fetch(`http://localhost:80/api/hints/used-hints/${challenge._id}`, {
         headers: {
           'Content-Type': 'application/json',
-    'Auth-token': localStorage.getItem('Hactify-Auth-token')
+          'Auth-token': localStorage.getItem('Hactify-Auth-token')
         },
 
       });
@@ -97,7 +99,7 @@ const Modal = ({
     }
   };
 
-  
+
 
   const fetchHintDetails = async (hintId) => {
     try {
@@ -106,7 +108,7 @@ const Modal = ({
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-  
+
       if (data.length > 0) {
         console.log(data[0]);
         setSelectedHint(data[0]);
@@ -127,7 +129,7 @@ const Modal = ({
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-  
+
       if (data.length > 0) {
         return data[0]; // Return the full hint object
       } else {
@@ -138,27 +140,27 @@ const Modal = ({
       return null;
     }
   };
-  
-  
-  
- 
+
+
+
+
 
   const confirmUnlockHint = async () => {
     if (!selectedHint) return;
-  
+
     setShowWarning(false);
-  
+
     const hintDetails = await fetchLockedHintDetails(selectedHint); // Await for the hint details
-    
+
     if (!hintDetails) return; // If no details are returned, exit the function
-    
+
     setSelectedHint(hintDetails); // Set the selected hint to the full hint object
-  
+
     if (!usedHints.includes(hintDetails._id)) { // Use hintDetails._id for the check
       setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Use hintDetails._id
       setUpdatedValue(prevValue => prevValue - hintDetails.cost); // Use hintDetails.cost
       setShowHintDetails(true);
-  
+
       try {
         await fetch(`http://localhost:80/api/hints/use-hint`, {
           method: 'POST',
@@ -178,9 +180,9 @@ const Modal = ({
       setShowHintDetails(true);
     }
   };
-  
 
- 
+
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -251,21 +253,22 @@ const Modal = ({
         },
         body: JSON.stringify({ containerId }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to stop container.');
       }
-  
+
       setMessage(`Container stopped successfully.`);
+      setIsServerStopped(true); 
       setContainerData({});
     } catch (error) {
       setMessage(`Error stopping container: ${error.message}`);
       console.error('Error stopping container:', error);
     }
   };
-  
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -277,7 +280,7 @@ const Modal = ({
         <p className="text-xl mr-8 mt-4 text-center">Remaining Value: {updatedValue}</p>
 
         <div className="mt-4">
-          <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} components={{ img: renderImage }}/>
+          <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} components={{ img: renderImage }} />
         </div>
 
         {isSolved ? (
@@ -306,28 +309,30 @@ const Modal = ({
             ) : challenge.type === 'standard' || challenge.type === 'manual_verification' || challenge.type === 'dynamic' ? (
               <div className="mt-4">
                 {
-                  challenge.type === 'dynamic' ? 
-                  <div className="flex flex-row">
-                    <button className='bg-green-500 rounded p-2 mb-2 text-white ' onClick={() => handleCreateContainer(challenge._id)}>Start server</button>
-                    {message && <p>{message && message}</p>}
-                    {containerData && containerData.url && 
-                    <div className="flex flex-col">
-                      Use below link to get Flag
-                      <a href={containerData.url} className='text-indigo-500' target='_black'>Get Flag</a>
-                      <button className='bg-red-500 rounded p-2 my-2 text-white' onClick={() => handleDeleteContainer(containerData.containerId)}>Stop server</button>
+                  challenge.type === 'dynamic' ?
+                    <div className="flex flex-row">
+                      <button className='bg-green-500 rounded p-2 mb-2 text-white ' onClick={() => handleCreateContainer(challenge._id)}>Start server</button>
+                      {message && <p>{message && message}</p>}
+                      {containerData && containerData.url &&
+                        <div className="flex flex-col">
+                          Use below link to get Flag
+                          <a href={containerData.url} className='text-indigo-500' target='_black'>Get Flag</a>
+                          <button className='bg-red-500 rounded p-2 my-2 text-white' onClick={() => handleDeleteContainer(containerData.containerId)}>Stop server</button>
+                        </div>
+                      }
+
                     </div>
-                    }
-                    
-                  </div>
-                  : 
-                  ""
+                    :
+                    ""
                 }
-                <textarea
-                  className="w-full p-2 border border-gray-300 rounded"
-                  rows="3"
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                ></textarea>
+                {isServerStopped && (
+                  <textarea
+                    className="w-full p-2 border border-gray-300 rounded"
+                    rows="3"
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                  ></textarea>
+                )}
               </div>
             ) : challenge.type === 'code' ? (
               <>
@@ -382,7 +387,7 @@ const Modal = ({
             )}
 
             <div className="mt-4 flex justify-between items-center">
-           
+
               <button
                 className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-700"
                 onClick={fetchHints}
@@ -418,30 +423,30 @@ const Modal = ({
               <h2 className="text-2xl font-bold mx-auto">Hints</h2>
               <button onClick={() => setHintsModalOpen(false)} className="ml-4">&times;</button>
             </div>
-           
-<ul className="mt-4">
-  {hints.length > 0 ? (
-    hints.map((hint, index) => (
-      <li key={index}>
-        <button
-          onClick={() => {
-            if (usedHints.includes(hint)) {
-              fetchHintDetails(hint);
-            } else {
-              setSelectedHint(hint);
-              setShowWarning(true);
-            }
-          }}
-          className="text-blue-500 hover:underline"
-        >
-          Hint {index + 1}
-        </button>
-      </li>
-    ))
-  ) : (
-    <p>No hints available</p>
-  )}
-</ul>
+
+            <ul className="mt-4">
+              {hints.length > 0 ? (
+                hints.map((hint, index) => (
+                  <li key={index}>
+                    <button
+                      onClick={() => {
+                        if (usedHints.includes(hint)) {
+                          fetchHintDetails(hint);
+                        } else {
+                          setSelectedHint(hint);
+                          setShowWarning(true);
+                        }
+                      }}
+                      className="text-blue-500 hover:underline"
+                    >
+                      Hint {index + 1}
+                    </button>
+                  </li>
+                ))
+              ) : (
+                <p>No hints available</p>
+              )}
+            </ul>
 
 
             {selectedHint && showHintDetails && (

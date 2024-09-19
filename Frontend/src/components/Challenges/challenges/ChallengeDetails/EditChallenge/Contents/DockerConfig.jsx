@@ -1,8 +1,8 @@
-// src/components/DockerManager.js
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faInfoCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
-import ConfirmationModal from '../../../Partials/ConfirmationModal'; // Import the new component
+import ConfirmationModal from '../../../Partials/ConfirmationModal';
+import AssignDockerImageModal from './AssignDockerImage';
 
 const DockerManager = ({ challengeId }) => {
   const [images, setImages] = useState([]);
@@ -10,9 +10,8 @@ const DockerManager = ({ challengeId }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [message, setMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false); // State for confirmation modal
-  const [imageToDelete, setImageToDelete] = useState(null); // State to hold the image ID for deletion
-  const [isLoading, setIsLoading] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [imageToDelete, setImageToDelete] = useState(null);
 
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
@@ -36,47 +35,6 @@ const DockerManager = ({ challengeId }) => {
     }
   };
 
-  const handleSaveImage = async () => {
-    if (!currentImage.name.trim()) {
-      setMessage('Please provide an image name.');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const url = isEditMode
-        ? `${apiUrl}/api/docker/edit/images/${currentImage._id}`
-        : `${apiUrl}/api/docker/images/pull`;
-
-      const method = isEditMode ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          imageName: currentImage.name.trim(),
-          challengeId,
-          port: currentImage.port
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(isEditMode ? 'Failed to update image.' : 'Failed to pull image.');
-      }
-
-      setMessage(isEditMode ? 'Image updated successfully' : 'Image pulled successfully');
-      fetchImages(); // Refresh the image list
-      setIsModalOpen(false); // Close modal
-    } catch (error) {
-      setMessage(isEditMode ? 'Error updating image.' : 'Error pulling image.');
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleDeleteImage = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/docker/images/${imageToDelete}`, {
@@ -96,65 +54,11 @@ const DockerManager = ({ challengeId }) => {
     }
   };
 
-  const handleCreateContainer = async (challengeId) => {
-    try {
-      const response = await fetch(`${apiUrl}/api/docker/create/container`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ challengeId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create container.');
-      }
-
-      setMessage(`Container created: ${data.url}`);
-    } catch (error) {
-      setMessage('Error creating container.');
-      console.error('Error creating container:', error);
-    }
-  };
-
-  const handleStopContainer = async (containerId) => {
-    try {
-      const response = await fetch(`${apiUrl}/api/docker/stop/container`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ containerId }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to stop container.');
-      }
-
-      setMessage('Container stopped successfully.');
-    } catch (error) {
-      setMessage('Error stopping container.');
-      console.error('Error stopping container:', error);
-    }
-  };
-
-  const handleStartAdd = () => {
-    setCurrentImage({ name: '', port: '' });
-    setIsEditMode(false);
-    setIsModalOpen(true);
-  };
-
   const handleEditImage = (image) => {
+    console.log(image);
     setCurrentImage(image);
     setIsEditMode(true);
     setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setMessage('');
   };
 
   const openDeleteConfirmation = (imageId) => {
@@ -177,14 +81,24 @@ const DockerManager = ({ challengeId }) => {
         <div className="flex flex-row items-center mb-2">
           <h3 className="font-medium text-xl">Docker Images</h3>
           {images.length < 1 && (
-            <FontAwesomeIcon
-              icon={faPlus}
-              className="text-blue-500 cursor-pointer mx-2"
-              onClick={handleStartAdd}
-              title="Pull Docker Image"
-            />
+            <div>
+              <button onClick={() => setIsModalOpen(true)} className="bg-blue-500 text-white p-2 rounded">
+                Assign Docker Image
+              </button>
+            </div>
           )}
         </div>
+        {isModalOpen && (
+          <AssignDockerImageModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            challengeId={challengeId}
+            apiUrl={apiUrl}
+            onImageAssign={fetchImages}
+            isEditMode={isEditMode}
+            currentImage={currentImage}
+          />
+        )}
         {images.length === 0 ? (
           <p>No images available.</p>
         ) : (
@@ -228,52 +142,6 @@ const DockerManager = ({ challengeId }) => {
         )}
         {message && <p className="mt-4">{message}</p>}
       </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10">
-          <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Image' : 'Add Image'}</h2>
-            <input
-              type="text"
-              value={currentImage.name}
-              onChange={(e) => setCurrentImage({ ...currentImage, name: e.target.value })}
-              placeholder="Image Name"
-              disabled={isEditMode}
-              className="mb-4 border border-gray-300 p-2 rounded w-full"
-            />
-            <input
-              type="text"
-              value={currentImage.port}
-              onChange={(e) => setCurrentImage({ ...currentImage, port: e.target.value })}
-              placeholder="Port"
-              className="mb-4 border border-gray-300 p-2 rounded w-full"
-            />
-            <div className="flex justify-end">
-              <button
-                onClick={handleSaveImage}
-                className="bg-blue-500 text-white p-2 rounded-sm mr-2 flex flex-row items-center justify-center"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    Loading...
-                    <img src="/loading.gif" alt="Loading..." className="w-[20px] h-[20px] ml-2" />
-                  </>
-                ) : (
-                  isEditMode ? 'Save Changes' : 'Add Image'
-                )}
-              </button>
-
-              <button
-                onClick={handleCancel}
-                className="bg-gray-600 text-white p-2 rounded-sm"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {confirmDelete && (
         <ConfirmationModal

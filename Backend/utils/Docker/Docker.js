@@ -160,12 +160,12 @@ const createContainer = async (imageName, ports, flags) => {
     }
 }
 
-const getContainerPort = async (containerId) => {
+const getContainerPort = async (containerId, port) => {
     try {
         const container = docker.getContainer(containerId);
         const containerInfo = await container.inspect();
 
-        const hostPort = containerInfo.NetworkSettings.Ports['5000/tcp'][0].HostPort;
+        const hostPort = containerInfo.NetworkSettings.Ports[`${port}/tcp`][0].HostPort;
         
         return hostPort;
     } catch (error) {
@@ -177,7 +177,7 @@ const getContainerPort = async (containerId) => {
 const generateUrl = async (imageName, port, flags) => {
     const containerId = await createContainer(imageName, [port], flags);
     if (containerId) {
-        const hostPort = await getContainerPort(containerId);
+        const hostPort = await getContainerPort(containerId,port);
         if (hostPort) {
             const url = `http://localhost:${hostPort}`;
             // console.log('Application URL:', url);
