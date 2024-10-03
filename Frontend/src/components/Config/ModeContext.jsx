@@ -5,7 +5,8 @@ const ModeContext = createContext();
 
 // Create a provider component
 export const ModeProvider = ({ children }) => {
-  const apiUrl = 'http://localhost:80/api/config/mode';
+  const api = import.meta.env.VITE_Backend_URL;
+  const apiUrl = `${api}/api/config/mode`;
   const [mode, setMode] = useState('');
   const [loading, setLoading] = useState(false);
 

@@ -9,11 +9,12 @@ const ReportConfigTable = ({ reportId }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
+    const apiUrl = import.meta.env.VITE_Backend_URL;
 
     useEffect(() => {
         const fetchReportConfig = async () => {
             try {
-                const response = await fetch(`http://localhost:80/api/reportConfig/${reportId}`);
+                const response = await fetch(`${apiUrl}/api/reportConfig/${reportId}`);
                 const data = await response.json();
                 setConfig(data);
             } catch (error) {
@@ -45,7 +46,7 @@ const ReportConfigTable = ({ reportId }) => {
             feature: 'Header',
             content: config.header?.imageUrl ? (
                 <img
-                    src={`http://localhost/uploads/headers/${config.header.imageUrl}`}
+                    src={`${apiUrl}/uploads/headers/${config.header.imageUrl}`}
                     alt="Header"
                     className="h-12 mx-auto"
                 />
@@ -55,7 +56,7 @@ const ReportConfigTable = ({ reportId }) => {
             feature: 'Footer',
             content: config.footer?.imageUrl ? (
                 <img
-                    src={`http://localhost/uploads/footers/${config.footer.imageUrl}`}
+                    src={`${apiUrl}/uploads/footers/${config.footer.imageUrl}`}
                     alt="Footer"
                     className="h-12 mx-auto"
                 />

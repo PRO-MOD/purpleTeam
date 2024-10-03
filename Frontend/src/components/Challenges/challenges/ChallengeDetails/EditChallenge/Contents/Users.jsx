@@ -186,6 +186,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const Users = ({ challengeId }) => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [newUser, setNewUser] = useState('');
@@ -197,7 +198,7 @@ const Users = ({ challengeId }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`http://localhost:80/api/challenges/users/${challengeId}`);
+        const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}`);
         const data = await response.json();
         // console.log(data);
         // console.log(data.users);
@@ -209,7 +210,7 @@ const Users = ({ challengeId }) => {
 
     const fetchAllUsers = async () => {
       try {
-        const response = await fetch(`http://localhost:80/api/user/getallusers`);
+        const response = await fetch(`${apiUrl}/api/user/getallusers`);
         const data = await response.json();
 
         // Get the assigned user IDs
@@ -233,7 +234,7 @@ const Users = ({ challengeId }) => {
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        const response = await fetch(`http://localhost:80/api/user/getallusers`);
+        const response = await fetch(`${apiUrl}/api/user/getallusers`);
         const data = await response.json();
 
         // Get the assigned user IDs
@@ -257,7 +258,7 @@ const Users = ({ challengeId }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/users/${challengeId}/add`, {
+      const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -285,7 +286,7 @@ const Users = ({ challengeId }) => {
   const handleDeleteUser = async (index) => {
     const userId = users[index]._id;
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/users/${challengeId}/delete/${userId}`, {
+      const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}/delete/${userId}`, {
         method: 'DELETE',
       });
 
@@ -310,7 +311,7 @@ const Users = ({ challengeId }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/users/${challengeId}/edit/${editingIndex}`, {
+      const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}/edit/${editingIndex}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

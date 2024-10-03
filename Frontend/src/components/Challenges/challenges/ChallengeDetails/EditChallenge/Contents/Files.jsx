@@ -8,11 +8,12 @@ const Files = ({ challengeId }) => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
   const [showUpload, setShowUpload] = useState(false);
+  const apiUrl = import.meta.env.VITE_Backend_URL;
 
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await fetch(`http://localhost:80/api/challenges/files/${challengeId}`);
+        const response = await fetch(`${apiUrl}/api/challenges/files/${challengeId}`);
         const data = await response.json();
         setFiles(data);
       } catch (error) {
@@ -38,7 +39,7 @@ const Files = ({ challengeId }) => {
 
     try {
       setUploading(true);
-      const response = await fetch(`http://localhost:80/api/challenges/files/${challengeId}/upload`, {
+      const response = await fetch(`${apiUrl}/api/challenges/files/${challengeId}/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -62,7 +63,7 @@ const Files = ({ challengeId }) => {
 
   const handleFileDelete = async (filename) => {
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/files/${challengeId}/delete/${filename}`, {
+      const response = await fetch(`${apiUrl}/api/challenges/files/${challengeId}/delete/${filename}`, {
         method: 'DELETE',
       });
 
@@ -96,7 +97,7 @@ const Files = ({ challengeId }) => {
             {files.map((file, index) => (
               <li key={index} className="flex justify-between items-center">
                 <a
-                  href={`http://localhost/uploads/CTFdChallenges/${file}`}
+                  href={`${apiUrl}/uploads/CTFdChallenges/${file}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"

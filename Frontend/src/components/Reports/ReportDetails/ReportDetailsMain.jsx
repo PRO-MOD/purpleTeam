@@ -7,6 +7,7 @@ import EditReport from './EditReport';
 import { formatDate } from '../../../assets/utils/formatDate';
 
 const ReportDetails = () => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const { id } = useParams(); 
   const [report, setReport] = useState(null);
   const [activeTab, setActiveTab] = useState('Details');
@@ -14,7 +15,7 @@ const ReportDetails = () => {
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const response = await fetch(`http://localhost:80/api/reports/details/${id}`);
+        const response = await fetch(`${apiUrl}/api/reports/details/${id}`);
         const data = await response.json();
         setReport(data);
       } catch (error) {

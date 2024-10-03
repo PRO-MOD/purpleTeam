@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import ConfirmationModal from '../challenges/Partials/ConfirmationModal';
 
 const SubmissionTable = ({ challengeId, userId }) => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const [submissions, setSubmissions] = useState([]);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,12 +21,12 @@ const SubmissionTable = ({ challengeId, userId }) => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        let url = 'http://localhost:80/api/submissions/all';
+        let url = `${apiUrl}/api/submissions/all`;
 
         if (challengeId) {
-          url = `http://localhost:80/api/submissions/submissions/${challengeId}`;
+          url = `${apiUrl}/api/submissions/submissions/${challengeId}`;
         } else if (userId) {
-          url = `http://localhost:80/api/submissions/userSubmissions/${userId}`;
+          url = `${apiUrl}/api/submissions/userSubmissions/${userId}`;
         }
 
         const response = await fetch(url);
@@ -58,7 +59,7 @@ const SubmissionTable = ({ challengeId, userId }) => {
   const handleDeleteSelected = ()=> {
     setDeletionAction(()=>async()=>{
     try {
-      await fetch('http://localhost:80/api/submissions/delete', {
+      await fetch(`${apiUrl}/api/submissions/delete`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

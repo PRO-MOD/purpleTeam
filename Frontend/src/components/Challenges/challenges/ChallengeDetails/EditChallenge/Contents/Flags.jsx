@@ -4,6 +4,7 @@ import { faTrashAlt, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import DynamicFlags from './DynamicFlag'; // Import the DynamicFlags component
 
 const Flags = ({ challengeId }) => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const [flags, setFlags] = useState([]);
   const [flagData, setFlagData] = useState([]);
   const [newFlag, setNewFlag] = useState('');
@@ -18,7 +19,7 @@ const Flags = ({ challengeId }) => {
   useEffect(() => {
     const fetchFlags = async () => {
       try {
-        const response = await fetch(`http://localhost:80/api/challenges/flags/${challengeId}`);
+        const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}`);
         const data = await response.json();
         setFlags(data.flags);
         setFlagData(data.flag_data);
@@ -33,7 +34,7 @@ const Flags = ({ challengeId }) => {
 
   const fetchChallengeType = async (challengeId) => {
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/type/${challengeId}`);
+      const response = await fetch(`${apiUrl}/api/challenges/type/${challengeId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch challenge type');
@@ -53,7 +54,7 @@ const Flags = ({ challengeId }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/flags/${challengeId}/add`, {
+      const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +81,7 @@ const Flags = ({ challengeId }) => {
   const handleDeleteFlag = async (index) => {
     const flag = flags[index];
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/flags/${challengeId}/delete/${flag}`, {
+      const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}/delete/${flag}`, {
         method: 'DELETE',
       });
 
@@ -105,7 +106,7 @@ const Flags = ({ challengeId }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/flags/${challengeId}/edit/${editingIndex}`, {
+      const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}/edit/${editingIndex}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -8,6 +8,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
     const [index, setIndex] = useState(existingQuestion ? existingQuestion.index : 0);
     const [maxScore, setMaxScore] = useState(existingQuestion ? existingQuestion.maxScore : 0);
     const [message, setMessage] = useState("");
+    const apiUrl = import.meta.env.VITE_Backend_URL;
 
     useEffect(() => {
         if (existingQuestion) {
@@ -35,8 +36,8 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
         try {
             const method = existingQuestion ? "PUT" : "POST";
             const url = existingQuestion
-                ? `http://localhost:80/api/questions/edit/${existingQuestion._id}`
-                : `http://localhost:80/api/questions/add/${reportId}`;
+                ? `${apiUrl}/api/questions/edit/${existingQuestion._id}`
+                : `${apiUrl}/api/questions/add/${reportId}`;
 
             const response = await fetch(url, {
                 method,
