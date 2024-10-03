@@ -86,17 +86,20 @@ import Content from './EditChallenge/Content';
 import EditChallenge from './EditChallenge/EditChallenge';
 import ConfirmationModal from '../Partials/ConfirmationModal'; // Import the modal component
 
+
 const ChallengeDetailsPage = () => {
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const { id } = useParams(); // Get challenge ID from URL params
   const [challenge, setChallenge] = useState(null);
   const [activeTab, setActiveTab] = useState('Files');
   const [showModal, setShowModal] = useState(false); // State for showing the modal
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const fetchChallenge = async () => {
       try {
-        const response = await fetch(`http://localhost:80/api/challenges/details/${id}`);
+        const response = await fetch(`${apiUrl}/api/challenges/details/${id}`);
         const data = await response.json();
         setChallenge(data);
       } catch (error) {
@@ -109,7 +112,7 @@ const ChallengeDetailsPage = () => {
 
   const handleDelete = async () => {
     try {
-      await fetch(`http://localhost:80/api/challenges/delete/${id}`, { method: 'DELETE' });
+      await fetch(`${apiUrl}/api/challenges/delete/${id}`, { method: 'DELETE' });
       navigate('/challenges'); // Redirect to challenges page after deletion
     } catch (error) {
       console.error('Error deleting challenge:', error);

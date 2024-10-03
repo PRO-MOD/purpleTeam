@@ -12,10 +12,12 @@ const AllReports = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+    const apiUrl = import.meta.env.VITE_Backend_URL;
+
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await fetch('http://localhost:80/api/reports/');
+                const response = await fetch(`${apiUrl}/api/reports/`);
                 if (!response.ok) {
                     throw new Error('Error fetching reports');
                 }
@@ -64,7 +66,7 @@ const AllReports = () => {
     const handleDeleteReports = async () => {
         try {
             console.log('Deleting reports:', selectedReports);
-            const response = await fetch('http://localhost:80/api/reports/deleteReport', {
+            const response = await fetch(`${apiUrl}/api/reports/deleteReport`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

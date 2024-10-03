@@ -10,6 +10,7 @@ const Questions = ({ reportId }) => {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(null);
+    const apiUrl = import.meta.env.VITE_Backend_URL;
 
     useEffect(() => {
         fetchQuestions();
@@ -17,7 +18,7 @@ const Questions = ({ reportId }) => {
 
     const fetchQuestions = async () => {
         try {
-            const response = await fetch(`http://localhost:80/api/questions/for/${reportId}`);
+            const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch questions');
             }
@@ -37,7 +38,7 @@ const Questions = ({ reportId }) => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:80/api/questions/delete/${id}`, {
+            const response = await fetch(`${apiUrl}/api/questions/delete/${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) {

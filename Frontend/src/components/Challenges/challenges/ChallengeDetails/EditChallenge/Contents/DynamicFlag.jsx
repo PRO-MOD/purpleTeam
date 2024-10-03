@@ -8,11 +8,12 @@ const DynamicFlags = ({ challengeId }) => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [editFlag, setEditFlag] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const apiUrl = import.meta.env.VITE_Backend_URL;
 
   // Function to fetch dynamic flags and users
   const fetchDynamicFlags = async (challengeId) => {
     try {
-      const response = await fetch(`http://localhost:80/api/dynamicFlags/display/${challengeId}`);
+      const response = await fetch(`${apiUrl}/api/dynamicFlags/display/${challengeId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch dynamic flags');
@@ -40,7 +41,7 @@ const DynamicFlags = ({ challengeId }) => {
 
   const saveEditFlag = async () => {
     try {
-      const response = await fetch(`http://localhost:80/api/dynamicFlags/edit/${challengeId}`, {
+      const response = await fetch(`${apiUrl}/api/dynamicFlags/edit/${challengeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ const DynamicFlags = ({ challengeId }) => {
 
   const handleDeleteFlag = async (index) => {
     try {
-      const response = await fetch(`http://localhost:80/api/dynamicFlags/delete/${challengeId}`, {
+      const response = await fetch(`${apiUrl}/api/dynamicFlags/delete/${challengeId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

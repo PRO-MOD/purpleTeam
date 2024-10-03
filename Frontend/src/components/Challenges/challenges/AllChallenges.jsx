@@ -15,11 +15,12 @@ const AllChallenges = () => {
   const [showModal, setShowModal] = useState(false); // State for showing the modal
   const [deletionAction, setDeletionAction] = useState(null); // State to track the deletion action
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_Backend_URL;
 
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const response = await fetch('http://localhost:80/api/challenges/toDisplayAllChallenges');
+        const response = await fetch(`${apiUrl}/api/challenges/toDisplayAllChallenges`);
         const data = await response.json();
         setChallenges(data);
       } catch (error) {
@@ -41,7 +42,7 @@ const AllChallenges = () => {
   const handleDeleteChallenges = () => {
     setDeletionAction(() => async () => {
       try {
-        const response = await fetch('http://localhost:80/api/challenges/deleteChallenges', {
+        const response = await fetch(`${apiUrl}/api/challenges/deleteChallenges`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

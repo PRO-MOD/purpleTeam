@@ -33,6 +33,7 @@ const Modal = ({
   const [message, setMessage] = useState('');
   const [containerData, setContainerData] = useState({});
   const [isServerStopped, setIsServerStopped] = useState(false);
+  
 
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const Modal = ({
 
   const fetchUserChallengeValue = async () => {
     try {
-      const response = await fetch(`http://localhost:80/api/hints/value/${challenge._id}`, {
+      const response = await fetch(`${apiUrl}/api/hints/value/${challenge._id}`, {
         headers: {
           'Content-Type': 'application/json',
           'Auth-token': localStorage.getItem('Hactify-Auth-token'),
@@ -68,7 +69,7 @@ const Modal = ({
 
   const fetchUsedHints = async () => {
     try {
-      const response = await fetch(`http://localhost:80/api/hints/used-hints/${challenge._id}`, {
+      const response = await fetch(`${apiUrl}/api/hints/used-hints/${challenge._id}`, {
         headers: {
           'Content-Type': 'application/json',
           'Auth-token': localStorage.getItem('Hactify-Auth-token')
@@ -87,7 +88,7 @@ const Modal = ({
 
   const fetchHints = async () => {
     try {
-      const response = await fetch(`http://localhost:80/api/challenges/hints/${challenge._id}`);
+      const response = await fetch(`${apiUrl}/api/challenges/hints/${challenge._id}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -103,7 +104,7 @@ const Modal = ({
 
   const fetchHintDetails = async (hintId) => {
     try {
-      const response = await fetch(`http://localhost:80/api/hints/hints/${hintId}`);
+      const response = await fetch(`${apiUrl}/api/hints/hints/${hintId}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -124,7 +125,7 @@ const Modal = ({
 
   const fetchLockedHintDetails = async (hintId) => {
     try {
-      const response = await fetch(`http://localhost:80/api/hints/locked/hints/${hintId}`);
+      const response = await fetch(`${apiUrl}/api/hints/locked/hints/${hintId}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -162,7 +163,7 @@ const Modal = ({
       setShowHintDetails(true);
 
       try {
-        await fetch(`http://localhost:80/api/hints/use-hint`, {
+        await fetch(`${apiUrl}/api/hints/use-hint`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -377,7 +378,7 @@ const Modal = ({
                   {challenge.files.map((fileName, index) => (
                     <li key={index}>
                       <a
-                        href={`http://localhost:80/uploads/${fileName}`}
+                        href={`${apiUrl}/uploads/${fileName}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-500 hover:underline"

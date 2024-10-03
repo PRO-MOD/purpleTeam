@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarsProgress } from '@fortawesome/free-solid-svg-icons';
 
 const HeaderFooter = () => {
+    const apiUrl = import.meta.env.VITE_Backend_URL;
     const [showModal, setShowModal] = useState(false);
     const [headerImage, setHeaderImage] = useState(null);
     const [footerImage, setFooterImage] = useState(null);
@@ -30,7 +31,7 @@ const HeaderFooter = () => {
         try {
             // Send header image if present
             if (headerImage) {
-                const headerResponse = await fetch('http://localhost:80/api/reports/headers/upload', {
+                const headerResponse = await fetch(`${apiUrl}/api/reports/headers/upload`, {
                     method: 'POST',
                     body: formDataHeader,
                 });
@@ -45,7 +46,7 @@ const HeaderFooter = () => {
 
             // Send footer image if present
             if (footerImage) {
-                const footerResponse = await fetch('http://localhost:80/api/reports/footers/upload', {
+                const footerResponse = await fetch(`${apiUrl}/api/reports/footers/upload`, {
                     method: 'POST',
                     body: formDataFooter,
                 });

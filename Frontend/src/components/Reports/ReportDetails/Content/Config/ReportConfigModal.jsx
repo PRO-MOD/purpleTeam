@@ -15,13 +15,15 @@ const ReportConfigModal = ({ reportId }) => {
   const [lastPageInfo, setLastPageInfo] = useState([{ text: '', margin: 0, coordinateY: 0 }]);
   const [enablePageNumber, setEnablePageNumber] = useState(false);
   const [message, setMessage] = useState('');
+  const apiUrl = import.meta.env.VITE_Backend_URL;
+  
 
   useEffect(() => {
     const fetchHeadersAndFooters = async () => {
       try {
         const [headerResponse, footerResponse] = await Promise.all([
-          fetch('http://localhost:80/api/reports/headers'),
-          fetch('http://localhost:80/api/reports/footers')
+          fetch(`${apiUrl}/api/reports/headers`),
+          fetch(`${apiUrl}/api/reports/footers`)
         ]);
 
         const headers = await headerResponse.json();
@@ -62,7 +64,7 @@ const ReportConfigModal = ({ reportId }) => {
     };
 
     try {
-      const response = await fetch(`http://localhost:80/api/reportConfig/${reportId}`, {
+      const response = await fetch(`${apiUrl}/api/reportConfig/${reportId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(configData),

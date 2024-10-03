@@ -13,11 +13,12 @@ const UserChallengePage = () => {
   const [updatedValue, setUpdatedValue] = useState(0);
   const [solvedChallenges, setSolvedChallenges] = useState([]); // New state
   const [totalAttempts, setTotalAttempts] = useState(0);
+  const apiUrl = import.meta.env.VITE_Backend_URL;
 
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const response = await fetch('http://localhost:80/api/challenges/all', {
+        const response = await fetch(`${apiUrl}/api/challenges/all`, {
           headers: {
             'Content-Type': 'application/json',
             'Auth-token': localStorage.getItem('Hactify-Auth-token')
@@ -36,7 +37,7 @@ const UserChallengePage = () => {
     const fetchSolvedChallenges = async () => {
       try {
 
-        const response = await fetch('http://localhost:80/api/challenges/solved', {
+        const response = await fetch(`${apiUrl}/api/challenges/solved`, {
           headers: {
             'Content-Type': 'application/json',
             'Auth-token': localStorage.getItem('Hactify-Auth-token')
@@ -74,7 +75,7 @@ const UserChallengePage = () => {
   
     try {
       // Fetch the number of attempts for the selected challenge
-      const response = await fetch(`http://localhost:80/api/challenges/attempts/${challenge._id}`, {
+      const response = await fetch(`${apiUrl}/api/challenges/attempts/${challenge._id}`, {
         headers: {
           'Content-Type': 'application/json',
           'Auth-token': localStorage.getItem('Hactify-Auth-token')
@@ -108,7 +109,7 @@ const UserChallengePage = () => {
     } else if (selectedChallenge.type === 'code' || selectedChallenge.type === 'standard' || selectedChallenge.type === 'multiple_choice' || selectedChallenge.type === 'dynamic') {
       try {
 
-        const response = await fetch('http://localhost:80/api/challenges/verify-answer', {
+        const response = await fetch(`${apiUrl}/api/challenges/verify-answer`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
