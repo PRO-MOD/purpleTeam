@@ -10,7 +10,7 @@ require('dotenv').config();
 connectToMongo();
 const app = express();
 app.use(cors());
-const port = 80;
+const port = process.env.PORT || 80;
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));

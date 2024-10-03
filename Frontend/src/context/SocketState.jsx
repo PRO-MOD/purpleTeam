@@ -21,7 +21,7 @@ const SocketState = (props) => {
 
   // Fetch user
   const creteSocket = async (userID) => {
-    const newSocket = io(`${apiUrl}:80`); // || 'http://15.206.26.38:8080/'
+    const newSocket = io(`${apiUrl}`); // || 'http://15.206.26.38:8080/'
     setSocket(newSocket);
     setUserId(userID);
     console.log("userId: >> " + userId + " userID: >> " + userID);
