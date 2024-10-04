@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 // import './App.css'
 import SideNavbar from './SideNavbar'
 
@@ -37,10 +37,12 @@ import MainReportPage from './Reports/MainReportPage';
 import CreateReport from './Reports/CreateReport';
 import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
 import UserReports from './UserReports';
+import ColorContext from '../context/ColorContext';
 
 function HomePage() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
 
   const showAlert = (message, type) => {
     setAlert({
@@ -66,7 +68,7 @@ function HomePage() {
         <div className="left_Home w-[13%] min-w-20 bg-brown-650">
           <SideNavbar />
         </div>
-        <div className="right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white-100">
+        <div className={`right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white`}>
           {
             alert ?
               <Alert alert={alert} />
