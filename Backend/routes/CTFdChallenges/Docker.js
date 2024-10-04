@@ -11,15 +11,23 @@ const router = express.Router();
 router.get('/images', async (req, res) => {
     try {
         const images = await dockerUtils.listDockerImages();
+        
         const data = [];
 
         // Use for...of for asynchronous processing
         for (const ele of images) {
             const element = await Image.findOne({ imageName: ele });
+            // console.log(element);
             if (element) {
-                data.push({ _id: element._id, name: ele, port: element.port });
+                // If element is found, check for port availability
+                if (element.port) {
+                    data.push({ _id: element._id, name: ele, port: element.port });
+                } else {
+                    data.push({ _id: element._id, name: ele, port: null }); // Port is not available
+                }
             } else {
-                data.push({ _id: element._id, name: ele, port: null }); // Handle case where no port is found
+                // If element is not found
+                data.push({ _id: null, name: ele, port: null });
             }
         }
 
@@ -262,7 +270,7 @@ router.post('/create/container', fetchuser, async (req, res) => {
         const flags = { Flag: `${userFlag}`, MIN_AGE: 21 };
 
         // Step 6: Generate URL and container for the image
-        const containerData = await dockerUtils.generateUrl(imageName, port, flags);
+        const containerData = await dockerUtils.generateUrl(userId,imageName, port, flags);
 
         if (!containerData) {
             return res.status(500).json({ error: 'Error generating container URL' });
