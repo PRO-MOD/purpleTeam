@@ -176,9 +176,9 @@ const createContainer = async (serviceName, imageName, port, flags) => {
 };
 
 // Get the worker node IP and published port for the running service
-const getServiceIPandPort = async (serviceName) => {
+const getServiceIPandPort = async (serviceName, retries = 5, delay = 2000) => {
     return new Promise((resolve, reject) => {
-        console.log(`Starting to fetch service details for: ${serviceName}`);
+        console.log(`Fetching service details for: ${serviceName}`);
 
         // Inspect the service to fetch details
         docker.getService(serviceName).inspect((err, serviceData) => {
@@ -187,7 +187,7 @@ const getServiceIPandPort = async (serviceName) => {
                 return reject(`Error fetching service: ${err}`);
             }
 
-            console.log(`Successfully fetched service data for ${serviceName}:`, serviceData);
+            console.log(`Successfully fetched service data for ${serviceName}.`);
 
             // Ensure that there are exposed ports in the service
             if (!serviceData.Endpoint || !serviceData.Endpoint.Ports || serviceData.Endpoint.Ports.length === 0) {
@@ -196,7 +196,7 @@ const getServiceIPandPort = async (serviceName) => {
             }
 
             const publishedPort = serviceData.Endpoint.Ports[0].PublishedPort;
-            console.log(`Service ${serviceName} is exposed on published port: ${publishedPort}`);
+            console.log(`Service ${serviceName} exposed on port: ${publishedPort}`);
 
             // List all tasks and filter for the current service
             console.log(`Fetching tasks for service ${serviceName}...`);
@@ -215,10 +215,10 @@ const getServiceIPandPort = async (serviceName) => {
                     return reject(`No tasks found for service ${serviceName}`);
                 }
 
+                // Loop through tasks to find one that's running
                 for (let task of serviceTasks) {
                     console.log(`Checking task ${task.ID} - State: ${task.Status.State}`);
-                    
-                    // Look for running tasks
+
                     if (task.Status.State === 'running') {
                         const nodeId = task.NodeID;
                         console.log(`Task ${task.ID} is running. Fetching node information for NodeID: ${nodeId}`);
@@ -240,16 +240,27 @@ const getServiceIPandPort = async (serviceName) => {
                         });
 
                         return; // Stop after finding the first running task
+                    } else if (task.Status.State === 'starting') {
+                        console.warn(`Task ${task.ID} is still starting.`);
                     }
                 }
 
-                // If no running task is found, reject with an appropriate message
-                console.warn(`No running tasks found for service ${serviceName}`);
-                reject(`No running tasks found for service ${serviceName}`);
+                // Retry mechanism if no running tasks are found and there are retries left
+                if (retries > 0) {
+                    console.log(`No running tasks found. Retrying in ${delay}ms... (${retries} retries left)`);
+                    setTimeout(() => {
+                        // Pass the decremented retries value here
+                        getServiceIPandPort(serviceName, retries - 1, delay).then(resolve).catch(reject);
+                    }, delay);
+                } else {
+                    console.error(`No running tasks found after retries for service ${serviceName}`);
+                    reject(`No running tasks found after retries for service ${serviceName}`);
+                }
             });
         });
     });
 };
+
 
 
 // Generate a URL by creating the service and fetching the running service details
