@@ -1,5 +1,8 @@
 const Docker = require('dockerode');
-const docker = new Docker();
+const docker = new Docker({
+    host: '20.84.119.195', // Azure instance public IP
+    port: 2375,            // Port Docker is exposed on (2375 for non-TLS, 2376 for TLS)
+});
 
 // List all Docker images available locally
 const listDockerImages = async () => {
@@ -133,66 +136,130 @@ const deleteDockerImage = async (imageName) => {
     }
 };
 
-const createContainer = async (imageName, ports, flags) => {
+// creatconatiner of docker is similar to create service of swarm
+const createContainer = async (serviceName, imageName, port, flags) => {
     try {
-        const container = await docker.createContainer({
-            Image: imageName,
-            Env: Object.keys(flags).map(key => `${key}=${flags[key]}`),
-            ExposedPorts: ports.reduce((acc, port) => {
-                acc[`${port}/tcp`] = {};
-                return acc;
-            }, {}),
-            HostConfig: {
-                PortBindings: ports.reduce((acc, port) => {
-                    acc[`${port}/tcp`] = [{ HostPort: '0' }];
-                    return acc;
-                }, {})
-            }
+        const service = await docker.createService({
+            Name: serviceName,
+            TaskTemplate: {
+                ContainerSpec: {
+                    Image: imageName,
+                    Env: Object.keys(flags).map(key => `${key}=${flags[key]}`), // Set environment variables
+                    ExposedPorts: {
+                        [`${port}/tcp`]: {}
+                    },
+                },
+            },
+            Mode: {
+                Replicated: {
+                    Replicas: 1, // Always set replicas to 1
+                },
+            },
+            EndpointSpec: {
+                Ports: [{
+                    TargetPort: port, // The port your application listens on inside the container
+                    PublishedPort: 0, // Use dynamic port (0 means Docker chooses a random port)
+                    Protocol: 'tcp',
+                }],
+            },
         });
-        
-        await container.start();
-        
-        const containerInfo = await container.inspect();
-        const containerId = containerInfo.Id;
-        return containerId;
-    } catch (error) {
-        console.error('Error creating container:', error);
-    }
-}
 
-const getContainerPort = async (containerId, port) => {
+        // console.log(`Service ${serviceName} created successfully.`);
+
+        const serviceInfo = await service.inspect();
+        const serviceId = await serviceInfo.ID;
+        return serviceId;
+    } catch (error) {
+        console.error('Error creating service:', error);
+        throw error; // It's good to throw the error so it can be handled by the caller
+    }
+};
+
+// Get the worker node IP and published port for the running service
+const getServiceIPandPort = async (serviceName) => {
+    return new Promise((resolve, reject) => {
+        
+        docker.getService(serviceName).inspect((err, serviceData) => {
+            if (err) {
+                return reject(`Error fetching service: ${err}`);
+            }
+
+            // Ensure that there are exposed ports in the service
+            if (!serviceData.Endpoint || !serviceData.Endpoint.Ports || serviceData.Endpoint.Ports.length === 0) {
+                return reject(`No ports found for service ${serviceName}`);
+            }
+
+            const publishedPort = serviceData.Endpoint.Ports[0].PublishedPort;
+
+            // List all tasks and filter for the current service
+            docker.listTasks((err, tasks) => {
+                if (err) {
+                    return reject(`Error listing tasks: ${err}`);
+                }
+
+                // Filter tasks related to the specific service
+                const serviceTasks = tasks.filter(task => task.ServiceID === serviceData.ID);
+
+                if (serviceTasks.length === 0) {
+                    return reject(`No tasks found for service ${serviceName}`);
+                }
+
+                for (let task of serviceTasks) {
+                    if (task.Status.State === 'running') {
+                        const nodeId = task.NodeID;
+
+                        // Fetch node information to get the IP address of the worker node
+                        docker.getNode(nodeId).inspect((err, nodeData) => {
+                            if (err) {
+                                return reject(`Error fetching node data: ${err}`);
+                            }
+
+                            const workerNodeIP = nodeData.Status.Addr;  // Get the IP address of the worker node
+                            // console.log(`Service is running on worker node IP: ${workerNodeIP}`);
+
+                            // Return the full access URL
+                            const accessUrl = `http://${workerNodeIP}:${publishedPort}`;
+                            // console.log(`You can access the service at: ${accessUrl}`);
+                            return resolve({ accessUrl, workerNodeIP, publishedPort });
+                        });
+
+                        return; // Stop after finding the first running task
+                    }
+                }
+
+                // If no running task is found, reject with an appropriate message
+                reject(`No running tasks found for service ${serviceName}`);
+            });
+        });
+    });
+};
+
+
+// Generate a URL by creating the service and fetching the running service details
+const generateUrl = async (serviceName, imageName, port, flags) => {
     try {
-        const container = docker.getContainer(containerId);
-        const containerInfo = await container.inspect();
-
-        const hostPort = containerInfo.NetworkSettings.Ports[`${port}/tcp`][0].HostPort;
+        // Create the service
+        const serviceId = await createContainer(serviceName, imageName, port, flags);
         
-        return hostPort;
-    } catch (error) {
-        console.error('Error retrieving container port:', error);
-    }
-}
-
-
-const generateUrl = async (imageName, port, flags) => {
-    const containerId = await createContainer(imageName, [port], flags);
-    if (containerId) {
-        const hostPort = await getContainerPort(containerId,port);
-        if (hostPort) {
-            const url = `http://localhost:${hostPort}`;
-            // console.log('Application URL:', url);
-            return {"url": url, "containerId": containerId};
+        if (serviceId) {
+            // Get the IP and port for the running service
+            const { accessUrl } = await getServiceIPandPort(serviceName);
+            if (accessUrl) {
+                return { url: accessUrl, containerId: serviceId };
+            }
         }
+    } catch (error) {
+        console.error('Error generating service URL:', error);
+        throw error;
     }
-}
+};
 
 const stopContainer = async (containerId) => {
     try {
         // Get the container instance
-        const container = docker.getContainer(containerId);
+        const container = docker.getService(containerId);
         
         // Stop the container
-        await container.stop();   // stops running container
         await container.remove(); // deletes container
         // console.log(`Container ${containerId} stopped successfully.`);
     } catch (error) {

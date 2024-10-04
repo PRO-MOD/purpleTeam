@@ -262,7 +262,7 @@ router.post('/create/container', fetchuser, async (req, res) => {
         const flags = { Flag: `${userFlag}`, MIN_AGE: 21 };
 
         // Step 6: Generate URL and container for the image
-        const containerData = await dockerUtils.generateUrl(imageName, port, flags);
+        const containerData = await dockerUtils.generateUrl(userId,imageName, port, flags);
 
         if (!containerData) {
             return res.status(500).json({ error: 'Error generating container URL' });
