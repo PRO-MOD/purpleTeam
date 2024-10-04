@@ -178,48 +178,64 @@ const createContainer = async (serviceName, imageName, port, flags) => {
 // Get the worker node IP and published port for the running service
 const getServiceIPandPort = async (serviceName) => {
     return new Promise((resolve, reject) => {
-        
+        console.log(`Starting to fetch service details for: ${serviceName}`);
+
+        // Inspect the service to fetch details
         docker.getService(serviceName).inspect((err, serviceData) => {
             if (err) {
+                console.error(`Error fetching service ${serviceName}:`, err);
                 return reject(`Error fetching service: ${err}`);
             }
 
+            console.log(`Successfully fetched service data for ${serviceName}:`, serviceData);
+
             // Ensure that there are exposed ports in the service
             if (!serviceData.Endpoint || !serviceData.Endpoint.Ports || serviceData.Endpoint.Ports.length === 0) {
+                console.warn(`No ports found for service ${serviceName}`);
                 return reject(`No ports found for service ${serviceName}`);
             }
 
             const publishedPort = serviceData.Endpoint.Ports[0].PublishedPort;
+            console.log(`Service ${serviceName} is exposed on published port: ${publishedPort}`);
 
             // List all tasks and filter for the current service
+            console.log(`Fetching tasks for service ${serviceName}...`);
             docker.listTasks((err, tasks) => {
                 if (err) {
+                    console.error(`Error listing tasks for service ${serviceName}:`, err);
                     return reject(`Error listing tasks: ${err}`);
                 }
 
                 // Filter tasks related to the specific service
                 const serviceTasks = tasks.filter(task => task.ServiceID === serviceData.ID);
+                console.log(`Found ${serviceTasks.length} task(s) for service ${serviceName}`);
 
                 if (serviceTasks.length === 0) {
+                    console.warn(`No tasks found for service ${serviceName}`);
                     return reject(`No tasks found for service ${serviceName}`);
                 }
 
                 for (let task of serviceTasks) {
+                    console.log(`Checking task ${task.ID} - State: ${task.Status.State}`);
+                    
+                    // Look for running tasks
                     if (task.Status.State === 'running') {
                         const nodeId = task.NodeID;
+                        console.log(`Task ${task.ID} is running. Fetching node information for NodeID: ${nodeId}`);
 
                         // Fetch node information to get the IP address of the worker node
                         docker.getNode(nodeId).inspect((err, nodeData) => {
                             if (err) {
+                                console.error(`Error fetching node data for NodeID ${nodeId}:`, err);
                                 return reject(`Error fetching node data: ${err}`);
                             }
 
                             const workerNodeIP = nodeData.Status.Addr;  // Get the IP address of the worker node
-                            // console.log(`Service is running on worker node IP: ${workerNodeIP}`);
+                            console.log(`Service ${serviceName} is running on worker node IP: ${workerNodeIP}`);
 
                             // Return the full access URL
                             const accessUrl = `http://${workerNodeIP}:${publishedPort}`;
-                            // console.log(`You can access the service at: ${accessUrl}`);
+                            console.log(`Access URL for service ${serviceName}: ${accessUrl}`);
                             return resolve({ accessUrl, workerNodeIP, publishedPort });
                         });
 
@@ -228,6 +244,7 @@ const getServiceIPandPort = async (serviceName) => {
                 }
 
                 // If no running task is found, reject with an appropriate message
+                console.warn(`No running tasks found for service ${serviceName}`);
                 reject(`No running tasks found for service ${serviceName}`);
             });
         });
