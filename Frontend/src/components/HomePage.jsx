@@ -38,6 +38,7 @@ import CreateReport from './Reports/CreateReport';
 import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
 import UserReports from './UserReports';
 import ColorContext from '../context/ColorContext';
+import DockerManagement from './Challenges/challenges/ChallengeDetails/EditChallenge/Contents/DockerManager';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ function HomePage() {
     <>
       {/* <Router> */}
       <div className="flex flex-row h-screen b">
-        <div className="left_Home w-[13%] min-w-20 bg-brown-650">
+        <div className="left_Home w-[13%] min-w-20 bg-brown-650" style={{ backgroundColor: bgColor }}>
           <SideNavbar />
         </div>
         <div className={`right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white`}>
@@ -110,6 +111,7 @@ function HomePage() {
             <Route exact path='/admin/report/create' element={<CreateReport />} />
             <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
             <Route exact path='/challenges/submissions/:id' element={<ChallengesSubmissions/>}/>
+            <Route exact path='/challenges/docker' element={<DockerManagement/>}/>
           </Routes>
           
         </div>

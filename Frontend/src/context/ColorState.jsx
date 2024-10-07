@@ -4,7 +4,7 @@ import ColorContext from "./ColorContext";
 
 const ColorState = (props) => {
     // Define the initial color states
-    const [bgColor, setBgColor] = useState("green-500");       // Default background color
+    const [bgColor, setBgColor] = useState("#3c0008");       // Default background color
     const [textColor, setTextColor] = useState("#000000");   // Default text color
     const [sidenavColor, setSidenavColor] = useState("#333333"); // Default sidenav color
     const [hoverColor, setHoverColor] = useState("#f0f0f0"); // Default hover color

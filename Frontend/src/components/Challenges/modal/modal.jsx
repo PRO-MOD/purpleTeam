@@ -33,7 +33,7 @@ const Modal = ({
   const [message, setMessage] = useState('');
   const [containerData, setContainerData] = useState({});
   const [isServerStopped, setIsServerStopped] = useState(false);
-  
+  const [isCreating, setIsCreating] = useState(false);
 
 
   useEffect(() => {
@@ -221,6 +221,9 @@ const Modal = ({
 
   // create individual containers
   const handleCreateContainer = async (challengeId) => {
+    setIsCreating(true);  // Set loading state to true when starting the process
+    setMessage('');  // Clear any previous messages
+
     try {
       const response = await fetch(`${apiUrl}/api/docker/create/container`, {
         method: 'POST',
@@ -237,10 +240,13 @@ const Modal = ({
         throw new Error(data.error || 'Failed to create container.');
       }
 
-      setContainerData(data);
+      setContainerData(data);  // Set the container data once created
+      setMessage('Container created successfully.');
     } catch (error) {
-      setMessage('Error creating container.');
+      setMessage(`Error: ${error.message}`);
       console.error('Error creating container:', error);
+    } finally {
+      setIsCreating(false);  // Set loading state to false when the process is done
     }
   };
 
@@ -262,7 +268,7 @@ const Modal = ({
       }
 
       setMessage(`Container stopped successfully.`);
-      setIsServerStopped(true); 
+      setIsServerStopped(true);
       setContainerData({});
     } catch (error) {
       setMessage(`Error stopping container: ${error.message}`);
@@ -292,7 +298,7 @@ const Modal = ({
           <div className="mt-4">
             <p className="text-red-500">You are out of attempts!</p>
           </div>
-        ) :(
+        ) : (
           <>
             {challenge.type === 'multiple_choice' ? (
               <div className="mt-4">
@@ -313,24 +319,51 @@ const Modal = ({
               </div>
             ) : challenge.type === 'standard' || challenge.type === 'manual_verification' || challenge.type === 'dynamic' ? (
               <div className="mt-4">
+                {message && <p className={`${message.includes('Error') ? 'text-red-500' : 'text-green-500'} m-4`}>{message}</p>}  {/* Display message if any */}
                 {
-                  challenge.type === 'dynamic' ?
+                  challenge.type === 'dynamic' ? (
                     <div className="flex flex-row">
-                      <button className='bg-green-500 rounded p-2 mb-2 text-white ' onClick={() => handleCreateContainer(challenge._id)}>Start server</button>
-                      {message && <p>{message && message}</p>}
-                      {containerData && containerData.url &&
-                        <div className="flex flex-col">
-                          Use below link to get Flag
-                          <a href={containerData.url} className='text-indigo-500' target='_black'>Get Flag</a>
-                          <button className='bg-red-500 rounded p-2 my-2 text-white' onClick={() => handleDeleteContainer(containerData.containerId)}>Stop server</button>
+                      {!containerData || !containerData.url ? (
+                        // Show "Start server" button while container is not created or data is not available
+                        <button
+                          className="bg-green-500 rounded p-2 mb-2 text-white"
+                          onClick={() => handleCreateContainer(challenge._id)}
+                          disabled={isCreating}
+                        >
+                          {isCreating ? 'Creating container...' : 'Start server'}
+                        </button>
+                      ) : (
+                        // Show "Stop server" button and flag link once container is created
+                        <div className="flex flex-row">
+                          <button
+                            className="bg-red-500 rounded p-2 my-2 text-white"
+                            onClick={() => handleDeleteContainer(containerData.containerId)}
+                          >
+                            Stop server
+                          </button>
+                          <div className="flex flex-col ml-4">
+                            <p>Use the link below to get the Flag:</p>
+                            <a href={containerData.url} className="text-indigo-500" target="_blank" rel="noopener noreferrer">
+                              Get Flag
+                            </a>
+                          </div>
                         </div>
-                      }
-
+                      )}
                     </div>
-                    :
-                    ""
+                  ) : ""
                 }
-                {isServerStopped && (
+                {challenge.type === 'dynamic' ? (
+                  isServerStopped ? (
+                    <textarea
+                      className="w-full p-2 border border-gray-300 rounded"
+                      rows="3"
+                      value={answer}
+                      onChange={(e) => setAnswer(e.target.value)}
+                    ></textarea>
+                  ) : (
+                    <p className=''>Start the server to proceed</p>
+                  )
+                ) : (
                   <textarea
                     className="w-full p-2 border border-gray-300 rounded"
                     rows="3"
@@ -399,11 +432,11 @@ const Modal = ({
               >
                 Hints
               </button>
-              
+
               {totalAttempts !== 0 && (
-              <span className='flex justify-center w-full'>
-              {attempts}/{totalAttempts}
-              </span>
+                <span className='flex justify-center w-full'>
+                  {attempts}/{totalAttempts}
+                </span>
               )}
 
 

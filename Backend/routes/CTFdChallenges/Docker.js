@@ -221,6 +221,30 @@ router.delete('/images/:id', async (req, res) => {
     }
 });
 
+// Route to deassign the image from a challenge
+router.patch('/images/deassign/:challengeId', async (req, res) => {
+    const { challengeId } = req.params; // Get challengeId from the route parameters
+
+    try {
+        // Update the challenge to remove the dockerImage reference
+        const updatedChallenge = await Challenge.findByIdAndUpdate(
+            challengeId,
+            { $set: { dockerImage: null } }, // Set the dockerImage field to null
+            // { new: true } // Return the updated document
+        );
+
+        if (!updatedChallenge) {
+            return res.status(404).json({ error: 'Challenge not found.' });
+        }
+
+        res.status(200).json({ message: 'Image deassigned from challenge successfully.' });
+    } catch (error) {
+        console.error('Error deassigning image:', error);
+        res.status(500).json({ error: 'Error deassigning image.' });
+    }
+});
+
+
 // Route to create a container and get its URL
 router.post('/create/container', fetchuser, async (req, res) => {
     const { challengeId } = req.body;
@@ -289,6 +313,28 @@ router.post('/create/container', fetchuser, async (req, res) => {
     }
 });
 
+// Route to list all active Docker services
+router.get('/services', async (req, res) => {
+    try {
+        // Fetch all services from Docker
+        const services = await dockerUtils.listDockerServices();
+        
+        // Prepare the data to return
+        const serviceData = services.map(service => ({
+            id: service.ID,
+            name: service.Spec.Name,
+            mode: service.Spec.Mode,
+            replicas: service.Replicas,
+            image: service.Spec.TaskTemplate.ContainerSpec.Image,
+            ports: service.Endpoint.Ports.map(port => `${port.PublishedPort}->${port.TargetPort}/tcp`).join(', ')
+        }));
+
+        res.json(serviceData);
+    } catch (error) {
+        console.error('Error listing Docker services:', error);
+        res.status(500).json({ error: 'Error listing Docker services' });
+    }
+});
 
 
 router.post('/stop/container', async (req, res) => {

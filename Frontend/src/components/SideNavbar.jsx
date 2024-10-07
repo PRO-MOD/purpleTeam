@@ -388,16 +388,24 @@ const SideNavbar = () => {
               </Link>
    */}
           {userRole && visibilitySettings.challenges === 'yes' && (
+            <>
               <Link to={userRole === "WT" ? "/admin/challenges" : "challenges"} className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive(userRole === "WT" ? "/admin/challenges" : "challenges") ? "bg-brown-450 text-white" : ""}`}>
-             <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
-              <p className="text-lg">Challenges</p>
-              </Link>
+                <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
+                  <p className="text-lg">Challenges</p>
+                  </Link>
+              <Link to="/challenges/docker" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/challenges/docker") ? "bg-brown-450 text-white" : ""}`}>
+              <FontAwesomeIcon icon={faComment} size="xl" className="mr-4" />
+              <p className="text-lg">Docker</p>
+            </Link>
+            </>
           )}
 
 {userRole==='WT' && visibilitySettings.config === 'yes' && (
            <Link to="/config" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/config") ? "bg-brown-450 text-white" : ""}`}>
-              <FontAwesomeIcon icon={faCog} size="xl" className="mr-4" />             <p className="text-lg">Config</p>
-           </Link>)}
+              <FontAwesomeIcon icon={faCog} size="xl" className="mr-4" />             
+              <p className="text-lg">Config</p>
+           </Link>
+          )}
           {userRole && visibilitySettings.profile === 'yes' && (
             <Link to="/profile" className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive("/profile") ? "bg-brown-450 text-white" : ""}`}>
               <FontAwesomeIcon icon={faUser} size="xl" className="mr-4" />
@@ -410,8 +418,6 @@ const SideNavbar = () => {
               <p className="text-lg">Communication</p>
             </Link>
           )}
-
-
         </ul>
       </div>
 
