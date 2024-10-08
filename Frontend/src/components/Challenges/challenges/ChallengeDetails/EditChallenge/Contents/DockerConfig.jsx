@@ -37,8 +37,8 @@ const DockerManager = ({ challengeId }) => {
 
   const handleDeleteImage = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/docker/images/${imageToDelete}`, {
-        method: 'DELETE',
+      const response = await fetch(`${apiUrl}/api/docker/images/deassign/${challengeId}`, {
+        method: 'PATCH',
       });
 
       if (!response.ok) {

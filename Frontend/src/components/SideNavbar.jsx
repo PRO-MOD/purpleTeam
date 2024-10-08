@@ -247,8 +247,6 @@ const SideNavbar = () => {
               <p className="text-lg">Communication</p>
             </Link>
           )}
-
-
         </ul>
       </div>
 

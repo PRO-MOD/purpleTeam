@@ -253,8 +253,12 @@ const getServiceIPandPort = async (serviceName, retries = 5, delay = 2000) => {
                         getServiceIPandPort(serviceName, retries - 1, delay).then(resolve).catch(reject);
                     }, delay);
                 } else {
-                    console.error(`No running tasks found after retries for service ${serviceName}`);
-                    reject(`No running tasks found after retries for service ${serviceName}`);
+                    stopContainer(serviceName).then(() => {
+                        console.error(`No running tasks found after retries for service ${serviceName}`);
+                        reject(`No running tasks found after retries for service ${serviceName}`);
+                    }).catch(err => {
+                        reject(`Failed to delete service ${serviceName}: ${err}`);
+                    });
                 }
             });
         });
@@ -282,6 +286,18 @@ const generateUrl = async (serviceName, imageName, port, flags) => {
     }
 };
 
+// Function to list Docker services
+const listDockerServices = async () => {
+    return new Promise((resolve, reject) => {
+        docker.listServices((err, services) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(services);
+        });
+    });
+};
+
 const stopContainer = async (containerId) => {
     try {
         // Get the container instance
@@ -304,5 +320,6 @@ module.exports = {
     deleteDockerImage,
     generateUrl,
     stopContainer,
-    checkImageExists
+    checkImageExists,
+    listDockerServices
 }

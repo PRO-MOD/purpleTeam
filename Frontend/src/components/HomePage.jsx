@@ -38,6 +38,7 @@ import CreateReport from './Reports/CreateReport';
 import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
 import UserReports from './UserReports';
 import ColorContext from '../context/ColorContext';
+import DockerManagement from './Challenges/challenges/ChallengeDetails/EditChallenge/Contents/DockerManager';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -110,6 +111,7 @@ function HomePage() {
             <Route exact path='/admin/report/create' element={<CreateReport />} />
             <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
             <Route exact path='/challenges/submissions/:id' element={<ChallengesSubmissions/>}/>
+            <Route exact path='/challenges/docker' element={<DockerManagement/>}/>
           </Routes>
           
         </div>
