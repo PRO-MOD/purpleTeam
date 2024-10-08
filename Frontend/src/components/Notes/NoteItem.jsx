@@ -3,11 +3,12 @@ import noteContext from "../../context/NoteContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faPencilSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import '../../App.css'
+import ColorContext from "../../context/ColorContext";
 
 const NoteItem = (props) => {
 
     const { note, updateNote, showAlert } = props;
-
+    const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
     const { deleteNote } = useContext(noteContext);
 
     const EditNote = (note) => {
@@ -21,11 +22,11 @@ const NoteItem = (props) => {
                 <div className="flex items-center justify-between mb-4">
                     <h5 className="text-xl font-bold text-gray-800">{note.title}</h5>
                     <div className="flex items-center">
-                        <FontAwesomeIcon icon={faPenToSquare} className="text-brown-500 cursor-pointer text-lg" role="button" onClick={() => EditNote(note)} />
-                        <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer ml-2 text-lg" role="button" onClick={() => {
+                        <FontAwesomeIcon icon={faPenToSquare} className="cursor-pointer text-lg" role="button" onClick={() => EditNote(note)}  style={{color:textColor}}/>
+                        <FontAwesomeIcon icon={faTrashAlt} className=" cursor-pointer ml-2 text-lg" role="button" onClick={() => {
                             deleteNote(note._id);
                             showAlert("Deleted Successfully", "success");
-                        }} />
+                        }}  style={{color:textColor}}/>
                     </div>
                 </div>
                 <p className="text-black mb-4 text-lg  whitespace-pre-wrap  max-h-[150px] overflow-y-auto overflow-x-hidden">{note.description}</p>

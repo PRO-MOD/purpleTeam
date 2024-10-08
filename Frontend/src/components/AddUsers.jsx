@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import CreateChallenge from './CreateChallenge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import ColorContext from '../context/ColorContext';
 // import axios from 'axios';
 
 function AddUsers() {
     const [showModal, setShowModal] = useState(false);
+    const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -163,19 +165,15 @@ function AddUsers() {
             <div className="flex flex-row w-full items-center">
                 {/* Button to add user */}
                 <button
-                    className="cursor-pointer bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 h-[45px]"
-                    onClick={() => setShowModal(true)}
+                    className="cursor-pointer text-white py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 h-[45px]"
+                    onClick={() => setShowModal(true)} style={{ backgroundColor: bgColor, hoverColor:hoverColor }}
                 >
                     Add User
                 </button>
 
                 <div className="flex flex-row ms-8">
                     <CreateChallenge/>
-                    {/* Input for uploading Excel file */}
-                    {/* <input type="file" onChange={handleFileChange} title='Add Excel to map flags in DB'/> */}
-
-                    {/* Button to upload Excel file */}
-                    {/* <button className="bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105" onClick={handleFileUpload}>Upload File</button> */}
+                 
                 </div>
             </div>
 

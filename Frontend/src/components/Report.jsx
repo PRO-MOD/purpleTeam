@@ -1,13 +1,17 @@
 
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import InputField from './Challenges/challenges/Partials/InputFeild'; // Ensure this component is updated to handle different input types
+import InputField from './Challenges/challenges/Partials/InputFeild';
+import ColorContext from '../context/ColorContext';
+
+// Ensure this component is updated to handle different input types
 
 function Report() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   const { reportId } = useParams(); // Get the report ID from the URL
   const [questions, setQuestions] = useState([]);
   const [formData, setFormData] = useState({});
@@ -135,7 +139,7 @@ function Report() {
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-3xl mb-8 text-center font-bold text-brown-650">Report Form</h2>
+      <h2 className="text-3xl mb-8 text-center font-bold " style={{color:textColor}}>Report Form</h2>
       {error && <div className="text-red-500 mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         {loading && <div>Loading questions...</div>}
@@ -242,7 +246,7 @@ function Report() {
               return null;
           }
         })}
-        <button type="submit" className="w-full bg-brown-650 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading}>
+        <button type="submit" className="w-full  text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading} style={{backgroundColor: sidenavColor}}>
           {loading ? 'Submitting...' : 'Submit'}
         </button>
       </form>

@@ -1,11 +1,13 @@
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import ColorContext from '../context/ColorContext';
 
 const UserProfile = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userData, setUserData] = useState({});
   const [newProfilePicture, setNewProfilePicture] = useState(null);
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
 
   useEffect(() => {
     // Fetch recent data when component mounts
@@ -69,9 +71,9 @@ const UserProfile = () => {
       <div className="flex flex-col items-center">
         <h2 className="text-xl font-semibold mb-2">Change Profile Picture:</h2>
         <div className="flex items-center justify-center space-x-4 mb-4">
-          <label htmlFor="profilePicture" className="cursor-pointer bg-brown-650 text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105">Choose File</label>
+          <label htmlFor="profilePicture" className="cursor-pointer  text-white py-2 px-4 rounded-lg hover:bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105" style={{backgroundColor:sidenavColor}}>Choose File</label>
           <input type="file" accept="image/*" id="profilePicture" className="hidden" onChange={handleProfilePictureChange} />
-          <button onClick={handleProfilePictureSubmit} className="bg-brown-650 text-white py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">Upload</button>
+          <button onClick={handleProfilePictureSubmit} className=" text-white py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" style={{backgroundColor:sidenavColor}}>Upload</button>
         </div>
       </div>
     </div>

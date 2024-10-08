@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import ColorContext from "../context/ColorContext";
 
 function UserReports({ userId, route }) {
   const [reports, setReports] = useState([]);
@@ -8,6 +9,7 @@ function UserReports({ userId, route }) {
   const [penalty, setPenalty] = useState(0);
   const [images, setImages] = useState([]);
   const [showImagesModal, setShowImagesModal] = useState(false);
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
 
   const viewImages = (responseId) => {
     fetch(`${apiUrl}/api/responses/images/${responseId}`, {
@@ -207,7 +209,7 @@ function UserReports({ userId, route }) {
               <td className="px-4 py-2 border-b">
                 <button
                   onClick={() => viewDetails(report._id)}
-                  className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
+                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor}}
                 >
                   {route === "progress" ? "Detailed Score" : "Assign"}
                 </button>
@@ -217,7 +219,7 @@ function UserReports({ userId, route }) {
                   onClick={() =>
                     viewReport(report.reportId, userId, report._id)
                   }
-                  className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
+                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor}}
                 >
                   View
                 </button>
@@ -225,7 +227,7 @@ function UserReports({ userId, route }) {
               <td className="px-4 py-2 border-b">
                 <button
                   onClick={() => viewImages(report._id)}
-                  className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
+                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor}}
                 >
                   View Images
                 </button>
@@ -350,7 +352,8 @@ function UserReports({ userId, route }) {
             {route !== "progress" && (
               <button
                 onClick={handleUpdateScores}
-                className="bg-brown-650 transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
+                className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
+                style={{backgroundColor:sidenavColor}}
               >
                 Save Scores
               </button>

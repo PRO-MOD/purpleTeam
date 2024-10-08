@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ColorContext from '../context/ColorContext';
 
 function NewReportSubmission() {
     const [newReports, setNewReports] = useState([]);
     const apiUrl = import.meta.env.VITE_Backend_URL;
+    const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,7 +62,7 @@ function NewReportSubmission() {
                     newReports.length > 0 ?
                     newReports.map((report, i) => (
                         report.userId && 
-                        <p key={i} onClick={() => handleReportClick(report._id, report.userId._id)} className="bg-brown-650 text-white w-full py-2 my-2 ps-4 rounded-lg cursor-pointer">{report.userId.name} submitted a new report for {report.ID} {formatDate(report.createdAt)}</p>
+                        <p key={i} onClick={() => handleReportClick(report._id, report.userId._id)} className="text-white w-full py-2 my-2 ps-4 rounded-lg cursor-pointer"style={{ backgroundColor: sidenavColor}}>{report.userId.name} submitted a new report for {report.ID} {formatDate(report.createdAt)}</p>
                     ))
                     :
                     <p className='text-red-600 py-16 text-center'>No new reports available</p>

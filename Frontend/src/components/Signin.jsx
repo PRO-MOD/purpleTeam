@@ -1,11 +1,13 @@
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import ColorContext from '../context/ColorContext';
 
 const Signin = () => {
+    const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   const apiUrl = import.meta.env.VITE_Backend_URL;
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -81,7 +83,7 @@ const Signin = () => {
     return (
         <div className="relative h-screen flex flex-col items-center bg-white">
             {/* Header */}
-            <div className="w-full  h-16 bg-brown-650 text-white flex justify-center items-center px-4 py-2">
+            <div className="w-full  h-16  text-white flex justify-center items-center px-4 py-2" style={{backgroundColor: sidenavColor}}>
                 {/* Left Logo */}
                 {/* <img src="\cyber .jpg" alt="Hacktify Logo" className="h-16 w-32 " /> */}
                 
@@ -96,12 +98,12 @@ const Signin = () => {
             <img src={logoUrl} alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
             <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-8">
             <div className="mb-8 text-center">
-                   <h1 className='block text-brown-500 text-2xl font-bold mb-2'>Defend the Flag</h1>
+                   <h1 className='block  text-2xl font-bold mb-2' style={{color:sidenavColor}}>Defend the Flag</h1>
                 </div>
                 {/* Sign-in form */}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-brown-500 text-sm font-bold mb-2">
+                        <label htmlFor="email" className="block text-sm font-bold mb-2" style={{color:sidenavColor}}>
                             Email
                         </label>
                         <input
@@ -114,7 +116,7 @@ const Signin = () => {
                         />
                     </div>
                     <div className="mb-6">
-                        <label htmlFor="password" className="block text-brown-700 text-sm font-bold mb-2">
+                        <label htmlFor="password" className="block  text-sm font-bold mb-2" style={{color:sidenavColor}}>
                             Password
                         </label>
                         <div className="relative">
@@ -133,8 +135,8 @@ const Signin = () => {
                     <div className="flex items-center justify-center">
                         <button
                             type="submit"
-                            className="bg-brown-500 hover:bg-brown-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            disabled={loading}
+                            className=" text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            disabled={loading} style={{backgroundColor:sidenavColor, hoverColor:hoverColor}}
                         >
                             {loading ? "Loading..." : 'Log In'}
                         </button>
