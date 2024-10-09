@@ -217,12 +217,20 @@ const SideNavbar = () => {
               </Link>
    */}
           {userRole && visibilitySettings.challenges === 'yes' && (
+            <>
               <Link to={userRole === "WT" ? "/admin/challenges" : "challenges"} className={`flex items-center py-2 px-2  hover:text-white ${isActive(userRole === "WT" ? "/admin/challenges" : "challenges") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
               onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
              <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
               <p className="text-lg">Challenges</p>
               </Link>
+              <Link to={`/challenges/docker`} className={`flex items-center py-2 px-2  hover:text-white ${isActive('/challenges/docker') ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
+             <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
+              <p className="text-lg">Docker Manager</p>
+              </Link>
+            </>
           )}
 
 {userRole==='WT' && visibilitySettings.config === 'yes' && (
