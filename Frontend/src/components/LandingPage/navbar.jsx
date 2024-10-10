@@ -27,11 +27,6 @@ const Navbar = () => {
           to="/"
           className="flex-shrink-0 text-3xl font-extrabold text-[#2563eb]"
         >
-          {/* <img
-            className="w-48"
-            alt="Breachpoint"
-            src="https://breachpoint.app/wp-content/uploads/2022/09/dark.png"
-          /> */}
           Hacktify
         </Link>
 
@@ -69,8 +64,8 @@ const Navbar = () => {
         </div>
 
         {/* Navigation Menu */}
-        <nav className={`md:flex ${isOpen ? 'block' : 'hidden'}`}>
-          <ul className="flex flex-col md:flex-row md:space-x-6">
+        <nav className={`md:flex md:items-center ${isOpen ? 'block' : 'hidden'} md:block`}>
+          <ul className={`flex flex-col md:flex-row md:space-x-6 transition-all duration-300 ease-in-out ${isOpen ? 'block' : 'hidden md:flex'}`}>
             {links.map((link, index) => (
               <li key={index}>
                 <Link
@@ -85,7 +80,7 @@ const Navbar = () => {
         </nav>
 
         {/* Social Media Icons */}
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 hidden md:flex">
           <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faTwitter} className="text-gray-700 hover:text-blue-600" />
           </a>
@@ -100,6 +95,24 @@ const Navbar = () => {
           </a>
         </div>
       </div>
+
+      {/* Social Media Icons for Mobile */}
+      {isOpen && (
+        <div className="flex space-x-4 md:hidden justify-center mt-2">
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faTwitter} className="text-gray-700 hover:text-blue-600" />
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faFacebook} className="text-gray-700 hover:text-blue-600" />
+          </a>
+          <a href="https://www.linkedin.com/company/breachpoint/" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faLinkedin} className="text-gray-700 hover:text-blue-600" />
+          </a>
+          <a href="https://instagram.com/breachpointco" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faInstagram} className="text-gray-700 hover:text-blue-600" />
+          </a>
+        </div>
+      )}
     </header>
   );
 };

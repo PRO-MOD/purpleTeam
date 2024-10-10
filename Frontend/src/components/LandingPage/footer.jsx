@@ -3,7 +3,7 @@ import React from 'react';
 const Footer = () => {
     return (
         <footer className="bg-[#1c3553] text-white py-10">
-            <div className="container px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mx-16">
+            <div className="container px-4 mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Left Section */}
                 <div className="text-center md:text-left">
                     <h3 className="text-2xl font-bold mb-4">
@@ -55,12 +55,12 @@ const Footer = () => {
             </div>
 
             {/* Bottom Section */}
-            <div className="mx-20 flex flex-col items-center justify-between md:flex-row mt-20">
-                <p className="text-lg text-center font-light">
+            <div className="mx-20 mt-10 flex flex-col items-center justify-between md:flex-row">
+                <p className="text-lg text-center font-light mb-4 md:mb-0">
                     &copy; 2024 Breachpoint Private Limited. Made in India with{' '}
                     <span className="text-red-600">❤️</span>
                 </p>
-                <div className="flex space-x-4 mt-4 md:mt-0">
+                <div className="flex space-x-4">
                     <a href="#" className="hover:underline text-lg underline">Terms & Conditions</a>
                     <a href="#" className="hover:underline text-lg underline">Privacy Policy</a>
                 </div>
