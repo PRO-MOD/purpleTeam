@@ -41,20 +41,22 @@
 // export default PageHeader;
 
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../context/FontContext';
 
 const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails, onDelete, onSubmissions }) => {
   const location = useLocation();
   const pathName = location.pathname;
+  const { navbarFont, headingFont, paraFont } = useContext(FontContext);
 
   return (
     <div className="bg-[#A7E6FF] flex justify-center items-center py-10">
       <div className="flex flex-col items-center justify-center">
         {pageTitle && (
-          <h1 className="text-4xl font-normal mb-4">{pageTitle}</h1>
+          <h1 className="text-4xl font-normal mb-4" >{pageTitle}</h1>
         )}
         {challengeDetails && (
           <div className="flex flex-col items-center justify-center text-center">
