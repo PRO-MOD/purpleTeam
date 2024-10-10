@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const testimonialsData = [
     {
@@ -20,29 +20,49 @@ const testimonialsData = [
 
 const Testimonials = () => {
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
+    const [slideDirection, setSlideDirection] = useState('');
+
+    // Effect to autoplay the testimonials every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            nextTestimonial();
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [currentTestimonial]);
 
     const showTestimonial = (index) => {
         setCurrentTestimonial(index);
     };
 
     const prevTestimonial = () => {
+        setSlideDirection('prev');
         const newIndex = (currentTestimonial - 1 + testimonialsData.length) % testimonialsData.length;
         showTestimonial(newIndex);
     };
 
     const nextTestimonial = () => {
+        setSlideDirection('next');
         const newIndex = (currentTestimonial + 1) % testimonialsData.length;
         showTestimonial(newIndex);
     };
 
     return (
-        <div className="relative flex justify-center items-center w-full p-10">
-            <button onClick={prevTestimonial} className="absolute left-4 text-gray-500 text-2xl">&lt;</button>
-            <div className="flex justify-center w-full">
+        <div className="relative flex flex-col justify-center items-center w-full bg-gray-100 p-4 lg:p-10">
+            <button 
+                onClick={prevTestimonial} 
+                className="absolute left-4 text-gray-500 text-2xl" 
+                aria-label="Previous testimonial"
+            >
+                &lt;
+            </button>
+            <div className="flex justify-center w-full overflow-hidden">
                 {testimonialsData.map((testimonial, index) => (
                     <div
                         key={index}
-                        className={`transition-transform duration-500 transform ${currentTestimonial === index ? 'opacity-100 scale-100' : 'opacity-50 scale-90'} w-1/3 p-4 bg-blue-500 text-white rounded-lg shadow-lg mx-4`}
+                        className={`transition-transform duration-500 ease-in-out flex-shrink-0 w-full lg:w-1/2 p-4 bg-blue-500 text-white rounded-lg shadow-lg mx-2 mb-4 lg:mb-0
+                            ${currentTestimonial === index ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}
+                            ${slideDirection === 'prev' && currentTestimonial !== index ? 'translate-x-[-100%]' : ''}
+                            ${slideDirection === 'next' && currentTestimonial !== index ? 'translate-x-full' : ''}`}
                         style={{ display: currentTestimonial === index ? 'block' : 'none' }}
                     >
                         <blockquote className="quote text-lg italic mb-4">"{testimonial.quote}"</blockquote>
@@ -53,7 +73,13 @@ const Testimonials = () => {
                     </div>
                 ))}
             </div>
-            <button onClick={nextTestimonial} className="absolute right-4 text-gray-500 text-2xl">&gt;</button>
+            <button 
+                onClick={nextTestimonial} 
+                className="absolute right-4 text-gray-500 text-2xl" 
+                aria-label="Next testimonial"
+            >
+                &gt;
+            </button>
         </div>
     );
 };
