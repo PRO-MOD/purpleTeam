@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <nav className="bg-gray-900 w-full sticky top-0 z-10">
       <div className="container flex items-center py-2 px-6 justify-between">
-        <div className="text-white text-2xl font-bold pe-4">Hacktify</div>
+        <div className="text-white text-2xl font-bold pe-4">Crysalen</div>
         <div className="lg:hidden">
           <button
             onClick={toggleMenu}

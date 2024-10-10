@@ -27,7 +27,7 @@ const Navbar = () => {
           to="/"
           className="flex-shrink-0 text-3xl font-extrabold text-[#2563eb]"
         >
-          Hacktify
+          Crysalen
         </Link>
 
         {/* Mobile Menu Toggle */}
