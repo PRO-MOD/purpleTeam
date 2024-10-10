@@ -25,13 +25,14 @@ const Navbar = () => {
         <Link
           id="logo"
           to="/"
-          className="flex-shrink-0"
+          className="flex-shrink-0 text-3xl font-extrabold text-[#2563eb]"
         >
-          <img
+          {/* <img
             className="w-48"
             alt="Breachpoint"
             src="https://breachpoint.app/wp-content/uploads/2022/09/dark.png"
-          />
+          /> */}
+          Hacktify
         </Link>
 
         {/* Mobile Menu Toggle */}
