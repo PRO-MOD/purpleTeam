@@ -24,7 +24,7 @@ const Signin = () => {
     useEffect(() => {
         const authToken = localStorage.getItem('Hactify-Auth-token');
         if (authToken) {
-            navigate('/');
+            navigate('/welcome');
         }
     }, [navigate]);
 
@@ -69,7 +69,7 @@ const Signin = () => {
             setLoading(false);
             if (response.ok) {
                 localStorage.setItem('Hactify-Auth-token', data.authtoken);
-                navigate("/");
+                navigate("/welcome");
             } else {
                 setError(data.error);
             }

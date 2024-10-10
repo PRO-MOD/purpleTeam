@@ -16,6 +16,9 @@ import AuthState from './context/AuthState'
 import SocketState from './context/SocketState'
 import ColorState from './context/ColorState'
 
+// landing page components
+import MainPage from './components/LandingPage'
+
 function App() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   // console.log(apiUrl);
@@ -28,6 +31,7 @@ function App() {
             <Router>
               <Routes>
                 <Route exact path='/*' element={<HomePage />} />
+                <Route exact path='/' element={<MainPage />} />
                 <Route exact path='/signin' element={<SignIn />} />
               </Routes>
             </Router>

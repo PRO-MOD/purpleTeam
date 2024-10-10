@@ -106,7 +106,7 @@ const SideNavbar = () => {
   };
 
   const isActive = (route) => {
-    return window.location.href.includes(route);
+    return window.location.pathname === route;
   };
 
   return (
@@ -186,9 +186,11 @@ const SideNavbar = () => {
               </Link>
              )}
              {userRole && visibilitySettings.score==='yes' && (
-              <Link to="/scores" className={`flex items-center py-2 px-2  hover:text-white ${isActive("/scores") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
+              <Link to="/scores" className={`flex items-center py-2 px-2  hover:text-white ${isActive("/scores") ? `text-white` : ""}`}  style={{ backgroundColor: isActive("/scores") ? hoverColor : sidenavColor }}
               onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = isActive("/scores")
+            ? hoverColor
+            : sidenavColor}>
                 <FontAwesomeIcon icon={faRankingStar} size="xl" className="mr-4" />
                 <p className="text-lg">Scores</p>
               </Link>
@@ -224,21 +226,25 @@ const SideNavbar = () => {
              <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
               <p className="text-lg">Challenges</p>
               </Link>
-              <Link to={`/challenges/docker`} className={`flex items-center py-2 px-2  hover:text-white ${isActive('/challenges/docker') ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-             <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
-              <p className="text-lg">Docker Manager</p>
-              </Link>
             </>
           )}
 
 {userRole==='WT' && visibilitySettings.config === 'yes' && (
+  <>
            <Link to="/config" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/config") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
               <FontAwesomeIcon icon={faCog} size="xl" className="mr-4" />             <p className="text-lg">Config</p>
-           </Link>)}
+           </Link>
+           <Link to={`/challenges/docker`} className={`flex items-center py-2 px-2  hover:text-white ${isActive('/challenges/docker') ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
+           onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
+           onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
+          <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
+           <p className="text-lg">Docker Manager</p>
+           </Link>
+  </>
+
+          )}
           {userRole && visibilitySettings.profile === 'yes' && (
             <Link to="/profile" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/profile") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
             onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}

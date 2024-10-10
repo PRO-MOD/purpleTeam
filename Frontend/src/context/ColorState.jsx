@@ -6,8 +6,8 @@ const ColorState = (props) => {
     // Define the initial color states
     const [bgColor, setBgColor] = useState("#ffffff");       // Default background color
     const [textColor, setTextColor] = useState("#000000");   // Default text color
-    const [sidenavColor, setSidenavColor] = useState("#3c0008"); // Default sidenav color
-    const [hoverColor, setHoverColor] = useState("#b7410e"); // Default hover color
+    const [sidenavColor, setSidenavColor] = useState("#2563eb"); // Default sidenav color
+    const [hoverColor, setHoverColor] = useState("#0054a6"); // Default hover color
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 

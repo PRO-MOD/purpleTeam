@@ -51,7 +51,7 @@ const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails, onDelete, 
   const pathName = location.pathname;
 
   return (
-    <div className="bg-gray-300 flex justify-center items-center py-10">
+    <div className="bg-[#A7E6FF] flex justify-center items-center py-10">
       <div className="flex flex-col items-center justify-center">
         {pageTitle && (
           <h1 className="text-4xl font-normal mb-4">{pageTitle}</h1>
@@ -72,7 +72,7 @@ const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails, onDelete, 
         <div className="flex space-x-4 mt-4">
           {pathName === checkRoute && (
             <Link to={route}>
-              <FontAwesomeIcon icon={faPlus} className='bg-gray-500 p-4 rounded-full text-white cursor-pointer font-extrabold' />
+              <FontAwesomeIcon icon={faPlus} className='bg-[#3ABEF9] p-4 rounded-full text-white cursor-pointer font-extrabold' />
             </Link>
           )}
           {onDelete && (

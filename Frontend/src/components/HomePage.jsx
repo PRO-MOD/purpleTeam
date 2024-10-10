@@ -40,6 +40,10 @@ import UserReports from './UserReports';
 import ColorContext from '../context/ColorContext';
 import DockerManagement from './Challenges/challenges/ChallengeDetails/EditChallenge/Contents/DockerManager';
 
+// landing page components
+import MainPage from './LandingPage';
+
+
 function HomePage() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
@@ -77,7 +81,7 @@ function HomePage() {
               ""
           }
           <Routes>
-            <Route exact path='/' element={<Welcome />} />
+            <Route exact path='/welcome' element={<Welcome />} />
             {/* <Route exact path='/personal/:userId' element={<UserDetails/>} /> */}
             <Route exact path='/progress' element={<UserProgress />} />
             <Route exact path='/home' element={<AdminDataVisualization />} />
