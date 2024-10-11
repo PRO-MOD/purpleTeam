@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../../../../../context/FontContext';
+import ColorContext from '../../../../../../context/ColorContext';
 
 const DynamicFlags = ({ challengeId }) => {
   const [flags, setFlags] = useState([]);
@@ -13,6 +14,7 @@ const DynamicFlags = ({ challengeId }) => {
 
   // Fetch font settings from context
   const { navbarFont, headingFont, paraFont } = useContext(FontContext);
+  const { tableColor } = useContext(ColorContext);
 
   // Function to fetch dynamic flags and users
   const fetchDynamicFlags = async (challengeId) => {
@@ -100,7 +102,7 @@ const DynamicFlags = ({ challengeId }) => {
       {error && <p style={{ ...paraFont, color: 'red' }}>{error}</p>}
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
-          <tr>
+          <tr style={{backgroundColor: tableColor}}>
             <th scope="col" className="px-6 py-3 text-left" style={navbarFont}>
               Flag
             </th>

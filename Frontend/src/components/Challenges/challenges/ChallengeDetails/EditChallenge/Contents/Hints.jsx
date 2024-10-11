@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../../../../../context/FontContext';
+import ColorContext from '../../../../../../context/ColorContext';
 
 const Hints = ({ challengeId }) => {
   const { paraFont, navbarFont, headingFont } = useContext(FontContext); // Accessing fonts from context
+  const { tableColor } = useContext(ColorContext); // Accessing fonts from context
   const [hints, setHints] = useState([]);
   const [newHint, setNewHint] = useState('');
   const [newHintCost, setNewHintCost] = useState(0); // Default value
@@ -150,7 +152,7 @@ const Hints = ({ challengeId }) => {
         ) : (
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50" >
-              <tr>
+              <tr style={{backgroundColor: tableColor}}>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={navbarFont}>
                   Hint
                 </th>

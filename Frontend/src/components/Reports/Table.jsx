@@ -7,11 +7,12 @@ import ColorContext from '../../context/ColorContext';
 const Table = ({ columns, data, onEdit, onDelete, editButtonReq }) => {
 
     const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
+    const { tableColor } = useContext(ColorContext);
     return (
         <div className="overflow-x-auto" style={{fontFamily:paraFont}}>
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="">
-                    <tr>
+                    <tr style={{backgroundColor: tableColor}}>
                         {columns.map((column, index) => (
                             <th
                                 key={index}
