@@ -1,8 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
+import FontContext from '../context/FontContext';
 
 const Welcome = () => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     const [eventDetails, setEventDetails] = useState({
         url: '',
         title: '',
@@ -28,7 +30,7 @@ const Welcome = () => {
     }, []);
 
     return (
-        <div className="h-screen flex flex-col items-center bg-white -z-50">
+        <div className="h-screen flex flex-col items-center bg-white -z-50" style={{ fontFamily: navbarFont }}>
             {/* Header */}
             {/* Main Content */}
             <div className="flex flex-col items-center justify-center flex-grow p-8">
@@ -37,15 +39,15 @@ const Welcome = () => {
                     alt="Logo" 
                     className="w-128 h-64 mb-8" 
                 />
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                <h2 className="text-3xl font-bold text-gray-800 mb-4"  style={{ fontFamily: headingFont }}>
                     {eventDetails.title || 'Defend the Flag'}
                 </h2>
-                <p className="text-gray-600 text-center max-w-lg">
+                <p className="text-gray-600 text-center max-w-lg"  style={{ fontFamily: paraFont }}>
                     {eventDetails.description || 'Welcome to the Crysalen Platform! Our mission is to empower you with the skills and knowledge to protect and defend against cyber threats. Join us in our journey to a safer digital world.'}
                 </p>
             </div>
             {/* Footer */}
-            <footer className="text-center text-red-500 text-lg mt-16">
+            <footer className="text-center text-red-500 text-lg mt-16"  style={{ fontFamily: paraFont }}>
                 Powered By Crysalen
             </footer>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ScoreTable from './ScoreTable1';
 import { useLocation } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ function ScoresComponent() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true); // Set loading to true initially
   const location = useLocation();
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -64,8 +65,8 @@ function ScoresComponent() {
   return (
     <div className='mx-16 my-12 '>
       <div className="flex flex-row items-center">
-        <h1 className='text-3xl font-bold underline'>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
-        <span className='ms-4'>Format ( CTFD Score / Manual Score )</span>
+        <h1 className='text-3xl font-bold underline' style={{fontFamily:headingFont}}>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
+        <span className='ms-4' style={{fontFamily:paraFont}}>Format ( CTFD Score / Manual Score )</span>
       </div>
       <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}

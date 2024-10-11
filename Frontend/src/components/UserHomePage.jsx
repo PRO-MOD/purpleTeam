@@ -1,15 +1,15 @@
 
-
-
 import { useEffect, useState, useContext } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import UserReports from './UserReports';
 import AuthContext from '../context/AuthContext';
 import ColorContext from '../context/ColorContext';
+import FontContext from '../context/FontContext';
 
 export default function UserHomePage() {
    const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [reports, setReports] = useState([]);
   const context = useContext(AuthContext);

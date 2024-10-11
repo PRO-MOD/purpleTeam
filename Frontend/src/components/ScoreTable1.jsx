@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Loading from './Loading';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +7,8 @@ function ScoreTable({ scores, loading, isHomePage }) {
   const navigate = useNavigate();
   const [uniqueDates, setUniqueDates] = useState([]);
   const [sortedScores, setSortedScores] = useState([]);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
+
 
   // Extract unique dates from scores and sort them
   useEffect(() => {
@@ -78,18 +80,18 @@ function ScoreTable({ scores, loading, isHomePage }) {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center" style={{ fontFamily: navbarFont }}>
                 Rank
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: navbarFont }}>
                 Name
               </th>
               {uniqueDates.map((date, index) => (
-                <th key={index} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th key={index} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"style={{ fontFamily: navbarFont }}>
                   {`Day ${index + 1}`}
                 </th>
               ))}
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: navbarFont }}>
                 Total
               </th>
             </tr>
@@ -97,7 +99,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
           <tbody className="bg-white divide-y divide-gray-200">
             {Object.values(sortedScores).map((score, index) => (
               <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                <td className="flex flex-row justify-center items-center">{index + 1}</td>
+                <td className="flex flex-row justify-center items-center" style={{ fontFamily: paraFont }}>{index + 1}</td>
                 <td
                   className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'}`}
                   onClick={() => {
@@ -106,11 +108,11 @@ function ScoreTable({ scores, loading, isHomePage }) {
                     }
                     handleUserClick(score.name);
                   }}
-                >
+                  style={{ fontFamily: paraFont }}>
                   {score.name}
                 </td>
                 {uniqueDates.map((date, index) => (
-                  <td key={index} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td key={index} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" style={{ fontFamily: paraFont }}>
                     {score.scores[date] ? `${score.scores[date]} / ${score.manualScores[date]}` : '-'}
                   </td>
                 ))}

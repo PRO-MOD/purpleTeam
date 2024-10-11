@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select'; // Import Select component
 
 const AddModal = ({ onClose, repositoryId }) => {
+
+  const apiUrl = import.meta.env.VITE_Backend_URL;
   const [challenges, setChallenges] = useState([]); // State to hold fetched challenges
   const [selectedChallenges, setSelectedChallenges] = useState([]); // State for selected challenges
   const [loading, setLoading] = useState(true); // Loading state
@@ -11,11 +13,11 @@ const AddModal = ({ onClose, repositoryId }) => {
     const fetchChallenges = async () => {
       try {
         // Fetch all challenges
-        const response = await fetch(`${import.meta.env.VITE_Backend_URL}/api/challenges/toDisplayAllChallenges`);
+        const response = await fetch(`${apiUrl}/api/challenges/toDisplayAllChallenges`);
         const allChallenges = await response.json();
 
         // Fetch challenges that are already added to the repository
-        const addedResponse = await fetch(`${import.meta.env.VITE_Backend_URL}/api/repositories/${repositoryId}/challenges`);
+        const addedResponse = await fetch(`${apiUrl}/api/repositories/${repositoryId}/challenges`);
         const addedData = await addedResponse.json();
         setAddedChallenges(addedData.map(challenge => challenge._id)); // Store IDs of added challenges
 
@@ -62,7 +64,7 @@ const AddModal = ({ onClose, repositoryId }) => {
   const handleAddChallenges = async () => {
     const challengeIds = selectedChallenges.map(challenge => challenge.value); // Extract IDs
     try {
-      await fetch(`${import.meta.env.VITE_Backend_URL}/api/repositories/${repositoryId}/challenges/add`, {
+      await fetch(`${apiUrl}/api/repositories/${repositoryId}/challenges/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

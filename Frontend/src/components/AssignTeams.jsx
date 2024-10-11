@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 function AssignTeams() {
     const [showModal, setShowModal] = useState(false);
@@ -6,6 +6,7 @@ function AssignTeams() {
     const [selectedVolunteer, setSelectedVolunteer] = useState(null);
     const [users, setUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
     useEffect(() => {
         fetchVolunteers();
@@ -112,12 +113,12 @@ function AssignTeams() {
 
     return (
         <div className="m-12">
-            <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-4" style={{fontFamily:headingFont}}>Admin Dashboard</h1>
             <hr className='mx-2 my-8 border-black' />
 
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">White Team:</h1>
-                <table className="table-auto w-full border ">
+                <h1 className="text-xl font-bold mb-4 underline" style={{fontFamily:headingFont}}>White Team:</h1>
+                <table className="table-auto w-full border " style={{fontFamily:paraFont}}>
                     <thead>
                         <tr>
                             <th className="border border-gray-400 px-4 py-2">SR. NO</th>
@@ -130,7 +131,7 @@ function AssignTeams() {
                     <tbody>
                         {volunteers.map((volunteer, index) => (
                             <tr key={volunteer._id}>
-                                <td className="border border-gray-400 px-4 py-2">{index + 1}</td>
+                                <td className="border border-gray-400 px-4 py-2" style={{fontFamily:paraFont}}>{index + 1}</td>
                                 <td className="border border-gray-400 px-4 py-2">{volunteer.name}</td>
                                 <td className="border border-gray-400 px-4 py-2">{volunteer.email}</td>
                                 <td className="border border-gray-400 px-4 py-2">
@@ -139,7 +140,7 @@ function AssignTeams() {
                                         : 'No assigned teams'}
                                 </td>
                                 <td className="border  border-gray-400 px-4 py-2 text-indigo-500 hover:underline hover:text-indigo-800 ">
-                                    <button onClick={() => handleAssignTeams(volunteer._id)}>Assign Teams</button>
+                                    <button onClick={() => handleAssignTeams(volunteer._id)} style={{fontFamily:navbarFont}}>Assign Teams</button>
                                 </td>
                             </tr>
                         ))}
@@ -150,7 +151,7 @@ function AssignTeams() {
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
                     <div className="bg-white rounded-lg p-6 w-full md:w-1/2 lg:w-1/3 overflow-y-auto max-h-96">
-                        <h2 className="text-2xl font-bold mb-4">Assign Teams</h2>
+                        <h2 className="text-2xl font-bold mb-4" style={{fontFamily:headingFont}}>Assign Teams</h2>
                         <form onSubmit={handleAssignTeamsSubmit}>
                             {users.map((user) => (
                                 <div key={user._id} className="mb-2">

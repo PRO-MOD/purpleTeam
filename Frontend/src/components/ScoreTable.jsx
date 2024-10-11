@@ -3,9 +3,11 @@ import Loading from './Loading';
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckDouble, faList, faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../context/FontContext';
 
 function ScoreTable({ scores, loading, isHomePage }) {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const navigate = useNavigate();
   const [sortedScores, setSortedScores] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: 'totalScore', direction: 'descending' });
@@ -101,14 +103,14 @@ function ScoreTable({ scores, loading, isHomePage }) {
           <tr>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center cursor-pointer" style={{ fontFamily: navbarFont }}
             >
               Rank 
             </th>
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-              onClick={() => handleSort('name')}
+              onClick={() => handleSort('name')} style={{ fontFamily: navbarFont }}
             >
               Name <FontAwesomeIcon icon={getSortIcon('name')} />
             </th>
@@ -116,7 +118,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('score')}
-            >
+              style={{ fontFamily: navbarFont }}>
               Service Availability <FontAwesomeIcon icon={getSortIcon('score')} />
             </th>
             {mode === 'purpleTeam' && (
@@ -125,14 +127,14 @@ function ScoreTable({ scores, loading, isHomePage }) {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                   onClick={() => handleSort('manualScore')}
-                >
+                  style={{ fontFamily: navbarFont }}>
                   Incident Response <FontAwesomeIcon icon={getSortIcon('manualScore')} />
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                   onClick={() => handleSort('staticScore')}
-                >
+                  style={{ fontFamily: navbarFont }}>
                   Static Score <FontAwesomeIcon icon={getSortIcon('staticScore')} />
                 </th>
               </>
@@ -140,12 +142,12 @@ function ScoreTable({ scores, loading, isHomePage }) {
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-              onClick={() => handleSort('totalScore')}
+              onClick={() => handleSort('totalScore')} style={{ fontFamily: navbarFont }}
             >
               Total Score <FontAwesomeIcon icon={getSortIcon('totalScore')} />
             </th>
             {mode === 'purpleTeam' && (
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ fontFamily: navbarFont }}>
                 Checked
               </th>
             )}
@@ -162,7 +164,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
             sortedScores.length > 0 ? (
               sortedScores.map((user, index) => (
                 <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                  <td className='flex flex-row justify-center items-center'>{index + 1}</td>
+                  <td className='flex flex-row justify-center items-center' style={{ fontFamily: paraFont }}>{index + 1}</td>
                   <td
                     className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${isHomePage ? '' : 'text-indigo-600 hover:text-indigo-900 cursor-pointer'}`}
                     onClick={() => {
@@ -174,10 +176,10 @@ function ScoreTable({ scores, loading, isHomePage }) {
                   >
                     {user.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.score}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" style={{ fontFamily: paraFont }}>{user.score}</td>
                   {mode === 'purpleTeam' && (
                     <>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.manualScore == null ? 'Not entered' : user.manualScore}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" style={{ fontFamily: paraFont }}>{user.manualScore == null ? 'Not entered' : user.manualScore}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.staticScore == null ? 'Not entered' : user.staticScore}</td>
                     </>
                   )}
@@ -185,15 +187,15 @@ function ScoreTable({ scores, loading, isHomePage }) {
                     {mode === 'purpleTeam' ? user.score + (user.manualScore || 0) + (user.staticScore || 0) : user.score}
                   </td>
                   {mode === 'purpleTeam' && (
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.read ? <FontAwesomeIcon icon={faCheckDouble} className='text-green-500' /> : <FontAwesomeIcon icon={faList} className='text-red-500' />}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" style={{ fontFamily: paraFont }}>
+                      {user.read ? <FontAwesomeIcon icon={faCheckDouble} className='text-green-500' style={{ fontFamily: paraFont }} /> : <FontAwesomeIcon icon={faList} className='text-red-500' style={{ fontFamily: paraFont }} />}
                     </td>
                   )}
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={mode === 'purpleTeam' ? 7 : 4} className='px-6 py-4 text-center'>No Record Found</td>
+                <td colSpan={mode === 'purpleTeam' ? 7 : 4} className='px-6 py-4 text-center' style={{ fontFamily: paraFont }}>No Record Found</td>
               </tr>
             )
           )}

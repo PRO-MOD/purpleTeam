@@ -9,9 +9,11 @@ import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
 import ColorContext from "../context/ColorContext";
 import Dropdown from './Partials/Dropdown'; // Import the Dropdown component
+import FontContext from "../context/FontContext";
 
 const SideNavbar = () => {
   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState();
@@ -129,6 +131,8 @@ const SideNavbar = () => {
       restricted: false, // Accessible to all
       items: [
         { path: userRole === "WT" ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges },
+        
+        { path: "/repository", label: "Repository", visibility: userRole === "WT"  },
         { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === "WT" && visibilitySettings.challenges },
       ],
     },
@@ -156,7 +160,7 @@ const SideNavbar = () => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 font-serif">
+    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50" style={{ fontFamily: navbarFont }}>
       {/* Logo Section */}
       <div className="flex items-center justify-center py-4 h-32">
         <img src={logoUrl} alt="Logo" className="h-full" />
@@ -174,7 +178,7 @@ const SideNavbar = () => {
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = isActive(item.path) ? hoverColor : sidenavColor}
                 >
                 <FontAwesomeIcon icon={item.icon} size="xl" className="mr-4" />
-                <p className="text-lg">{item.label}</p>
+                <p className="text-lg" >{item.label}</p>
               </Link>
             )
           ))}
@@ -206,7 +210,7 @@ const SideNavbar = () => {
       <div className="p-4">
         <button onClick={handleLogout} className="flex items-center py-2 px-2 hover:text-white" style={{ backgroundColor: sidenavColor }}>
           <FontAwesomeIcon icon={faSignOutAlt} size="xl" className="mr-4" />
-          <p className="text-lg">Logout</p>
+          <p className="text-lg" >Logout</p>
         </button>
       </div>
     </div>

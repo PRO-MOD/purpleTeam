@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../../context/FontContext';
 
 const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageAssign, isEditMode, currentImage  }) => {
   const [images, setImages] = useState([]);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [selectedImage, setSelectedImage] = useState(currentImage._id || '');
   const [isAddingImage, setIsAddingImage] = useState(false);
   const [newImageName, setNewImageName] = useState('');
