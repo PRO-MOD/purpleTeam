@@ -15,6 +15,8 @@ import NoteState from './context/NoteState'
 import AuthState from './context/AuthState'
 import SocketState from './context/SocketState'
 import ColorState from './context/ColorState'
+import FontState from './context/FontState'
+
 
 // landing page components
 import MainPage from './components/LandingPage'
@@ -28,6 +30,7 @@ function App() {
         <SocketState>
           <NoteState>
             <ColorState>
+            <FontState>              
             <Router>
               <Routes>
                 <Route exact path='/*' element={<HomePage />} />
@@ -35,6 +38,7 @@ function App() {
                 <Route exact path='/signin' element={<SignIn />} />
               </Routes>
             </Router>
+            </FontState>
             </ColorState>
           </NoteState>
         </SocketState>

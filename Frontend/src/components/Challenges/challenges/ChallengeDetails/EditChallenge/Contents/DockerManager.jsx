@@ -36,7 +36,13 @@ const DockerManagement = () => {
         try {
             const response = await fetch(`${apiUrl}/api/docker/services`);
             const data = await response.json();
-            setServices(data);
+            // Check if data is an array
+            if (Array.isArray(data)) {
+                setServices(data);
+            } else {
+                setServices([]); // or handle the error as needed
+                setError('Something went wrong!!');
+            }
         } catch (error) {
             setError('Failed to fetch services');
         } finally {
@@ -135,7 +141,7 @@ const DockerManagement = () => {
                         onDelete={() => console.log('Delete services logic here')}
                     />
                     
-                    {services.map((service) => (
+                    {services && services.map((service) => (
                         <div key={service.id} className="flex items-center justify-between mb-2">
                             <span>{service.name}</span>
                             <FontAwesomeIcon
