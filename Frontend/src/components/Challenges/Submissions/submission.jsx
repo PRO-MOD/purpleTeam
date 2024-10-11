@@ -1,12 +1,16 @@
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import PageHeader from '../navbar/PageHeader';
 import { FaTrash } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import ConfirmationModal from '../challenges/Partials/ConfirmationModal';
+import FontContext from '../../../context/FontContext';
+import ColorContext from '../../../context/ColorContext';
 
 const SubmissionTable = ({ challengeId, userId }) => {
+   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [submissions, setSubmissions] = useState([]);
   const [filter, setFilter] = useState('all');
@@ -126,14 +130,14 @@ const SubmissionTable = ({ challengeId, userId }) => {
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-4">
             <div>
-              <label htmlFor="filter" className="text-sm font-medium text-gray-700">
+              <label htmlFor="filter" className="" style={{color:textColor, fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize}}>
                 Filter:
               </label>
               <select
                 id="filter"
                 value={filter}
                 onChange={handleFilterChange}
-                className="ml-2 p-2 border border-gray-300 rounded"
+                className="ml-2 p-2 border border-black-300 rounded"
               >
                 <option value="all">All Submissions</option>
                 <option value="correct">Correct Submissions</option>
@@ -146,7 +150,7 @@ const SubmissionTable = ({ challengeId, userId }) => {
                 placeholder="Search by user or challenge name"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="p-2 border border-gray-300 rounded"
+                className="p-2 border border-black-300 rounded"
               />
             </div>
           </div>
@@ -170,10 +174,10 @@ const SubmissionTable = ({ challengeId, userId }) => {
       )}
         </div>
         <div className="overflow-x-auto shadow-md rounded-lg">
-          <table className="min-w-full bg-gray-200">
-            <thead className="bg-gray-100 text-left">
+          <table className="min-w-full ">
+            <thead className="  text-left" style={{backgroundColor:'white'}}>
               <tr>
-               <th className="px-6 py-3 border-b border-gray-600 text-left text-xs font-medium text-black uppercase tracking-wider">
+               <th className="px-6 py-3 border-b border-black-600 text-left text-xs font-medium text-black uppercase tracking-wider">
                {!isInProgress&& (<input
                     type="checkbox"
                     checked={selectAll}
@@ -183,82 +187,41 @@ const SubmissionTable = ({ challengeId, userId }) => {
                 )}
                 </th>
                
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   User Name
                 </th>
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Challenge Name
                 </th>
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Answer
                 </th>
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Is Correct
                 </th>
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Points
                 </th>
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Time
                 </th>
-                <th className="px-6 py-3 border-b border-gray-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Attempt 
                 </th>
               </tr>
             </thead>
-            {/* <tbody className="bg-white divide-y divide-gray-200">
-              {filteredSubmissions.map((submission) => (
-                <tr key={submission._id} className="hover:bg-gray-100 transition duration-150 ease-in-out">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    <input
-                      type="checkbox"
-                      checked={selectedSubmissions.includes(submission._id)}
-                      onChange={() => handleSelectSubmission(submission._id)}
-                      className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                    />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-ls
-                  font-medium text-gray-900">
-                    {submission.userId?.name || 'Unknown User'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-ls text-gray-500">
-                    {submission.challengeId?.name || 'Unknown Challenge'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-ls text-gray-500">
-                    {submission.answer}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-ls text-gray-500">
-                    {submission.isCorrect ? (
-                      <span className="text-green-500 font-semibold">Yes</span>
-                    ) : (
-                      <span className="text-red-500 font-semibold">No</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-ls text-gray-500">
-                    {submission.points}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-ls text-gray-500">
-                    {new Date(submission.date).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-ls text-gray-500">
-                    {new Date(submission.date).toLocaleTimeString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody> */}
-
-<tbody className="bg-white divide-y divide-gray-200">
+<tbody className="bg-white divide-y divide-black-200">
   {filteredSubmissions.map((submission) => (
     <tr
       key={submission._id}
-      className={`hover:bg-gray-100 transition duration-150 ease-in-out`}
+      className={`hover:bg-black-100 transition duration-150 ease-in-out`}
     >
       {/* Conditionally render the checkbox if not in the "progress" route */}
       <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-900'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-900'
       }`}>
         {!isInProgress && (
           <input
@@ -270,22 +233,22 @@ const SubmissionTable = ({ challengeId, userId }) => {
         )}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls font-medium ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-900'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-900'
       }`}>
         {submission.userId?.name || 'Unknown User'}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-500'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
       }`}>
         {submission.challengeId?.name || 'Unknown Challenge'}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-500'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
       }`}>
         {submission.answer}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-500'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
       }`}>
         {submission.isCorrect ? (
           <span className="text-green-500 font-semibold">Yes</span>
@@ -294,22 +257,22 @@ const SubmissionTable = ({ challengeId, userId }) => {
         )}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-500'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
       }`}>
         {submission.points}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-500'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
       }`}>
         {new Date(submission.date).toLocaleDateString()}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-500'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
       }`}>
         {new Date(submission.date).toLocaleTimeString()}
       </td>
       <td className={`px-6 py-4 whitespace-nowrap text-ls ${
-        !isInProgress && submission.cheating ? 'text-red-500' : 'text-gray-500'
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
       }`}>
         {submission.attempt}
       </td>
@@ -326,3 +289,5 @@ const SubmissionTable = ({ challengeId, userId }) => {
 };
 
 export default SubmissionTable;
+
+
