@@ -1,6 +1,4 @@
 import React from 'react';
-
-//  FontAwesome Imports
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 

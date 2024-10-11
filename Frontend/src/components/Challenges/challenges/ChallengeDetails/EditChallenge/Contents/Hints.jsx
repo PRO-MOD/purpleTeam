@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../../context/FontContext';
 
 const Hints = ({ challengeId }) => {
+  const { paraFont, navbarFont, headingFont } = useContext(FontContext); // Accessing fonts from context
   const [hints, setHints] = useState([]);
   const [newHint, setNewHint] = useState('');
   const [newHintCost, setNewHintCost] = useState(0); // Default value
@@ -135,7 +137,7 @@ const Hints = ({ challengeId }) => {
     <div className="max-w-4xl mx-auto">
       <div className="mb-4 mx-12">
         <div className="flex flex-row items-center mb-2">
-          <h3 className="font-medium text-xl">Hints</h3>
+          <h3 className="font-medium text-xl" style={headingFont}>Hints</h3>
           <FontAwesomeIcon
             icon={faPlus}
             className="text-blue-500 cursor-pointer mx-2"
@@ -144,18 +146,18 @@ const Hints = ({ challengeId }) => {
           />
         </div>
         {hints.length === 0 ? (
-          <p>No hints added.</p>
+          <p style={paraFont}>No hints added.</p>
         ) : (
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50" >
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={navbarFont}>
                   Hint
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={navbarFont}>
                   Cost
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={navbarFont}>
                   Action
                 </th>
               </tr>
@@ -163,10 +165,10 @@ const Hints = ({ challengeId }) => {
             <tbody className="bg-white divide-y divide-gray-200">
               {hints.map((hint) => (
                 <tr key={hint._id} className="hover:bg-gray-100">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap" style={paraFont}>
                     {hint.content}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500" style={paraFont}>
                     {hint.cost}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -186,13 +188,13 @@ const Hints = ({ challengeId }) => {
             </tbody>
           </table>
         )}
-        {message && <p className="mt-4">{message}</p>}
+        {message && <p className="mt-4" style={paraFont}>{message}</p>}
       </div>
       
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">
+            <h2 className="text-2xl font-bold mb-4" style={headingFont}>
               {editingIndex ? 'Edit Hint' : 'Add Hint'}
             </h2>
             <div className="mb-4">
@@ -203,6 +205,7 @@ const Hints = ({ challengeId }) => {
                 onChange={(e) => editingIndex ? setEditHint(e.target.value) : setNewHint(e.target.value)}
                 placeholder="Enter hint"
                 className="border border-gray-300 p-2 rounded-sm w-full"
+                style={{ fontFamily: paraFont.fontFamily, fontSize: paraFont.fontSize, fontWeight: paraFont.fontWeight, fontStyle: paraFont.fontStyle }}
               />
             </div>
             <div className="mb-4">
@@ -213,6 +216,7 @@ const Hints = ({ challengeId }) => {
                 onChange={(e) => editingIndex ? setEditHintCost(parseInt(e.target.value)) : setNewHintCost(parseInt(e.target.value))}
                 placeholder="Enter cost"
                 className="border border-gray-300 p-2 rounded-sm w-full"
+                style={{ fontFamily: paraFont.fontFamily, fontSize: paraFont.fontSize, fontWeight: paraFont.fontWeight, fontStyle: paraFont.fontStyle }}
               />
             </div>
             <div className="flex justify-end">

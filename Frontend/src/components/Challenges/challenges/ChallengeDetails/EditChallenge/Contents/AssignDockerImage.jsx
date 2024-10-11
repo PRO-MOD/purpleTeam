@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../../../../../context/FontContext';
 
-const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageAssign, isEditMode, currentImage  }) => {
+const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageAssign, isEditMode, currentImage }) => {
   const [images, setImages] = useState([]);
-  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
+  const { navbarFont, headingFont, paraFont } = useContext(FontContext); // Using FontContext
   const [selectedImage, setSelectedImage] = useState(currentImage._id || '');
   const [isAddingImage, setIsAddingImage] = useState(false);
   const [newImageName, setNewImageName] = useState('');
@@ -88,19 +88,49 @@ const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageA
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-4">Assign Docker Image</h2>
+        {/* Heading */}
+        <h2 
+          className="text-2xl font-bold mb-4" 
+          style={{
+            fontFamily: headingFont.fontFamily,
+            fontSize: headingFont.fontSize,
+            fontWeight: headingFont.fontWeight
+          }}
+        >
+          Assign Docker Image
+        </h2>
 
-        {message && <p className="text-red-500">{message}</p>}
+        {/* Error or Success Message */}
+        {message && (
+          <p 
+            className="text-red-500" 
+            style={{ 
+              fontFamily: paraFont.fontFamily, 
+              fontSize: paraFont.fontSize 
+            }}
+          >
+            {message}
+          </p>
+        )}
 
         {/* Image Dropdown */}
         <div className="mb-4">
-          <label className="block mb-2">Select Image:</label>
+          <label 
+            className="block mb-2"
+            style={{
+              fontFamily: paraFont.fontFamily,
+              fontSize: paraFont.fontSize
+            }}
+          >
+            Select Image:
+          </label>
           <select
             className="w-full border border-gray-300 p-2 rounded"
             value={selectedImage}
-            onChange={(e) => {
-                console.log(e.target.value);
-                setSelectedImage(e.target.value);
+            onChange={(e) => setSelectedImage(e.target.value)}
+            style={{
+              fontFamily: paraFont.fontFamily,
+              fontSize: paraFont.fontSize
             }}
           >
             <option value="">-- Select Docker Image --</option>
@@ -117,6 +147,10 @@ const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageA
           <button
             className="text-blue-500 flex items-center mb-2"
             onClick={handleAddNewImageToggle}
+            style={{
+              fontFamily: paraFont.fontFamily,
+              fontSize: paraFont.fontSize
+            }}
           >
             <FontAwesomeIcon icon={faPlus} className="mr-2" /> {isAddingImage ? 'Cancel' : 'Add New Docker Image'}
           </button>
@@ -131,6 +165,10 @@ const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageA
               onChange={(e) => setNewImageName(e.target.value)}
               placeholder="Image Name"
               className="w-full border border-gray-300 p-2 rounded mb-2"
+              style={{
+                fontFamily: paraFont.fontFamily,
+                fontSize: paraFont.fontSize
+              }}
             />
             <input
               type="text"
@@ -138,11 +176,19 @@ const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageA
               onChange={(e) => setNewImagePort(e.target.value)}
               placeholder="Port"
               className="w-full border border-gray-300 p-2 rounded mb-4"
+              style={{
+                fontFamily: paraFont.fontFamily,
+                fontSize: paraFont.fontSize
+              }}
             />
             <button
               onClick={handlePullImage}
               className="bg-green-500 text-white p-2 rounded w-full"
               disabled={isLoading}
+              style={{
+                fontFamily: paraFont.fontFamily,
+                fontSize: paraFont.fontSize
+              }}
             >
               {isLoading ? 'Pulling Image...' : 'Pull Docker Image'}
             </button>
@@ -154,10 +200,21 @@ const AssignDockerImageModal = ({ isOpen, onClose, challengeId, apiUrl, onImageA
           <button
             onClick={handleImageAssign}
             className="bg-blue-500 text-white p-2 rounded mr-2"
+            style={{
+              fontFamily: navbarFont.fontFamily,
+              fontSize: navbarFont.fontSize
+            }}
           >
             Assign Image
           </button>
-          <button onClick={onClose} className="bg-gray-600 text-white p-2 rounded">
+          <button
+            onClick={onClose}
+            className="bg-gray-600 text-white p-2 rounded"
+            style={{
+              fontFamily: navbarFont.fontFamily,
+              fontSize: navbarFont.fontSize
+            }}
+          >
             Cancel
           </button>
         </div>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import FontContext from '../../../../../context/FontContext';
 
-const EditNavigation = ({activeTab, setActiveTab, tabs}) => {
-  // const [activeTab, setActiveTab] = useState('Files');
+const EditNavigation = ({ activeTab, setActiveTab, tabs }) => {
+  const { navbarFont } = useContext(FontContext); // Access navbarFont from context
 
   return (
     <div className="border-b border-indigo-200 m-8">
@@ -15,6 +16,7 @@ const EditNavigation = ({activeTab, setActiveTab, tabs}) => {
                 : 'border-b border-transparent hover:border-indigo-300'
             }`}
             onClick={() => setActiveTab(tab)}
+            style={navbarFont} // Apply navbarFont
           >
             {tab}
           </button>
