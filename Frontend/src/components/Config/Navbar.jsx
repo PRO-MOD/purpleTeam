@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import ColorContext from '../../context/ColorContext';
 
 const NavBar = ({ activeSection, setActiveSection }) => {
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   return (
-    <div className="bg-gray-100 p-4 border-b">
+    <div className="bg-gray-100 p-4 border-b" style={{backgroundColor: bgColor}}>
       <nav className="flex gap-8">
         <button
           className={`text-left pb-2 border-b-2 ${activeSection === 'general' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-blue-500'}`}
