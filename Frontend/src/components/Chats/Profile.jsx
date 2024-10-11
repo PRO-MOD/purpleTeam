@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Avatar } from 'react-chat-elements';
 import AuthContext from '../../context/AuthContext';
+import FontContext from '../../context/FontContext';
 
 function Profile() {
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const context = useContext(AuthContext);
   const { user, fetchUserRole } = context;
   const [error, setError] = useState(null);
@@ -28,8 +30,8 @@ function Profile() {
         type="rounded"
         className="rounded-full"
       />
-      <h1>Username: {user && user.name}</h1>
-      <h1>Email: {user && user.email}</h1>
+      <h1 style={{fontFamily:headingFont}}>Username: {user && user.name}</h1>
+      <h1 style={{fontFamily:headingFont}}>Email: {user && user.email}</h1>
       {error && <p>Error: {error}</p>}
     </div>
   );

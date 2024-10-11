@@ -46,7 +46,7 @@ const StaticScore = ({ userId }) => {
 
     return (
         <div className='flex flex-row items-center'>
-            <p className="text-lg mb-4" style={{ fontFamily: paraFont }}>Static Score: {staticScore !== null ? staticScore : 'Not Assigned'}</p>
+            <p className="text-lg mb-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Static Score: {staticScore !== null ? staticScore : 'Not Assigned'}</p>
             <button
                 onClick={handleOpenModal}
                 className="w-1/6 ms-4 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

@@ -30,7 +30,7 @@ const Welcome = () => {
     }, []);
 
     return (
-        <div className="h-screen flex flex-col items-center bg-white -z-50" style={{ fontFamily: navbarFont }}>
+        <div className="h-screen flex flex-col items-center bg-white -z-50"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
             {/* Header */}
             {/* Main Content */}
             <div className="flex flex-col items-center justify-center flex-grow p-8">
@@ -42,12 +42,12 @@ const Welcome = () => {
                 <h2 className="text-3xl font-bold text-gray-800 mb-4"  style={{ fontFamily: headingFont }}>
                     {eventDetails.title || 'Defend the Flag'}
                 </h2>
-                <p className="text-gray-600 text-center max-w-lg"  style={{ fontFamily: paraFont }}>
+                <p className="text-gray-600 text-center max-w-lg"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
                     {eventDetails.description || 'Welcome to the Crysalen Platform! Our mission is to empower you with the skills and knowledge to protect and defend against cyber threats. Join us in our journey to a safer digital world.'}
                 </p>
             </div>
             {/* Footer */}
-            <footer className="text-center text-red-500 text-lg mt-16"  style={{ fontFamily: paraFont }}>
+            <footer className="text-center text-red-500 text-lg mt-16"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
                 Powered By Crysalen
             </footer>
         </div>

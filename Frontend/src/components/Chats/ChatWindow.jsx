@@ -6,10 +6,12 @@ import SocketContext from '../../context/SocketContext';
 import ChatInput from './ChatInput';
 import Notification from '/notification.mp3'
 import { io } from 'socket.io-client';
+import FontContext from '../../context/FontContext';
 
 function ChatWindow() {
     const apiUrl = import.meta.env.VITE_Backend_URL;
     const { userId } = useParams();
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     const [userInfo, setUserInfo] = useState(null);
     // const [messages, setMessages] = useState([]);
 
@@ -198,9 +200,9 @@ function ChatWindow() {
                             size="large"
                         // type="rounded"
                         />
-                        <div className="flex flex-col">
-                            <h1>{userInfo.name}</h1>
-                            <h1>{userInfo.role == "BT" ? "Blue Team" : userInfo.role == "WT" ? "White Team" : ""}</h1>
+                        <div className="flex flex-col" style={{fontFamily:headingFont}}>
+                            <h1 style={{fontFamily:headingFont}}>{userInfo.name}</h1>
+                            <h1 style={{fontFamily:headingFont}}>{userInfo.role == "BT" ? "Blue Team" : userInfo.role == "WT" ? "White Team" : ""}</h1>
                         </div>
                     </>
                 )}
@@ -208,13 +210,13 @@ function ChatWindow() {
             <div className="flex-1 overflow-y-auto" >
                 {messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full">
-                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">No message to Display</h2>
-                        <p className="text-gray-600">Start a conversation</p>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4" style={{fontFamily:headingFont}}>No message to Display</h2>
+                        <p className="text-gray-600" style={{fontFamily:paraFont}}>Start a conversation</p>
                     </div>
                 ) : (
                     groupMessagesByDate(messages).map((group, index) => (
                         <div key={index}>
-                            <h3 className="text-gray-600 text-center my-4"> <span className='border-2 px-2 bg-gray-200 rounded-lg shadow-lg'>{group.date}</span></h3>
+                            <h3 className="text-gray-600 text-center my-4" style={{fontFamily:headingFont}}> <span className='border-2 px-2 bg-gray-200 rounded-lg shadow-lg'>{group.date}</span></h3>
                             {group.messages.map((message, index) => (
                                 <div key={index}>
                                     {

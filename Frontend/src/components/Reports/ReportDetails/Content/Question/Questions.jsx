@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Table from '../../../Table'; // Import the reusable Table component
 import AddQuestion from './AddQuestion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../context/FontContext';
 
 const Questions = ({ reportId }) => {
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -86,7 +88,7 @@ const Questions = ({ reportId }) => {
     return (
         <div className="container mx-auto px-6">
             <div className="flex items-center mb-4">
-                <h2 className="text-2xl font-semibold">Questions</h2>
+                <h2 className="text-2xl font-semibold"style={{fontFamily: headingFont}}>Questions</h2>
                 <FontAwesomeIcon icon={faPlus} className="mx-2 text-green-500 cursor-pointer" onClick={() => setShowModal(true)} />
             </div>
             <Table columns={columns} data={questions} onEdit={handleEdit} onDelete={handleDelete} editButtonReq={true}/>

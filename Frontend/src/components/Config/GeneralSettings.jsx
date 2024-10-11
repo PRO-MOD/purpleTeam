@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import FontContext from '../../context/FontContext';
 
 const GeneralSettings = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   // Fetch current title and description on component mount
   useEffect(() => {
@@ -64,7 +66,7 @@ const GeneralSettings = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label className="block text-lg font-semibold mb-2">Event Name</label>
+        <label className="block text-lg font-semibold mb-2" style={{fontFamily:paraFont}}>Event Name</label>
         <input
           type="text"
           value={title}
@@ -74,7 +76,7 @@ const GeneralSettings = () => {
         />
       </div>
       <div className="mt-4">
-        <label className="block text-lg font-semibold mb-2">Event Description</label>
+        <label className="block text-lg font-semibold mb-2" style={{fontFamily:paraFont}}>Event Description</label>
         <textarea
           value={description}
           onChange={handleDescriptionChange}
@@ -85,7 +87,7 @@ const GeneralSettings = () => {
       <button
         type="submit"
         className="mt-4 bg-blue-500 text-white p-2 rounded"
-      >
+       style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
         Update
       </button>
       {message && <p className="mt-4 text-green-500">{message}</p>}

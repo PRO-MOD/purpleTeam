@@ -160,7 +160,7 @@ const SideNavbar = () => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50" style={{ fontFamily: navbarFont }}>
+    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
       {/* Logo Section */}
       <div className="flex items-center justify-center py-4 h-32">
         <img src={logoUrl} alt="Logo" className="h-full" />

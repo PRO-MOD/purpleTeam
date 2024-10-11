@@ -1,10 +1,13 @@
-import React from 'react';
+import React ,{useContext}from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../context/FontContext';
 
 const Table = ({ columns, data, onEdit, onDelete, editButtonReq }) => {
+
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     return (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" style={{fontFamily:paraFont}}>
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>

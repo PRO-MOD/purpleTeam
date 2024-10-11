@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import InputField from '../../Challenges/challenges/Partials/InputFeild';
+import FontContext from '../../../context/FontContext';
 
 const EditReport = ({ report }) => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [fields, setFields] = useState({
     name: report.name,
     description: report.description,
@@ -66,7 +68,7 @@ const EditReport = ({ report }) => {
     <div className="container mx-auto p-6">
       <form method="POST" onSubmit={handleSubmit} className="space-y-6">
         {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-500">Report updated successfully!</p>}
+        {success && <p className="text-green-500" style={{fontFamily: paraFont}}>Report updated successfully!</p>}
 
         {inputFields.map((field) => (
           <InputField
@@ -87,7 +89,7 @@ const EditReport = ({ report }) => {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             type="submit"
             disabled={loading}
-          >
+        style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}} >
             {loading ? 'Updating...' : 'Update'}
           </button>
         </div>

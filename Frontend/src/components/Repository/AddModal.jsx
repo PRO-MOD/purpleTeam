@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import Select from 'react-select'; // Import Select component
+import FontContext from '../../context/FontContext';
 
 const AddModal = ({ onClose, repositoryId }) => {
 
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [challenges, setChallenges] = useState([]); // State to hold fetched challenges
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [selectedChallenges, setSelectedChallenges] = useState([]); // State for selected challenges
   const [loading, setLoading] = useState(true); // Loading state
   const [addedChallenges, setAddedChallenges] = useState([]); // State for already added challenges
@@ -86,7 +88,7 @@ const AddModal = ({ onClose, repositoryId }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-lg font-semibold mb-4">Select Challenges to Add</h2>
+        <h2 className="text-lg font-semibold mb-4" style={{fontFamily:headingFont}}>Select Challenges to Add</h2>
         <Select
           isMulti
           options={challenges}
@@ -113,17 +115,18 @@ const AddModal = ({ onClose, repositoryId }) => {
               color: '#000', // Color for selected item labels
             }),
           }}
+          
         />
         <div className="flex justify-between mt-4">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
-            onClick={handleAddChallenges}
+            onClick={handleAddChallenges}style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}
           >
             Add Challenges
           </button>
           <button
             className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 transition duration-200"
-            onClick={onClose}
+            onClick={onClose}style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}
           >
             Close
           </button>

@@ -20,8 +20,9 @@
 
 // export default AdminDataVisualization
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import ApexCharts from 'react-apexcharts';
+import FontContext from '../context/FontContext';
 
 
 function AdminDataVisualization() {
@@ -30,12 +31,14 @@ function AdminDataVisualization() {
     highestManualScore: '',
     highestScore: '',
   });
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [userScores, setUserScores] = useState([]);
   const [manualScores, setManualScores] = useState([]);
   const [reportData, setReportData] = useState([]);
   const [submissionData, setSubmissionData] = useState([]);
   const [submissionTypes, setSubmissionTypes] = useState([]);
   const[mode,setMode]=useState("purpleTeam");
+  
 
   useEffect(() => {
     // Fetch highest scores

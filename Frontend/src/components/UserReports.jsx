@@ -187,7 +187,7 @@ function UserReports({ userId, route }) {
   };
 
   return (
-    <div className="p-4" style={{ fontFamily: paraFont }}>
+    <div className="p-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
       <h2 className="text-2xl font-bold mb-4"style={{ fontFamily: headingFont }}>User Reports</h2>
       <table className="table-auto w-full border-collapse border border-gray-200">
         <thead>
@@ -274,7 +274,7 @@ function UserReports({ userId, route }) {
                                     openImagesModal(response.answer)
                                   }
                                   className="text-blue-600 hover:underline mr-2"
-                                  style={{ fontFamily: navbarFont }}>
+                                 style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
                                   {`img${i + 1}`}
                                 </button>
                               ))
@@ -285,7 +285,7 @@ function UserReports({ userId, route }) {
                         // Case 3: Single image path
                         <button
                           onClick={() => openImagesModal([response.answer])}
-                          className="text-blue-600 hover:underline" style={{ fontFamily: navbarFont }}
+                          className="text-blue-600 hover:underline"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}
                         >
                           View Image
                         </button>
@@ -362,7 +362,7 @@ function UserReports({ userId, route }) {
             )}
             <button
               onClick={() => setShowModal(false)}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2"  style={{ fontFamily: navbarFont }}
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2" style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}
             >
               Close
             </button>

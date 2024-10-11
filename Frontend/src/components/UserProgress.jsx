@@ -81,19 +81,19 @@ function UserProgress() {
 
     // Render the component if user is authenticated and has required role
     return (
-        <div className="container mx-auto px-4 py-8" style={{ fontFamily: paraFont }}>
+        <div className="container mx-auto px-4 py-8"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
             <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont }}>Progress</h1>
             {user._id ? (
                 <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className='flex flex-row'>
                         <div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" style={{ fontFamily: navbarFont }}>Name:</label>
-                                <p className="text-gray-700" style={{ fontFamily: paraFont }}>{user.name}</p>
+                                <label className="block text-gray-700 text-sm font-bold mb-2"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Name:</label>
+                                <p className="text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{user.name}</p>
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2 " style={{ fontFamily: navbarFont }}>Email:</label>
-                                <p className="text-gray-700 " style={{ fontFamily: paraFont }}>{user.email}</p>
+                                <label className="block text-gray-700 text-sm font-bold mb-2 "style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Email:</label>
+                                <p className="text-gray-700 "  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{user.email}</p>
                             </div>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ function UserProgress() {
                 </button>
                 <button
                   onClick={() => setSelectedTab('challenges')}
-                  className={`px-4 py-2 ${selectedTab === 'challenges' ? 'bg-blue-500 text-white' : 'bg-gray-200'}` }  style={{ fontFamily: navbarFont }}
+                  className={`px-4 py-2 ${selectedTab === 'challenges' ? 'bg-blue-500 text-white' : 'bg-gray-200'}` } style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}
                 >
                   Challenges
                 </button>

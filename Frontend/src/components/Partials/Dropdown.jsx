@@ -1,17 +1,19 @@
 // Dropdown.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FontContext from '../../context/FontContext';
 
 const Dropdown = ({ icon, title, items, isActive, hoverColor, sidenavColor, userRole }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   return (
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center py-2 px-2 w-full text-left hover:text-white ${isOpen ? 'text-white' : ''}`}
-        style={{ backgroundColor: isOpen ? hoverColor : sidenavColor }}
+        style={{ backgroundColor: isOpen ? hoverColor : sidenavColor, fontFamily:navbarFont }}
         onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
         onMouseOut={(e) => e.currentTarget.style.backgroundColor = isOpen ? hoverColor : sidenavColor}
       >

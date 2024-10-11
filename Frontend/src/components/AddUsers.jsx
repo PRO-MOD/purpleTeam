@@ -3,11 +3,14 @@ import CreateChallenge from './CreateChallenge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import ColorContext from '../context/ColorContext';
+import FontContext from '../context/FontContext';
+
 // import axios from 'axios';
 
 function AddUsers() {
     const [showModal, setShowModal] = useState(false);
     const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -159,7 +162,7 @@ function AddUsers() {
 
     return (
         <div className="m-12">
-            <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont }}>Admin Dashboard</h1>
             <hr className='mx-2 my-8 border-black' />
 
             <div className="flex flex-row w-full items-center">
@@ -181,10 +184,10 @@ function AddUsers() {
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
                     <div className="bg-white rounded-lg p-6 w-full md:w-1/2 lg:w-1/3 overflow-y-auto max-h-96">
-                        <h2 className="text-2xl font-bold mb-4">Add User</h2>
+                        <h2 className="text-2xl font-bold mb-4"  style={{ fontFamily: headingFont }}>Add User</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Name</label>
                                 <input
                                     type="text"
                                     id="name"
@@ -197,7 +200,7 @@ function AddUsers() {
                             </div>
 
                             <div className="mb-4">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Email</label>
                                 <input
                                     type="email"
                                     id="email"
@@ -210,7 +213,7 @@ function AddUsers() {
                             </div>
 
                             <div className="mb-4">
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Password</label>
                                 <input
                                     type="password"
                                     id="password"
@@ -223,7 +226,7 @@ function AddUsers() {
                             </div>
 
                             <div className="mb-4">
-                                <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+                                <label htmlFor="role" className="block text-sm font-medium text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Role</label>
                                 <select
                                     id="role"
                                     name="role"
@@ -255,7 +258,7 @@ function AddUsers() {
             )}
 
             <div className="users mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">Blue Team: </h1>
+                <h1 className="text-xl font-bold mb-4 underline" style={{ fontFamily: headingFont }}>Blue Team: </h1>
                 <table className="table-auto w-full border">
                     <thead>
                         <tr>
@@ -283,7 +286,7 @@ function AddUsers() {
                 </table>
             </div>
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline">White Team: </h1>
+                <h1 className="text-xl font-bold mb-4 underline" style={{ fontFamily: headingFont }}>White Team: </h1>
                 <table className="table-auto w-full border">
                     <thead>
                         <tr>
