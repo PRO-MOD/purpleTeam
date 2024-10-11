@@ -1,11 +1,11 @@
 
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Switch from 'react-switch';
+import FontContext from '../../context/FontContext';
 
 const AccessSettings = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   const [team, setTeam] = useState('BT'); // Default to 'BT', update based on your requirement
   const [visibilitySettings, setVisibilitySettings] = useState({});
@@ -46,14 +46,14 @@ const AccessSettings = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between py-3 px-4 bg-white rounded-lg shadow-sm">
-        <label className="font-semibold text-lg text-gray-700">
+        <label className="font-semibold text-lg text-gray-700" style={{fontFamily: paraFont}}>
           Select Team
         </label>
         <select
           value={team}
           onChange={(e) => setTeam(e.target.value)}
           className="form-select mt-1 block w-full"
-        >
+          style={{fontFamily: paraFont}} >
           <option value="BT">BT</option>
           <option value="WT">WT</option>
           <option value="YT">YT</option>
@@ -61,7 +61,7 @@ const AccessSettings = () => {
       </div>
       {Object.keys(visibilitySettings).map((section) => (
         <div className="flex items-center justify-between py-3 px-4 bg-white rounded-lg shadow-sm" key={section}>
-          <label className="font-semibold text-lg text-gray-700">
+          <label className="font-semibold text-lg text-gray-700" style={{fontFamily: paraFont}}>
             {section.charAt(0).toUpperCase() + section.slice(1)}
           </label>
           <Switch

@@ -1,19 +1,24 @@
-// Dropdown.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FontContext from '../../context/FontContext';
 
 const Dropdown = ({ icon, title, items, isActive, hoverColor, sidenavColor, userRole }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   return (
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center py-2 px-2 w-full text-left hover:text-white ${isOpen ? 'text-white' : ''}`}
-        style={{ backgroundColor: isOpen ? hoverColor : sidenavColor }}
-        onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-        onMouseOut={(e) => e.currentTarget.style.backgroundColor = isOpen ? hoverColor : sidenavColor}
+        className={`flex items-center px-2 py-1 w-[92%] mx-2 my-1 rounded-lg text-left hover:text-white ${isOpen ? 'text-white' : ''}`}
+        style={{ backgroundColor: isOpen ? hoverColor : sidenavColor, fontFamily: navbarFont }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = hoverColor;
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = isOpen ? hoverColor : sidenavColor;
+        }}
       >
         <FontAwesomeIcon icon={icon} size="xl" className="mr-4" />
         <p className="text-lg">{title}</p>
@@ -23,7 +28,7 @@ const Dropdown = ({ icon, title, items, isActive, hoverColor, sidenavColor, user
       </button>
       {isOpen && (
         <div className="ml-8 space-y-1">
-          {items.filter(item => item.visibility && (userRole === 'WT' || !item.restricted)).map((item, index) => ( // Filter by visibility and role
+          {items.filter(item => item.visibility && (userRole === 'WT' || !item.restricted)).map((item, index) => (
             <Link key={index} to={item.path} className={`block py-2 px-4 hover:text-white ${isActive(item.path) ? 'text-white' : 'text-white'}`}>
               {item.label}
             </Link>

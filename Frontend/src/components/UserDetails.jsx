@@ -123,12 +123,12 @@ function UserDetails() {
           <div className='flex flex-row'>
             <div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" style={{ fontFamily: navbarFont }}>Name:</label>
-                <p className="text-gray-700" style={{ fontFamily: paraFont }}>{user.name}</p>
+                <label className="block text-gray-700 text-sm font-bold mb-2"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Name:</label>
+                <p className="text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{user.name}</p>
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" style={{ fontFamily: navbarFont }}>Email:</label>
-                <p className="text-gray-700" style={{ fontFamily: paraFont }}>{user.email}</p>
+                <label className="block text-gray-700 text-sm font-bold mb-2"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Email:</label>
+                <p className="text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{user.email}</p>
               </div>
             </div>
           </div>
@@ -182,7 +182,7 @@ function UserDetails() {
           )}
         </div>
       ) : (
-        <p  style={{ fontFamily: paraFont }}>Loading...</p>
+        <p   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Loading...</p>
       )}
     </div>
   );

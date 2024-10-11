@@ -1,10 +1,11 @@
 // src/repositories/RepoAllChallenges.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import InfoTable from '../Challenges/challenges/Partials/InfoTable';
 import ConfirmationModal from '../Challenges/challenges/Partials/ConfirmationModal';
+import FontContext from '../../context/FontContext';
 
 const RepoAllChallenges = ({ repositoryId }) => {
   const [challenges, setChallenges] = useState([]);
@@ -13,6 +14,7 @@ const RepoAllChallenges = ({ repositoryId }) => {
   const [deletionAction, setDeletionAction] = useState(null);
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   useEffect(() => {
     const fetchChallenges = async () => {

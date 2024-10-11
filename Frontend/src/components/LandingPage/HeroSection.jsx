@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
+import FontContext from '../../context/FontContext';
 
 const HeroSection = () => {
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   // Define the middle phrases that will change
   const phrases = ["attack surface", "cyber defense", "digital security"];
   
@@ -24,18 +26,18 @@ const HeroSection = () => {
     <div className="flex flex-col lg:flex-row items-center justify-between w-full py-16 px-20">
       {/* Left Section */}
       <div className="lg:w-1/2 w-full text-center lg:text-left mb-10 lg:mb-0">
-        <h1 className="text-4xl lg:text-5xl font-bold text-blue-600 leading-tight">
+        <h1 className="text-4xl lg:text-5xl font-bold text-blue-600 leading-tight" style={{fontFamily:headingFont}}>
           Changing the <span className="text-black">{currentPhrase}</span> landscape
         </h1>
-        <p className="text-gray-600 mt-4 text-lg">
+        <p className="text-gray-600 mt-4 text-lg" style={{fontFamily:paraFont}}>
           Breachpoint unites companies and researchers through its state-of-the-art bug bounty platform coupled with other solutions to help secure the ever-changing threat landscape.
         </p>
         {/* Buttons */}
         <div className="mt-8 flex justify-center lg:justify-start gap-4">
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700" onClick={()=> window.location.href = '/signin'}>
+          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700" onClick={()=> window.location.href = '/signin'}style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
             Start a Program
           </button>
-          <button className="text-black px-6 py-3 rounded-lg hover:underline">
+          <button className="text-black px-6 py-3 rounded-lg hover:underline" style={{fontFamily: navbarFont}}>
             <span className="mr-2">🏆</span> Win Bounties
           </button>
         </div>

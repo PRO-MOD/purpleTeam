@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import ApexCharts from 'react-apexcharts';
 import ColorContext from '../context/ColorContext';
+import FontContext from '../context/FontContext';
 
 function AdminDataVisualization() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -9,12 +10,14 @@ function AdminDataVisualization() {
     highestManualScore: '',
     highestScore: '',
   });
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [userScores, setUserScores] = useState([]);
   const [manualScores, setManualScores] = useState([]);
   const [reportData, setReportData] = useState([]);
   const [submissionData, setSubmissionData] = useState([]);
   const [submissionTypes, setSubmissionTypes] = useState([]);
   const[mode,setMode]=useState("purpleTeam");
+  
 
   useEffect(() => {
     // Fetch highest scores

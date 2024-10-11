@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarsProgress } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../context/FontContext';
 
 const HeaderFooter = () => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -9,6 +10,7 @@ const HeaderFooter = () => {
     const [headerImage, setHeaderImage] = useState(null);
     const [footerImage, setFooterImage] = useState(null);
     const [message, setMessage] = useState('');
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
     const handleFileChange = (e, setFile) => {
         setFile(e.target.files[0]);
@@ -82,7 +84,7 @@ const HeaderFooter = () => {
                         {message && <div className="text-green-500 mb-2">{message}</div>}
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">Header Image</label>
+                                <label className="block text-sm font-medium text-gray-700"  >Header Image</label>
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, setHeaderImage)}
@@ -107,7 +109,7 @@ const HeaderFooter = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="p-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-700"
+                                    className="p-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-700" 
                                 >
                                     Save Configuration
                                 </button>

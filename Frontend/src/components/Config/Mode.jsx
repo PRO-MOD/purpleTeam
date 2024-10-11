@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+
+import FontContext from '../../context/FontContext';
 
 function ModeSelector() {
   const api = import.meta.env.VITE_Backend_URL;
   const apiUrl = `${api}/api/config/mode`;
   const [mode, setMode] = useState('');
   const [loading, setLoading] = useState(false);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   // Fetch the current mode when the component mounts
   useEffect(() => {
@@ -54,7 +57,7 @@ function ModeSelector() {
 
   return (
     <div className="mode-toggle-container">
-      <h2 className="text-lg font-medium mb-2">Mode: {mode === 'purpleTeam' ? 'Purple Team' : 'CTFD'}</h2>
+      <h2 className="text-lg font-medium mb-2" style={{fontFamily:headingFont}}>Mode: {mode === 'purpleTeam' ? 'Purple Team' : 'CTFD'}</h2>
       <button
         onClick={handleToggle}
         disabled={loading}
@@ -68,7 +71,7 @@ function ModeSelector() {
           }`}
         />
       </button>
-      {loading && <p className="mt-2 text-gray-500">Updating mode...</p>}
+      {loading && <p className="mt-2 text-gray-500" style={{fontFamily:paraFont}}>Updating mode...</p>}
     </div>
   );
 }

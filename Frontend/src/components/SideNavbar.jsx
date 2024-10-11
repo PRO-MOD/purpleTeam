@@ -160,7 +160,7 @@ const SideNavbar = () => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50" style={{ fontFamily: navbarFont }}>
+    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 overflow-y-auto" style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
       {/* Logo Section */}
       <div className="flex items-center justify-center py-4 h-32">
         <img src={logoUrl} alt="Logo" className="h-full" />
@@ -172,10 +172,12 @@ const SideNavbar = () => {
           {/* General Items */}
           {generalItems.map((item, index) => (
             item.visibility && (
-              <Link key={index} to={item.path} className={`flex items-center py-2 px-2 hover:text-white ${isActive(item.path) ? 'text-white' : 'text-white'}`} 
+              <Link key={index} to={item.path} className={`flex items-center p-2 mx-2 my-1 rounded-lg hover:text-white ${isActive(item.path) ? 'text-white' : 'text-white'}`} 
                 style={{ backgroundColor: isActive(item.path) ? hoverColor : sidenavColor }}  
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = isActive(item.path) ? hoverColor : sidenavColor}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = isActive(item.path) ? hoverColor : sidenavColor;
+                }}
                 >
                 <FontAwesomeIcon icon={item.icon} size="xl" className="mr-4" />
                 <p className="text-lg" >{item.label}</p>
@@ -207,7 +209,7 @@ const SideNavbar = () => {
       </div>
 
       {/* Logout Section */}
-      <div className="p-4">
+      <div className="p-4 fixed bottom-0">
         <button onClick={handleLogout} className="flex items-center py-2 px-2 hover:text-white" style={{ backgroundColor: sidenavColor }}>
           <FontAwesomeIcon icon={faSignOutAlt} size="xl" className="mr-4" />
           <p className="text-lg" >Logout</p>

@@ -158,13 +158,13 @@ function Report() {
                   placeholder="Enter your answer"
                   value={formData[question._id] || ''}
                   onChange={handleInputChange}
-                  style={{ fontFamily: paraFont }} 
+                   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }} 
                 />
               );
             case 'checkbox':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700" style={{ fontFamily: paraFont }}>{question.text}:</label>
+                  <label className="block text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   {question.options.map((option) => (
                     <div key={option} className="flex items-center">
                       <input
@@ -174,7 +174,7 @@ function Report() {
                         checked={(formData[question._id] || []).includes(option)}
                         onChange={() => handleCheckboxChange(question._id, option)}
                       />
-                      <label htmlFor={option} className="ml-2"  style={{ fontFamily: paraFont }}>{option}</label>
+                      <label htmlFor={option} className="ml-2"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{option}</label>
                     </div>
                   ))}
                 </div>
@@ -182,14 +182,14 @@ function Report() {
             case 'dropdown':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700" style={{ fontFamily: paraFont }}>{question.text}:</label>
+                  <label className="block text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   <select
                     id={question._id}
                     name={question._id}
                     value={formData[question._id] || ''}
                     onChange={handleInputChange}
                     className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
-                    style={{ fontFamily: paraFont }}
+                     style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}
                   >
                     <option value="">Select an option</option>
                     {question.options.map((option) => (
@@ -201,7 +201,7 @@ function Report() {
             case 'textarea':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700" style={{ fontFamily: paraFont }}>{question.text}:</label>
+                  <label className="block text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   <textarea
                     id={question._id}
                     name={question._id}
@@ -209,14 +209,14 @@ function Report() {
                     onChange={handleInputChange}
                     placeholder="Enter your answer"
                     className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
-                    style={{ fontFamily: paraFont }}
+                     style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}
                   />
                 </div>
               );
             case 'mcq':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700"  style={{ fontFamily: paraFont }}>{question.text}:</label>
+                  <label className="block text-gray-700"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   {question.options.map((option) => (
                     <div key={option} className="flex items-center">
                       <input
@@ -227,7 +227,7 @@ function Report() {
                         checked={formData[question._id] === option}
                         onChange={handleInputChange}
                       />
-                      <label htmlFor={option} className="ml-2"  style={{ fontFamily: paraFont }}>{option}</label>
+                      <label htmlFor={option} className="ml-2"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{option}</label>
                     </div>
                   ))}
                 </div>

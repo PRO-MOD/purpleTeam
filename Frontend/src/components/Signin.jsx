@@ -147,7 +147,7 @@ const Signin = () => {
             </div>
 
             {/* Footer */}
-            <footer className="text-center text-gray-500 text-sm mt-4" style={{ fontFamily: paraFont }}>
+            <footer className="text-center text-gray-500 text-sm mt-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
                 Powered By Crysalen
             </footer>
         </div>

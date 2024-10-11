@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FontContext from '../../context/FontContext';
 
 import { formatDate } from '../../assets/utils/formatDate';
 
@@ -11,6 +12,7 @@ const AllReports = () => {
     const [selectedReports, setSelectedReports] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
     const apiUrl = import.meta.env.VITE_Backend_URL;
 

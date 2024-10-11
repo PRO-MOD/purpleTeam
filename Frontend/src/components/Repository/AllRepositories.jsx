@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import ConfirmationModal from '../Challenges/challenges/Partials/ConfirmationModal';
 import InfoTable from '../Challenges/challenges/Partials/InfoTable';
+import FontContext from '../../context/FontContext';
 
 const AllRepositories = () => {
   const [repositories, setRepositories] = useState([]);
@@ -14,6 +15,7 @@ const AllRepositories = () => {
   const [deletionAction, setDeletionAction] = useState(null);
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   useEffect(() => {
     const fetchRepositories = async () => {
@@ -124,6 +126,7 @@ const AllRepositories = () => {
               id="field"
               value={searchField}
               onChange={(e) => setSearchField(e.target.value)}
+             style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-sm outline-0 focus:border-green-500 focus:ring focus:ring-green-200"
             >
               <option value="name">Name</option>
@@ -138,6 +141,7 @@ const AllRepositories = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+               style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-sm outline-0 focus:border-green-500 focus:ring focus:ring-green-200"
             />
           </div>

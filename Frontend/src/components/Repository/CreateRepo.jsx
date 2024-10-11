@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import InputField from '../Challenges/challenges/Partials/InputFeild';
 import PageHeader from '../Challenges/navbar/PageHeader';
+import FontContext from '../../context/FontContext';
 
 const CreateRepo = () => {
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -52,7 +54,7 @@ const CreateRepo = () => {
       // Redirect to /repository after 2 seconds
       setTimeout(() => {
         navigate('/repository');
-      }, 2000);
+      }, 1000);
       
     } catch (error) {
       console.error('Error creating repository:', error);
@@ -78,8 +80,9 @@ const CreateRepo = () => {
 
   return (
     <div>
-      <PageHeader pageTitle="Create Repository" />
-      <div className="col-md-7 ms-8 me-24 py-4" id="create-repo-entry-div">
+      <PageHeader pageTitle="Create Repository"  style={{ fontFamily: headingFont }}
+       />
+      <div className="col-md-7 ms-8 me-24 py-4" id="create-repo-entry-div"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
         <form onSubmit={handleSubmit} className="space-y-6">
           {formFields.map((field) => (
             <InputField
@@ -99,14 +102,14 @@ const CreateRepo = () => {
             <button
               className="btn btn-primary float-right bg-blue-500 text-white py-2 px-4 rounded"
               type="submit"
-            >
+              style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
               Create Repository
             </button>
           </div>
         </form>
 
         {successMessage && (
-          <div className="mt-4 text-green-600">
+          <div className="mt-4 text-green-600" style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
             {successMessage}
           </div>
         )}

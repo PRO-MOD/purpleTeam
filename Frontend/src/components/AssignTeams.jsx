@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import FontContext from '../context/FontContext';
-
 function AssignTeams() {
     const [showModal, setShowModal] = useState(false);
     const [volunteers, setVolunteers] = useState([]);
@@ -141,7 +140,7 @@ function AssignTeams() {
                                         : 'No assigned teams'}
                                 </td>
                                 <td className="border  border-gray-400 px-4 py-2 text-indigo-500 hover:underline hover:text-indigo-800 ">
-                                    <button onClick={() => handleAssignTeams(volunteer._id)} style={{fontFamily:navbarFont}}>Assign Teams</button>
+                                    <button onClick={() => handleAssignTeams(volunteer._id)}style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>Assign Teams</button>
                                 </td>
                             </tr>
                         ))}

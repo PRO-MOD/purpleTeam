@@ -14,7 +14,7 @@ const ChallengeButton = ({ challenge, onClick, solved }) => {
         style={{backgroundColor: solved ? '#a7e6ff' : sidenavColor,fontFamily: headingFont }}
       >
         {challenge.name}
-        <div className="text-xl mt-2" style={{ fontFamily: paraFont }}>{challenge.value}</div>
+        <div className="text-xl mt-2"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{challenge.value}</div>
       </button>
     </div>
   );
