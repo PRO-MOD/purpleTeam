@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../../context/FontContext';
 
 const DynamicFlags = ({ challengeId }) => {
   const [flags, setFlags] = useState([]);
@@ -10,11 +11,13 @@ const DynamicFlags = ({ challengeId }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
+  // Fetch font settings from context
+  const { navbarFont, headingFont, paraFont } = useContext(FontContext);
+
   // Function to fetch dynamic flags and users
   const fetchDynamicFlags = async (challengeId) => {
     try {
       const response = await fetch(`${apiUrl}/api/dynamicFlags/display/${challengeId}`);
-
       if (!response.ok) {
         throw new Error('Failed to fetch dynamic flags');
       }
@@ -94,17 +97,17 @@ const DynamicFlags = ({ challengeId }) => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p style={{ ...paraFont, color: 'red' }}>{error}</p>}
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left" style={navbarFont}>
               Flag
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left" style={navbarFont}>
               Assigned User
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left" style={navbarFont}>
               Action
             </th>
           </tr>
@@ -113,12 +116,12 @@ const DynamicFlags = ({ challengeId }) => {
           {flags.map((flagObj, index) => (
             <tr key={index} className="hover:bg-gray-100">
               <td className="px-6 py-4 whitespace-nowrap">
-                <pre className="text-gray-700">{flagObj.flag}</pre>
+                <pre style={paraFont}>{flagObj.flag}</pre>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap" style={paraFont}>
                 <span>{flagObj.assignedUser}</span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <td className="px-6 py-4 whitespace-nowrap text-right">
                 <FontAwesomeIcon
                   icon={faEdit}
                   className="text-blue-500 cursor-pointer me-4"
@@ -139,7 +142,7 @@ const DynamicFlags = ({ challengeId }) => {
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">Edit Flag</h2>
+            <h2 style={headingFont} className="mb-4">Edit Flag</h2>
             <div className="mb-4">
               <input
                 type="text"
@@ -147,18 +150,21 @@ const DynamicFlags = ({ challengeId }) => {
                 onChange={(e) => setEditFlag(e.target.value)}
                 placeholder="Enter flag"
                 className="border border-gray-300 p-2 rounded-sm w-full mb-2"
+                style={paraFont}
               />
             </div>
             <div className="flex justify-end">
               <button
                 onClick={closeModal}
                 className="bg-gray-600 text-white p-2 rounded-sm mr-2"
+                style={navbarFont}
               >
                 Cancel
               </button>
               <button
                 onClick={saveEditFlag}
                 className="bg-green-600 text-white p-2 rounded-sm"
+                style={navbarFont}
               >
                 Save
               </button>

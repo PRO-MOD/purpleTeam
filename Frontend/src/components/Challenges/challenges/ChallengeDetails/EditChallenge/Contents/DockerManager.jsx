@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import InfoTable from '../../../Partials/InfoTable'; 
 import PageHeader from '../../../../navbar/PageHeader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
-
-// Replace with your actual API endpoints
+import FontContext from '../../../../../../context/FontContext';
 
 const DockerManagement = () => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -14,6 +13,9 @@ const DockerManagement = () => {
     const [selectedServices, setSelectedServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Fetch font settings from context
+    const { navbarFont, headingFont, paraFont } = useContext(FontContext);
 
     useEffect(() => {
         fetchImages();
@@ -36,11 +38,10 @@ const DockerManagement = () => {
         try {
             const response = await fetch(`${apiUrl}/api/docker/services`);
             const data = await response.json();
-            // Check if data is an array
             if (Array.isArray(data)) {
                 setServices(data);
             } else {
-                setServices([]); // or handle the error as needed
+                setServices([]);
                 setError('Something went wrong!!');
             }
         } catch (error) {
@@ -59,7 +60,6 @@ const DockerManagement = () => {
             });
         }
 
-        // Refetch images after deletion
         fetchImages();
         setSelectedImages([]);
     };
@@ -73,7 +73,6 @@ const DockerManagement = () => {
             body: JSON.stringify({ containerId }),
         });
 
-        // Optionally, refetch services if needed
         fetchServices();
     };
 
@@ -93,13 +92,13 @@ const DockerManagement = () => {
 
     return (
         <div className="">
-            <PageHeader pageTitle="Docker Manager" route="/challenges/docker" checkRoute=''/>
-            {error && <div className="text-red-500">{error}</div>}
+            <PageHeader pageTitle="Docker Manager" route="/challenges/docker" checkRoute='' />
+            {error && <div style={{ ...paraFont, color: 'red' }}>{error}</div>}
             {loading ? (
-                <div>Loading...</div>
+                <div style={paraFont}>Loading...</div>
             ) : (
                 <div className='m-8'>
-                    <h2 className="text-lg font-semibold mb-4">Docker Images</h2>
+                    <h2 style={headingFont} className="mb-4">Docker Images</h2>
                     <InfoTable
                         data={images}
                         columns={columns}
@@ -120,7 +119,7 @@ const DockerManagement = () => {
                         onDelete={handleDelete}
                     />
                     
-                    <h2 className="text-lg font-semibold mb-4">Docker Services</h2>
+                    <h2 style={headingFont} className="mb-4">Docker Services</h2>
                     <InfoTable
                         data={services}
                         columns={serviceColumns}
@@ -143,7 +142,7 @@ const DockerManagement = () => {
                     
                     {services && services.map((service) => (
                         <div key={service.id} className="flex items-center justify-between mb-2">
-                            <span>{service.name}</span>
+                            <span style={navbarFont}>{service.name}</span>
                             <FontAwesomeIcon
                                 icon={faStopCircle}
                                 className="text-red-500 cursor-pointer"
