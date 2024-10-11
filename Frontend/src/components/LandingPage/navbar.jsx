@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faFacebook, faLinkedin, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import ColorContext from '../../context/ColorContext';
+import FontContext from '../../context/FontContext';
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -15,7 +21,8 @@ const Navbar = () => {
     { to: '/', text: 'Home' },
     { to: '/team', text: 'About' },
     { to: '/blog', text: 'Blog' },
-    { to: '/signin', text: 'Get Started', className: 'text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded' },
+    { to: '/signin', text: 'Get Started', className: "text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded",
+     },
   ];
 
   return (
@@ -25,7 +32,7 @@ const Navbar = () => {
         <Link
           id="logo"
           to="/"
-          className="flex-shrink-0 text-3xl font-extrabold text-[#2563eb]"
+          className="flex-shrink-0 text-3xl font-extrabold" style={{color:sidenavColor}}
         >
           Crysalen
         </Link>

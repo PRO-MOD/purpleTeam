@@ -117,7 +117,7 @@ function UserDetails() {
       <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8">
         <FontAwesomeIcon icon={faArrowLeft} className='me-4' /> Back
       </button>
-      <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont }}>User Details</h1>
+      <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>User Details</h1>
       {user ? (
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className='flex flex-row'>
@@ -142,7 +142,7 @@ function UserDetails() {
           {mode === 'ctfd' ? (
             <>
               <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
-              <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont }}>Challenges Submissions</h1>
+              <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
               <SubmissionTable userId={userId} />
             </>
           ) : (
@@ -174,7 +174,7 @@ function UserDetails() {
               {selectedTab === 'challenges' && (
                 <>
                   <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
-                  <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont }}>Challenges Submissions</h1>
+                  <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
                   <SubmissionTable userId={userId} />
                 </>
               )}

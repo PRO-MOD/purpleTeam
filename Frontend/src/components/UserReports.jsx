@@ -188,7 +188,7 @@ function UserReports({ userId, route }) {
 
   return (
     <div className="p-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
-      <h2 className="text-2xl font-bold mb-4"style={{ fontFamily: headingFont }}>User Reports</h2>
+      <h2 className="text-2xl font-bold mb-4"style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>User Reports</h2>
       <table className="table-auto w-full border-collapse border border-gray-200">
         <thead>
           <tr className="bg-gray-100 text-left">
@@ -242,7 +242,7 @@ function UserReports({ userId, route }) {
       {showModal && selectedReport && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[80%] overflow-y-scroll">
-            <h3 className="text-xl font-semibold mb-4" style={{ fontFamily: headingFont }}>
+            <h3 className="text-xl font-semibold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>
               {selectedReport.reportName}
             </h3>
             <p className="mb-2">Date: {selectedReport.responseDate}</p>

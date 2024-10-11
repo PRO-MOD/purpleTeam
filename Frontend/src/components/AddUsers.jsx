@@ -162,14 +162,14 @@ function AddUsers() {
 
     return (
         <div className="m-12">
-            <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont }}>Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Admin Dashboard</h1>
             <hr className='mx-2 my-8 border-black' />
 
             <div className="flex flex-row w-full items-center">
                 {/* Button to add user */}
                 <button
                     className="cursor-pointer text-white py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 h-[45px]"
-                    onClick={() => setShowModal(true)} style={{ backgroundColor: bgColor, hoverColor:hoverColor }}
+                    onClick={() => setShowModal(true)} style={{ backgroundColor: sidenavColor }}
                 >
                     Add User
                 </button>
@@ -184,7 +184,7 @@ function AddUsers() {
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
                     <div className="bg-white rounded-lg p-6 w-full md:w-1/2 lg:w-1/3 overflow-y-auto max-h-96">
-                        <h2 className="text-2xl font-bold mb-4"  style={{ fontFamily: headingFont }}>Add User</h2>
+                        <h2 className="text-2xl font-bold mb-4"  style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Add User</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
                                 <label htmlFor="name" className="block text-sm font-medium text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Name</label>
@@ -258,7 +258,7 @@ function AddUsers() {
             )}
 
             <div className="users mt-12">
-                <h1 className="text-xl font-bold mb-4 underline" style={{ fontFamily: headingFont }}>Blue Team: </h1>
+                <h1 className="text-xl font-bold mb-4 underline" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Blue Team: </h1>
                 <table className="table-auto w-full border">
                     <thead>
                         <tr>
@@ -286,7 +286,7 @@ function AddUsers() {
                 </table>
             </div>
             <div className="volunteers mt-12">
-                <h1 className="text-xl font-bold mb-4 underline" style={{ fontFamily: headingFont }}>White Team: </h1>
+                <h1 className="text-xl font-bold mb-4 underline" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>White Team: </h1>
                 <table className="table-auto w-full border">
                     <thead>
                         <tr>

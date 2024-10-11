@@ -41,7 +41,7 @@ const Welcome = () => {
                     alt="Logo" 
                     className="w-128 h-64 mb-8" 
                 />
-                <h2 className="text-3xl font-bold text-gray-800 mb-4"  style={{ fontFamily: headingFont }}>
+                <h2 className="text-3xl font-bold text-gray-800 mb-4"  style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>
                     {eventDetails.title || 'Defend the Flag'}
                 </h2>
                 <p className="text-gray-600 text-center max-w-lg"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>

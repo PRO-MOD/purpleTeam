@@ -80,7 +80,7 @@ const CreateRepo = () => {
 
   return (
     <div>
-      <PageHeader pageTitle="Create Repository"  style={{ fontFamily: headingFont }}
+      <PageHeader pageTitle="Create Repository"  style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}
        />
       <div className="col-md-7 ms-8 me-24 py-4" id="create-repo-entry-div"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
         <form onSubmit={handleSubmit} className="space-y-6">

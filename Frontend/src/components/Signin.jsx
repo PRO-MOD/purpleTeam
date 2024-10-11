@@ -90,7 +90,7 @@ const Signin = () => {
                 {/* <img src="\cyber .jpg" alt="Hacktify Logo" className="h-16 w-32 " /> */}
                 
                 {/* Heading */}
-                <h1 className="text-2xl font-bold " style={{ fontFamily: headingFont }}>{title}</h1>
+                <h1 className="text-2xl font-bold " style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>{title}</h1>
                 
                 {/* Placeholder for the right side */}
                 <div></div>
