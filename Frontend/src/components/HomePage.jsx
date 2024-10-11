@@ -31,6 +31,9 @@ import ChallengeDetailsPage from './Challenges/challenges/ChallengeDetails/Chall
 import SubmissionTable from './Challenges/Submissions/submission';
 import Configuration from './Config/config';
 import ChallengesSubmissions from './Challenges/Submissions/challengeSubmission';
+import Repository from './Repository/Repository';
+import CreateRepo from './Repository/CreateRepo';
+import RepoDetailsPage from './Repository/RepoDetail';
 
 // import reports component
 import MainReportPage from './Reports/MainReportPage';
@@ -107,6 +110,7 @@ function HomePage() {
             <Route exact path='/admin/challenges' element={<MainChallenge />} />
             <Route exact path='/admin/challenge/create' element={<CreateChallenge />} />
             <Route exact path='/challenges/:id' element={<ChallengeDetailsPage />} />
+            <Route exact path='/repositories/:id' element={<RepoDetailsPage />} />
             <Route exact path='/login' element={<LoginPage />} />
             <Route exact path='/challenges' element={<UserChallengePage />} />
             <Route exact path='/submissions' element={<SubmissionTable />} />
@@ -116,6 +120,8 @@ function HomePage() {
             <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
             <Route exact path='/challenges/submissions/:id' element={<ChallengesSubmissions/>}/>
             <Route exact path='/challenges/docker' element={<DockerManagement/>}/>
+            <Route exact path='/repository' element={<Repository/>}/>
+            <Route exact path='/createRepo' element={<CreateRepo/>}/>
           </Routes>
           
         </div>

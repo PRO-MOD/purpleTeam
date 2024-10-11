@@ -9,7 +9,7 @@ const InfoTable = ({ data, columns, onRowClick, selectedItems, onItemSelect, onS
     return (
         <div className="w-[90%] mx-auto">
             <div className='mb-8 flex flex-row justify-end h-[20px]'>
-                {selectedItems.length > 0 && (
+                { selectedItems &&selectedItems.length > 0 && (
                     <FontAwesomeIcon icon={faTrashCan} className='bg-red-400 text-white p-2 rounded-sm me-8' onClick={onDelete} />
                 )}
             </div>

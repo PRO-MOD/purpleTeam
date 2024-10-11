@@ -204,6 +204,15 @@ const SideNavbar = () => {
               </Link>
                )}
 
+{userRole && (
+              <Link to="/repository" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/repository") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
+                <FontAwesomeIcon icon={faFilePdf} size="xl" className="mr-4" />
+                <p className="text-lg">Repository</p>
+              </Link>
+               )}
+
 {mode==='purpleTeam'&& userRole && visibilitySettings.reportConfig ==='yes' && (
             <Link to={userRole === "WT" ? "/admin/report" : "/report"} className={`flex items-center py-2 px-2  hover:text-white ${isActive(userRole === "WT" ? "/admin/report" : "/report") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
             onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
