@@ -11,7 +11,7 @@ const EditNavigation = ({activeTab, setActiveTab, tabs}) => {
             key={tab}
             className={`py-2 px-4 text-blue-500 ${
               activeTab === tab
-                ? 'border-l border-t border-r border-indigo-200 border-b-0 bg-white font-medium mb-[-1px] rounded-sm'
+                ? 'border-l border-t border-r border-indigo-200 border-b-0 bg-blue font-medium mb-[-1px] rounded-sm'
                 : 'border-b border-transparent hover:border-indigo-300'
             }`}
             onClick={() => setActiveTab(tab)}

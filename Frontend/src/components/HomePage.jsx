@@ -76,7 +76,7 @@ function HomePage() {
         <div className="left_Home w-[13%] min-w-20" style={{ backgroundColor: sidenavColor }}>
           <SideNavbar />
         </div>
-        <div className={`right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white`}>
+        <div className={`right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white`} style={{backgroundColor: bgColor}}>
           {
             alert ?
               <Alert alert={alert} />

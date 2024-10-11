@@ -1,31 +1,10 @@
-// import React from 'react'
-
-// function AdminDataVisualization() {
-//     return (
-//         <div className=''>
-//             <iframe 
-//             style={{
-//                 background: '#F1F5F4',
-//                 border: 'none',
-//                 borderRadius: '2px',
-//                 boxShadow: '0 2px 10px 0 rgba(70, 76, 79, .2)',
-//                 width: '98vw',
-//                 height: '100vh',
-//             }}
-//                 src="https://charts.mongodb.com/charts-cyber_suraksha-ibxyqpa/embed/dashboards?id=42dac8e8-7a9a-4355-ac47-e56e5d842866&theme=light&autoRefresh=true&maxDataAge=300&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed&attribution=false">
-//             </iframe>
-//         </div>
-//     )
-// }
-
-// export default AdminDataVisualization
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import ApexCharts from 'react-apexcharts';
-
+import ColorContext from '../context/ColorContext';
 
 function AdminDataVisualization() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   const [highestScores, setHighestScores] = useState({
     highestManualScore: '',
     highestScore: '',
@@ -368,7 +347,7 @@ function AdminDataVisualization() {
 
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen" style={{backgroundColor: bgColor}}>
       <div className="container mx-auto px-4">
         {/* Display the names of the leading teams */}
         <div className="mb-8 p-6 border border-gray-300 rounded-lg bg-white shadow-lg">

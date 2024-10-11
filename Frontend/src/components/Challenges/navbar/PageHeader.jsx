@@ -4,17 +4,19 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../../context/FontContext';
+import ColorContext from '../../../context/ColorContext';
 
 const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails, onDelete, onSubmissions, onAdd }) => {
   const location = useLocation();
   const pathName = location.pathname;
   const { navbarFont, headingFont, paraFont } = useContext(FontContext);
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
 
   return (
-    <div className="bg-[#A7E6FF] flex justify-center items-center py-10">
+    <div className="bg-[#a461ee] flex justify-center items-center py-10">
       <div className="flex flex-col items-center justify-center">
         {pageTitle && (
-          <h1 className="text-4xl font-normal mb-4" >{pageTitle}</h1>
+          <h1 className="text-4xl font-normal mb-4"  style={{fontFamily: headingFont.fontFamily, fontSize: headingFont.fontSize}}>{pageTitle}</h1>
         )}
         {challengeDetails && (
           <div className="flex flex-col items-center justify-center text-center">
@@ -32,7 +34,7 @@ const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails, onDelete, 
         <div className="flex space-x-4 mt-4">
           {pathName === checkRoute && (
             <Link to={route}>
-              <FontAwesomeIcon icon={faPlus} className='bg-[#3ABEF9] p-4 rounded-full text-white cursor-pointer font-extrabold' />
+              <FontAwesomeIcon icon={faPlus} className='p-4 rounded-full text-white cursor-pointer font-extrabold' style={{backgroundColor: sidenavColor}}/>
             </Link>
           )}
 
@@ -40,7 +42,7 @@ const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails, onDelete, 
 
 { checkRoute==="Repository" && (
             <Link to={route}>
-              <FontAwesomeIcon icon={faPlus} className='bg-[#3ABEF9] p-4 rounded-full text-white cursor-pointer font-extrabold' />
+              <FontAwesomeIcon icon={faPlus} className='p-4 rounded-full text-white cursor-pointer font-extrabold' style={{background: sidenavColor}}/>
             </Link>
           )}
           {onDelete && (
