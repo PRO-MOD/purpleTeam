@@ -11,10 +11,10 @@ const FontState = (props) => {
     });
 
     const [headingFont, setHeadingFont] = useState({
-        fontFamily: "Montserrat",
+        fontFamily: "Darker Grotesque",
         fontSize: "24px",
         fontWeight: "700",
-        fontStyle: "normal",
+        fontStyle: "bolder",
     });
 
     const [paraFont, setParaFont] = useState({

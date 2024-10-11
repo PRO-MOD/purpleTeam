@@ -16,7 +16,7 @@ const PageHeader = ({ pageTitle, route, checkRoute, challengeDetails, onDelete, 
     <div className="bg-[#a461ee] flex justify-center items-center py-10 m-2 rounded-xl">
       <div className="flex flex-col items-center justify-center">
         {pageTitle && (
-          <h1 className="text-4xl font-normal mb-4"  style={{fontFamily: headingFont.fontFamily, fontSize: headingFont.fontSize}}>{pageTitle}</h1>
+          <h1 className="text-4xl font-normal mb-4"  style={{fontFamily: headingFont.fontFamily, fontSize: '42px', fontWeight: 700}}>{pageTitle}</h1>
         )}
         {challengeDetails && (
           <div className="flex flex-col items-center justify-center text-center">

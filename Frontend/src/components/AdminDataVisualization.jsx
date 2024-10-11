@@ -209,7 +209,7 @@ function AdminDataVisualization() {
     },
     title: {
       text: 'User Scores',
-      style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+      style: { ...headingFont, color: '#4A5568' },
     },
     grid: { borderColor: '#E2E8F0' },
     colors: ['#1a80bb'],
@@ -234,7 +234,7 @@ function AdminDataVisualization() {
     },
     title: {
       text: 'Manual Scores',
-      style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+      style: { ...headingFont, color: '#4A5568' },
     },
     grid: { borderColor: '#E2E8F0' },
     colors: ['#a00000'],
@@ -312,7 +312,7 @@ function AdminDataVisualization() {
      yaxis: { title: { text: 'Number of Submissions' } },
      title: {
        text: 'Submissions Over Time',
-       style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+       style: { ...headingFont, color: '#4A5568' },
      },
      grid: { borderColor: '#E2E8F0' },
      colors: ['#3182CE'],
@@ -354,12 +354,12 @@ function AdminDataVisualization() {
       <div className="container mx-auto px-4">
         {/* Display the names of the leading teams */}
         <div className="mb-8 p-6 border border-gray-300 rounded-lg bg-white shadow-lg">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Leading Teams</h2>
-          {mode==='purpleTeam' && (<p className="text-lg text-gray-600 mb-2">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4" style={headingFont}>Leading Teams</h2>
+          {mode==='purpleTeam' && (<p className="text-lg text-gray-600 mb-2" style={navbarFont}>
             Leading Team with Incident Response: <strong className="text-red-600">{highestScores.highestManualScore}</strong>
           </p>
           )}
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600" style={navbarFont}>
             Leading Team with Service Availability: <strong className="text-blue-600">{highestScores.highestScore}</strong>
           </p>
         </div>
@@ -500,7 +500,7 @@ function AdminDataVisualization() {
         {mode==='purpleTeam' && (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-8 mt-8">
         <div className="bg-white p-6 border border-gray-300 rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Submissions Count by Challenge Type</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-4" style={headingFont}>Submissions Count by Challenge Type</h3>
             <ApexCharts options={challengeTypeOptions} series={challengeTypeSeries} type="bar" height={320} />
           </div>
           </div>
