@@ -2,12 +2,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import Loading from './Loading';
 import { useNavigate } from 'react-router-dom';
 import FontContext from '../context/FontContext';
+import ColorContext from '../context/ColorContext';
 
 function ScoreTable({ scores, loading, isHomePage }) {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
   const [uniqueDates, setUniqueDates] = useState([]);
   const [sortedScores, setSortedScores] = useState([]);
+  const { bgColor, textColor, sidenavColor, hoverColor,tableColor } = useContext(ColorContext);
   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
 
@@ -79,7 +81,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
         <Loading />
       ) : (
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="" style={{backgroundColor:tableColor}}>
             <tr>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex flex-row justify-center"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
                 Rank

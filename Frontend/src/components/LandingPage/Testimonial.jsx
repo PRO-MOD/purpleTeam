@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 
 const testimonialsData = [
     {
-        quote: "As a part-time bug bounty hunter, I would like to thank Breachpoint for allowing me the chance to report vulnerabilities in private programs. It helps me make money as well as develop different attack methods, which allows me to think outside the box.",
+        quote: " I would like to thank Crysalen for allowing me the chance to report vulnerabilities in private programs. It helps me make money as well as develop different attack methods, which allows me to think outside the box.",
         author: "Ronit Bhatt",
         title: "Security Consultant at KPMG"
     },
     {
-        quote: "Bug bounty hunting is what I do. Since there was no platform in India, I always wanted Indian businesses to host their bug bounty program; therefore, my experience with Breachpoint has been fantastic. That breaching point has begun makes me so happy.",
+        quote: "Cybersecurity challenges are what I thrive on. I always wanted Indian businesses to host their own cybersecurity hackathons, and Crysalen has made that possible. My experience with Crysalen has been fantastic, and seeing this movement take off makes me so happy",
         author: "Pranav Bhandari",
         title: "Media.net"
     },
     {
-        quote: "As a bug bounty hunter, I'm grateful to Breachpoint for giving me the opportunity to report vulnerabilities in private programs. Not only does it help me make money, but it also allows me to develop my skills as I am learning something new every time.",
+        quote: "As a cybersecurity enthusiast, I'm grateful to Crysalen for giving me the opportunity to participate in hackathons and training programs. Not only does it help me enhance my skills, but I also learn something new with every challenge.",
         author: "Aayesha Khan",
         title: "Security Researcher"
     }

@@ -94,10 +94,10 @@ const Navbar = () => {
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faFacebook} className="text-gray-700 hover:text-blue-600" />
           </a>
-          <a href="https://www.linkedin.com/company/breachpoint/" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.linkedin.com/company/Crysalen/" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faLinkedin} className="text-gray-700 hover:text-blue-600" />
           </a>
-          <a href="https://instagram.com/breachpointco" target="_blank" rel="noopener noreferrer">
+          <a href="https://instagram.com/Crysalenco" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faInstagram} className="text-gray-700 hover:text-blue-600" />
           </a>
         </div>
@@ -112,10 +112,10 @@ const Navbar = () => {
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faFacebook} className="text-gray-700 hover:text-blue-600" />
           </a>
-          <a href="https://www.linkedin.com/company/breachpoint/" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.linkedin.com/company/Crysalen/" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faLinkedin} className="text-gray-700 hover:text-blue-600" />
           </a>
-          <a href="https://instagram.com/breachpointco" target="_blank" rel="noopener noreferrer">
+          <a href="https://instagram.com/Crysalenco" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faInstagram} className="text-gray-700 hover:text-blue-600" />
           </a>
         </div>

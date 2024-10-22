@@ -6,7 +6,7 @@ const HeroSection = () => {
   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   // Define the middle phrases that will change
-  const phrases = ["attack surface", "cyber defense", "digital security"];
+  const phrases = ["attack surface", "cyber defense", "cybersecurity"];
   
   // State to keep track of the current phrase
   const [currentPhrase, setCurrentPhrase] = useState(phrases[0]);
@@ -32,7 +32,7 @@ const HeroSection = () => {
           Changing the <span className="" style={{color:hoverColor}}>{currentPhrase}</span> landscape
         </h1>
         <p className="text-gray-600 mt-4 text-lg" style={{fontFamily:paraFont.fontFamily, color:textColor}}>
-          Breachpoint unites companies and researchers through its state-of-the-art bug bounty platform coupled with other solutions to help secure the ever-changing threat landscape.
+        Crysalen brings together companies and researchers through its cutting-edge hackathon and cybersecurity training platform, offering comprehensive solutions to enhance security in an ever-evolving threat landscape
         </p>
         {/* Buttons */}
         <div className="mt-8 flex justify-center lg:justify-start gap-4">
@@ -48,7 +48,7 @@ const HeroSection = () => {
       {/* Right Section - Image */}
       <div className="lg:w-1/2 w-full flex justify-center lg:justify-end">
         <img
-          src="https://breachpoint.app/wp-content/uploads/2022/09/17-September-outline-05-2048x1365.png "
+          src="https://Crysalen.app/wp-content/uploads/2022/09/17-September-outline-05-2048x1365.png "
           alt="Illustration"
           className="max-w-full h-auto"
         />

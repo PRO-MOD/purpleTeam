@@ -11,12 +11,12 @@ const MiddleInfo = () => {
         <div className="flex-1 md:w-[40%] p-6 bg-[#0054a6] text-white rounded-lg shadow-lg m-2 h-96">
           <h3 className="text-3xl mb-4" style={{fontFamily:headingFont}}>For Companies</h3>
           <p className="text-base" style={{fontFamily:paraFont}}>
-            Breach Point can save millions to your organisation from cyberattacks. Get started on the portal for free and get complete autonomy on the prizes/bounties for bugs reported.
+           Crysalen can save millions to your organisation from cyberattacks. Get started on the portal for free and get complete autonomy on the prizes/bounties for bugs reported.
           </p>
           <div className="flex justify-center">
             <img
               className="mt-4 h-56 w-56 object-cover"
-              src="https://breachpoint.app/wp-content/uploads/2022/10/3826039-300x300.jpg"
+              src="https://Crysalen.app/wp-content/uploads/2022/10/3826039-300x300.jpg"
               alt="Company"
             />
           </div>
@@ -35,7 +35,7 @@ const MiddleInfo = () => {
             <div className="absolute bottom-0 right-4 w-1/3 overflow-hidden">
               <img
                 className="object-cover h-full transition-transform duration-300 transform translate-y-1/2" // Moves image up to hide 30% from the bottom
-                src="https://breachpoint.app/wp-content/uploads/2022/10/bug.png"
+                src="https://Crysalen.app/wp-content/uploads/2022/10/bug.png"
                 alt="Researcher"
               />
             </div>
