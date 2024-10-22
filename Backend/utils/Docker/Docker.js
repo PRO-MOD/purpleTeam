@@ -176,7 +176,7 @@ const createContainer = async (serviceName, imageName, port, flags) => {
 };
 
 // Get the worker node IP and published port for the running service
-const getServiceIPandPort = async (serviceName, retries = 15, delay = 2000) => {
+const getServiceIPandPort = async (serviceName, retries = 30, delay = 2000) => {
     return new Promise((resolve, reject) => {
         // console.log(`Fetching service details for: ${serviceName}`);
 
