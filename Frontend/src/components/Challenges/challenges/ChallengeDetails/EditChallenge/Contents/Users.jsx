@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../../../../../context/FontContext';
+import ColorContext from '../../../../../../context/ColorContext';
 
 const Users = ({ challengeId }) => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const { navbarFont, headingFont, paraFont } = useContext(FontContext); // Use the fonts from context
+  const { tableColor } = useContext(ColorContext); // Use the fonts from context
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [newUser, setNewUser] = useState('');
@@ -176,7 +178,7 @@ const Users = ({ challengeId }) => {
         ) : (
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
-              <tr>
+              <tr style={{backgroundColor: tableColor}}>
                 <th scope="col" className="px-6 py-3 text-left text-xs uppercase tracking-wider" style={{ ...navbarFont }}>
                   User
                 </th>

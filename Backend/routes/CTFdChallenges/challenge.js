@@ -569,7 +569,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       return res.json({ correct: true, newScore: userScore.score, message: 'Challenge already solved' });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      return res.status(500).json({ message: 'Server error' });
     }
   };
 
@@ -707,17 +707,24 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
     
         // Calculate the dynamic score for the current correct answer
-        let value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
-        
+        if (decay === 0) {
+          // If decay is 0, use a fixed value (or other fallback logic)
+          value = initial;  // Or decide on a fallback value
+      } else {
+          // Standard calculation if decay is not 0
+          value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
+      }
         // Ensure value doesn't drop below the minimum
         if (value < minimum) {
             value = minimum;
         }
         
         // Calculate the value for the next correct answer
-        let nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
-        if (nextval < minimum) {
-            nextval = minimum;
+        let nextval;
+        if (decay === 0) {
+            nextval = initial;  // Same fallback logic
+        } else {
+            nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
         }
     
         // Update the challenge document with the new value
@@ -737,7 +744,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       // Regular flag verification
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
       if (isCorrect) {
-        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res, answer);
+        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, answer, res);
       }
 
       else {
