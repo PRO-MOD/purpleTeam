@@ -37,18 +37,18 @@ const HeroSection = () => {
         {/* Buttons */}
         <div className="mt-8 flex justify-center lg:justify-start gap-4">
           <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700" onClick={()=> window.location.href = '/signin'}style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize, backgroundColor:sidenavColor}}>
-            Start a Program
+            Start a Program🏆
           </button>
-          <button className="text-black px-6 py-3 rounded-lg hover:underline" style={{fontFamily: navbarFont}}>
+          {/* <button className="text-black px-6 py-3 rounded-lg hover:underline" style={{fontFamily: navbarFont}}>
             <span className="mr-2">🏆</span> Win Bounties
-          </button>
+          </button> */}
         </div>
       </div>
 
       {/* Right Section - Image */}
       <div className="lg:w-1/2 w-full flex justify-center lg:justify-end">
         <img
-          src="https://Crysalen.app/wp-content/uploads/2022/09/17-September-outline-05-2048x1365.png "
+          src="https://breachpoint.app/wp-content/uploads/2022/09/17-September-outline-05-2048x1365.png "
           alt="Illustration"
           className="max-w-full h-auto"
         />

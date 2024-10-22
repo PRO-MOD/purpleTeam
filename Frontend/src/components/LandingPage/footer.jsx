@@ -41,12 +41,12 @@ const Footer = () => {
                     <h4 className="font-bold mt-6 mb-4 text-lg" style={{fontFamily:paraFont}}>Recognitions</h4>
                     <div className="flex flex-col space-y-4 items-center md:items-start">
                         <img
-                            src="https://Crysalen.app/wp-content/uploads/2022/12/609-6094516_transparent-startup-india-logo-hd-png-download-1.png"
+                            src="https://breachpoint.app/wp-content/uploads/2022/12/609-6094516_transparent-startup-india-logo-hd-png-download-1.png"
                             alt="Startup India logo"
                             className="h-12"
                         />
                         <img
-                            src="https://Crysalen.app/wp-content/uploads/2024/02/Startup-Karnataka.png"
+                            src="https://breachpoint.app/wp-content/uploads/2024/02/Startup-Karnataka.png"
                             alt="Startup Karnataka logo"
                             className="h-12"
                         />

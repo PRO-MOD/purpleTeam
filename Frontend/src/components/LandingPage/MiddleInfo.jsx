@@ -16,7 +16,7 @@ const MiddleInfo = () => {
           <div className="flex justify-center">
             <img
               className="mt-4 h-56 w-56 object-cover"
-              src="https://Crysalen.app/wp-content/uploads/2022/10/3826039-300x300.jpg"
+              src="https://breachpoint.app/wp-content/uploads/2022/10/3826039-300x300.jpg"
               alt="Company"
             />
           </div>
@@ -35,7 +35,7 @@ const MiddleInfo = () => {
             <div className="absolute bottom-0 right-4 w-1/3 overflow-hidden">
               <img
                 className="object-cover h-full transition-transform duration-300 transform translate-y-1/2" // Moves image up to hide 30% from the bottom
-                src="https://Crysalen.app/wp-content/uploads/2022/10/bug.png"
+                src="https://breachpoint.app/wp-content/uploads/2022/10/bug.png"
                 alt="Researcher"
               />
             </div>
