@@ -107,7 +107,7 @@ const SideNavbar = () => {
   // Define categories with their items
   const categories = [
     {
-      title: "User Management",
+      title: "Users",
       icon: faUserPlus,
       restricted: true, // Restricted to userRole === "WT"
       items: [
@@ -116,7 +116,7 @@ const SideNavbar = () => {
       ],
     },
     {
-      title: "Submissions & Scores",
+      title: "Submissions",
       icon: faFile,
       restricted: true, // Restricted to userRole === "WT"
       items: [
@@ -137,7 +137,7 @@ const SideNavbar = () => {
       ],
     },
     {
-      title: "Configurations & Reports",
+      title: "Config",
       icon: faWrench, // You can use a suitable icon here
       restricted: true,
       items: [
@@ -151,7 +151,7 @@ const SideNavbar = () => {
   // Define general items
   const generalItems = [
     { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home },
-    { path: "/UserHome", icon: faCircleUser, label: "Dashboard", visibility: visibilitySettings.dashboard },
+    { path: "/UserHome", icon: faCircleUser, label: "Reports", visibility: visibilitySettings.dashboard },
     { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes },
     { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress },
     { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification },
