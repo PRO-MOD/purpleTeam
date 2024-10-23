@@ -179,40 +179,60 @@ const Flags = ({ challengeId }) => {
             <FontAwesomeIcon icon={faPlus} className="text-blue-500 cursor-pointer mx-2" onClick={toggleModal} title='Add Flag' />
           </div>
           {flags.length === 0 ? (
-            <p>No flags added.</p>
-          ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th style={navbarFont} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Flag
-                  </th>
-                  <th style={navbarFont} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Flag Data
-                  </th>
-                  <th style={navbarFont} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {flags.map((flag, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <pre className="text-gray-700">{flag}</pre>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                      <span>{flagData[index]}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <FontAwesomeIcon icon={faEdit} className="text-blue-500 cursor-pointer me-4" onClick={() => handleStartEdit(index)} />
-                      <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer" onClick={() => handleDeleteFlag(index)} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+  <p>No flags added.</p>
+) : (
+  <div className="overflow-x-auto"> {/* Add horizontal scrolling for responsiveness */}
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-[#e5e5e5]">
+        <tr>
+          <th
+            style={navbarFont}
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Flag
+          </th>
+          <th
+            style={navbarFont}
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Flag Data
+          </th>
+          <th
+            style={navbarFont}
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Action
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {flags.map((flag, index) => (
+          <tr key={index} className="hover:bg-gray-100">
+            <td className="px-6 py-4 whitespace-normal"> {/* Allow text wrapping */}
+              <span className="text-gray-700">{flag}</span> {/* Use <span> instead of <pre> */}
+            </td>
+            <td className="px-6 py-4 whitespace-normal text-gray-500">
+              <span>{flagData[index]}</span>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <FontAwesomeIcon
+                icon={faEdit}
+                className="text-blue-500 cursor-pointer me-4"
+                onClick={() => handleStartEdit(index)}
+              />
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                className="text-red-500 cursor-pointer"
+                onClick={() => handleDeleteFlag(index)}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
         </div>
       )}
 

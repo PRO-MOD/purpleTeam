@@ -150,9 +150,9 @@ const Hints = ({ challengeId }) => {
         {hints.length === 0 ? (
           <p style={paraFont}>No hints added.</p>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="w-full divide-y divide-gray-200">
             <thead className="bg-gray-50" >
-              <tr style={{backgroundColor: tableColor}}>
+              <tr style={{ backgroundColor: '#e5e5e5' }}>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={navbarFont}>
                   Hint
                 </th>
@@ -167,7 +167,7 @@ const Hints = ({ challengeId }) => {
             <tbody className="bg-white divide-y divide-gray-200">
               {hints.map((hint) => (
                 <tr key={hint._id} className="hover:bg-gray-100">
-                  <td className="px-6 py-4 whitespace-nowrap" style={paraFont}>
+                  <td className="px-6 py-4 whitespace-normal break-words max-w-xs" style={paraFont}>
                     {hint.content}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-500" style={paraFont}>
@@ -192,7 +192,7 @@ const Hints = ({ challengeId }) => {
         )}
         {message && <p className="mt-4" style={paraFont}>{message}</p>}
       </div>
-      
+
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-8 rounded-lg shadow-lg">
