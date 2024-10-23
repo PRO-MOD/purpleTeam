@@ -4,11 +4,11 @@ import ColorContext from "./ColorContext";
 
 const ColorState = (props) => {
     // Define the initial color states
-    const [bgColor, setBgColor] = useState("#e1defc");       // Default background color
+    const [bgColor, setBgColor] = useState("#ffffff");       // Default background color
     const [textColor, setTextColor] = useState("#000000");   // Default text color
     const [sidenavColor, setSidenavColor] = useState("#00174d"); // Default sidenav color
     const [hoverColor, setHoverColor] = useState(" #3652f3"); // Default hover color
-    const [tableColor, setTableColor]=useState("#bc8fee");
+    const [tableColor, setTableColor]=useState("#e5e5e5");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
    
