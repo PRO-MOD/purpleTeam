@@ -18,7 +18,7 @@ function UserReports({ userId, route }) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("Hactify-Auth-token"),
+        "Auth-token": localStorage.getItem("Hactify-Auth-token"),
       },
     })
       .then((res) => res.json())

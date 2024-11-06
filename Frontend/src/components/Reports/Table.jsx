@@ -2,6 +2,7 @@ import React ,{useContext}from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../context/FontContext';
+import ColorContext from '../../context/ColorContext';
 
 const Table = ({ columns, data, onEdit, onDelete, editButtonReq }) => {
 

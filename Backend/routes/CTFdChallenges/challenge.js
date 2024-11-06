@@ -538,16 +538,25 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
   const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, answer, res) => {
     try {
       let userScore = await score.findOne({ user: userId });
+      const user = await User.findOne({_id: userId});
   
       if (!userScore) {
-        return res.status(404).json({ message: 'User score not found' });
+        userScore = new score({
+            account_id: userId, // assuming `account_id` should store userId
+            name: user.name, // or a default name, if needed
+            score: updatedValue,
+            user: userId,
+            date: new Date(),
+            staticScore: 0
+          });
+          await userScore.save();
+      } else {
+          // Update existing user score
+          userScore.score += updatedValue;
+          await userScore.save();
       }
   
     console.log(updatedValue);
-      
-        // Update user score
-        userScore.score += updatedValue;
-        await userScore.save();
 
         // Count previous attempts for this user and challenge
     const previousAttempts = await Submission.countDocuments({ userId, challengeId });
