@@ -5,9 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import ColorContext from '../context/ColorContext';
+import FontContext from '../context/FontContext';
 
 const Signin = () => {
     const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const apiUrl = import.meta.env.VITE_Backend_URL;
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -88,7 +90,7 @@ const Signin = () => {
                 {/* <img src="\cyber .jpg" alt="Hacktify Logo" className="h-16 w-32 " /> */}
                 
                 {/* Heading */}
-                <h1 className="text-2xl font-bold ">{title}</h1>
+                <h1 className="text-2xl font-bold " style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>{title}</h1>
                 
                 {/* Placeholder for the right side */}
                 <div></div>
@@ -98,12 +100,12 @@ const Signin = () => {
             <img src={logoUrl} alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
             <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-8">
             <div className="mb-8 text-center">
-                   <h1 className='block  text-2xl font-bold mb-2' style={{color:sidenavColor}}>Defend the Flag</h1>
+                   <h1 className='block  text-2xl font-bold mb-2' style={{color:sidenavColor,fontFamily: headingFont}}>Defend the Flag</h1>
                 </div>
                 {/* Sign-in form */}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-bold mb-2" style={{color:sidenavColor}}>
+                        <label htmlFor="email" className="block text-sm font-bold mb-2" style={{color:sidenavColor,fontFamily: paraFont}}>
                             Email
                         </label>
                         <input
@@ -116,7 +118,7 @@ const Signin = () => {
                         />
                     </div>
                     <div className="mb-6">
-                        <label htmlFor="password" className="block  text-sm font-bold mb-2" style={{color:sidenavColor}}>
+                        <label htmlFor="password" className="block  text-sm font-bold mb-2" style={{color:sidenavColor, fontFamily: paraFont}}>
                             Password
                         </label>
                         <div className="relative">
@@ -136,7 +138,7 @@ const Signin = () => {
                         <button
                             type="submit"
                             className=" text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            disabled={loading} style={{backgroundColor:sidenavColor, hoverColor:hoverColor}}
+                            disabled={loading} style={{backgroundColor:sidenavColor, hoverColor:hoverColor,  fontFamily: navbarFont}}
                         >
                             {loading ? "Loading..." : 'Log In'}
                         </button>
@@ -145,7 +147,7 @@ const Signin = () => {
             </div>
 
             {/* Footer */}
-            <footer className="text-center text-gray-500 text-sm mt-4">
+            <footer className="text-center text-gray-500 text-sm mt-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
                 Powered By Crysalen
             </footer>
         </div>

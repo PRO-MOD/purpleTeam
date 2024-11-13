@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faImage } from '@fortawesome/free-solid-svg-icons';
 import AuthContext from '../../context/AuthContext';
 import { useParams } from 'react-router-dom';
+import FontContext from '../../context/FontContext';
 
 function ChatInput({ socket }) {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -13,6 +14,7 @@ function ChatInput({ socket }) {
     const [imagePreviews, setImagePreviews] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false); // Loading state
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
     const context = useContext(AuthContext);
     const { user, fetchUserRole } = context;

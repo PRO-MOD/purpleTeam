@@ -1,15 +1,17 @@
-import React from 'react';
+import React, {useContext}from 'react';
+import FontContext from '../../context/FontContext';
 
 const MiddleInfo = () => {
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   return (
     <div className="flex flex-col items-center justify-center p-4 z-10">
       <div className="flex flex-col md:flex-row w-full max-w-6xl p-4 rounded-lg">
         
         {/* For Companies Section */}
         <div className="flex-1 md:w-[40%] p-6 bg-[#0054a6] text-white rounded-lg shadow-lg m-2 h-96">
-          <h3 className="text-3xl mb-4">For Companies</h3>
-          <p className="text-base">
-            Breach Point can save millions to your organisation from cyberattacks. Get started on the portal for free and get complete autonomy on the prizes/bounties for bugs reported.
+          <h3 className="text-3xl mb-4" style={{fontFamily:headingFont}}>For Companies</h3>
+          <p className="text-base" style={{fontFamily:paraFont}}>
+           Crysalen can save millions to your organisation from cyberattacks. Get started on the portal for free and get complete autonomy on the prizes/bounties for bugs reported.
           </p>
           <div className="flex justify-center">
             <img
@@ -25,8 +27,8 @@ const MiddleInfo = () => {
           {/* For Researchers Section */}
           <div className="flex-1 p-6 bg-[#1976d1] text-white rounded-lg shadow-lg m-2 h-96 flex relative">
             <div className="w-full">
-              <h3 className="text-3xl mb-4">For Researchers</h3>
-              <p className="text-base">
+              <h3 className="text-3xl mb-4" style={{fontFamily:headingFont}}>For Researchers</h3>
+              <p className="text-base" style={{fontFamily:paraFont}}>
                 Earn rewards and recognition for reporting bugs, especially those related to security exploits and vulnerabilities, legally and ethically.
               </p>
             </div>
@@ -41,8 +43,8 @@ const MiddleInfo = () => {
 
           {/* Private Platform Section */}
           <div className="h-40 p-6 bg-white text-gray-800 rounded-lg shadow-lg m-2">
-            <h3 className="text-3xl mb-4">Private Platform</h3>
-            <p className="text-base">
+            <h3 className="text-3xl mb-4" style={{fontFamily:headingFont}}>Private Platform</h3>
+            <p className="text-base" style={{fontFamily:paraFont}}>
               Welcome to our private platform where you can collaborate securely and efficiently.
             </p>
           </div>

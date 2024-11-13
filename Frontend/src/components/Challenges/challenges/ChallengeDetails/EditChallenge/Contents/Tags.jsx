@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../../context/FontContext';
 
 const Tags = ({ challengeId }) => {
+    const { paraFont, headingFont, navbarFont } = useContext(FontContext); // Destructure fonts from FontContext
+
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState('');
     const [message, setMessage] = useState('');
@@ -80,7 +83,7 @@ const Tags = ({ challengeId }) => {
         <div className="max-w-4xl mx-auto">
             <div className="mb-4 mx-12">
                 <div className="flex flex-row items-center mb-2">
-                    <h3 className="font-medium text-xl">Tags</h3>
+                    <h3 className={`font-medium text-xl ${headingFont}`}>Tags</h3>
                     <FontAwesomeIcon
                         icon={faPlus}
                         className="text-blue-500 cursor-pointer mx-2"
@@ -89,19 +92,19 @@ const Tags = ({ challengeId }) => {
                     />
                 </div>
                 {tags.length === 0 ? (
-                    <p>No tags added.</p>
+                    <p className={paraFont}>No tags added.</p>
                 ) : (
                     <ul className="list-disc pl-5 flex flex-row flex-wrap">
                         {tags.map((tag, index) => (
-                            <li key={index} className="flex items-center p-2 rounded-lg mb-2">
-                                <span className="mr-2 px-2 bg-gray-200 ">{tag}
+                            <li key={index} className={`flex items-center p-2 rounded-lg mb-2 ${paraFont}`}>
+                                <span className="mr-2 px-2 bg-gray-200">
+                                    {tag}
                                     <FontAwesomeIcon
                                         icon={faTimes}
                                         className="text-red-500 cursor-pointer ms-2"
                                         onClick={() => handleDeleteTag(tag)}
                                     />
-                                    </span>
-
+                                </span>
                             </li>
                         ))}
                     </ul>
@@ -113,17 +116,17 @@ const Tags = ({ challengeId }) => {
                             value={newTag}
                             onChange={(e) => setNewTag(e.target.value)}
                             placeholder="Enter tag"
-                            className="border border-gray-300 p-2 rounded-sm w-full mb-2"
+                            className={`border border-gray-300 p-2 rounded-sm w-full mb-2 ${paraFont}`}
                         />
                         <button
                             onClick={handleAddTag}
-                            className="bg-blue-500 text-white p-2 rounded-sm"
+                            className={`bg-blue-500 text-white p-2 rounded-sm ${navbarFont}`}
                         >
                             Add Tag
                         </button>
                     </div>
                 )}
-                {message && <p className="mt-4">{message}</p>}
+                {message && <p className={`mt-4 ${paraFont}`}>{message}</p>}
             </div>
         </div>
     );

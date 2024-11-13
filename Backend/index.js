@@ -129,6 +129,9 @@ app.use('/api/reports/footers', require('./routes/Report/Config/Footer.js'));
 app.use('/api/reportConfig', require('./routes/Report/Config/ReportConfig.js'));
 app.use('/api/generatePDF', require('./routes/Report/generatePDF.js'));
 
+// routes for reposiotries
+app.use('/api/repositories', require('./routes/Repository/Repository.js'));
+
 // Define webhook endpoint
 app.post('/api/webhook', (req, res) => {
   // Extract payload from request body

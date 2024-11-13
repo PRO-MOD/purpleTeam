@@ -1,10 +1,10 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import CodeEditor from '../challenges/CodeEditor/CodeEditorFeild';
 import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
+import FontContext from '../../../context/FontContext';
 
 const Modal = ({
   isOpen,
@@ -22,6 +22,7 @@ const Modal = ({
 
 }) => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont}=useContext(FontContext);
   const [formData, setFormData] = useState({ language: 'python', flag: '' });
   const [editorOutput, setEditorOutput] = useState('');
   const [hintsModalOpen, setHintsModalOpen] = useState(false);
@@ -281,10 +282,10 @@ const Modal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-full w-full md:max-w-3xl overflow-y-auto">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold mx-auto">{challenge.name}</h2>
+          <h2 className="text-2xl font-bold mx-auto" style={headingFont}>{challenge.name}</h2>
           <button onClick={onClose} className="ml-4">&times;</button>
         </div>
-        <p className="text-xl mr-8 mt-4 text-center">Remaining Value: {updatedValue}</p>
+        <p className="text-xl mr-8 mt-4 text-center" style={navbarFont}>Remaining Value: {updatedValue}</p>
 
         <div className="mt-4">
           <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} components={{ img: renderImage }} />
@@ -292,11 +293,11 @@ const Modal = ({
 
         {isSolved ? (
           <div className="mt-4">
-            <p className="text-green-500">This challenge has already been solved by you!</p>
+            <p className="text-green-500" style={paraFont}>This challenge has already been solved by you!</p>
           </div>
         ) : (attempts >= totalAttempts && totalAttempts !== 0) ? (
           <div className="mt-4">
-            <p className="text-red-500">You are out of attempts!</p>
+            <p className="text-red-500" style={paraFont}>You are out of attempts!</p>
           </div>
         ) : (
           <>
@@ -319,7 +320,7 @@ const Modal = ({
               </div>
             ) : challenge.type === 'standard' || challenge.type === 'manual_verification' || challenge.type === 'dynamic' ? (
               <div className="mt-4">
-                {message && <p className={`${message.includes('Error') ? 'text-red-500' : 'text-green-500'} m-4`}>{message}</p>}  {/* Display message if any */}
+                {message && <p className={`${message.includes('Error') ? 'text-red-500' : 'text-green-500'} m-4`} style={paraFont}>{message}</p>}  {/* Display message if any */}
                 {
                   challenge.type === 'dynamic' ? (
                     <div className="flex flex-row">
@@ -342,7 +343,7 @@ const Modal = ({
                             Stop server
                           </button>
                           <div className="flex flex-col ml-4">
-                            <p>Use the link below to get the Flag:</p>
+                            <p style={paraFont}>Use the link below to get the Flag:</p>
                             <a href={containerData.url} className="text-indigo-500" target="_blank" rel="noopener noreferrer">
                               Get Flag
                             </a>
@@ -359,6 +360,7 @@ const Modal = ({
                       rows="3"
                       value={answer}
                       onChange={(e) => setAnswer(e.target.value)}
+                      style={paraFont}
                     ></textarea>
                   ) : (
                     <p className=''>Start the server to proceed</p>
@@ -369,6 +371,7 @@ const Modal = ({
                     rows="3"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
+                    style={paraFont}
                   ></textarea>
                 )}
               </div>
@@ -406,7 +409,7 @@ const Modal = ({
 
             {challenge.files && challenge.files.length > 0 && (
               <div className="mt-4">
-                <h3 className="text-lg font-bold">Files:</h3>
+                <h3 className="text-lg font-bold" style={navbarFont}>Files:</h3>
                 <ul className="list-disc list-inside mt-2">
                   {challenge.files.map((fileName, index) => (
                     <li key={index}>
@@ -415,6 +418,7 @@ const Modal = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-500 hover:underline"
+                        style={paraFont}
                       >
                         {fileName}
                       </a>
@@ -434,7 +438,7 @@ const Modal = ({
               </button>
 
               {totalAttempts !== 0 && (
-                <span className='flex justify-center w-full'>
+                <span className='flex justify-center w-full' style={paraFont}>
                   {attempts}/{totalAttempts}
                 </span>
               )}
@@ -455,7 +459,7 @@ const Modal = ({
         {feedback && <p className="mt-4 text-center">{feedback}</p>}
         {editorOutput && (
           <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-white">
-            <h2 className="text-lg font-bold mb-2">Output:</h2>
+            <h2 className="text-lg font-bold mb-2" style={navbarFont}>Output:</h2>
             <pre className="overflow-auto">{editorOutput}</pre>
           </div>
         )}
@@ -465,7 +469,7 @@ const Modal = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-full w-full md:max-w-3xl overflow-y-auto">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold mx-auto">Hints</h2>
+              <h2 className="text-2xl font-bold mx-auto" style={navbarFont}>Hints</h2>
               <button onClick={() => setHintsModalOpen(false)} className="ml-4">&times;</button>
             </div>
 
@@ -496,15 +500,15 @@ const Modal = ({
 
             {selectedHint && showHintDetails && (
               <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-white">
-                <h3 className="text-lg font-bold">Hint Details:</h3>
-                <p>{selectedHint.content}</p>
-                <p>Cost: {selectedHint.cost}</p>
+                <h3 className="text-lg font-bold" style={paraFont}>Hint Details:</h3>
+                <p style={paraFont}>{selectedHint.content}</p>
+                <p style={paraFont}>Cost: {selectedHint.cost}</p>
               </div>
             )}
 
             {selectedHint && showWarning && !usedHints.includes(selectedHint._id) && (
               <div className="mt-4 p-4 border border-yellow-500 rounded-lg bg-yellow-100">
-                <p className="text-yellow-800">Unlocking this hint will deduct cost from your score. Proceed?</p>
+                <p className="text-yellow-800" style={paraFont}>Unlocking this hint will deduct cost from your score. Proceed?</p>
                 <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2" onClick={confirmUnlockHint}>Proceed</button>
                 <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" onClick={() => setShowWarning(false)}>Cancel</button>
               </div>

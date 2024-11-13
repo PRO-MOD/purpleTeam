@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import AssignStaticScoreModal from './AssignStaticScoreModal';
+import FontContext from '../context/FontContext';
+import ColorContext from '../context/ColorContext';
+
 
 const StaticScore = ({ userId }) => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
+    const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [staticScore, setStaticScore] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -41,11 +46,11 @@ const StaticScore = ({ userId }) => {
 
     return (
         <div className='flex flex-row items-center'>
-            <p className="text-lg mb-4">Static Score: {staticScore !== null ? staticScore : 'Not Assigned'}</p>
+            <p className="text-lg mb-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Static Score: {staticScore !== null ? staticScore : 'Not Assigned'}</p>
             <button
                 onClick={handleOpenModal}
                 className="w-1/6 ms-4 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
+                style={{ fontFamily: navbarFont, backgroundColor: sidenavColor }}>
                 Assign Static Score
             </button>
             <AssignStaticScoreModal

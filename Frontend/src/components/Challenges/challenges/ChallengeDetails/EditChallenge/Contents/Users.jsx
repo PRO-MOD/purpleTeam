@@ -1,192 +1,13 @@
-// import React, { useState, useEffect } from 'react';
-// import Select from 'react-select';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
-
-// const Users = ({ challengeId }) => {
-//   const [users, setUsers] = useState([]);
-//   const [allUsers, setAllUsers] = useState([]);
-//   const [selectedUsers, setSelectedUsers] = useState([]);
-//   const [modalOpen, setModalOpen] = useState(false);
-//   const [message, setMessage] = useState('');
-
-//   useEffect(() => {
-//     const fetchUsers = async () => {
-//       try {
-//         const response = await fetch(`http://localhost:80/api/challenges/users/${challengeId}`);
-//         const data = await response.json();
-//         setUsers(data.users);
-//       } catch (error) {
-//         console.error('Error fetching users:', error);
-//       }
-//     };
-
-//     const fetchAllUsers = async () => {
-//       try {
-//         const response = await fetch(`http://localhost:80/api/user/getallusers`);
-//         const data = await response.json();
-//         const assignedUserIds = new Set(users.map(user => user._id));
-
-//         // Filter the users who are not assigned to the challenge
-//         const availableUsers = data.filter(user => !assignedUserIds.has(user._id));
-//       //  console.log(availableUsers);
-//         // Set the filtered users
-//         setAllUsers(availableUsers);
-//       } catch (error) {
-//         console.error('Error fetching all users:', error);
-//       }
-//     };
-
-
-//     fetchUsers();
-//     fetchAllUsers();
-//   }, [challengeId]);
-
-//   const handleAddUsers = async () => {
-//     if (selectedUsers.length === 0) {
-//       setMessage('Please select at least one user.');
-//       return;
-//     }
-
-//     try {
-//       const response = await fetch(`http://localhost:80/api/challenges/users/${challengeId}/add`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ user_ids: selectedUsers.map(user => user.value) }),
-//       });
-
-//       if (!response.ok) {
-//         throw new Error('User addition failed.');
-//       }
-
-//       const data = await response.json();
-//       setUsers(prevUsers => [...prevUsers, ...data.users]);
-//       setAllUsers(prevAllUsers => prevAllUsers.filter(user => !selectedUsers.some(selUser => selUser.value === user._id)));
-//       setSelectedUsers([]);
-//       setMessage('Users added successfully');
-//       setModalOpen(false);
-//     } catch (error) {
-//       setMessage('User addition failed.');
-//       console.error('Error adding users:', error);
-//     }
-//   };
-
-//   const handleDeleteUser = async (index) => {
-//     const userId = users[index]._id;
-//     try {
-//       const response = await fetch(`http://localhost:80/api/challenges/users/${challengeId}/delete/${userId}`, {
-//         method: 'DELETE',
-//       });
-
-//       if (!response.ok) {
-//         throw new Error('User deletion failed.');
-//       }
-
-//       setUsers(prevUsers => prevUsers.filter((_, i) => i !== index));
-//       setAllUsers(prevAllUsers => [...prevAllUsers, users[index]]);
-//       setMessage('User deleted successfully');
-//     } catch (error) {
-//       setMessage('User deletion failed.');
-//       console.error('Error deleting user:', error);
-//     }
-//   };
-
-//   const toggleModal = () => {
-//     setModalOpen(!modalOpen);
-//     setMessage('');
-//     if (!modalOpen) {
-//       setSelectedUsers([]);
-//     }
-//   };
-
-//   const allUsersOptions = allUsers.map(user => ({ value: user._id, label: user.name }));
-
-//   const handleSelectChange = (selectedOptions) => {
-//     if (selectedOptions && selectedOptions.some(option => option.value === 'all')) {
-//       setSelectedUsers(allUsersOptions.filter(option => option.value !== 'all'));
-//     } else {
-//       setSelectedUsers(selectedOptions || []);
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-4xl mx-auto">
-//       <div className="mb-4 mx-12">
-//         <div className="flex flex-row items-center mb-2">
-//           <h3 className="font-medium text-xl">Users</h3>
-//           <FontAwesomeIcon icon={faPlus} className="text-blue-500 cursor-pointer mx-2" onClick={toggleModal} title="Add User" />
-//         </div>
-//         {users.length === 0 ? (
-//           <p>No users added.</p>
-//         ) : (
-//           <table className="min-w-full divide-y divide-gray-200">
-//             <thead className="bg-gray-50">
-//               <tr>
-//                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                   User
-//                 </th>
-//                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                   Action
-//                 </th>
-//               </tr>
-//             </thead>
-//             <tbody className="bg-white divide-y divide-gray-200">
-//               {users.map((user) => (
-//                 <tr key={user._id} className="hover:bg-gray-100">
-//                   <td className="px-6 py-4 whitespace-nowrap">
-//                     <pre className="text-gray-700">{user.name}</pre>
-//                   </td>
-//                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-//                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer" onClick={() => handleDeleteUser(users.indexOf(user))} />
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         )}
-//       </div>
-
-//       {modalOpen && (
-//         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-//           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-//             <h2 className="text-xl font-bold mb-4">Add New Users</h2>
-//             <div className="mb-4">
-//               <Select
-//                 isMulti
-//                 options={[{ value: 'all', label: 'Select All' }, ...allUsersOptions]}
-//                 value={selectedUsers}
-//                 onChange={handleSelectChange}
-//                 className="mt-1 block w-full sm:text-sm border border-gray-300 rounded-sm focus:ring focus:ring-green-200 outline-0 p-2"
-//               />
-//             </div>
-//             <div className="flex justify-end">
-//               <button onClick={toggleModal} className="bg-gray-600 text-white p-2 rounded-sm mr-2">
-//                 Cancel
-//               </button>
-//               <button onClick={handleAddUsers} className="bg-blue-600 text-white p-2 rounded-sm">
-//                 Add Users
-//               </button>
-//             </div>
-//             {message && <p className="mt-4">{message}</p>}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Users;
-
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../../context/FontContext';
+import ColorContext from '../../../../../../context/ColorContext';
 
 const Users = ({ challengeId }) => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const { navbarFont, headingFont, paraFont } = useContext(FontContext); // Use the fonts from context
+  const { tableColor } = useContext(ColorContext); // Use the fonts from context
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [newUser, setNewUser] = useState('');
@@ -200,8 +21,6 @@ const Users = ({ challengeId }) => {
       try {
         const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}`);
         const data = await response.json();
-        // console.log(data);
-        // console.log(data.users);
         setUsers(data.users);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -212,20 +31,13 @@ const Users = ({ challengeId }) => {
       try {
         const response = await fetch(`${apiUrl}/api/user/getallusers`);
         const data = await response.json();
-
-        // Get the assigned user IDs
         const assignedUserIds = new Set(users.map(user => user._id));
-
-        // Filter the users who are not assigned to the challenge
         const availableUsers = data.filter(user => !assignedUserIds.has(user._id));
-      //  console.log(availableUsers);
-        // Set the filtered users
         setAllUsers(availableUsers);
       } catch (error) {
         console.error('Error fetching all users:', error);
       }
     };
-
 
     fetchUsers();
     fetchAllUsers();
@@ -236,11 +48,7 @@ const Users = ({ challengeId }) => {
       try {
         const response = await fetch(`${apiUrl}/api/user/getallusers`);
         const data = await response.json();
-
-        // Get the assigned user IDs
         const assignedUserIds = new Set(users.map(user => user._id));
-
-        // Filter the users who are not assigned to the challenge
         const availableUsers = data.filter(user => !assignedUserIds.has(user._id));
         setAllUsers(availableUsers);
       } catch (error) {
@@ -271,12 +79,11 @@ const Users = ({ challengeId }) => {
       }
 
       const data = await response.json();
-  
       setUsers((prevUsers) => [...prevUsers, data.user]);
       setAllUsers((prevAllUsers) => prevAllUsers.filter(user => user._id !== newUser));
       setNewUser('');
       setMessage('User added successfully');
-      setModalOpen(false); // Close the modal
+      setModalOpen(false);
     } catch (error) {
       setMessage('User addition failed.');
       console.error('Error adding user:', error);
@@ -297,7 +104,7 @@ const Users = ({ challengeId }) => {
       setUsers((prevUsers) => prevUsers.filter((_, i) => i !== index));
       setAllUsers((prevAllUsers) => [...prevAllUsers, users[index]]);
       setMessage('User deleted successfully');
-      setEditingIndex(null); // Reset editing state if any
+      setEditingIndex(null);
     } catch (error) {
       setMessage('User deletion failed.');
       console.error('Error deleting user:', error);
@@ -324,15 +131,13 @@ const Users = ({ challengeId }) => {
       }
 
       const data = await response.json();
-
-      // Update users in state
       const updatedUsers = [...users];
       updatedUsers[editingIndex] = data.user;
       setUsers(updatedUsers);
       setAllUsers((prevAllUsers) => prevAllUsers.filter(user => user._id !== editUser));
       setMessage('User edited successfully');
-      setEditingIndex(null); // Reset editing state
-      setModalOpen(false); // Close the modal
+      setEditingIndex(null);
+      setModalOpen(false);
     } catch (error) {
       setMessage('User edit failed.');
       console.error('Error editing user:', error);
@@ -349,15 +154,14 @@ const Users = ({ challengeId }) => {
     setEditingIndex(null);
     setEditUser('');
     setMessage('');
-    setModalOpen(false); // Close the modal
+    setModalOpen(false);
   };
 
   const toggleModal = () => {
     handleCancelEdit();
     setModalOpen(!modalOpen);
-    setMessage(''); // Clear any previous messages
+    setMessage('');
     if (!modalOpen) {
-      // Reset inputs when opening the modal
       setNewUser('');
     }
   };
@@ -366,26 +170,26 @@ const Users = ({ challengeId }) => {
     <div className="max-w-4xl mx-auto">
       <div className="mb-4 mx-12">
         <div className="flex flex-row items-center mb-2">
-          <h3 className="font-medium text-xl">Users</h3>
+          <h3 className="font-medium text-xl" style={{ ...headingFont }}>Users</h3>
           <FontAwesomeIcon icon={faPlus} className="text-blue-500 cursor-pointer mx-2" onClick={toggleModal} title="Add User" />
         </div>
         {users.length === 0 ? (
-          <p>No users added.</p>
+          <p style={{ ...paraFont }}>No users added.</p>
         ) : (
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <tr style={{backgroundColor: tableColor}}>
+                <th scope="col" className="px-6 py-3 text-left text-xs uppercase tracking-wider" style={{ ...navbarFont }}>
                   User
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs uppercase tracking-wider" style={{ ...navbarFont }}>
                   Action
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {users.map((user, index) => (
-                <tr key={index} className="hover:bg-gray-100">
+                <tr key={index} className="hover:bg-gray-100" style={{ ...paraFont }}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <pre className="text-gray-700">{user.name}</pre>
                   </td>
@@ -400,7 +204,6 @@ const Users = ({ challengeId }) => {
         )}
       </div>
 
-      {/* Modal for adding or editing user */}
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
@@ -441,6 +244,3 @@ const Users = ({ challengeId }) => {
 };
 
 export default Users;
-
-
-

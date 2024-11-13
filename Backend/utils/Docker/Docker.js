@@ -1,6 +1,6 @@
 const Docker = require('dockerode');
 const docker = new Docker({
-    host: '20.84.119.195', // Azure instance public IP
+    host: '20.84.50.30', // Azure instance public IP
     port: 2375,            // Port Docker is exposed on (2375 for non-TLS, 2376 for TLS)
 });
 
@@ -176,7 +176,7 @@ const createContainer = async (serviceName, imageName, port, flags) => {
 };
 
 // Get the worker node IP and published port for the running service
-const getServiceIPandPort = async (serviceName, retries = 5, delay = 2000) => {
+const getServiceIPandPort = async (serviceName, retries = 30, delay = 2000) => {
     return new Promise((resolve, reject) => {
         // console.log(`Fetching service details for: ${serviceName}`);
 
@@ -254,7 +254,7 @@ const getServiceIPandPort = async (serviceName, retries = 5, delay = 2000) => {
                     }, delay);
                 } else {
                     stopContainer(serviceName).then(() => {
-                        console.error(`No running tasks found after retries for service ${serviceName}`);
+                        console.error(`Deleted service No running tasks found after retries for service ${serviceName}`);
                         reject(`No running tasks found after retries for service ${serviceName}`);
                     }).catch(err => {
                         reject(`Failed to delete service ${serviceName}: ${err}`);

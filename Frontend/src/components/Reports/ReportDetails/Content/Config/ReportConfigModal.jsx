@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import InputField from '../../../../Challenges/challenges/Partials/InputFeild';
+import FontContext from '../../../../../context/FontContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGears } from '@fortawesome/free-solid-svg-icons';
 
 
 const ReportConfigModal = ({ reportId }) => {
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [showModal, setShowModal] = useState(false);
   const [headers, setHeaders] = useState([]);
   const [footers, setFooters] = useState([]);
@@ -90,16 +92,16 @@ const ReportConfigModal = ({ reportId }) => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 max-h-[80%] overflow-y-scroll">
-            <h3 className="text-lg font-semibold mb-4">Configure Report</h3>
+            <h3 className="text-lg font-semibold mb-4" style={{fontFamily:headingFont}}>Configure Report</h3>
             {message && <div className="text-green-500 mb-2">{message}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Header</label>
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily:paraFont}}>Header</label>
                 <select
                   value={headerId}
                   onChange={(e) => setHeaderId(e.target.value)}
                   className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
-                >
+                style={{fontFamily:paraFont}}>
                   <option value="">Select Header</option>
                   {headers.map(header => (
                     <option key={header._id} value={header._id}>
@@ -109,7 +111,7 @@ const ReportConfigModal = ({ reportId }) => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Footer</label>
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily:paraFont}}>Footer</label>
                 <select
                   value={footerId}
                   onChange={(e) => setFooterId(e.target.value)}
@@ -124,7 +126,7 @@ const ReportConfigModal = ({ reportId }) => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">First Page Info</label>
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily:paraFont}}>First Page Info</label>
                 {firstPageInfo.map((info, index) => (
                   <div key={index} className="mb-2">
                     <InputField
@@ -150,12 +152,12 @@ const ReportConfigModal = ({ reportId }) => {
                   type="button"
                   className="text-blue-500"
                   onClick={() => setFirstPageInfo([...firstPageInfo, { text: '', margin: 0, coordinateY: 0 }])}
-                >
+                 style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
                   Add More
                 </button>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Last Page Info</label>
+                <label className="block text-sm font-medium text-gray-700" style={{fontFamily:paraFont}}>Last Page Info</label>
                 {lastPageInfo.map((info, index) => (
                   <div key={index} className="mb-2">
                     <InputField
@@ -181,12 +183,12 @@ const ReportConfigModal = ({ reportId }) => {
                   type="button"
                   className="text-blue-500"
                   onClick={() => setLastPageInfo([...lastPageInfo, { text: '', margin: 0, coordinateY: 0 }])}
-                >
+                 style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
                   Add More
                 </button>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Enable Page Number</label>
+                <label className="block text-sm font-medium text-gray-700"style={{fontFamily:paraFont}}>Enable Page Number</label>
                 <input
                   type="checkbox"
                   checked={enablePageNumber}
@@ -202,13 +204,13 @@ const ReportConfigModal = ({ reportId }) => {
                     setMessage('');
                   }}
                   className="px-4 py-2 hover:text-red-500"
-                >
+                 style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
                   Cancel
                 </button>
                 <button
                   type="submit"
                   className="p-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-700"
-                >
+               style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
                   Save Configuration
                 </button>
               </div>

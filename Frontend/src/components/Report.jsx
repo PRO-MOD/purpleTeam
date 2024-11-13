@@ -1,10 +1,8 @@
-
-
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import InputField from './Challenges/challenges/Partials/InputFeild';
 import ColorContext from '../context/ColorContext';
+import FontContext from '../context/FontContext';
 
 // Ensure this component is updated to handle different input types
 
@@ -12,6 +10,7 @@ function Report() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const navigate = useNavigate();
   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const { reportId } = useParams(); // Get the report ID from the URL
   const [questions, setQuestions] = useState([]);
   const [formData, setFormData] = useState({});
@@ -139,7 +138,7 @@ function Report() {
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-3xl mb-8 text-center font-bold " style={{color:textColor}}>Report Form</h2>
+      <h2 className="text-3xl mb-8 text-center font-bold " style={{color:textColor, fontFamily: headingFont}}>Report Form</h2>
       {error && <div className="text-red-500 mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         {loading && <div>Loading questions...</div>}
@@ -156,12 +155,13 @@ function Report() {
                   placeholder="Enter your answer"
                   value={formData[question._id] || ''}
                   onChange={handleInputChange}
+                   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }} 
                 />
               );
             case 'checkbox':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700">{question.text}:</label>
+                  <label className="block text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   {question.options.map((option) => (
                     <div key={option} className="flex items-center">
                       <input
@@ -171,7 +171,7 @@ function Report() {
                         checked={(formData[question._id] || []).includes(option)}
                         onChange={() => handleCheckboxChange(question._id, option)}
                       />
-                      <label htmlFor={option} className="ml-2">{option}</label>
+                      <label htmlFor={option} className="ml-2"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{option}</label>
                     </div>
                   ))}
                 </div>
@@ -179,13 +179,14 @@ function Report() {
             case 'dropdown':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700">{question.text}:</label>
+                  <label className="block text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   <select
                     id={question._id}
                     name={question._id}
                     value={formData[question._id] || ''}
                     onChange={handleInputChange}
                     className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                     style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}
                   >
                     <option value="">Select an option</option>
                     {question.options.map((option) => (
@@ -197,7 +198,7 @@ function Report() {
             case 'textarea':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700">{question.text}:</label>
+                  <label className="block text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   <textarea
                     id={question._id}
                     name={question._id}
@@ -205,13 +206,14 @@ function Report() {
                     onChange={handleInputChange}
                     placeholder="Enter your answer"
                     className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                     style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}
                   />
                 </div>
               );
             case 'mcq':
               return (
                 <div key={question._id}>
-                  <label className="block text-gray-700">{question.text}:</label>
+                  <label className="block text-gray-700"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{question.text}:</label>
                   {question.options.map((option) => (
                     <div key={option} className="flex items-center">
                       <input
@@ -222,7 +224,7 @@ function Report() {
                         checked={formData[question._id] === option}
                         onChange={handleInputChange}
                       />
-                      <label htmlFor={option} className="ml-2">{option}</label>
+                      <label htmlFor={option} className="ml-2"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{option}</label>
                     </div>
                   ))}
                 </div>
@@ -246,7 +248,7 @@ function Report() {
               return null;
           }
         })}
-        <button type="submit" className="w-full  text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading} style={{backgroundColor: sidenavColor}}>
+        <button type="submit" className="w-full  text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105" disabled={loading} style={{backgroundColor: sidenavColor, fontFamily: navbarFont}}>
           {loading ? 'Submitting...' : 'Submit'}
         </button>
       </form>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import ColorContext from "../context/ColorContext";
+import FontContext from "../context/FontContext";
 
 function UserReports({ userId, route }) {
   const [reports, setReports] = useState([]);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [assignedScores, setAssignedScores] = useState([]);
@@ -16,7 +18,7 @@ function UserReports({ userId, route }) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("Hactify-Auth-token"),
+        "Auth-token": localStorage.getItem("Hactify-Auth-token"),
       },
     })
       .then((res) => res.json())
@@ -185,8 +187,8 @@ function UserReports({ userId, route }) {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">User Reports</h2>
+    <div className="p-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
+      <h2 className="text-2xl font-bold mb-4"style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>User Reports</h2>
       <table className="table-auto w-full border-collapse border border-gray-200">
         <thead>
           <tr className="bg-gray-100 text-left">
@@ -209,7 +211,7 @@ function UserReports({ userId, route }) {
               <td className="px-4 py-2 border-b">
                 <button
                   onClick={() => viewDetails(report._id)}
-                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor}}
+                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor, fontFamily: navbarFont}}
                 >
                   {route === "progress" ? "Detailed Score" : "Assign"}
                 </button>
@@ -219,7 +221,7 @@ function UserReports({ userId, route }) {
                   onClick={() =>
                     viewReport(report.reportId, userId, report._id)
                   }
-                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor}}
+                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor, fontFamily: navbarFont}}
                 >
                   View
                 </button>
@@ -227,7 +229,7 @@ function UserReports({ userId, route }) {
               <td className="px-4 py-2 border-b">
                 <button
                   onClick={() => viewImages(report._id)}
-                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor}}
+                  className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded" style={{backgroundColor:sidenavColor, fontFamily: navbarFont}}
                 >
                   View Images
                 </button>
@@ -240,7 +242,7 @@ function UserReports({ userId, route }) {
       {showModal && selectedReport && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[80%] overflow-y-scroll">
-            <h3 className="text-xl font-semibold mb-4">
+            <h3 className="text-xl font-semibold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>
               {selectedReport.reportName}
             </h3>
             <p className="mb-2">Date: {selectedReport.responseDate}</p>
@@ -272,7 +274,7 @@ function UserReports({ userId, route }) {
                                     openImagesModal(response.answer)
                                   }
                                   className="text-blue-600 hover:underline mr-2"
-                                >
+                                 style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
                                   {`img${i + 1}`}
                                 </button>
                               ))
@@ -283,7 +285,7 @@ function UserReports({ userId, route }) {
                         // Case 3: Single image path
                         <button
                           onClick={() => openImagesModal([response.answer])}
-                          className="text-blue-600 hover:underline"
+                          className="text-blue-600 hover:underline"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}
                         >
                           View Image
                         </button>
@@ -353,14 +355,14 @@ function UserReports({ userId, route }) {
               <button
                 onClick={handleUpdateScores}
                 className=" transition duration-300 ease-in-out transform hover:scale-105 text-white font-bold py-2 px-4 rounded"
-                style={{backgroundColor:sidenavColor}}
+                style={{backgroundColor:sidenavColor, fontFamily: navbarFont}}
               >
                 Save Scores
               </button>
             )}
             <button
               onClick={() => setShowModal(false)}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2"
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2" style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}
             >
               Close
             </button>

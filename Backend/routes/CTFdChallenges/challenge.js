@@ -538,16 +538,25 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
   const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, answer, res) => {
     try {
       let userScore = await score.findOne({ user: userId });
+      const user = await User.findOne({_id: userId});
   
       if (!userScore) {
-        return res.status(404).json({ message: 'User score not found' });
+        userScore = new score({
+            account_id: userId, // assuming `account_id` should store userId
+            name: user.name, // or a default name, if needed
+            score: updatedValue,
+            user: userId,
+            date: new Date(),
+            staticScore: 0
+          });
+          await userScore.save();
+      } else {
+          // Update existing user score
+          userScore.score += updatedValue;
+          await userScore.save();
       }
   
     console.log(updatedValue);
-      
-        // Update user score
-        userScore.score += updatedValue;
-        await userScore.save();
 
         // Count previous attempts for this user and challenge
     const previousAttempts = await Submission.countDocuments({ userId, challengeId });
@@ -569,7 +578,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       return res.json({ correct: true, newScore: userScore.score, message: 'Challenge already solved' });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      return res.status(500).json({ message: 'Server error' });
     }
   };
 
@@ -707,17 +716,24 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
     
         // Calculate the dynamic score for the current correct answer
-        let value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
-        
+        if (decay === 0) {
+          // If decay is 0, use a fixed value (or other fallback logic)
+          value = initial;  // Or decide on a fallback value
+      } else {
+          // Standard calculation if decay is not 0
+          value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
+      }
         // Ensure value doesn't drop below the minimum
         if (value < minimum) {
             value = minimum;
         }
         
         // Calculate the value for the next correct answer
-        let nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
-        if (nextval < minimum) {
-            nextval = minimum;
+        let nextval;
+        if (decay === 0) {
+            nextval = initial;  // Same fallback logic
+        } else {
+            nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
         }
     
         // Update the challenge document with the new value
@@ -737,7 +753,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       // Regular flag verification
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
       if (isCorrect) {
-        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, res, answer);
+        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, answer, res);
       }
 
       else {

@@ -6,6 +6,7 @@ import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import SocketContext from '../../context/SocketContext';
 import "../../App.css";
 import AuthContext from '../../context/AuthContext';
+import FontContext from '../../context/FontContext';
 
 function ChatLists({ position }) {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -14,12 +15,13 @@ function ChatLists({ position }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [showSearchInput, setShowSearchInput] = useState(false);
     const navigate = useNavigate();
-
+    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     const context = useContext(AuthContext);
     const { user, fetchUserRole } = context;
     const [error, setError] = useState(null);
   
     useEffect(() => {
+        
       const getUserRole = async () => {
         try {
           await fetchUserRole();
@@ -153,7 +155,7 @@ function ChatLists({ position }) {
                          </>
                         ) : (
                             <>
-                                <h1 className='flex-1'>Start Conversation...</h1>
+                                <h1 className='flex-1' style={{fontFamily:headingFont}}>Start Conversation...</h1>
                                 <FontAwesomeIcon icon={faSearch} className="text-gray-500 cursor-pointer" onClick={() => setShowSearchInput(true)} />
                             </>
                         )}

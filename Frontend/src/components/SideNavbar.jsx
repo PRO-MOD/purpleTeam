@@ -1,29 +1,27 @@
-
-
-
 import React, { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser,
-  faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved, 
+  faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved,
   faFilePdf, faPuzzlePiece, faWrench, faFile
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
 import ColorContext from "../context/ColorContext";
-
+import Dropdown from './Partials/Dropdown'; // Import the Dropdown component
+import FontContext from "../context/FontContext";
 
 const SideNavbar = () => {
   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState();
   const [logoUrl, setLogoUrl] = useState(null);
-  const[mode,setMode]=useState("purpleTeam");
+  const [mode, setMode] = useState("purpleTeam");
   const [visibilitySettings, setVisibilitySettings] = useState({});
   const navigate = useNavigate();
-  const { creteSocket, unreadMessages, fetchUnreadMessages } = useContext(SocketContext);
-
+  const { creteSocket, fetchUnreadMessages } = useContext(SocketContext);
 
   useEffect(() => {
     fetchUserRole();
@@ -67,7 +65,6 @@ const SideNavbar = () => {
     }
   };
 
-
   const fetchMode = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/config/mode`, {
@@ -75,12 +72,10 @@ const SideNavbar = () => {
       });
       const data = await response.json();
       setMode(data.mode);
-     
     } catch (error) {
       console.error('Error fetching mode:', error);
     }
   };
- 
 
   const fetchVisibilitySettings = async (team) => {
     try {
@@ -109,168 +104,116 @@ const SideNavbar = () => {
     return window.location.pathname === route;
   };
 
+  // Define categories with their items
+  const categories = [
+    {
+      title: "Users",
+      icon: faUserPlus,
+      restricted: true, // Restricted to userRole === "WT"
+      items: [
+        { path: "/createuser", label: "Users", visibility: visibilitySettings.users },
+        { path: "/assignTeams", label: "View All", visibility: visibilitySettings.viewAll },
+      ],
+    },
+    {
+      title: "Submissions",
+      icon: faFile,
+      restricted: true, // Restricted to userRole === "WT"
+      items: [
+        { path: "/submissions", label: "Submissions", visibility: visibilitySettings.submissions },
+        { path: "/scores", label: "Scores", visibility: visibilitySettings.score },
+        { path: "/updates", label: "New Reports", visibility: visibilitySettings.newReports },
+      ],
+    },
+    {
+      title: "Challenges",
+      icon: faPuzzlePiece,
+      restricted: false, // Accessible to all
+      items: [
+        { path: userRole === "WT" ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges },
+        
+        { path: "/repository", label: "Repository", visibility: userRole === "WT"  },
+        { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === "WT" && visibilitySettings.challenges },
+      ],
+    },
+    {
+      title: "Config",
+      icon: faWrench, // You can use a suitable icon here
+      restricted: true,
+      items: [
+        { path: "/config", label: "Configurations", visibility: visibilitySettings.config },
+        { path: userRole === "WT" ? "/admin/report" : "/report", label: "Report Config", visibility: visibilitySettings.reportConfig },
+      ],
+    },
+  ];
+  
+
+  // Define general items
+  const generalItems = [
+    { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home },
+    { path: "/UserHome", icon: faCircleUser, label: "Reports", visibility: visibilitySettings.dashboard },
+    { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes },
+    { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress },
+    { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification },
+    
+    { path: "/profile", icon: faUser, label: "Profile", visibility: visibilitySettings.profile },
+    { path: "/chat", icon: faComment, label: "Communication", visibility: visibilitySettings.communication },
+  ];
+
   return (
-    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 font-serif">
+    <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 overflow-y-auto" style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
       {/* Logo Section */}
       <div className="flex items-center justify-center py-4 h-32">
-        <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
+        <img src={logoUrl} alt="Logo" className="h-full" />
       </div>
-      <hr className="mx-2" />
 
       {/* Navigation Section */}
-      <div className="flex-1 text-center">
-        <ul className="space-y-1">
-          { mode==='purpleTeam'&&userRole && visibilitySettings.dashboard === 'yes' && (
-            <Link to="/UserHome" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/UserHome") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-              <FontAwesomeIcon icon={faCircleUser} size="xl" className="mr-4" />
-              <p className="text-lg">Dashboard</p>
-            </Link>
-          )}
-          {userRole && visibilitySettings.notes === 'yes' && (
-            <Link to="/notes" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/notes") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-              <FontAwesomeIcon icon={faNotesMedical} size="xl" className="mr-4" />
-              <p className="text-lg">Notes</p>
-            </Link>
-          )}
-          { userRole && visibilitySettings.progress === 'yes' && (
-            <Link to="/progress" className={`flex items-center py-2 px-2  hover:text-white ${isActive("/progress") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-              <FontAwesomeIcon icon={faChartColumn} size="xl" className="mr-4" />
-              <p className="text-lg">Progress</p>
-            </Link>
-          )}
-          {userRole && visibilitySettings.notification === 'yes' && (
-            <Link to="/attacks" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/attacks") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-              <FontAwesomeIcon icon={faShieldHalved} size="xl" className="mr-4" />
-              <p className="text-lg">Notification</p>
-            </Link>
-          )}
-          { userRole && visibilitySettings.home==='yes' && (
-           
-              <Link to="/home" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/home") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-                <FontAwesomeIcon icon={faHome} size="xl" className="mr-4" />
-                <p className="text-lg">Home</p>
+      <div className="flex-grow">
+        <ul className="flex flex-col">
+          {/* General Items */}
+          {generalItems.map((item, index) => (
+            item.visibility && (
+              <Link key={index} to={item.path} className={`flex items-center p-2 mx-2 my-1 rounded-lg hover:text-white ${isActive(item.path) ? 'text-white' : 'text-white'}`} 
+                style={{ backgroundColor: isActive(item.path) ? hoverColor : sidenavColor }}  
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = isActive(item.path) ? hoverColor : sidenavColor;
+                }}
+                >
+                <FontAwesomeIcon icon={item.icon} size="xl" className="mr-4" />
+                <p className="text-lg" >{item.label}</p>
               </Link>
-          )}
-           {userRole && visibilitySettings.users==='yes' && (
-              <Link to="/createuser" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/createuser") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-                <FontAwesomeIcon icon={faUserPlus} size="xl" className="mr-4" />
-                <p className="text-lg">Users</p>
-              </Link>
-           )}
-            {userRole && visibilitySettings.viewAll==='yes' && (
-              <Link to="/assignTeams" className={`flex items-center py-2 px-2  hover:text-white ${isActive("/assignTeams") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-                <FontAwesomeIcon icon={faCalendar} size="xl" className="mr-4" />
-                <p className="text-lg">View All</p>
-              </Link>
-            )}
-             {userRole && visibilitySettings.submissions==='yes' &&(
-              <Link to="/submissions" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/submissions") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-                <FontAwesomeIcon icon={faFile} size="xl" className="mr-4" />
-                <p className="text-lg">Submissions</p>
-              </Link>
-             )}
-             {userRole && visibilitySettings.score==='yes' && (
-              <Link to="/scores" className={`flex items-center py-2 px-2  hover:text-white ${isActive("/scores") ? `text-white` : ""}`}  style={{ backgroundColor: isActive("/scores") ? hoverColor : sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = isActive("/scores")
-            ? hoverColor
-            : sidenavColor}>
-                <FontAwesomeIcon icon={faRankingStar} size="xl" className="mr-4" />
-                <p className="text-lg">Scores</p>
-              </Link>
-             )}
-               {mode==='purpleTeam'&&userRole && visibilitySettings.newReports==='yes' && (
-              <Link to="/updates" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/updates") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-                <FontAwesomeIcon icon={faFilePdf} size="xl" className="mr-4" />
-                <p className="text-lg">New Reports</p>
-              </Link>
-               )}
+            )
+          ))}
 
-{mode==='purpleTeam'&& userRole && visibilitySettings.reportConfig ==='yes' && (
-            <Link to={userRole === "WT" ? "/admin/report" : "/report"} className={`flex items-center py-2 px-2  hover:text-white ${isActive(userRole === "WT" ? "/admin/report" : "/report") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-             <FontAwesomeIcon icon={faWrench} size="xl" className="mr-4" />
-              <p className="text-lg">Report Config</p>
-            </Link>
-)}
+          {/* Categories Dropdowns */}
+          {categories.map((category, index) => {
+        // Check if the category is restricted and if the user has the appropriate role
+        if (category.restricted && userRole !== "WT") {
+          return null; // Skip this category if it's restricted and the user is not "WT"
+        }
 
-              {/* <Link to={userRole === "WT" ? "/admin/report" : "/report"} className={`flex items-center py-2 px-2 hover:bg-brown-450 hover:text-white ${isActive(userRole === "WT" ? "/admin/report" : "/report") ? "bg-brown-450 text-white" : ""}`}>
-                <FontAwesomeIcon icon={faWrench} size="xl" className="mr-4" />
-                <p className="text-lg">{userRole === "WT" ? "Admin Report" : "Report"}</p>
-              </Link>
-   */}
-          {userRole && visibilitySettings.challenges === 'yes' && (
-            <>
-              <Link to={userRole === "WT" ? "/admin/challenges" : "challenges"} className={`flex items-center py-2 px-2  hover:text-white ${isActive(userRole === "WT" ? "/admin/challenges" : "challenges") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-             <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
-              <p className="text-lg">Challenges</p>
-              </Link>
-            </>
-          )}
-
-{userRole==='WT' && visibilitySettings.config === 'yes' && (
-  <>
-           <Link to="/config" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/config") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-           onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-           onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-              <FontAwesomeIcon icon={faCog} size="xl" className="mr-4" />             <p className="text-lg">Config</p>
-           </Link>
-           <Link to={`/challenges/docker`} className={`flex items-center py-2 px-2  hover:text-white ${isActive('/challenges/docker') ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-           onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-           onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-          <FontAwesomeIcon icon={faPuzzlePiece} size="xl" className="mr-4" />
-           <p className="text-lg">Docker Manager</p>
-           </Link>
-  </>
-
-          )}
-          {userRole && visibilitySettings.profile === 'yes' && (
-            <Link to="/profile" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/profile") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-              <FontAwesomeIcon icon={faUser} size="xl" className="mr-4" />
-              <p className="text-lg">Profile</p>
-            </Link>
-          )}
-          {userRole && visibilitySettings.communication === 'yes' && (
-            <Link to="/chat" className={`flex items-center py-2 px-2 hover:text-white ${isActive("/chat") ? " text-white" : ""}`}  style={{ backgroundColor: sidenavColor }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-              <FontAwesomeIcon icon={faComment} size="xl" className="mr-4" />
-              <p className="text-lg">Communication</p>
-            </Link>
-          )}
+        // If the category is not restricted, render it
+        return (
+          <Dropdown
+            key={index}
+            title={category.title}
+            icon={category.icon}
+            items={category.items.filter(item => item.visibility)} // Filter items based on visibility
+            isActive={path => window.location.pathname === path}
+            hoverColor={hoverColor}// Example hover color
+            sidenavColor={sidenavColor} // Example sidenav color
+          />
+        );
+      })}
         </ul>
       </div>
 
       {/* Logout Section */}
-      <div className="mt-auto p-4">
-        <button onClick={handleLogout} className="flex items-center justify-center w-full py-2  text-white  rounded"  style={{ backgroundColor: sidenavColor }}
-    onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverColor}
-    onMouseOut={(e) => e.currentTarget.style.backgroundColor = sidenavColor}>
-          <FontAwesomeIcon icon={faSignOutAlt} size="lg" className="mr-2" />
-          <p className="text-lg">Logout</p>
+      <div className="p-4 fixed bottom-0">
+        <button onClick={handleLogout} className="flex items-center py-2 px-2 hover:text-white" style={{ backgroundColor: sidenavColor }}>
+          <FontAwesomeIcon icon={faSignOutAlt} size="xl" className="mr-4" />
+          <p className="text-lg" >Logout</p>
         </button>
       </div>
     </div>

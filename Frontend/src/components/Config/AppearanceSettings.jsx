@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import FontContext from '../../context/FontContext';
 
 const AppearanceSettings = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
     const [logo, setLogo] = useState(null);
 
     const handleFileChange = (e) => {
@@ -55,8 +57,8 @@ const AppearanceSettings = () => {
                 Update Logo
             </button>
             <div className="mt-4">
-                <label className="block text-lg font-semibold mb-2">Theme</label>
-                <p className="text-gray-500">From here you can update the theme.</p>
+                <label className="block text-lg font-semibold mb-2"style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>Theme</label>
+                <p className="text-gray-500" style={{fontFamily:paraFont}}>From here you can update the theme.</p>
             </div>
         </form>
     );

@@ -1,41 +1,23 @@
-// import React from 'react'
-
-// function AdminDataVisualization() {
-//     return (
-//         <div className=''>
-//             <iframe 
-//             style={{
-//                 background: '#F1F5F4',
-//                 border: 'none',
-//                 borderRadius: '2px',
-//                 boxShadow: '0 2px 10px 0 rgba(70, 76, 79, .2)',
-//                 width: '98vw',
-//                 height: '100vh',
-//             }}
-//                 src="https://charts.mongodb.com/charts-cyber_suraksha-ibxyqpa/embed/dashboards?id=42dac8e8-7a9a-4355-ac47-e56e5d842866&theme=light&autoRefresh=true&maxDataAge=300&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed&attribution=false">
-//             </iframe>
-//         </div>
-//     )
-// }
-
-// export default AdminDataVisualization
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import ApexCharts from 'react-apexcharts';
-
+import ColorContext from '../context/ColorContext';
+import FontContext from '../context/FontContext';
 
 function AdminDataVisualization() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   const [highestScores, setHighestScores] = useState({
     highestManualScore: '',
     highestScore: '',
   });
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const [userScores, setUserScores] = useState([]);
   const [manualScores, setManualScores] = useState([]);
   const [reportData, setReportData] = useState([]);
   const [submissionData, setSubmissionData] = useState([]);
   const [submissionTypes, setSubmissionTypes] = useState([]);
   const[mode,setMode]=useState("purpleTeam");
+  
 
   useEffect(() => {
     // Fetch highest scores
@@ -227,7 +209,7 @@ function AdminDataVisualization() {
     },
     title: {
       text: 'User Scores',
-      style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+      style: { ...headingFont, color: '#4A5568' },
     },
     grid: { borderColor: '#E2E8F0' },
     colors: ['#1a80bb'],
@@ -252,7 +234,7 @@ function AdminDataVisualization() {
     },
     title: {
       text: 'Manual Scores',
-      style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+      style: { ...headingFont, color: '#4A5568' },
     },
     grid: { borderColor: '#E2E8F0' },
     colors: ['#a00000'],
@@ -330,7 +312,7 @@ function AdminDataVisualization() {
      yaxis: { title: { text: 'Number of Submissions' } },
      title: {
        text: 'Submissions Over Time',
-       style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+       style: { ...headingFont, color: '#4A5568' },
      },
      grid: { borderColor: '#E2E8F0' },
      colors: ['#3182CE'],
@@ -368,16 +350,16 @@ function AdminDataVisualization() {
 
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen" style={{backgroundColor: bgColor}}>
       <div className="container mx-auto px-4">
         {/* Display the names of the leading teams */}
         <div className="mb-8 p-6 border border-gray-300 rounded-lg bg-white shadow-lg">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Leading Teams</h2>
-          {mode==='purpleTeam' && (<p className="text-lg text-gray-600 mb-2">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4" style={headingFont}>Leading Teams</h2>
+          {mode==='purpleTeam' && (<p className="text-lg text-gray-600 mb-2" style={navbarFont}>
             Leading Team with Incident Response: <strong className="text-red-600">{highestScores.highestManualScore}</strong>
           </p>
           )}
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600" style={navbarFont}>
             Leading Team with Service Availability: <strong className="text-blue-600">{highestScores.highestScore}</strong>
           </p>
         </div>
@@ -518,7 +500,7 @@ function AdminDataVisualization() {
         {mode==='purpleTeam' && (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-8 mt-8">
         <div className="bg-white p-6 border border-gray-300 rounded-lg shadow-lg">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Submissions Count by Challenge Type</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-4" style={headingFont}>Submissions Count by Challenge Type</h3>
             <ApexCharts options={challengeTypeOptions} series={challengeTypeSeries} type="bar" height={320} />
           </div>
           </div>

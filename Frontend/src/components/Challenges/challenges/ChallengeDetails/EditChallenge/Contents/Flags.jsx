@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import DynamicFlags from './DynamicFlag'; // Import the DynamicFlags component
+import FontContext from '../../../../../../context/FontContext';
 
 const Flags = ({ challengeId }) => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -15,6 +16,9 @@ const Flags = ({ challengeId }) => {
   const [editFlagData, setEditFlagData] = useState('case_sensitive'); // Default value
   const [message, setMessage] = useState('');
   const [challengeType, setChallengeType] = useState(''); // State for challenge type
+
+  // Access font context
+  const { navbarFont, headingFont } = useContext(FontContext);
 
   useEffect(() => {
     const fetchFlags = async () => {
@@ -171,44 +175,64 @@ const Flags = ({ challengeId }) => {
       ) : (
         <div className="mb-4 mx-12">
           <div className="flex flex-row items-center mb-2">
-            <h3 className="font-medium text-xl">Flags</h3>
+            <h3 style={headingFont} className="font-medium text-xl">Flags</h3>
             <FontAwesomeIcon icon={faPlus} className="text-blue-500 cursor-pointer mx-2" onClick={toggleModal} title='Add Flag' />
           </div>
           {flags.length === 0 ? (
-            <p>No flags added.</p>
-          ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Flag
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Flag Data
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {flags.map((flag, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <pre className="text-gray-700">{flag}</pre>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                      <span>{flagData[index]}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <FontAwesomeIcon icon={faEdit} className="text-blue-500 cursor-pointer me-4" onClick={() => handleStartEdit(index)} />
-                      <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer" onClick={() => handleDeleteFlag(index)} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+  <p>No flags added.</p>
+) : (
+  <div className="overflow-x-auto"> {/* Add horizontal scrolling for responsiveness */}
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-[#e5e5e5]">
+        <tr>
+          <th
+            style={navbarFont}
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Flag
+          </th>
+          <th
+            style={navbarFont}
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Flag Data
+          </th>
+          <th
+            style={navbarFont}
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Action
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {flags.map((flag, index) => (
+          <tr key={index} className="hover:bg-gray-100">
+            <td className="px-6 py-4 whitespace-normal"> {/* Allow text wrapping */}
+              <span className="text-gray-700">{flag}</span> {/* Use <span> instead of <pre> */}
+            </td>
+            <td className="px-6 py-4 whitespace-normal text-gray-500">
+              <span>{flagData[index]}</span>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <FontAwesomeIcon
+                icon={faEdit}
+                className="text-blue-500 cursor-pointer me-4"
+                onClick={() => handleStartEdit(index)}
+              />
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                className="text-red-500 cursor-pointer"
+                onClick={() => handleDeleteFlag(index)}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
         </div>
       )}
 
@@ -216,7 +240,7 @@ const Flags = ({ challengeId }) => {
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">{editingIndex !== null ? 'Edit Flag' : 'Add New Flag'}</h2>
+            <h2 style={headingFont} className="text-xl font-bold mb-4">{editingIndex !== null ? 'Edit Flag' : 'Add New Flag'}</h2>
             <div className="mb-4">
               <input
                 type="text"
@@ -228,7 +252,7 @@ const Flags = ({ challengeId }) => {
               <select
                 id="flag_data"
                 name="flag_data"
-                className="form-select mt-1 block w-full sm:text-sm border border-gray-300 rounded-sm focus:ring focus:ring-green-200 outline-0 p-2"
+                className="form-select mt-1 block w-full"
                 value={editingIndex !== null ? editFlagData : newFlagData}
                 onChange={(e) => (editingIndex !== null ? setEditFlagData(e.target.value) : setNewFlagData(e.target.value))}
               >
@@ -237,13 +261,29 @@ const Flags = ({ challengeId }) => {
                 <option value="case_insensitive">Case Insensitive</option>
               </select>
             </div>
-            <div className="flex justify-end">
-              <button onClick={toggleModal} className="bg-gray-600 text-white p-2 rounded-sm mr-2">
+            <p className="text-red-600">{message}</p>
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={toggleModal}
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+              >
                 Cancel
               </button>
-              <button onClick={editingIndex !== null ? handleEditFlag : handleAddFlag} className={`bg-${editingIndex !== null ? 'green' : 'blue'}-600 text-white p-2 rounded-sm`}>
-                {editingIndex !== null ? 'Save' : 'Add Flag'}
-              </button>
+              {editingIndex !== null ? (
+                <button
+                  onClick={handleEditFlag}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Update Flag
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddFlag}
+                  className="bg-green-500 text-white px-4 py-2 rounded"
+                >
+                  Add Flag
+                </button>
+              )}
             </div>
             {message && <p className="mt-4">{message}</p>}
           </div>

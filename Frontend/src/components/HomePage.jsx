@@ -31,6 +31,9 @@ import ChallengeDetailsPage from './Challenges/challenges/ChallengeDetails/Chall
 import SubmissionTable from './Challenges/Submissions/submission';
 import Configuration from './Config/config';
 import ChallengesSubmissions from './Challenges/Submissions/challengeSubmission';
+import Repository from './Repository/Repository';
+import CreateRepo from './Repository/CreateRepo';
+import RepoDetailsPage from './Repository/RepoDetail';
 
 // import reports component
 import MainReportPage from './Reports/MainReportPage';
@@ -69,11 +72,11 @@ function HomePage() {
   return (
     <>
       {/* <Router> */}
-      <div className="flex flex-row h-screen b">
-        <div className="left_Home w-[13%] min-w-20" style={{ backgroundColor: sidenavColor }}>
+      <div className="flex flex-row h-screen b"  style={{backgroundColor: bgColor}}>
+        <div className="left_Home w-[13%] min-w-20 m-2 rounded-lg " style={{ backgroundColor: sidenavColor }}>
           <SideNavbar />
         </div>
-        <div className={`right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white`}>
+        <div className={`right_Home lg:w-[87%] h-screen overflow-y-scroll bg-white`} style={{backgroundColor: bgColor}}>
           {
             alert ?
               <Alert alert={alert} />
@@ -107,6 +110,7 @@ function HomePage() {
             <Route exact path='/admin/challenges' element={<MainChallenge />} />
             <Route exact path='/admin/challenge/create' element={<CreateChallenge />} />
             <Route exact path='/challenges/:id' element={<ChallengeDetailsPage />} />
+            <Route exact path='/repositories/:id' element={<RepoDetailsPage />} />
             <Route exact path='/login' element={<LoginPage />} />
             <Route exact path='/challenges' element={<UserChallengePage />} />
             <Route exact path='/submissions' element={<SubmissionTable />} />
@@ -116,6 +120,8 @@ function HomePage() {
             <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
             <Route exact path='/challenges/submissions/:id' element={<ChallengesSubmissions/>}/>
             <Route exact path='/challenges/docker' element={<DockerManagement/>}/>
+            <Route exact path='/repository' element={<Repository/>}/>
+            <Route exact path='/createRepo' element={<CreateRepo/>}/>
           </Routes>
           
         </div>

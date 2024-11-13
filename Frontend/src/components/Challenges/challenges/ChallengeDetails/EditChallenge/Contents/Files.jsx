@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import FontContext from '../../../../../../context/FontContext';
 
 const Files = ({ challengeId }) => {
+  const { headingFont, paraFont } = useContext(FontContext); // Import font context
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -86,12 +88,17 @@ const Files = ({ challengeId }) => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-4">
-      <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-center">Files</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2
+            className="text-xl font-bold text-center"
+            style={{ ...headingFont }} // Apply heading font style
+          >
+            Files
+          </h2>
           <FontAwesomeIcon icon={faFileUpload} className="text-blue-500 cursor-pointer" onClick={toggleUpload} />
         </div>
         {files.length === 0 ? (
-          <p>No files uploaded.</p>
+          <p style={{ ...paraFont }}>No files uploaded.</p> // Apply paragraph font style
         ) : (
           <ul className="space-y-2">
             {files.map((file, index) => (
@@ -101,10 +108,11 @@ const Files = ({ challengeId }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
+                  style={{ ...paraFont }} // Apply paragraph font style
                 >
                   {file}
                 </a>
-                <FontAwesomeIcon icon={faTrashAlt} className='text-red-500 cursor-pointer' onClick={() => handleFileDelete(file)} />
+                <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer" onClick={() => handleFileDelete(file)} />
               </li>
             ))}
           </ul>
@@ -112,10 +120,10 @@ const Files = ({ challengeId }) => {
       </div>
       <div className="max-w-lg mx-auto">
         {showUpload && (
-          <div className='flex flex-col justify-end'>
-            <div className='flex flex-col'>
+          <div className="flex flex-col justify-end">
+            <div className="flex flex-col">
               <input type="file" onChange={handleFileChange} className="" />
-              <small>Attach multiple files using Control+Click or Cmd+Click.</small>
+              <small style={{ ...paraFont }}>Attach multiple files using Control+Click or Cmd+Click.</small>
             </div>
             <button
               onClick={handleFileUpload}
@@ -124,7 +132,7 @@ const Files = ({ challengeId }) => {
             >
               {uploading ? 'Uploading...' : 'Upload'}
             </button>
-            {message && <p className="mt-4">{message}</p>}
+            {message && <p className="mt-4" style={{ ...paraFont }}>{message}</p>}
           </div>
         )}
       </div>

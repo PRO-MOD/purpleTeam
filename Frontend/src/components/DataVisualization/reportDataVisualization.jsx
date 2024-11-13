@@ -1,13 +1,20 @@
+// import { useContext } from 'react';
+
+
 // // DataVisualizationInitial.js
 // import React from 'react';
 // import Chart from 'react-apexcharts';
+// import FontContext from '../../context/FontContext';
+// import ColorContext from '../../context/ColorContext';
 
 // const ReportDataVisualization = ({ jsonData, scoreData }) => {
 //   // Fallback if scoreData or jsonData is not available
 //   if (!scoreData || !jsonData) {
 //     return <div className="p-4 text-center">Loading data...</div>;
 //   }
-
+//   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
+//   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
+  
 //   // Bar chart for score
 //   const barChartOptions = {
 //     chart: {
@@ -19,6 +26,7 @@
 //     title: {
 //       text: 'User Scores',
 //     },
+//     colors: ['#a00000'], // Applying the specified color for the bars
 //   };
 //   const barChartData = [
 //     {
@@ -37,6 +45,7 @@
 //     title: {
 //       text: 'Report Distribution',
 //     },
+//     colors: ['#d8a6a6', '#a00000'], // Applying the specified colors for the pie slices
 //   };
 //   const pieChartData = reportCounts;
 
@@ -51,6 +60,7 @@
 //     title: {
 //       text: 'Submissions Over Time',
 //     },
+//     colors: ['#d8a6a6'], // Applying the specified color for the line
 //   };
 //   const lineChartData = [
 //     {
@@ -61,7 +71,7 @@
 
 //   return (
 //     <div className="p-4">
-//       <h2 className="text-2xl font-bold mb-4"> Report Data Visualization</h2>
+//       <h2 className="text-2xl font-bold mb-4" style={{font:headingFont}}> Report Data Visualization</h2>
 //       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 //         {/* Bar Chart for Scores */}
 //         <div className="bg-white p-4 rounded-lg shadow-md">
@@ -82,16 +92,19 @@
 
 // export default ReportDataVisualization;
 
-
-// DataVisualizationInitial.js
+import { useContext } from 'react';
 import React from 'react';
 import Chart from 'react-apexcharts';
+import FontContext from '../../context/FontContext';
+import ColorContext from '../../context/ColorContext';
 
 const ReportDataVisualization = ({ jsonData, scoreData }) => {
-  // Fallback if scoreData or jsonData is not available
   if (!scoreData || !jsonData) {
     return <div className="p-4 text-center">Loading data...</div>;
   }
+
+  const { navbarFont, headingFont, paraFont, updateFontSettings } = useContext(FontContext);
+  const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
 
   // Bar chart for score
   const barChartOptions = {
@@ -104,7 +117,7 @@ const ReportDataVisualization = ({ jsonData, scoreData }) => {
     title: {
       text: 'User Scores',
     },
-    colors: ['#a00000'], // Applying the specified color for the bars
+    colors: ['#3652f3', '#4c66f4'], // Different shades for the bars
   };
   const barChartData = [
     {
@@ -123,7 +136,7 @@ const ReportDataVisualization = ({ jsonData, scoreData }) => {
     title: {
       text: 'Report Distribution',
     },
-    colors: ['#d8a6a6', '#a00000'], // Applying the specified colors for the pie slices
+    colors: ['#3652f3', '#4c66f4', '#6379f5', '#7a8df6', '#1f3ae1'], // Shades for pie slices
   };
   const pieChartData = reportCounts;
 
@@ -138,7 +151,7 @@ const ReportDataVisualization = ({ jsonData, scoreData }) => {
     title: {
       text: 'Submissions Over Time',
     },
-    colors: ['#d8a6a6'], // Applying the specified color for the line
+    colors: ['#3652f3'], // Use the primary shade for the line
   };
   const lineChartData = [
     {
@@ -149,7 +162,9 @@ const ReportDataVisualization = ({ jsonData, scoreData }) => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4"> Report Data Visualization</h2>
+      <h2 className="text-2xl font-bold mb-4" style={{ font: headingFont }}>
+        Report Data Visualization
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Bar Chart for Scores */}
         <div className="bg-white p-4 rounded-lg shadow-md">

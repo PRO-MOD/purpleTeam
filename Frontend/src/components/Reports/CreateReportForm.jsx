@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import InputField from '../Challenges/challenges/Partials/InputFeild';
+import FontContext from '../../context/FontContext';
 
 const CreateReportForm = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +8,7 @@ const CreateReportForm = () => {
     description: '',
     deadline: '',
   });
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,8 +74,8 @@ const CreateReportForm = () => {
 
   return (
     <div className="container mx-auto p-4 px-16">
-      <h2 className="text-2xl font-bold mb-4">Create Report</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <h2 className="text-2xl font-bold mb-4" style={{fontFamily: headingFont}}>Create Report</h2>
+      <form onSubmit={handleSubmit} className="space-y-6" style={{fontFamily:paraFont}}>
         {formFields.map((field) => (
           <InputField
             key={field.name}
@@ -91,7 +93,7 @@ const CreateReportForm = () => {
           <button
             className="btn btn-primary bg-blue-500 text-white py-2 px-4 rounded float-right"
             type="submit"
-          >
+        style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}} >
             Create Report
           </button>
         </div>

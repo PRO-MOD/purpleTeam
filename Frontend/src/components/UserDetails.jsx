@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -8,9 +8,11 @@ import SubmissionTable from './Challenges/Submissions/submission';
 import ReportDataVisualization from './DataVisualization/reportDataVisualization';
 import ChallengesDataVisualization from './DataVisualization/challengesDataVisualization';
 import StaticScore from './StaticScore';
+import FontContext from '../context/FontContext';
 
 function UserDetails() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
+  const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
   const { userId } = useParams();
   const [user, setUser] = useState(null);
   const [jsonData, setJsonData] = useState(null);
@@ -115,18 +117,18 @@ function UserDetails() {
       <button onClick={handleGoBack} className="text-blue-500 hover:text-blue-700 underline flex flex-row justify-center items-center my-8">
         <FontAwesomeIcon icon={faArrowLeft} className='me-4' /> Back
       </button>
-      <h1 className="text-3xl font-bold mb-4">User Details</h1>
+      <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>User Details</h1>
       {user ? (
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className='flex flex-row'>
             <div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-                <p className="text-gray-700">{user.name}</p>
+                <label className="block text-gray-700 text-sm font-bold mb-2"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Name:</label>
+                <p className="text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{user.name}</p>
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                <p className="text-gray-700">{user.email}</p>
+                <label className="block text-gray-700 text-sm font-bold mb-2"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Email:</label>
+                <p className="text-gray-700"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{user.email}</p>
               </div>
             </div>
           </div>
@@ -140,7 +142,7 @@ function UserDetails() {
           {mode === 'ctfd' ? (
             <>
               <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
-              <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
+              <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
               <SubmissionTable userId={userId} />
             </>
           ) : (
@@ -172,7 +174,7 @@ function UserDetails() {
               {selectedTab === 'challenges' && (
                 <>
                   <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
-                  <h1 className="text-3xl font-bold mb-4">Challenges Submissions</h1>
+                  <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
                   <SubmissionTable userId={userId} />
                 </>
               )}
@@ -180,7 +182,7 @@ function UserDetails() {
           )}
         </div>
       ) : (
-        <p>Loading...</p>
+        <p   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>Loading...</p>
       )}
     </div>
   );
