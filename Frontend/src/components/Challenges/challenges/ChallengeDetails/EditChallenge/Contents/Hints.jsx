@@ -136,7 +136,7 @@ const Hints = ({ challengeId }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto" >
       <div className="mb-4 mx-12">
         <div className="flex flex-row items-center mb-2">
           <h3 className="font-medium text-xl" style={headingFont}>Hints</h3>

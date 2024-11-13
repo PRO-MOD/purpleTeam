@@ -471,6 +471,42 @@ router.post('/users/:challengeId/add', async (req, res) => {
 });
 
 
+router.post('/multiusers/:challengeId/add', async (req, res) => {
+  try {
+    const { challengeId } = req.params;
+    const { user_ids } = req.body; // expecting an array of user IDs
+
+    // Check if the provided user_ids is an array and contains at least one ID
+    if (!Array.isArray(user_ids) || user_ids.length === 0) {
+      return res.status(400).json({ error: 'Please provide a list of user IDs.' });
+    }
+
+    const challenge = await Challenge.findById(challengeId);
+    if (!challenge) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
+
+    // Filter out users already added to avoid duplicates
+    const newUsers = user_ids.filter(id => !challenge.user_ids.includes(id));
+
+    if (newUsers.length === 0) {
+      return res.status(400).json({ error: 'All users are already added' });
+    }
+
+    // Add new users to the challenge
+    challenge.user_ids.push(...newUsers);
+    await challenge.save();
+
+    // Retrieve added users' details
+    const addedUsers = await User.find({ _id: { $in: newUsers } });
+    res.json({ addedUsers });
+  } catch (error) {
+    console.error('Error adding users:', error);
+    res.status(500).json({ error: 'Failed to add users', message: error.message });
+  }
+});
+
+
 
 router.delete('/users/:challengeId/delete/:userId', async (req, res) => {
   try {

@@ -35,8 +35,8 @@ const Modal = ({
   const [containerData, setContainerData] = useState({});
   const [isServerStopped, setIsServerStopped] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-
-
+  const [cost , setCost] = useState(0);
+ 
   useEffect(() => {
     if (!isOpen) {
       setHintsModalOpen(false);
@@ -101,6 +101,22 @@ const Modal = ({
     }
   };
 
+  const costOfHint = async (hintId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/hints/cost/${hintId}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+
+     
+       
+        setCost(data);
+     
+    } catch (error) {
+      console.error('Error fetching hint details:', error);
+    }
+  };
 
 
   const fetchHintDetails = async (hintId) => {
@@ -482,18 +498,19 @@ const Modal = ({
                         if (usedHints.includes(hint)) {
                           fetchHintDetails(hint);
                         } else {
+                          costOfHint(hint);
                           setSelectedHint(hint);
                           setShowWarning(true);
                         }
                       }}
                       className="text-blue-500 hover:underline"
                     >
-                      Hint {index + 1}
+                      Hint {index + 1} 
                     </button>
                   </li>
                 ))
               ) : (
-                <p>No hints available</p>
+                <p>No hints  available</p>
               )}
             </ul>
 
@@ -508,7 +525,7 @@ const Modal = ({
 
             {selectedHint && showWarning && !usedHints.includes(selectedHint._id) && (
               <div className="mt-4 p-4 border border-yellow-500 rounded-lg bg-yellow-100">
-                <p className="text-yellow-800" style={paraFont}>Unlocking this hint will deduct cost from your score. Proceed?</p>
+                <p className="text-yellow-800" style={paraFont}>Unlocking this hint will deduct cost from your score {cost}. Proceed?</p>
                 <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2" onClick={confirmUnlockHint}>Proceed</button>
                 <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" onClick={() => setShowWarning(false)}>Cancel</button>
               </div>
