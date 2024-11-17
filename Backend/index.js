@@ -167,6 +167,8 @@ app.get('/', (req, res) => {
 app.post('/', async (req, res) => {
   const { challenge_id, date, id } = req.body;
   console.log("Requested Body: >> " + challenge_id, date, id);
+  console.log(req.body);
+  
   // Fetch all documents from Score schema
   const scores = await Score.find();
 
