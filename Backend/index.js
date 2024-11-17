@@ -167,9 +167,9 @@ app.get('/', (req, res) => {
 app.post('/', async (req, res) => {
   const { challenge_id, date, id } = req.body;
   console.log("Requested Body: >> " + challenge_id, date, id);
-  console.log(req.body);// Log the entire payload
-  console.log('Payload:', JSON.stringify(data.payload, null, 2));
-  
+  console.log(req.body);
+  const data = req.body.payload.payment;
+  console.log("Payload: "+ JSON.stringify(data.payment.entity, null, 2));
   
   
   // Fetch all documents from Score schema
