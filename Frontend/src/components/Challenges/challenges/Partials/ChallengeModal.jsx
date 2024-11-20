@@ -15,7 +15,10 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
         language: 'python',
         choices: [''],
         code: '',
-        user_ids: []
+        user_ids: [],
+        initial: 0,             // Default value for the "initial" field
+        minimum: 0,             // Default value for the "minimum" field
+        decay: 0,  
 
     });
 
@@ -140,17 +143,16 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
         formDataToSend.append('flag_data', formData.flag_data);
         formDataToSend.append('state', formData.state);
         formDataToSend.append('user_ids', JSON.stringify(formData.user_ids));
+        formDataToSend.append('initial', formData.initial);
+    formDataToSend.append('minimum', formData.minimum);
+    formDataToSend.append('decay', formData.decay);
     
         if (selectedOption === 'code') {
             formDataToSend.append('language', formData.language);
             formDataToSend.append('code', formData.code);
         } else if (selectedOption === 'multiple_choice') {
             formDataToSend.append('choices', JSON.stringify(formData.choices));
-        } else if (selectedOption === 'dynamic') {
-            formDataToSend.append('initial', formData.initial);
-            formDataToSend.append('minimum', formData.minimum);
-            formDataToSend.append('decay', formData.decay);
-        }
+        } 
     
         if (formData.file.length > 0) {
             for (let i = 0; i < formData.file.length; i++) {
@@ -327,19 +329,20 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
                             )}
 
 
-{selectedOption === 'dynamic' && (
             <div className="form-group">
                 <label className="block text-gray-700">Initial:</label>
                 <input
                     type="number"
                     className="form-input block w-full sm:text-sm border border-gray-300 rounded-sm focus:ring focus:ring-green-200 outline-0 p-2"
                     value={formData.initial}
+                    onWheel={(e) => e.preventDefault()}
                     onChange={(e) => setFormData({ ...formData, initial: e.target.value })}
                     placeholder="Initial value"
                 />
                 <label className="block text-gray-700 mt-4">Minimum:</label>
                 <input
                     type="number"
+                    onWheel={(e) => e.preventDefault()}
                     className="form-input block w-full sm:text-sm border border-gray-300 rounded-sm focus:ring focus:ring-green-200 outline-0 p-2"
                     value={formData.minimum}
                     onChange={(e) => setFormData({ ...formData, minimum: e.target.value })}
@@ -348,13 +351,13 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
                 <label className="block text-gray-700 mt-4">Decay:</label>
                 <input
                     type="number"
+                    onWheel={(e) => e.preventDefault()}
                     className="form-input block w-full sm:text-sm border border-gray-300 rounded-sm focus:ring focus:ring-green-200 outline-0 p-2"
                     value={formData.decay}
                     onChange={(e) => setFormData({ ...formData, decay: e.target.value })}
                     placeholder="Decay value"
                 />
             </div>
-        )}
 
 
                             <div className="mb-4">

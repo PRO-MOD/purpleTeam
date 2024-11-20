@@ -87,7 +87,11 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
       }
 
       // Additional data to update
-      const { flag, flag_data, state,user_ids } = req.body;
+      const { flag, flag_data, state,user_ids, initial,  minimum,  decay,} = req.body;
+
+      existingChallenge.initial=initial;
+      existingChallenge.minimum=minimum;
+      existingChallenge.decay=decay;
 
       // Update challenge properties
       if (flag) {
@@ -108,9 +112,7 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
       } else if (existingChallenge.type === 'multiple_choice') {
           existingChallenge.choices = JSON.parse(req.body.choices);
       } else if (existingChallenge.type === 'dynamic') {
-        existingChallenge.initial=req.body.initial;
-        existingChallenge.minimum=req.body.minimum;
-        existingChallenge.decay=req.body.decay;
+      
         const users = await User.find({});
         const flags = users.map(user => ({
           userId: user._id,
@@ -707,38 +709,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       const userFlag = dynamicFlags.flags.find(flag => flag.userId.toString() === userId);
       // if (userFlag && userFlag.flag === answer.trim()) {
       
-      //     let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
-      
-      //     // Fetch dynamic scoring values from the challenge document
-      //     let initial = challenge.initial;
-      //     let minimum = challenge.minimum;
-      //     let decay = challenge.decay;
-      
-      //     // Calculate the dynamic score for the current correct answer
-      //     let value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
-      
-      //     // Ensure value doesn't drop below the minimum
-      //     if (value < minimum) {
-      //         value = minimum;
-      //     }
-      
-      //     // Calculate the value for the next correct answer
-      //     let nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
-      //     if (nextval < minimum) {
-      //         nextval = minimum;
-      //     }
-
-      //     const challenge= await Challenge.findById(challengeId);
-
-      //     challenge.value=nextval;
-      //     await challenge.save();
-          
-      //   return handleCorrectAnswer(userId, challengeId, challenge.name, value, answer, res);
-      // }
-      // else{
-      //   return handleIncorrectAnswer(userId, challengeId, answer, res);
-      // }
-
+     
       if (userFlag && userFlag.flag === answer.trim()) {
         // Fetch the challenge document from the database first
         const challenge = await Challenge.findById(challengeId);
@@ -750,11 +721,12 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         
         // Calculate the number of correct answers
         let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
-    
+    let value;
         // Calculate the dynamic score for the current correct answer
         if (decay === 0) {
           // If decay is 0, use a fixed value (or other fallback logic)
           value = initial;  // Or decide on a fallback value
+          return handleCorrectAnswer(userId, challengeId, challenge.name, challenge.value, answer, res);
       } else {
           // Standard calculation if decay is not 0
           value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
@@ -768,10 +740,14 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         let nextval;
         if (decay === 0) {
             nextval = initial;  // Same fallback logic
+            return handleCorrectAnswer(userId, challengeId, challenge.name, challenge.value, answer, res);
         } else {
             nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
         }
     
+        if(nextval<minimum){
+          nextval=minimum;
+        }
         // Update the challenge document with the new value
         challenge.value = nextval;
         await challenge.save();
@@ -788,13 +764,67 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
     } else {
       // Regular flag verification
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
-      if (isCorrect) {
-        return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, answer, res);
-      }
+      console.log(isCorrect);
+      // if (isCorrect) {
+      //   return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, answer, res);
+      // }
 
-      else {
-        return handleIncorrectAnswer(userId, challengeId, answer, res);
-      }
+      // else {
+      //   return handleIncorrectAnswer(userId, challengeId, answer, res);
+      // }
+      // Regular flag verification
+if (isCorrect) {
+  const challenge = await Challenge.findById(challengeId);
+    // Fetch scoring parameters from the challenge document
+    let initial = challenge.initial;
+    let minimum = challenge.minimum;
+    let decay = challenge.decay;
+
+
+    // Calculate the number of correct answers
+    let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
+
+    // Calculate the dynamic score for the current correct answer
+    let value;
+    if (decay === 0) {
+        // If decay is 0, use a fixed value (or other fallback logic)
+        value = initial; // Or decide on a fallback value
+        return handleCorrectAnswer(userId, challengeId, challenge.name, challenge.value, answer, res);
+
+    } else {
+        // Standard calculation if decay is not 0
+        value = Math.ceil(initial - ((initial - minimum) / decay) * solves);
+    }
+    // Ensure value doesn't drop below the minimum
+    if (value < minimum) {
+        value = minimum;
+    }
+
+    // Calculate the value for the next correct answer
+    let nextval;
+    if (decay === 0) {
+        nextval = initial; // Same fallback logic
+    } else {
+        nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
+    }
+    if(nextval<minimum){
+      nextval=minimum;
+    }
+
+    // Update the challenge document with the new value
+    challenge.value = nextval;
+    await challenge.save();
+
+    let min = Math.min(value, updatedValue);
+    console.log(min);
+
+
+    // Handle the correct answer
+    return handleCorrectAnswer(userId, challengeId, challenge.name, min, answer, res);
+} else {
+    // Handle the incorrect answer
+    return handleIncorrectAnswer(userId, challengeId, answer, res);
+}
     }
 
   } catch (error) {
