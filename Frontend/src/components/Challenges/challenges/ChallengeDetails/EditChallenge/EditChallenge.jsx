@@ -66,7 +66,7 @@ const EditChallenge = ({ challenge }) => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 " >
       <form method="POST" onSubmit={handleSubmit} className="space-y-6">
         {error && <p className="text-red-500">{error}</p>}
         {success && <p className="text-green-500">Challenge updated successfully!</p>}
@@ -97,14 +97,14 @@ const EditChallenge = ({ challenge }) => {
             onChange={(e) => setCategory(e.target.value)}
           />
         </div>
-        <div className="form-group">
+        <div className="form-group" >
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">
             Message
             <small className="block text-gray-500">
               Use this to give a brief introduction to your challenge.
             </small>
           </label>
-          <SimpleMDE
+          <SimpleMDE 
             id="description"
             name="description"
             value={description}
@@ -144,7 +144,7 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
-{challenge.type==='dynamic' && (
+
         <div className="form-group">
           <label htmlFor="initial" className="block text-sm font-medium text-gray-700">
           initial
@@ -162,9 +162,9 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
-        )}
+     
 
-{challenge.type==='dynamic' &&(
+
         <div className="form-group">
           <label htmlFor="minimum" className="block text-sm font-medium text-gray-700">
           Minimum
@@ -182,9 +182,9 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
-)}
 
-{challenge.type==='dynamic' &&(
+
+
         <div className="form-group">
           <label htmlFor="decay" className="block text-sm font-medium text-gray-700">
           decay
@@ -202,7 +202,7 @@ const EditChallenge = ({ challenge }) => {
             required
           />
         </div>
-)}
+
         <div className="form-group">
           <label htmlFor="max_attempts" className="block text-sm font-medium text-gray-700">
             Max Attempts

@@ -105,6 +105,18 @@ router.get('/hints/:id', async (req, res) => {
   }
 });
 
+router.get('/cost/:id', async (req, res) => {
+  try {
+      const hints = await Hint.find({_id: req.params.id});
+           
+      res.status(200).json(hints[0].cost);
+  } catch (error) {
+      console.error('Error fetching challenges:', error);
+      res.status(500).json({ error: 'Failed to fetch challenges', message: error.message });
+  }
+});
+
+
 router.get('/locked/hints/:id', async (req, res) => {
   try {
       const hints = await Hint.find({_id: req.params.id});
