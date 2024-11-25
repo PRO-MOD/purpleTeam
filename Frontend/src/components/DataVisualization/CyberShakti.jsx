@@ -12,7 +12,7 @@ const CyberShakti = () => {
           width: "100vw",
           height: "100vh",
         }}
-        src="https://charts.mongodb.com/charts-cybershakti_scores-sohldsj/embed/dashboards?id=fd838a12-8b6f-4ff9-bd24-727a8693cf77&theme=light&autoRefresh=true&maxDataAge=3600&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed"
+        src="https://charts.mongodb.com/charts-cybershakti_scores-sohldsj/embed/dashboards?id=fd838a12-8b6f-4ff9-bd24-727a8693cf77&theme=light&autoRefresh=true&maxDataAge=60&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed"
         title="MongoDB Charts Dashboard"
       />
       </div>
