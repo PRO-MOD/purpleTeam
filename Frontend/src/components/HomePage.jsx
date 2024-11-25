@@ -45,6 +45,7 @@ import DockerManagement from './Challenges/challenges/ChallengeDetails/EditChall
 
 // landing page components
 import MainPage from './LandingPage';
+import CyberShakti from './DataVisualization/CyberShakti';
 
 
 function HomePage() {
@@ -108,6 +109,7 @@ function HomePage() {
             <Route exact path="/profile" element={<UserProfile />} />
             {/* Challenges ROute */}
             <Route exact path='/admin/challenges' element={<MainChallenge />} />
+            <Route exact path='/admin/cybershakti/visualization' element={<CyberShakti />} />
             <Route exact path='/admin/challenge/create' element={<CreateChallenge />} />
             <Route exact path='/challenges/:id' element={<ChallengeDetailsPage />} />
             <Route exact path='/repositories/:id' element={<RepoDetailsPage />} />
