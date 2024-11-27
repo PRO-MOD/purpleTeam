@@ -62,7 +62,7 @@ const AssignStaticScoreModal = ({ userId, isOpen, onClose, onAssign, assignedSta
                             value={staticScore}
                             onChange={(e) => {
                                 // Ensure the input value is non-negative
-                                const newValue = e.target.value.replace(/\D/g, ''); // Remove any non-digit characters
+                                const newValue = e.target.value.replace(/[^-\d]/g, '');// Remove any non-digit characters
                                 setStaticScore(newValue);
                             }}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

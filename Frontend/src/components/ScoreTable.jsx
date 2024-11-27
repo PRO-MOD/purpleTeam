@@ -119,7 +119,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('score')}
              style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
-              Service Availability <FontAwesomeIcon icon={getSortIcon('score')} />
+              Score <FontAwesomeIcon icon={getSortIcon('score')} />
             </th>
             {mode === 'purpleTeam' && (
               <>
@@ -130,6 +130,8 @@ function ScoreTable({ scores, loading, isHomePage }) {
                  style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
                   Incident Response <FontAwesomeIcon icon={getSortIcon('manualScore')} />
                 </th>
+                </>
+            )}
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -137,8 +139,7 @@ function ScoreTable({ scores, loading, isHomePage }) {
                  style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
                   Static Score <FontAwesomeIcon icon={getSortIcon('staticScore')} />
                 </th>
-              </>
-            )}
+            
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -183,8 +184,9 @@ function ScoreTable({ scores, loading, isHomePage }) {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.staticScore == null ? 'Not entered' : user.staticScore}</td>
                     </>
                   )}
+                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.staticScore == null ? 'Not entered' : user.staticScore}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {mode === 'purpleTeam' ? user.score + (user.manualScore || 0) + (user.staticScore || 0) : user.score}
+                    {mode === 'purpleTeam' ? user.score + (user.manualScore || 0) + (user.staticScore || 0) : user.score+user.staticScore || 0 }
                   </td>
                   {mode === 'purpleTeam' && (
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>

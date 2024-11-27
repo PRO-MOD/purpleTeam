@@ -209,11 +209,11 @@ router.get('/details/:id', async (req, res) => {
     }
   });
  
-
+ 
 
 router.get('/toDisplayAllChallenges', async (req, res) => {
     try {
-        const challenges = await Challenge.find().select('name value category type state');
+        const challenges = await Challenge.find().select('name initial category type state');
         res.status(200).json(challenges);
     } catch (error) {
         console.error('Error fetching challenges:', error);
@@ -571,8 +571,6 @@ router.put('/users/:challengeId/edit/:index', async (req, res) => {
 
 router.post('/verify-answer', fetchuser, async (req, res) => {
 
-
-
   const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, answer, res) => {
     try {
       let userScore = await score.findOne({ user: userId });
@@ -594,7 +592,6 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
           await userScore.save();
       }
   
-    console.log(updatedValue);
 
         // Count previous attempts for this user and challenge
     const previousAttempts = await Submission.countDocuments({ userId, challengeId });
@@ -670,12 +667,8 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
     }
   };
   
-  
-
 
   const { challengeId, answer, updatedValue } = req.body;
-
-
 
   try {
     const challenge = await Challenge.findById(challengeId);
@@ -764,7 +757,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
     } else {
       // Regular flag verification
       const isCorrect = isCorrectAnswer(answer, challenge.flag, challenge.flag_data);
-      console.log(isCorrect);
+      
       // if (isCorrect) {
       //   return handleCorrectAnswer(userId, challengeId, challenge.name, updatedValue, answer, res);
       // }
@@ -816,7 +809,7 @@ if (isCorrect) {
     await challenge.save();
 
     let min = Math.min(value, updatedValue);
-    console.log(min);
+    
 
 
     // Handle the correct answer
