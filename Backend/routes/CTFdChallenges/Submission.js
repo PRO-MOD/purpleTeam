@@ -8,13 +8,15 @@ const mongoose = require('mongoose');
 
 router.get('/all', async (req, res) => {
   try {
-    // const challengeId = req.params.challengeId;
     const Submissions = await Submission.find()
-      .populate('userId', 'name')
-      .populate('challengeId', 'name type')
+      .populate('userId', 'name')  // Populate with 'User' model (userId field)
+      .populate('challengeId', 'name type')  // Populate with 'Challenge' model (challengeId field)
       .select('userId challengeId answer date isCorrect points cheating attempt');
 
-    res.json(Submissions);
+    // Filter out any submissions where userId or challengeId doesn't exist
+    const filteredSubmissions = Submissions.filter(submission => submission.userId !== null && submission.challengeId !== null);
+
+    res.json(filteredSubmissions);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
