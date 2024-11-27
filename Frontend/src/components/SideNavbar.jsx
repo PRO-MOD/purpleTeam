@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser,
   faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved,
-  faFilePdf, faPuzzlePiece, faWrench, faFile
+  faFilePdf, faPuzzlePiece, faWrench, faFile,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
@@ -151,6 +151,7 @@ const SideNavbar = () => {
   // Define general items
   const generalItems = [
     { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home },
+    { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home },
     { path: "/UserHome", icon: faCircleUser, label: "Reports", visibility: visibilitySettings.dashboard },
     { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes },
     { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress },
