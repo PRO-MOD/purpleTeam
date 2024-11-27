@@ -383,7 +383,7 @@ const Modal = ({
               <div className="mt-4">
                 {message && <p className={`${message.includes('Error') ? 'text-red-500' : 'text-green-500'} m-4`} style={paraFont}>{message}</p>}  {/* Display message if any */}
                 {
-                  challenge.type === 'dynamic' ? (
+                  challenge.type === 'dynamic' && challenge.dockerImage !== null ? (
                     <div className="flex flex-row">
                       {!containerData || !containerData.url ? (
                         // Show "Start server" button while container is not created or data is not available
@@ -414,7 +414,7 @@ const Modal = ({
                     </div>
                   ) : ""
                 }
-                {challenge.type === 'dynamic' ? (
+                {challenge.type === 'dynamic' && challenge.dockerImage !== null ? (
                   isServerStopped ? (
                     <textarea
                       className="w-full p-2 border border-gray-300 rounded"
