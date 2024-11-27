@@ -173,6 +173,12 @@ router.get('/conversations', fetchuser, async (req, res) => {
             const senderName = await User.findById(conversation.sender).select('name profile');
             const recipientName = await User.findById(conversation.recipient).select('name profile');
             const latestMessageContent = conversation.latestMessage.content;
+
+            // Handle case where sender or recipient could not be found
+            if (!senderName || !recipientName) {
+                return null; // Skip conversation if either sender or recipient is missing
+            }
+
             return {
                 sender: senderName,
                 recipient: recipientName,
@@ -181,7 +187,10 @@ router.get('/conversations', fetchuser, async (req, res) => {
             };
         }));
 
-        res.json(formattedConversations);
+        // Filter out any null conversations (in case a user was not found)
+        const cleanedConversations = formattedConversations.filter(conversation => conversation !== null);
+
+        res.json(cleanedConversations);
     } catch (error) {
         console.error('Error getting conversations:', error);
         res.status(500).json({ error: 'Internal server error' });

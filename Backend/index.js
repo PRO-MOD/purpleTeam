@@ -166,10 +166,7 @@ app.get('/', (req, res) => {
 // Endpoint for handling webhook events
 app.post('/', async (req, res) => {
   const { challenge_id, date, id } = req.body;
-  console.log("Requested Body: >> " + challenge_id, date, id);
-  console.log(req.body);
-  console.log("Payload: "+ JSON.stringify(req.body.payload, null, 2));
-  
+  console.log("Requested Body: >> " + challenge_id, date, id);  
   
   // Fetch all documents from Score schema
   const scores = await Score.find();
