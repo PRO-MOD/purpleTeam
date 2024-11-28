@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Score = require('../models/score');
+const Submission = require('../models/CTFdChallenges/Submission');
 const Flag=require('../models/flags');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -193,6 +195,11 @@ router.delete('/deleteuser/:userId', async (req, res) => {
       }
       // Perform the deletion
       await User.findByIdAndDelete(userId);
+      // Delete the corresponding score document
+      await Score.deleteMany({ user: userId });
+      // Delete the corresponding submissions
+      await Submission.deleteMany({ userId: userId });
+      
       res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
       console.error('Error deleting user:', error);

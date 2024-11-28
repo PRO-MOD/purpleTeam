@@ -15,9 +15,19 @@ const SocketState = (props) => {
   const [challenge, setChallenge] = useState(''); // State for challenge name
   const [timeoutId, setTimeoutId] = useState(null);
   const [submissions, setSubmissions] = useState([]);
-
+  const [notifications, setNotifications] = useState([]);
   
+  // Fetch notifications from the backend
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/notifications/`);
+      const data = await response.json();
 
+      setNotifications(data.notifications);
+    } catch (error) {
+      console.error("Failed to fetch notifications", error);
+    }
+  };
 
   // Fetch user
   const creteSocket = async (userID) => {
@@ -64,6 +74,14 @@ const SocketState = (props) => {
       setTimeoutId(newTimeoutId);
       fetchSubmissions();
     });
+
+    socket?.on('receiveNotification', (data) => {
+      playNotificationSound();
+      if (data.type === "alert") {
+        alert(`${data.title}: ${data.message}`);
+      }
+      fetchNotifications();
+    })
 
     socket?.on('getMessage', message => {
       if (!window.location.href.includes('/chat')) {
@@ -162,7 +180,7 @@ const SocketState = (props) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, submissions, fetchUnreadMessagesByUser, challenge, fetchSubmissions }}>
+    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, submissions, fetchUnreadMessagesByUser, challenge, fetchSubmissions, notifications, setNotifications, fetchNotifications }}>
       {modalIsOpen && <p className="bg-red-500 text-white text-center w-full py-2 absolute left-[13%] ps-4 z-10">Red Team Captured {challenge}</p>}
       {/* <p className="bg-red-500 text-white w-full py-2 text-center absolute left-[13%] ps-4">Red Team Captured</p> */}
       {props.children}

@@ -277,7 +277,7 @@ function AddUsers() {
                                 <td className="border border-gray-400 px-4 py-2">{user.email}</td>
                                 <td className="border border-gray-400 px-4 py-2">************</td>
                                 <td className="border border-gray-400 px-4 py-2">
-                                    <button onClick={() => handleEditUser(user._id, "user")}>Edit</button>
+                                    <button onClick={() => handleEditUser(user._id, "user")} className="mr-2">Edit</button>
                                     <FontAwesomeIcon icon={faTrashCan} onClick={() => deleteUser(user._id, "user")}/>
                                 </td>
                             </tr>
@@ -305,7 +305,7 @@ function AddUsers() {
                                 <td className="border border-gray-400 px-4 py-2">{volunteer.email}</td>
                                 <td className="border border-gray-400 px-4 py-2">************</td>
                                 <td className="border border-gray-400 px-4 py-2">
-                                    <button onClick={() => handleEditUser(volunteer._id, "volunteer")}>Edit</button>
+                                    <button onClick={() => handleEditUser(volunteer._id, "volunteer")} className="mr-2">Edit</button>
                                     <FontAwesomeIcon icon={faTrashCan} onClick={() => deleteUser(volunteer._id, "volunteer")}/>
                                 </td>
                             </tr>

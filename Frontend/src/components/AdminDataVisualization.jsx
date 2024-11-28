@@ -119,25 +119,25 @@ function AdminDataVisualization() {
 
 
 
-  const challengeTypeOptions = {
-    chart: { type: 'bar' },
-    plotOptions: {
-      bar: { horizontal: true },
-    },
-    dataLabels: { enabled: false },
-    xaxis: {
-      categories: submissionTypes.map(user => user.type),
-    },
-    yaxis: {
-      title: { text: 'Type of Challenges' },
-    },
-    title: {
-      text: 'Type of Challenges',
-      style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
-    },
-    grid: { borderColor: '#E2E8F0' },
-    colors: ['#a00000'],
-  };
+  // const challengeTypeOptions = {
+  //   chart: { type: 'bar' },
+  //   plotOptions: {
+  //     bar: { horizontal: true },
+  //   },
+  //   dataLabels: { enabled: false },
+  //   xaxis: {
+  //     categories: submissionTypes.map(user => user.type),
+  //   },
+  //   yaxis: {
+  //     title: { text: 'Type of Challenges' },
+  //   },
+  //   title: {
+  //     text: 'Type of Challenges',
+  //     style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+  //   },
+  //   grid: { borderColor: '#E2E8F0' },
+  //   colors: ['#a00000'],
+  // };
 
   const challengeTypeSeries = [{
     name: 'challengeType',
@@ -325,28 +325,28 @@ function AdminDataVisualization() {
      })),
    }];
  // Process data for points scored by users
- const userPoints = {};
- submissionData.forEach(submission => {
-   const userName = submission.userId.name;
-   userPoints[userName] = (userPoints[userName] || 0) + submission.points;
- });
+//  const userPoints = {};
+//  submissionData.forEach(submission => {
+//    const userName = submission.userId.name;
+//    userPoints[userName] = (userPoints[userName] || 0) + submission.points;
+//  });
 
- const userPointsOptions = {
-   chart: { type: 'bar' },
-   plotOptions: { bar: { horizontal: true } },
-   dataLabels: { enabled: false },
-   xaxis: { categories: Object.keys(userPoints) },
-   title: {
-     text: 'Points Scored by Users',
-     style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
-   },
-   grid: { borderColor: '#E2E8F0' },
-   colors: ['#a00000'],
- };
- const userPointsSeries = [{
-   name: 'Points',
-   data: Object.values(userPoints),
- }];
+//  const userPointsOptions = {
+//    chart: { type: 'bar' },
+//    plotOptions: { bar: { horizontal: true } },
+//    dataLabels: { enabled: false },
+//    xaxis: { categories: Object.keys(userPoints) },
+//    title: {
+//      text: 'Points Scored by Users',
+//      style: { fontSize: '18px', fontWeight: 'bold', color: '#4A5568' },
+//    },
+//    grid: { borderColor: '#E2E8F0' },
+//    colors: ['#a00000'],
+//  };
+//  const userPointsSeries = [{
+//    name: 'Points',
+//    data: Object.values(userPoints),
+//  }];
 
 
   return (
@@ -360,7 +360,7 @@ function AdminDataVisualization() {
           </p>
           )}
           <p className="text-lg text-gray-600" style={navbarFont}>
-            Leading Team with Service Availability: <strong className="text-blue-600">{highestScores.highestScore}</strong>
+            Leading Team with Total Score: <strong className="text-blue-600">{highestScores.highestScore}</strong>
           </p>
         </div>
 
@@ -377,12 +377,16 @@ function AdminDataVisualization() {
           </div>
           )}
 
-           {mode==='ctfd' &&(
+
+<div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
+            <ApexCharts options={userSubmissionsOptions} series={userSubmissionsSeries} type="bar" height={320} />
+          </div>
+           {/* {mode==='ctfd' &&(
            <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={challengeTypeOptions} series={challengeTypeSeries} type="bar" height={320} />
           </div>
 
-        )}
+        )} */}
         </div>
 
        
@@ -473,12 +477,12 @@ function AdminDataVisualization() {
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 mt-8">
-          <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
+          {/* <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={userSubmissionsOptions} series={userSubmissionsSeries} type="bar" height={320} />
-          </div>
-          <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
+          </div> */}
+          {/* <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={userPointsOptions} series={userPointsSeries} type="bar" height={320} />
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 mt-8">
@@ -497,14 +501,14 @@ function AdminDataVisualization() {
         </div>
         
 
-        {mode==='purpleTeam' && (
+        {/* {mode==='purpleTeam' && (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-8 mt-8">
         <div className="bg-white p-6 border border-gray-300 rounded-lg shadow-lg">
             <h3 className="text-xl font-bold text-gray-800 mb-4" style={headingFont}>Submissions Count by Challenge Type</h3>
             <ApexCharts options={challengeTypeOptions} series={challengeTypeSeries} type="bar" height={320} />
           </div>
           </div>
-)}
+)} */}
 
         
       </div>

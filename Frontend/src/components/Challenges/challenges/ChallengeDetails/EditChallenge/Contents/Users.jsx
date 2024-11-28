@@ -44,7 +44,7 @@ const Users = ({ challengeId }) => {
 
     fetchUsers();
     fetchAllUsers();
-  }, [challengeId, users]);
+  }, []); //challengeId, users
 
   const handleAddUsers = async () => {
     if (selectedUsers.length === 0) {

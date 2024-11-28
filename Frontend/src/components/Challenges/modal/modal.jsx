@@ -16,7 +16,6 @@ const Modal = ({
   attempts,
   feedback,
   updatedValue,
-  setUpdatedValue,
   solvedChallenges,
   totalAttempts,
 
@@ -44,30 +43,13 @@ const Modal = ({
       setSelectedHint(null);
       setUsedHints([]);
     } else {
-      fetchUserChallengeValue();
-
       fetchUsedHints();
     }
   }, [isOpen, challenge]);
 
-  const fetchUserChallengeValue = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/hints/value/${challenge._id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setUpdatedValue(data.value);
-    } catch (error) {
-      console.error('Error fetching challenge value:', error);
-    }
-  };
 
+
+  //for getting ids of used hints 
   const fetchUsedHints = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/hints/used-hints/${challenge._id}`, {
@@ -87,6 +69,8 @@ const Modal = ({
     }
   };
 
+
+  //for getting ids of all the hints of the paeticular challenge
   const fetchHints = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/challenges/hints/${challenge._id}`);
@@ -101,6 +85,8 @@ const Modal = ({
     }
   };
 
+
+  //for getting cost of hint before unlocking it 
   const costOfHint = async (hintId) => {
     try {
       const response = await fetch(`${apiUrl}/api/hints/cost/${hintId}`);
@@ -119,6 +105,7 @@ const Modal = ({
   };
 
 
+  //detail of hint by using id
   const fetchHintDetails = async (hintId) => {
     try {
       const response = await fetch(`${apiUrl}/api/hints/hints/${hintId}`);
@@ -128,7 +115,6 @@ const Modal = ({
       const data = await response.json();
 
       if (data.length > 0) {
-        console.log(data[0]);
         setSelectedHint(data[0]);
         setShowHintDetails(true);
       } else {
@@ -163,42 +149,101 @@ const Modal = ({
 
 
 
+  // const confirmUnlockHint = async () => {
+  //   if (!selectedHint) return;
+  
+  //   setShowWarning(false);
+  
+    
+  //     // Fetch hint details
+  //     const hintDetails = await fetchLockedHintDetails(selectedHint);
+  //     if (!hintDetails) return;
+  
+  //     setSelectedHint(hintDetails);
+  //     // Set the selected hint to the full hint object
+  
+  //     // Check if the hint cost exceeds the user's score
+  //     if (hintDetails.cost > updatedValue) {
+  //       alert('Insufficient score to unlock this hint.');
+  //       return; // Prevent further execution
+  //     }
+  
+  //     // Unlock the hint if not already used
+  //     if (!usedHints.includes(hintDetails._id)) {
+  //       setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Mark hint as used // Deduct hint cost
+  //       setShowHintDetails(true);
+  
+  //       // Record hint usage in the backend
+  //       try{
+  //       await fetch(`${apiUrl}/api/hints/use-hint`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+  //         },
+  //         body: JSON.stringify({
+  //           challengeId: challenge._id,
+  //           hintId: hintDetails._id,
+  //         }),
+  //       });
+  //     } catch (error){
+  //       console.error("Error recording hint usage:", error);
+  //     }}else {
+  //       setShowHintDetails(true); // Show hint details if already used
+  //     }
+    
+  // };
+  
+
   const confirmUnlockHint = async () => {
     if (!selectedHint) return;
-
+  
     setShowWarning(false);
-
-    const hintDetails = await fetchLockedHintDetails(selectedHint); // Await for the hint details
-
-    if (!hintDetails) return; // If no details are returned, exit the function
-
+  
+    // Fetch hint details
+    const hintDetails = await fetchLockedHintDetails(selectedHint);
+    if (!hintDetails) return;
+  
     setSelectedHint(hintDetails); // Set the selected hint to the full hint object
-
-    if (!usedHints.includes(hintDetails._id)) { // Use hintDetails._id for the check
-      setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Use hintDetails._id
-      setUpdatedValue(prevValue => prevValue - hintDetails.cost); // Use hintDetails.cost
-      setShowHintDetails(true);
-
-      try {
-        await fetch(`${apiUrl}/api/hints/use-hint`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
-          },
-          body: JSON.stringify({
-            challengeId: challenge._id,
-            hintId: hintDetails._id, // Use hintDetails._id
-          }),
-        });
-      } catch (error) {
-        console.error('Error recording hint usage:', error);
+  
+    // Unlock hint through backend
+    try {
+      const response = await fetch(`${apiUrl}/api/hints/use-hint`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        },
+        body: JSON.stringify({
+          challengeId: challenge._id,
+          hintId: hintDetails._id,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.status === 400) {
+        // Insufficient score
+        alert('Insufficient score to unlock this hint.');
+        return;
       }
-    } else {
-      setShowHintDetails(true);
+  
+      if (response.status !== 200) {
+        // Other errors
+        alert('Failed to unlock hint. Please try again.');
+        return;
+      }
+  
+      // Success: Update local state with the unlocked hint and remaining score
+      setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Mark hint as used
+      setShowHintDetails(true); // Show hint details
+  
+    } catch (error) {
+      console.error('Error unlocking hint:', error);
+      alert('Something went wrong. Please try again.');
     }
   };
-
+  
 
 
   const handleChange = (e) => {
@@ -301,7 +346,7 @@ const Modal = ({
           <h2 className="text-2xl font-bold mx-auto" style={headingFont}>{challenge.name}</h2>
           <button onClick={onClose} className="ml-4">&times;</button>
         </div>
-        <p className="text-xl mr-8 mt-4 text-center" style={navbarFont}>Remaining Value: {updatedValue}</p>
+        <p className="text-xl mr-8 mt-4 text-center" style={navbarFont}> Remaining Value: {updatedValue}</p>
 
         <div className="mt-4">
           <ReactMarkdown remarkPlugins={[gfm]} children={challenge.description} components={{ img: renderImage }} />
@@ -338,7 +383,7 @@ const Modal = ({
               <div className="mt-4">
                 {message && <p className={`${message.includes('Error') ? 'text-red-500' : 'text-green-500'} m-4`} style={paraFont}>{message}</p>}  {/* Display message if any */}
                 {
-                  challenge.type === 'dynamic' ? (
+                  challenge.type === 'dynamic' && challenge.dockerImage !== null ? (
                     <div className="flex flex-row">
                       {!containerData || !containerData.url ? (
                         // Show "Start server" button while container is not created or data is not available
@@ -369,7 +414,7 @@ const Modal = ({
                     </div>
                   ) : ""
                 }
-                {challenge.type === 'dynamic' ? (
+                {challenge.type === 'dynamic' && challenge.dockerImage !== null ? (
                   isServerStopped ? (
                     <textarea
                       className="w-full p-2 border border-gray-300 rounded"
@@ -430,7 +475,7 @@ const Modal = ({
                   {challenge.files.map((fileName, index) => (
                     <li key={index}>
                       <a
-                        href={`${apiUrl}/uploads/${fileName}`}
+                        href={`${apiUrl}/uploads/CTFdChallenges/${fileName}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-500 hover:underline"

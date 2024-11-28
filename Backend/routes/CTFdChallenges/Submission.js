@@ -3,18 +3,21 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs');
 const Submission =require('../../models/CTFdChallenges/Submission');
+const Score =require('../../models/score');
 const mongoose = require('mongoose');
 
 
 router.get('/all', async (req, res) => {
   try {
-    // const challengeId = req.params.challengeId;
     const Submissions = await Submission.find()
-      .populate('userId', 'name')
-      .populate('challengeId', 'name type')
+      .populate('userId', 'name')  // Populate with 'User' model (userId field)
+      .populate('challengeId', 'name type')  // Populate with 'Challenge' model (challengeId field)
       .select('userId challengeId answer date isCorrect points cheating attempt');
 
-    res.json(Submissions);
+    // Filter out any submissions where userId or challengeId doesn't exist
+    const filteredSubmissions = Submissions.filter(submission => submission.userId !== null && submission.challengeId !== null);
+
+    res.json(filteredSubmissions);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -144,13 +147,42 @@ router.get('/types-count/:userId', async (req, res) => {
 router.delete('/delete', async (req, res) => {
   try {
     const { submissionIds } = req.body;
+
+    // Fetch all the submissions to delete and their points
+    const submissions = await Submission.find({ _id: { $in: submissionIds } });
+
+    // For each submission, subtract points from the user's score
+    for (const submission of submissions) {
+      const userId = submission.userId;
+      const pointsToDeduct = submission.points;
+
+      // Find the user's current score
+      const userScore = await Score.findOne({ user: userId });
+
+      // If the user has a score, subtract the points
+      if (userScore) {
+        userScore.score -= pointsToDeduct;
+
+        // Make sure the score doesn't go below zero
+        if (userScore.score < 0) {
+          userScore.score = 0;
+        }
+
+        // Save the updated score
+        await userScore.save();
+      }
+    }
+
+    // Now delete the submissions
     await Submission.deleteMany({ _id: { $in: submissionIds } });
-    res.json({ message: 'Submissions deleted successfully' });
+
+    res.json({ message: 'Submissions deleted and scores updated successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
+
 
 router.get('/submissions/:challengeId', async (req, res) => {
   const { challengeId } = req.params; // Extract challengeId from URL parameters

@@ -4,6 +4,7 @@ import {
   faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser,
   faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved,
   faFilePdf, faPuzzlePiece, faWrench, faFile,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
@@ -111,8 +112,8 @@ const SideNavbar = () => {
       icon: faUserPlus,
       restricted: true, // Restricted to userRole === "WT"
       items: [
-        { path: "/createuser", label: "Users", visibility: visibilitySettings.users },
-        { path: "/assignTeams", label: "View All", visibility: visibilitySettings.viewAll },
+        { path: "/createuser", label: "Users", visibility: visibilitySettings.users == 'yes'  },
+        { path: "/assignTeams", label: "View All", visibility: visibilitySettings.viewAll == 'yes'  },
       ],
     },
     {
@@ -120,9 +121,9 @@ const SideNavbar = () => {
       icon: faFile,
       restricted: true, // Restricted to userRole === "WT"
       items: [
-        { path: "/submissions", label: "Submissions", visibility: visibilitySettings.submissions },
-        { path: "/scores", label: "Scores", visibility: visibilitySettings.score },
-        { path: "/updates", label: "New Reports", visibility: visibilitySettings.newReports },
+        { path: "/submissions", label: "Submissions", visibility: visibilitySettings.submissions == 'yes'  },
+        { path: "/scores", label: "Scores", visibility: visibilitySettings.score == 'yes'  },
+        { path: "/updates", label: "New Reports", visibility: visibilitySettings.newReports == 'yes'  },
       ],
     },
     {
@@ -130,10 +131,10 @@ const SideNavbar = () => {
       icon: faPuzzlePiece,
       restricted: false, // Accessible to all
       items: [
-        { path: userRole === "WT" ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges },
+        { path: userRole === "WT" ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges == 'yes'  },
         
         { path: "/repository", label: "Repository", visibility: userRole === "WT"  },
-        { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === "WT" && visibilitySettings.challenges },
+        { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === "WT" && visibilitySettings.challenges == 'yes'  },
       ],
     },
     {
@@ -141,8 +142,8 @@ const SideNavbar = () => {
       icon: faWrench, // You can use a suitable icon here
       restricted: true,
       items: [
-        { path: "/config", label: "Configurations", visibility: visibilitySettings.config },
-        { path: userRole === "WT" ? "/admin/report" : "/report", label: "Report Config", visibility: visibilitySettings.reportConfig },
+        { path: "/config", label: "Configurations", visibility: visibilitySettings.config == 'yes'  },
+        { path: userRole === "WT" ? "/admin/report" : "/report", label: "Report Config", visibility: visibilitySettings.reportConfig == 'yes' },
       ],
     },
   ];
@@ -150,15 +151,16 @@ const SideNavbar = () => {
 
   // Define general items
   const generalItems = [
-    { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home },
-    { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home },
-    { path: "/UserHome", icon: faCircleUser, label: "Reports", visibility: visibilitySettings.dashboard },
-    { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes },
-    { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress },
-    { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification },
+    { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home == 'yes' },
+    { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home == 'yes' },
+    { path: "/UserHome", icon: faCircleUser, label: "Reports", visibility: visibilitySettings.dashboard == 'yes' },
+    { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes == 'yes' },
+    { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress == 'yes' },
+    // { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
+    { path: "/notifications", icon: faBell, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     
-    { path: "/profile", icon: faUser, label: "Profile", visibility: visibilitySettings.profile },
-    { path: "/chat", icon: faComment, label: "Communication", visibility: visibilitySettings.communication },
+    { path: "/profile", icon: faUser, label: "Profile", visibility: visibilitySettings.profile == 'yes' },
+    { path: "/chat", icon: faComment, label: "Communication", visibility: visibilitySettings.communication == 'yes' },
   ];
 
   return (

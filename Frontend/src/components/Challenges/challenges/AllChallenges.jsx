@@ -118,7 +118,7 @@ const AllChallenges = () => {
   const columns = [
     { header: 'ID', accessor: '_id' },
     { header: 'Name', accessor: 'name' },
-    { header: 'Value', accessor: 'value' },
+    { header: 'Initial Value', accessor: 'initial' },
     { header: 'Category', accessor: 'category' },
     { header: 'Type', accessor: 'type' },
     { header: 'State', accessor: 'state' },

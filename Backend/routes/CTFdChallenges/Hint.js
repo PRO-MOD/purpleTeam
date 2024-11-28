@@ -4,8 +4,9 @@ const Challenge = require('../../models/CTFdChallenges/challenge');
 const Hint = require('../../models/CTFdChallenges/Hint');
 const DetailHint =require('../../models/CTFdChallenges/detailhint');
 const fetchuser =require('../../middleware/fetchuser');
+const Score =require('../../models/score')
 
-// POST /api/hints/add/:challengeId
+// POST /api/hints/add/:challengeId to add hints
 router.post('/add/:challengeId', async (req, res) => {
   const { challengeId } = req.params;
   const { content, cost } = req.body;
@@ -95,6 +96,7 @@ router.delete('/:challengeId/hints/delete/:hintId', async (req, res) => {
   }
 });
 
+//content and cost of hint using hint id 
 router.get('/hints/:id', async (req, res) => {
   try {
       const hints = await Hint.find({_id: req.params.id});
@@ -141,64 +143,115 @@ router.get('/used-hints/:challengeId',fetchuser, async (req, res) => {
   }
 });
 
-// Route to save the used hint
-router.post('/use-hint',fetchuser, async (req, res) => {
+// router.post('/use-hint', fetchuser, async (req, res) => {
+//   try {
+//     const { challengeId, hintId } = req.body;
+//     const userId = req.user.id;
+
+//     // Fetch the challenge
+//     const challenge = await Challenge.findById(challengeId);
+//     if (!challenge) {
+//       return res.status(404).json({ message: 'Challenge not found.' });
+//     }
+
+//     // Fetch the hint
+//     const hint = await Hint.findById(hintId);
+//     if (!hint) {
+//       return res.status(404).json({ message: 'Hint not found.' });
+//     }
+
+//     // Fetch the user's score
+//     const userScore = await Score.findOne({ user: userId });
+//     if (!userScore) {
+//       return res.status(404).json({ message: 'User score not found.' });
+//     }
+
+//     const cost = hint.cost;
+
+//     // Check if the user has enough score
+//     if (userScore.score < cost) {
+//       return res.status(400).json({ message: 'Insufficient score to use the hint.' });
+//     }
+// console.log( userScore.score);
+//     // Deduct the hint cost from the user's score
+//     userScore.score -= cost;
+//     await userScore.save();
+//     console.log( userScore.score);
+
+//     // Save the hint usage details
+//     const detailHint = new DetailHint({
+//       user: userId,
+//       challengeId,
+//       hint_id: hintId,
+//       value: userScore.score // Updated score after deduction
+//     });
+//     await detailHint.save();
+
+//     res.status(200).json({
+//       message: 'Hint usage recorded.',
+//       remainingScore: userScore.score
+//     });
+//   } catch (err) {
+//     console.error('Error:', err.message);
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+
+router.post('/use-hint', fetchuser, async (req, res) => {
   try {
-    const {  challengeId, hintId } = req.body;
-    const  userId = req.user.id;
+    const { challengeId, hintId } = req.body;
+    const userId = req.user.id;
 
+    // Fetch the challenge
     const challenge = await Challenge.findById(challengeId);
-    const challengevalue=challenge.value
-    if (!challengevalue) {
-      return res.status(404).json({ message: 'Challenge not found' });
+    if (!challenge) {
+      return res.status(404).json({ message: 'Challenge not found.' });
     }
 
-    const hintscore = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
-    var score=0;
-
-    if (!hintscore) {
-       score=challengevalue;
+    // Fetch the hint
+    const hint = await Hint.findById(hintId);
+    if (!hint) {
+      return res.status(404).json({ message: 'Hint not found.' });
     }
-    else{
-    score=hintscore.value;
+
+    // Fetch the user's score
+    const userScore = await Score.findOne({ user: userId });
+    if (!userScore) {
+      return res.status(404).json({ message: 'User score not found.' });
     }
-   
 
-    const hint=await Hint.findById(hintId);
-    const cost=hint.cost;
-    const value=score-cost;
+    const cost = hint.cost;
 
-    
-    const detailHint = new DetailHint({ user: userId, challengeId, hint_id: hintId,value });
+    // Check if the user has enough score
+    if (userScore.score < cost) {
+      return res.status(400).json({ message: 'Insufficient score to use the hint.' });
+    }
+
+    // Deduct the hint cost from the user's score
+    userScore.score -= cost;
+    await userScore.save();
+
+    // Save the hint usage details
+    const detailHint = new DetailHint({
+      user: userId,
+      challengeId,
+      hint_id: hintId,
+      value: userScore.score, // Updated score after deduction
+    });
     await detailHint.save();
-    res.status(200).json({ message: 'Hint usage recorded.' });
+
+    res.status(200).json({
+      message: 'Hint usage recorded.',
+      remainingScore: userScore.score, // Updated score sent to the client
+    });
   } catch (err) {
     console.error('Error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-router.get('/value/:challengeId', fetchuser, async (req, res) => {
-  const { challengeId } = req.params;
-  const userId = req.user.id;
 
-  try {
-    // Find the entry with the lowest value for the given userId and challengeId
-
-
-    const challenge = await Challenge.findById(challengeId);
-    const challengevalue=challenge.value
-    const detailHint = await DetailHint.findOne({ user: userId, challengeId }).sort({ value: 1 }).exec();
-
-    // if (!detailHint) {
-    //   return res.status(404).send({ message: 'No progress found for this challenge' });
-    // }
-
-    res.status(200).send({ value: detailHint ? detailHint.value : challengevalue });
-  } catch (error) {
-    res.status(500).send({ message: 'Server error' });
-  }
-});
 
 
 module.exports = router;
