@@ -35,6 +35,7 @@ const ConfigSchema = new mongoose.Schema({
       reportConfig: { type: String, default: 'no' },
       config: { type: String, default: 'no' },
       challenges: { type: String, default: 'no' },
+      notification: { type: String, default: 'no' },
       profile: { type: String, default: 'no' },
       communication: { type: String, default: 'no' },
     },
