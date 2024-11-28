@@ -42,6 +42,7 @@ import ReportDetails from './Reports/ReportDetails/ReportDetailsMain'
 import UserReports from './UserReports';
 import ColorContext from '../context/ColorContext';
 import DockerManagement from './Challenges/challenges/ChallengeDetails/EditChallenge/Contents/DockerManager';
+import NotificationComponent from './Notification/NotificationComponent';
 
 // landing page components
 import MainPage from './LandingPage';
@@ -98,6 +99,7 @@ function HomePage() {
             <Route exact path='/UserHome/report/SITREP' element={<IncidentReport />} />
             <Route exact path='/UserHome/report/:reportId' element={<Report />} />
             <Route exact path='/attacks' element={<ChallengeSubmissions />} />
+            <Route exact path='/notifications' element={<NotificationComponent />} />
             {/* <Route exact path='/UserHome/report/day-end' element={<Notification />} /> */}
             <Route exact path='/UserHome/report/notification' element={<Notification />} />
             <Route exact path="/user/:userId" element={<ProtectedRoute Component={UserDetails} />} />

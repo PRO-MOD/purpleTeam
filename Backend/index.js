@@ -27,6 +27,7 @@ const io = require('socket.io')(server, {
 
 // const { router: chatRouter, handleSocket, users } = require('./routes/chat');
 const chatRouter = require('./routes/chat').router;
+const {handleNotifications} = require('./controllers/notifications.js')
 // console.log("Users from Index.js >> "+users);
 
 // Function to handle socket logic
@@ -76,6 +77,9 @@ const handleSocket = (io) => {
       }
     });
 
+    // Delegate notification handling to the notifications module
+    handleNotifications(socket, io, users);
+
     socket.on('disconnect', () => {
       users = users.filter((user) => user.socketId !== socket.id);
       io.emit('getUsers', users);
@@ -95,7 +99,7 @@ app.use('/api/auth', require('./routes/auth.js'))
 app.use('/api/score', require('./routes/score.js'))
 
 app.use('/api/reports/IRREP', require('./routes/report.js'))
-app.use('/api/reports/Notification', require('./routes/notification.js'))
+app.use('/api/reports/Notification', require('./routes/notificationReport.js'))
 app.use('/api/reports/SITREP', require('./routes/IncidentReport.js'))
 
 // app.use('/api/reports', require('./routes/report.js'))
@@ -104,6 +108,7 @@ app.use('/api/updates', require('./routes/NewReportUpdate.js'))
 app.use('/api/notes', require('./routes/notes.js'))
 app.use('/api/flags', require('./routes/flags.js'))
 app.use('/api/challenge', require('./routes/ctfdChallenge.js'))
+app.use('/api/notifications', require('./routes/Notification.js'))
 app.use('/api/chat', chatRouter)
 
 // routes for CTFdChallenges
