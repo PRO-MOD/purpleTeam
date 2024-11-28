@@ -19,6 +19,7 @@ function UserDetails() {
   const [scoreData, setScoreData] = useState(null);
   const [submissionData, setSubmissionData] = useState(null);
   const [submissionTypes, setSubmissionTypes] = useState(null);
+  const [hintCost, setHintCost]=useState(null);
   const [mode, setMode] = useState("purpleTeam");
   const [selectedTab, setSelectedTab] = useState('reports'); // New state for tab selection
   const navigate = useNavigate();
@@ -88,15 +89,27 @@ function UserDetails() {
       }
     };
 
-    const fetchSubmissionTypesCount = async () => {
+    // const fetchSubmissionTypesCount = async () => {
+    //   try {
+    //     const response = await fetch(`${apiUrl}/api/submissions/types-count/${userId}`);
+    //     const data = await response.json();
+    //     setSubmissionTypes(data);
+    //   } catch (error) {
+    //     console.error('Error fetching submission types count:', error);
+    //   }
+    // };
+
+    const fetchtotalHintCost = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/submissions/types-count/${userId}`);
+        const response = await fetch(`${apiUrl}/api/hints/totalHintCost/${userId}`);
         const data = await response.json();
-        setSubmissionTypes(data);
+        setHintCost(data);
       } catch (error) {
-        console.error('Error fetching submission types count:', error);
+        console.error('Error fetching hints cost:', error);
       }
     };
+
+ 
 
     if (userId) {
       fetchUserDetails();
@@ -104,7 +117,7 @@ function UserDetails() {
       fetchUserScore();
       fetchMode();
       fetchSubmissions();
-      fetchSubmissionTypesCount();
+      fetchtotalHintCost();
     }
   }, [userId]);
 
@@ -141,7 +154,7 @@ function UserDetails() {
           {/* Show challenges content directly if mode is 'ctfd' */}
           {mode === 'ctfd' ? (
             <>
-              <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+              <ChallengesDataVisualization submissionData={submissionData} hintCost={hintCost} />
               <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
               <SubmissionTable userId={userId} />
             </>
@@ -173,7 +186,7 @@ function UserDetails() {
 
               {selectedTab === 'challenges' && (
                 <>
-                  <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+                  <ChallengesDataVisualization submissionData={submissionData}  />
                   <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
                   <SubmissionTable userId={userId} />
                 </>

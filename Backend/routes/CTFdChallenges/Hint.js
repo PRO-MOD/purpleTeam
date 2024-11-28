@@ -5,6 +5,7 @@ const Hint = require('../../models/CTFdChallenges/Hint');
 const DetailHint =require('../../models/CTFdChallenges/detailhint');
 const fetchuser =require('../../middleware/fetchuser');
 const Score =require('../../models/score')
+const mongoose = require('mongoose');
 
 // POST /api/hints/add/:challengeId to add hints
 router.post('/add/:challengeId', async (req, res) => {
@@ -224,7 +225,7 @@ router.post('/use-hint', fetchuser, async (req, res) => {
     const cost = hint.cost;
 
     // Check if the user has enough score
-    if (userScore.score < cost) {
+    if ((userScore.score + userScore.staticScore) < cost) {
       return res.status(400).json({ message: 'Insufficient score to use the hint.' });
     }
 
@@ -237,7 +238,7 @@ router.post('/use-hint', fetchuser, async (req, res) => {
       user: userId,
       challengeId,
       hint_id: hintId,
-      value: userScore.score, // Updated score after deduction
+      value: cost, // Updated score after deduction
     });
     await detailHint.save();
 
@@ -250,6 +251,99 @@ router.post('/use-hint', fetchuser, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+router.get('/totalHintCost/:userId', async (req, res) => {
+  try {
+    // Extract the userId from the request parameters
+    const { userId } = req.params;
+
+    // Convert the userId to ObjectId if necessary
+    const objectIdUserId = new mongoose.Types.ObjectId(userId);
+
+    // Fetch unique challenges for the user
+    const userChallenges = await DetailHint.aggregate([
+      {
+        $match: {
+          user: objectIdUserId, // Match documents with the specified userId
+        },
+      },
+      {
+        $lookup: {
+          from: 'challenges', // The collection name for challenges
+          localField: 'challengeId',
+          foreignField: '_id',
+          as: 'challenge',
+        },
+      },
+      {
+        $unwind: '$challenge',
+      },
+      {
+        $group: {
+          _id: '$challenge._id',
+          name: { $first: '$challenge.name' },
+        },
+      },
+    ]);
+
+    // Extract challenge names
+    const allChallenges = userChallenges.map(({ name }) => name);
+
+    // Aggregate the total value for challenges specific to the user
+    const challengeValueCounts = await DetailHint.aggregate([
+      {
+        $match: {
+          user: objectIdUserId, // Match documents with the specified userId
+        },
+      },
+      {
+        $lookup: {
+          from: 'challenges', // The collection name for challenges
+          localField: 'challengeId',
+          foreignField: '_id',
+          as: 'challenge',
+        },
+      },
+      {
+        $unwind: '$challenge',
+      },
+      {
+        $group: {
+          _id: '$challenge._id',
+          name: { $first: '$challenge.name' },
+          totalValue: { $sum: '$value' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          totalValue: 1,
+        },
+      },
+    ]);
+
+    // Convert the result into a map for easy lookup
+    const challengeValueMap = challengeValueCounts.reduce((acc, { name, totalValue }) => {
+      acc[name] = totalValue;
+      return acc;
+    }, {});
+
+    // Prepare the final result, including missing challenges with totalValue as 0
+    const result = allChallenges.map(name => ({
+      name,
+      totalValue: challengeValueMap[name] || 0,
+    }));
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
 
 
 
