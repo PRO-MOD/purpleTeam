@@ -12,7 +12,7 @@ router.get('/all', async (req, res) => {
     const Submissions = await Submission.find()
       .populate('userId', 'name')  // Populate with 'User' model (userId field)
       .populate('challengeId', 'name type')  // Populate with 'Challenge' model (challengeId field)
-      .select('userId challengeId answer date isCorrect points cheating attempt');
+      .select('userId challengeId answer date isCorrect points cheating attempt copiedFrom hintsUsed totalHintCost');
 
     // Filter out any submissions where userId or challengeId doesn't exist
     const filteredSubmissions = Submissions.filter(submission => submission.userId !== null && submission.challengeId !== null);
@@ -191,7 +191,7 @@ router.get('/submissions/:challengeId', async (req, res) => {
     const submissions = await Submission.find({ challengeId }) // Filter by challengeId
       .populate('userId', 'name') // Populate user details with only the name field
       .populate('challengeId', 'name') // Populate challenge details with only the name field
-      .select('userId challengeId answer date isCorrect points cheating attempt'); // Select specific fields
+      .select('userId challengeId answer date isCorrect points cheating attempt copiedFrom hintsUsed totalHintCost'); // Select specific fields
 
     res.status(200).json(submissions);
   } catch (error) {
@@ -208,7 +208,7 @@ router.get('/userSubmissions/:userId', async (req, res) => {
     const submissions = await Submission.find({ userId }) // Filter by challengeId
       .populate('userId', 'name') // Populate user details with only the name field
       .populate('challengeId', 'name') // Populate challenge details with only the name field
-      .select('userId challengeId answer date isCorrect points cheating attempt'); // Select specific fields
+      .select('userId challengeId answer date isCorrect points cheating attempt copiedFrom hintsUsed totalHintCost'); // Select specific fields
 
     res.status(200).json(submissions);
   } catch (error) {

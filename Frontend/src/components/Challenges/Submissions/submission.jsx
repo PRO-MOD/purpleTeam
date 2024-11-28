@@ -211,6 +211,16 @@ const SubmissionTable = ({ challengeId, userId }) => {
                 <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
                   Attempt 
                 </th>
+                {!isInProgress&& (<th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                  Copied From
+                </th>)}
+
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                hintsUsed 
+                </th>
+                <th className="px-6 py-3 border-b border-black-400 text-left text-sm font-medium text-black uppercase tracking-wider">
+                totalHintCost 
+                </th>
               </tr>
             </thead>
 <tbody className="bg-white divide-y divide-black-200">
@@ -276,6 +286,23 @@ const SubmissionTable = ({ challengeId, userId }) => {
       }`}>
         {submission.attempt}
       </td>
+      {!isInProgress &&(
+      <td className={`px-6 py-4 whitespace-nowrap text-ls ${
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
+      }`}>
+        {submission.copiedFrom || 'none' }
+      </td>)}
+      <td className={`px-6 py-4 whitespace-nowrap text-ls ${
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
+      }`}>
+        {submission.hintsUsed || 'null'}
+      </td>
+      <td className={`px-6 py-4 whitespace-nowrap text-ls ${
+        !isInProgress && submission.cheating ? 'text-red-500' : 'text-black-500'
+      }`}>
+        {submission.totalHintCost || 'null'}
+      </td>
+      
     </tr>
   ))}
 </tbody>
