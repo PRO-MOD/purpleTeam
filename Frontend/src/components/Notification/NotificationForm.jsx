@@ -11,7 +11,8 @@ const NotificationForm = ({ socket, fetchNotifications }) => {
   const [type, setType] = useState("alert");
 
   const sendNotification = () => {
-    const notificationData = { title, message, type };
+    const token = localStorage.getItem('Hactify-Auth-token');
+    const notificationData = { title, message, type, token };
     socket.emit("sendNotification", notificationData);
     fetchNotifications(); // Refresh notifications after sending
     setTitle("");
