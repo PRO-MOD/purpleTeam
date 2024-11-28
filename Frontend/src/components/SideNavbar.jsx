@@ -150,15 +150,15 @@ const SideNavbar = () => {
 
   // Define general items
   const generalItems = [
-    { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home },
-    { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home },
-    { path: "/UserHome", icon: faCircleUser, label: "Dashboard", visibility: visibilitySettings.dashboard },
-    { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes },
-    { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress },
-    { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification },
+    { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home == 'yes' },
+    { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home == 'yes' },
+    { path: "/UserHome", icon: faCircleUser, label: "Reports", visibility: visibilitySettings.dashboard == 'yes' },
+    { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes == 'yes' },
+    { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress == 'yes' },
+    { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     
-    { path: "/profile", icon: faUser, label: "Profile", visibility: visibilitySettings.profile },
-    { path: "/chat", icon: faComment, label: "Communication", visibility: visibilitySettings.communication },
+    { path: "/profile", icon: faUser, label: "Profile", visibility: visibilitySettings.profile == 'yes' },
+    { path: "/chat", icon: faComment, label: "Communication", visibility: visibilitySettings.communication == 'yes' },
   ];
 
   return (

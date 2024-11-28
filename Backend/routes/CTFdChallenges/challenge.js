@@ -189,7 +189,7 @@ router.get('/details/:id', async (req, res) => {
       const userId = req.user.id;
 
       try {
-          const visibleChallenges = await Challenge.find({ state: "visible", user_ids: { $in: [userId] } }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files');
+          const visibleChallenges = await Challenge.find({ state: "visible", user_ids: { $in: [userId] } }).select('name value description category langauge max_attempts type solves solved_by_me attempts choices files dockerImage');
           res.status(200).json(visibleChallenges);
       } catch (error) {
           console.error('Error fetching challenges:', error);
