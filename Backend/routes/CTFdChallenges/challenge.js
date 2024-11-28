@@ -10,8 +10,6 @@ const DynamicFlag = require('../../models/CTFdChallenges/DynamicFlag');
 const Submission =require('../../models/CTFdChallenges/Submission');
 
 
-
-
 // POST route to create a new challenge
 router.post('/create', async (req, res) => {
     try {
@@ -151,6 +149,29 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
       res.status(500).json({ error: 'Failed to update challenge' });
   }
 });
+
+
+
+router.patch('/updateState', async (req, res) => {
+  const { ids, state } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ success: false, message: 'No challenge IDs provided.' });
+  }
+
+  if (!['visible', 'hidden'].includes(state)) {
+      return res.status(400).json({ success: false, message: 'Invalid state value.' });
+  }
+
+  try {
+      await Challenge.updateMany({ _id: { $in: ids } }, { state });
+      res.json({ success: true, message: 'Challenges updated successfully.' });
+  } catch (error) {
+      console.error('Error updating challenges state:', error);
+      res.status(500).json({ success: false, message: 'Failed to update challenges state.' });
+  }
+});
+
 
 // search challenge by ID
 router.get('/details/:id', async (req, res) => {
@@ -733,7 +754,6 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         let nextval;
         if (decay === 0) {
             nextval = initial;  // Same fallback logic
-            return handleCorrectAnswer(userId, challengeId, challenge.name, challenge.value, answer, res);
         } else {
             nextval = Math.ceil(initial - ((initial - minimum) / decay) * (solves + 1));
         }
