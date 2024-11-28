@@ -108,7 +108,7 @@ app.use('/api/updates', require('./routes/NewReportUpdate.js'))
 app.use('/api/notes', require('./routes/notes.js'))
 app.use('/api/flags', require('./routes/flags.js'))
 app.use('/api/challenge', require('./routes/ctfdChallenge.js'))
-app.use('/api/notifications', require('./routes/Notification.js'))
+app.use('/api/notifications', require('./routes/notification.js'))
 app.use('/api/chat', chatRouter)
 
 // routes for CTFdChallenges
