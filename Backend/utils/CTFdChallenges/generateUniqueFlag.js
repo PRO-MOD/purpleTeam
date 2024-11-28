@@ -9,7 +9,7 @@ const generateUniqueFlag = (userId, challengeId) => {
     const hash = crypto.createHash('md5').update(data + secretKey).digest('hex');
   
     // Make it readable (e.g., using a base64-like conversion or word list)
-    const readableFlag = `FLAG-${hash.slice(0, 8)}`;
+    const readableFlag = `FLAG{${hash.slice(0, 8)}}`;
   
     return readableFlag;
   };

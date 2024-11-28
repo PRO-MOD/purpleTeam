@@ -110,22 +110,27 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
       } else if (existingChallenge.type === 'multiple_choice') {
           existingChallenge.choices = JSON.parse(req.body.choices);
       } else if (existingChallenge.type === 'dynamic') {
-      
-        const users = await User.find({});
-        const flags = users.map(user => ({
-          userId: user._id,
-          flag: generateUniqueFlag(user._id, challengeId)
-        }));
-  
-        // Upsert the unique flags in the DynamicFlag collection
-        const dynamicFlagDoc = await DynamicFlag.findOneAndUpdate(
-          { challengeId },
-          { flags },
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
-  
-        // Store the dynamicFlags ObjectId in the challenge
-        existingChallenge.dynamicFlags = dynamicFlagDoc._id;
+        if (user_ids) {
+          // Parse user_ids from the request body
+          const selectedUserIds = JSON.parse(user_ids);
+
+          // Fetch the users whose IDs are provided
+          const users = await User.find({ _id: { $in: selectedUserIds } });
+          const flags = users.map(user => ({
+            userId: user._id,
+            flag: generateUniqueFlag(user._id, challengeId)
+          }));
+    
+          // Upsert the unique flags in the DynamicFlag collection
+          const dynamicFlagDoc = await DynamicFlag.findOneAndUpdate(
+            { challengeId },
+            { flags },
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+          );
+    
+          // Store the dynamicFlags ObjectId in the challenge
+          existingChallenge.dynamicFlags = dynamicFlagDoc._id;
+        }
       }
   
 
@@ -137,7 +142,7 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
 
       if (user_ids) {
         existingChallenge.user_ids = JSON.parse(user_ids);
-    }
+      }
 
       // Save the updated challenge
       const updatedChallenge = await existingChallenge.save();
@@ -519,6 +524,23 @@ router.post('/multiusers/:challengeId/add', async (req, res) => {
     // Add new users to the challenge
     challenge.user_ids.push(...newUsers);
     await challenge.save();
+
+    // Check if the challenge type is 'dynamic'
+    if (challenge.type === 'dynamic') {
+      const dynamicFlagsDoc = await DynamicFlag.findById(challenge.dynamicFlags);
+      if (!dynamicFlagsDoc) {
+        return res.status(404).json({ error: 'Dynamic flags document not found' });
+      }
+
+      // Generate unique flags for new users and add them to the dynamicFlags schema
+      const newFlags = newUsers.map(userId => ({
+        userId,
+        flag: generateUniqueFlag(userId), // Use your existing function
+      }));
+
+      dynamicFlagsDoc.flags.push(...newFlags);
+      await dynamicFlagsDoc.save();
+    }
 
     // Retrieve added users' details
     const addedUsers = await User.find({ _id: { $in: newUsers } });
