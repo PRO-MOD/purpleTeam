@@ -111,8 +111,8 @@ const SideNavbar = () => {
       icon: faUserPlus,
       restricted: true, // Restricted to userRole === "WT"
       items: [
-        { path: "/createuser", label: "Users", visibility: visibilitySettings.users },
-        { path: "/assignTeams", label: "View All", visibility: visibilitySettings.viewAll },
+        { path: "/createuser", label: "Users", visibility: visibilitySettings.users == 'yes'  },
+        { path: "/assignTeams", label: "View All", visibility: visibilitySettings.viewAll == 'yes'  },
       ],
     },
     {
@@ -120,9 +120,9 @@ const SideNavbar = () => {
       icon: faFile,
       restricted: true, // Restricted to userRole === "WT"
       items: [
-        { path: "/submissions", label: "Submissions", visibility: visibilitySettings.submissions },
-        { path: "/scores", label: "Scores", visibility: visibilitySettings.score },
-        { path: "/updates", label: "New Reports", visibility: visibilitySettings.newReports },
+        { path: "/submissions", label: "Submissions", visibility: visibilitySettings.submissions == 'yes'  },
+        { path: "/scores", label: "Scores", visibility: visibilitySettings.score == 'yes'  },
+        { path: "/updates", label: "New Reports", visibility: visibilitySettings.newReports == 'yes'  },
       ],
     },
     {
@@ -130,10 +130,10 @@ const SideNavbar = () => {
       icon: faPuzzlePiece,
       restricted: false, // Accessible to all
       items: [
-        { path: userRole === "WT" ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges },
+        { path: userRole === "WT" ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges == 'yes'  },
         
         { path: "/repository", label: "Repository", visibility: userRole === "WT"  },
-        { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === "WT" && visibilitySettings.challenges },
+        { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === "WT" && visibilitySettings.challenges == 'yes'  },
       ],
     },
     {
@@ -141,8 +141,8 @@ const SideNavbar = () => {
       icon: faWrench, // You can use a suitable icon here
       restricted: true,
       items: [
-        { path: "/config", label: "Configurations", visibility: visibilitySettings.config },
-        { path: userRole === "WT" ? "/admin/report" : "/report", label: "Report Config", visibility: visibilitySettings.reportConfig },
+        { path: "/config", label: "Configurations", visibility: visibilitySettings.config == 'yes'  },
+        { path: userRole === "WT" ? "/admin/report" : "/report", label: "Report Config", visibility: visibilitySettings.reportConfig == 'yes' },
       ],
     },
   ];
