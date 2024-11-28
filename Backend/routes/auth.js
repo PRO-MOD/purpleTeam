@@ -33,6 +33,19 @@ router.post('/createuser', async (req, res) => {
 
       sendCredentials(req.body.email, "Check your Hackathon Credentials !!", `Your Credntials for this session are \nEmail: ${req.body.email} \n Password: ${req.body.password}`)
 
+
+       // Create associated score document
+    const userScore = new Score({
+      account_id: user._id.toString(), // Or another unique identifier if needed
+      name: user.name,
+      score: 0, // Initial score
+      user: user._id,
+      date: new Date(),
+      staticScore: 0, // Default static score
+    });
+
+    await userScore.save();
+
       const data = {
         user: {
           id: user.id

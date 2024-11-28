@@ -360,7 +360,7 @@ function AdminDataVisualization() {
           </p>
           )}
           <p className="text-lg text-gray-600" style={navbarFont}>
-            Leading Team with Total Score: <strong className="text-blue-600">{highestScores.highestScore}</strong>
+            Leading Team with Total Score: <strong className="text-blue-600">{highestScores.highestTotalScore}</strong>
           </p>
         </div>
 

@@ -238,9 +238,6 @@ function AddUsers() {
                                     <option value="">Select Role</option>
                                     <option value="WT">White Team</option>
                                     <option value="BT">Blue Team</option>
-                                    <option value="RT">Red Team</option>
-                                    <option value="YT">Yellow Team</option>
-                                    <option value="GT">Green Team</option>
                                 </select>
                             </div>
 

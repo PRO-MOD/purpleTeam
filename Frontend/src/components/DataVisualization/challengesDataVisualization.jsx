@@ -100,8 +100,8 @@ import Chart from 'react-apexcharts';
 import { useContext } from 'react';
 import FontContext from '../../context/FontContext';
 
-const ChallengesDataVisualization = ({ submissionData, submissionTypes }) => {
-  if (!submissionData || !submissionTypes) {
+const ChallengesDataVisualization = ({ submissionData,  hintCost }) => {
+  if (!submissionData || !hintCost) {
     return <div className="p-4 text-center">Loading data...</div>;
   }
 
@@ -127,26 +127,53 @@ const ChallengesDataVisualization = ({ submissionData, submissionTypes }) => {
   const correctVsIncorrectPieChartData = [correctCount, incorrectCount];
 
   // Bar chart for Types of Submissions Count
-  const submissionTypesNames = submissionTypes.map(type => type.type);
-  const submissionTypesCounts = submissionTypes.map(type => type.count);
-  const submissionTypesBarChartOptions = {
-    chart: {
-      type: 'bar',
-    },
-    xaxis: {
-      categories: submissionTypesNames,
-    },
-    title: {
-      text: 'Types of Submissions Count',
-    },
-    colors: [primaryColor], // Primary color for bars
-  };
-  const submissionTypesBarChartData = [
-    {
-      name: 'Submission Types',
-      data: submissionTypesCounts,
-    },
-  ];
+  // const submissionTypesNames = submissionTypes.map(type => type.type);
+  // const submissionTypesCounts = submissionTypes.map(type => type.count);
+  // const submissionTypesBarChartOptions = {
+  //   chart: {
+  //     type: 'bar',
+  //   },
+  //   xaxis: {
+  //     categories: submissionTypesNames,
+  //   },
+  //   title: {
+  //     text: 'Types of Submissions Count',
+  //   },
+  //   colors: [primaryColor], // Primary color for bars
+  // };
+  // const submissionTypesBarChartData = [
+  //   {
+  //     name: 'Submission Types',
+  //     data: submissionTypesCounts,
+  //   },
+  // ];
+
+
+//   // Data Preparation
+const challengeNames = hintCost.map(cost => cost.name);
+const challengeValues = hintCost.map(cost => cost.totalValue);
+
+// Bar Chart Configuration
+const challengeBarChartOptions = {
+  chart: {
+    type: 'bar',
+  },
+  xaxis: {
+    categories: challengeNames, // Challenge names as X-axis categories
+  },
+  title: {
+    text: 'Challenges vs Total hint Cost',
+  },
+  colors: [primaryColor], // Primary color for bars
+};
+
+const challengeBarChartData = [
+  {
+    name: 'Total Cost',
+    data: challengeValues, // Total values for each challenge
+  },
+];
+
 
   // Line chart for Submissions Over Time (based on submissionData)
   const submissionDates = [...new Set(submissionData.map(submission => submission.date.split('T')[0]))];
@@ -181,8 +208,12 @@ const ChallengesDataVisualization = ({ submissionData, submissionTypes }) => {
           <Chart options={correctVsIncorrectPieChartOptions} series={correctVsIncorrectPieChartData} type="pie" height={350} />
         </div>
         {/* Bar Chart for Types of Submissions Count */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
+        {/* <div className="bg-white p-4 rounded-lg shadow-md">
           <Chart options={submissionTypesBarChartOptions} series={submissionTypesBarChartData} type="bar" height={350} />
+        </div> */}
+
+<div className="bg-white p-4 rounded-lg shadow-md">
+          <Chart options={challengeBarChartOptions} series={challengeBarChartData} type="bar" height={350} />
         </div>
         {/* Line Chart for Submissions Over Time (Detailed) */}
         <div className="bg-white p-4 rounded-lg shadow-md">

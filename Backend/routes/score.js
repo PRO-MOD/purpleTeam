@@ -377,24 +377,67 @@ router.put('/assign-static-score/:userId', async (req, res) => {
     }
   });
 
-  router.get('/highest-scores', async (req, res) => {
+//   router.get('/highest-scores', async (req, res) => {
+//     try {
+//       // Find the user with the highest manual score
+//       const highestManualScore = await Score.findOne().sort({ manualScore: -1 }).populate('user').exec();
+  
+//       // Find the user with the highest score
+//       const highestScore = await Score.findOne().sort({ score: -1 }).populate('user').exec();
+  
+//       res.json({
+//         highestManualScore: highestManualScore ? highestManualScore.name : null,
+//         highestScore: highestScore ? highestScore.name : null,
+//       });
+//     } catch (error) {
+//       console.error('Error fetching highest scores:', error);
+//       res.status(500).json({ success: false, message: 'Failed to fetch highest scores.' });
+//     }
+//   });
+
+
+
+router.get('/highest-scores', async (req, res) => {
     try {
       // Find the user with the highest manual score
-      const highestManualScore = await Score.findOne().sort({ manualScore: -1 }).populate('user').exec();
+      const highestManualScore = await Score.findOne()
+        .sort({ manualScore: -1 })
+        .populate('user')
+        .exec();
   
-      // Find the user with the highest score
-      const highestScore = await Score.findOne().sort({ score: -1 }).populate('user').exec();
+      // Find the user with the highest total score (score + staticScore)
+      const highestTotalScore = await Score.aggregate([
+        {
+          $addFields: {
+            totalScore: { $add: ['$score', '$staticScore'] }, // Add score and staticScore to calculate total
+          },
+        },
+        {
+          $sort: { totalScore: -1 }, // Sort by totalScore in descending order
+        },
+        {
+          $limit: 1, // Limit the result to the highest total score
+        },
+      ]);
+      console.log(highestTotalScore);
+  
+      // Fetch user details for the highest total score
+      let highestTotalScoreUser = null;
+      if (highestTotalScore.length > 0) {
+        const [{ name }] = highestTotalScore;
+        highestTotalScoreUser = { name };
+      }
   
       res.json({
         highestManualScore: highestManualScore ? highestManualScore.name : null,
-        highestScore: highestScore ? highestScore.name : null,
+        highestTotalScore: highestTotalScoreUser ? highestTotalScoreUser.name : null,
       });
     } catch (error) {
       console.error('Error fetching highest scores:', error);
       res.status(500).json({ success: false, message: 'Failed to fetch highest scores.' });
     }
   });
-
+  
   // API to get the score of each user
 router.get('/user-scores', async (req, res) => {
     try {

@@ -153,7 +153,7 @@ const SideNavbar = () => {
   const generalItems = [
     { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home == 'yes' },
     { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home == 'yes' },
-    { path: "/UserHome", icon: faCircleUser, label: "Reports", visibility: visibilitySettings.dashboard == 'yes' },
+    { path: "/UserHome", icon: faCircleUser, label: "Dashboard", visibility: visibilitySettings.dashboard == 'yes' },
     { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes == 'yes' },
     { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress == 'yes' },
     // { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification == 'yes' },

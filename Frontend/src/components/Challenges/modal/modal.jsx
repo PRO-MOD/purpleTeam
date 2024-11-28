@@ -154,57 +154,57 @@ const Modal = ({
   
   //   setShowWarning(false);
   
-    
-  //     // Fetch hint details
-  //     const hintDetails = await fetchLockedHintDetails(selectedHint);
-  //     if (!hintDetails) return;
+  //   // Fetch hint details
+  //   const hintDetails = await fetchLockedHintDetails(selectedHint);
+  //   if (!hintDetails) return;
   
-  //     setSelectedHint(hintDetails);
-  //     // Set the selected hint to the full hint object
+  //   setSelectedHint(hintDetails); // Set the selected hint to the full hint object
   
-  //     // Check if the hint cost exceeds the user's score
-  //     if (hintDetails.cost > updatedValue) {
+  //   // Unlock hint through backend
+  //   try {
+  //     const response = await fetch(`${apiUrl}/api/hints/use-hint`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+  //       },
+  //       body: JSON.stringify({
+  //         challengeId: challenge._id,
+  //         hintId: hintDetails._id,
+  //       }),
+  //     });
+  
+  //     const result = await response.json();
+  
+  //     if (response.status === 400) {
+  //       // Insufficient score
   //       alert('Insufficient score to unlock this hint.');
-  //       return; // Prevent further execution
+  //       return;
   //     }
   
-  //     // Unlock the hint if not already used
-  //     if (!usedHints.includes(hintDetails._id)) {
-  //       setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Mark hint as used // Deduct hint cost
-  //       setShowHintDetails(true);
-  
-  //       // Record hint usage in the backend
-  //       try{
-  //       await fetch(`${apiUrl}/api/hints/use-hint`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Auth-token': localStorage.getItem('Hactify-Auth-token'),
-  //         },
-  //         body: JSON.stringify({
-  //           challengeId: challenge._id,
-  //           hintId: hintDetails._id,
-  //         }),
-  //       });
-  //     } catch (error){
-  //       console.error("Error recording hint usage:", error);
-  //     }}else {
-  //       setShowHintDetails(true); // Show hint details if already used
+  //     if (response.status !== 200) {
+  //       // Other errors
+  //       alert('Failed to unlock hint. Please try again.');
+  //       return;
   //     }
-    
+  
+  //     // Success: Update local state with the unlocked hint and remaining score
+  //     setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Mark hint as used
+  //     setShowHintDetails(true); // Show hint details
+  
+  //   } catch (error) {
+  //     console.error('Error unlocking hint:', error);
+  //     alert('Something went wrong. Please try again.');
+  //   }
   // };
   
 
   const confirmUnlockHint = async () => {
     if (!selectedHint) return;
+
+    console.log(selectedHint);
   
     setShowWarning(false);
-  
-    // Fetch hint details
-    const hintDetails = await fetchLockedHintDetails(selectedHint);
-    if (!hintDetails) return;
-  
-    setSelectedHint(hintDetails); // Set the selected hint to the full hint object
   
     // Unlock hint through backend
     try {
@@ -216,11 +216,9 @@ const Modal = ({
         },
         body: JSON.stringify({
           challengeId: challenge._id,
-          hintId: hintDetails._id,
+          hintId: selectedHint,
         }),
       });
-  
-      const result = await response.json();
   
       if (response.status === 400) {
         // Insufficient score
@@ -234,8 +232,14 @@ const Modal = ({
         return;
       }
   
-      // Success: Update local state with the unlocked hint and remaining score
-      setUsedHints(prevHints => [...prevHints, hintDetails._id]); // Mark hint as used
+      // Success: Fetch hint details
+      const hintDetails = await fetchLockedHintDetails(selectedHint);
+      if (!hintDetails) return;
+  
+      setSelectedHint(hintDetails); // Set the selected hint to the full hint object
+  
+      // Update local state with the unlocked hint and remaining score
+      setUsedHints((prevHints) => [...prevHints, hintDetails._id]); // Mark hint as used
       setShowHintDetails(true); // Show hint details
   
     } catch (error) {

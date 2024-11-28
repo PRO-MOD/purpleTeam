@@ -18,6 +18,7 @@ function UserProgress() {
     const[mode,setMode]=useState("purpleTeam");
     const [submissionData, setSubmissionData]=useState(null);
     const [submissionTypes, setSubmissionTypes]=useState(null);
+    const [hintCost,setHintCost]=useState(null);
     const [jsonData, setJsonData] = useState(null);
     const [scoreData, setScoreData] = useState(null);
     const [selectedTab, setSelectedTab] = useState('reports'); // New state for tab selection
@@ -63,10 +64,21 @@ function UserProgress() {
       console.error('Error fetching submissions data:', error);
     });
 
-    fetch(`${apiUrl}/api/submissions/types-count/${user._id}`)
+    // fetch(`${apiUrl}/api/submissions/types-count/${user._id}`)
+    // .then(response => response.json())
+    // .then(data => {
+      
+    //   setSubmissionTypes(data);
+      
+    // })
+    // .catch(error => {
+    //   console.error('Error fetching submission types count:', error);
+    // });
+
+    fetch(`${apiUrl}/api/hints/totalHintCost/${user._id}`)
     .then(response => response.json())
     .then(data => {
-      setSubmissionTypes(data);
+      setHintCost(data);
     })
     .catch(error => {
       console.error('Error fetching submission types count:', error);
@@ -76,8 +88,7 @@ function UserProgress() {
         }
     }, [user._id]);
 
-   
-   
+  
 
     // Render the component if user is authenticated and has required role
     return (
@@ -101,7 +112,7 @@ function UserProgress() {
  {/* Show challenges content directly if mode is 'ctfd' */}
  {mode === 'ctfd' ? (
             <>
-              <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+              <ChallengesDataVisualization submissionData={submissionData}  hintCost={hintCost}  />
               <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
               <SubmissionTable userId={user._id} />
             </>
@@ -133,7 +144,7 @@ function UserProgress() {
 
               {selectedTab === 'challenges' && (
                 <>
-                  <ChallengesDataVisualization submissionData={submissionData} submissionTypes={submissionTypes} />
+                  <ChallengesDataVisualization submissionData={submissionData}  />
                   <h1 className="text-3xl font-bold mb-4"style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
                   <SubmissionTable userId={user._id} />
                 </>
