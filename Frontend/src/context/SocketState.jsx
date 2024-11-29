@@ -81,6 +81,7 @@ const SocketState = (props) => {
         alert(`${data.title}: ${data.message}`);
       }
       fetchNotifications();
+      
     })
 
     socket?.on('getMessage', message => {
