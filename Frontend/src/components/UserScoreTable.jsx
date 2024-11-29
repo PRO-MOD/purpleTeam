@@ -39,7 +39,7 @@ function UserScoreTable({ scores, loading, isHomePage }) {
         let totalScoreA = a.score;
         let totalScoreB = b.score;
 
-        if (mode === 'purpleTeam') {
+        if (mode === 'ctfd') {
           totalScoreA += (a.manualScore || 0) + (a.staticScore || 0);
           totalScoreB += (b.manualScore || 0) + (b.staticScore || 0);
         }
