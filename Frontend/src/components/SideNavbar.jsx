@@ -4,7 +4,7 @@ import {
   faHome, faUser, faCog, faCalendar, faUserPlus, faRankingStar, faCircleUser,
   faSignOutAlt, faNotesMedical, faComment, faChartColumn, faShieldHalved,
   faFilePdf, faPuzzlePiece, faWrench, faFile,
-  faBell,
+  faBell,faTrophy, faGamepad
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import SocketContext from '../context/SocketContext';
@@ -156,6 +156,7 @@ const SideNavbar = () => {
     { path: "/UserHome", icon: faCircleUser, label: "Dashboard", visibility: visibilitySettings.dashboard == 'yes' },
     { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes == 'yes' },
     { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress == 'yes' },
+    { path: "/userScores", icon: faTrophy, label: "ScoreBoard", visibility: visibilitySettings.scoreBoard == 'yes' },
     // { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     { path: "/notifications", icon: faBell, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     

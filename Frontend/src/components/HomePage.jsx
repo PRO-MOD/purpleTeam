@@ -47,6 +47,7 @@ import NotificationComponent from './Notification/NotificationComponent';
 // landing page components
 import MainPage from './LandingPage';
 import CyberShakti from './DataVisualization/CyberShakti';
+import UserscoresComponent from './UserScorePage';
 
 
 function HomePage() {
@@ -126,6 +127,7 @@ function HomePage() {
             <Route exact path='/challenges/docker' element={<DockerManagement/>}/>
             <Route exact path='/repository' element={<Repository/>}/>
             <Route exact path='/createRepo' element={<CreateRepo/>}/>
+            <Route exact path='/userScores' element={<UserscoresComponent/>}/>
           </Routes>
           
         </div>

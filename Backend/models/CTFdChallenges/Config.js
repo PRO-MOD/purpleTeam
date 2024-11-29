@@ -24,6 +24,7 @@ const ConfigSchema = new mongoose.Schema({
       notification: { type: String, default: 'no' },
       challenges: { type: String, default: 'no' },
       profile: { type: String, default: 'no' },
+      scoreBoard:{ type: String, default: 'no' }
     },
     WT: {
       home: { type: String, default: 'no' },
