@@ -50,7 +50,7 @@ const Welcome = () => {
             </div>
             {/* Footer */}
             <footer className="text-center text-red-500 text-lg mt-16"   style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
-                Powered By Crysalen
+                Powered By Hacktify
             </footer>
         </div>
     );

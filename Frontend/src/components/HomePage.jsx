@@ -86,7 +86,7 @@ function HomePage() {
               ""
           }
           <Routes>
-            <Route exact path='/welcome' element={<Welcome />} />
+            <Route exact path='/' element={<Welcome />} />
             {/* <Route exact path='/personal/:userId' element={<UserDetails/>} /> */}
             <Route exact path='/progress' element={<UserProgress />} />
             <Route exact path='/home' element={<AdminDataVisualization />} />

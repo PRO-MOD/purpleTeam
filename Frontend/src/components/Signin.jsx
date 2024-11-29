@@ -26,7 +26,7 @@ const Signin = () => {
     useEffect(() => {
         const authToken = localStorage.getItem('Hactify-Auth-token');
         if (authToken) {
-            navigate('/welcome');
+            navigate('/');
         }
     }, [navigate]);
 
@@ -71,7 +71,7 @@ const Signin = () => {
             setLoading(false);
             if (response.ok) {
                 localStorage.setItem('Hactify-Auth-token', data.authtoken);
-                navigate("/welcome");
+                navigate("/");
             } else {
                 setError(data.error);
             }
@@ -100,7 +100,7 @@ const Signin = () => {
             <img src={logoUrl} alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
             <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-8">
             <div className="mb-8 text-center">
-                   <h1 className='block  text-2xl font-bold mb-2' style={{color:sidenavColor,fontFamily: headingFont}}>Defend the Flag</h1>
+                   <h1 className='block  text-2xl font-bold mb-2' style={{color:sidenavColor,fontFamily: headingFont}}>LOGIN</h1>
                 </div>
                 {/* Sign-in form */}
                 <form onSubmit={handleSubmit}>
@@ -148,7 +148,7 @@ const Signin = () => {
 
             {/* Footer */}
             <footer className="text-center text-gray-500 text-sm mt-4"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>
-                Powered By Crysalen
+                Powered By Hacktify
             </footer>
         </div>
     );

@@ -9,6 +9,9 @@ const IncidentReport = require('../models/IncidentReport')
 const notificationReport = require('../models/Notification')
 const xlsx = require('xlsx');
 const fetchuser = require('../middleware/fetchuser');
+const ChallengeSolve = require('../models/ChallengeSolved');
+const Submission = require('../models/CTFdChallenges/Submission');
+
 
 // Endpoint to export scores and report counts to Excel
 router.get('/export', async (req, res) => {
@@ -74,6 +77,72 @@ router.get('/export', async (req, res) => {
         console.error('Error exporting scores and report counts to Excel:', error);
         res.status(500).json({ message: 'Error exporting data to Excel' });
     }
+});
+
+// Route to export data to Excel
+router.get('/export/ctf', async (req, res) => {
+  try {
+    // Step 1: Fetch scores, users, and submissions
+    const scores = await Score.find()
+      .populate('user', 'name email') // Populate user details (name, email)
+      .lean();
+
+    const submissions = await Submission.find().lean();
+
+    // Step 2: Prepare the data for export
+    const data = scores.map((score) => {
+      const userId = score.user._id.toString();
+
+      // Filter submissions specific to the user
+      const userSubmissions = submissions.filter(
+        (sub) => sub.userId.toString() === userId
+      );
+
+      const totalSubmissions = userSubmissions.length;
+      const totalCorrectSubmissions = userSubmissions.filter(
+        (sub) => sub.isCorrect
+      ).length;
+
+      // Create a consolidated object for each user
+      return {
+        'User Name': score.user.name,
+        Email: score.user.email,
+        Score: score.score,
+        'Manual Score': score.manualScore || 0,
+        'Static Score': score.staticScore || 0,
+        'Total Submissions': totalSubmissions,
+        'Correct Submissions': totalCorrectSubmissions,
+        'Cheating Attempts': userSubmissions.filter((sub) => sub.cheating).length,
+        'Total Points': userSubmissions.reduce((acc, sub) => acc + sub.points, 0),
+        'Hints Used': userSubmissions.reduce((acc, sub) => acc + sub.hintsUsed, 0),
+      };
+    });
+
+    // Step 3: Create an Excel file
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.json_to_sheet(data);
+
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'CTF Export');
+
+    // Step 4: Write the workbook to a buffer
+    const excelBuffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+    // Step 5: Set response headers and send the file
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=ctf_data_export.xlsx'
+    );
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    res.send(excelBuffer);
+
+    console.log('CTF data exported successfully.');
+  } catch (error) {
+    console.error('Error exporting CTF data:', error);
+    res.status(500).json({ message: 'Error exporting data' });
+  }
 });
 
 

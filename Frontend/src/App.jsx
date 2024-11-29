@@ -34,7 +34,7 @@ function App() {
             <Router>
               <Routes>
                 <Route exact path='/*' element={<HomePage />} />
-                <Route exact path='/' element={<MainPage />} />
+                {/* <Route exact path='/' element={<MainPage />} /> */}
                 <Route exact path='/signin' element={<SignIn />} />
               </Routes>
             </Router>
