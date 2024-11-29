@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ScoreTable from './ScoreTable';
+import UserScoreTable from './userscoretable';
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../context/FontContext';
 
-function ScoresComponent() {
+function UserscoresComponent() {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const [scores, setScores] = useState([]);
   const [error, setError] = useState(null);
@@ -76,14 +77,12 @@ function ScoresComponent() {
       <div className="flex flex-row items-center">
         <h1 className='text-3xl font-bold underline' style={{fontFamily:headingFont}}>{`Scores ${isHomePage() ? "Board" : ""}`}</h1>
         {/* <span className='ms-4'>Format ( Challenge Score / Manual Score )</span> */}
-        {isHomePage() ? "" : <a className='bg-blue-500 mx-4 px-4 py-1 text-white rounded ' href={`${apiUrl}/api/score/export`}>Export <FontAwesomeIcon className='ms-2' icon={faDownload} /></a> }
-        {/* {isHomePage() ? "" : <>Checking Pending <FontAwesomeIcon icon={faList} className='mx-2 text-red-500' /> / All Checked <FontAwesomeIcon icon={faCheckDouble} className='mx-2 text-green-500' /> </> } */}
       </div>
       <hr className='mt-4 mb-8' />
       {error && <p>Error: {error}</p>}
-      <ScoreTable scores={scores} loading={loading} isHomePage={isHomePage()} />
+      <UserScoreTable scores={scores} loading={loading} isHomePage={isHomePage()} />
     </div>
   );
 }
 
-export default ScoresComponent;
+export default UserscoresComponent;

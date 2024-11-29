@@ -56,7 +56,6 @@ const AccessSettings = () => {
           style={{fontFamily: paraFont}} >
           <option value="BT">BT</option>
           <option value="WT">WT</option>
-          <option value="YT">YT</option>
         </select>
       </div>
       {Object.keys(visibilitySettings).map((section) => (
