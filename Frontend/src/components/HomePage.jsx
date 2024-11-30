@@ -90,9 +90,9 @@ function HomePage() {
             <Route exact path='/' element={<Welcome />} />
             {/* <Route exact path='/personal/:userId' element={<UserDetails/>} /> */}
             <Route exact path='/progress' element={<UserProgress />} />
-            <Route exact path='/home' element={<AdminDataVisualization />} />
+            <Route exact path='/home' element={<ProtectedRoute Component={AdminDataVisualization} />} />
             <Route exact path='/createuser' element={<ProtectedRoute Component={AddUsers} />} />
-            <Route exact path='/assignTeams' element={<AssignTeams />} />
+            <Route exact path='/assignTeams' element={<ProtectedRoute Component={AssignTeams} />} />
             <Route exact path='/scores' element={<ProtectedRoute Component={ScoresComponent} />} />
             <Route exact path='/updates' element={<ProtectedRoute Component={NewReportSubmission} />} />
             {/* <Route exact path='/scores1' element={<ProtectedRoute Component={ScorePage1}/>} /> */}
@@ -111,22 +111,22 @@ function HomePage() {
             <Route exact path="/flag" element={<FetchEncryptedFlag />} />
             <Route exact path="/profile" element={<UserProfile />} />
             {/* Challenges ROute */}
-            <Route exact path='/admin/challenges' element={<MainChallenge />} />
-            <Route exact path='/admin/cybershakti/visualization' element={<CyberShakti />} />
-            <Route exact path='/admin/challenge/create' element={<CreateChallenge />} />
-            <Route exact path='/challenges/:id' element={<ChallengeDetailsPage />} />
-            <Route exact path='/repositories/:id' element={<RepoDetailsPage />} />
+            <Route exact path='/admin/challenges' element={<ProtectedRoute Component={MainChallenge} />} />
+            <Route exact path='/admin/cybershakti/visualization' element={<ProtectedRoute Component={CyberShakti} />} />
+            <Route exact path='/admin/challenge/create' element={<ProtectedRoute Component={CreateChallenge} />} />
+            <Route exact path='/challenges/:id' element={<ProtectedRoute Component={ChallengeDetailsPage} />} />
+            <Route exact path='/repositories/:id' element={<ProtectedRoute Component={RepoDetailsPage} />} />
             <Route exact path='/login' element={<LoginPage />} />
             <Route exact path='/challenges' element={<UserChallengePage />} />
-            <Route exact path='/submissions' element={<SubmissionTable />} />
-            <Route exact path='/config' element={<Configuration />} />
-            <Route exact path='/admin/report' element={<MainReportPage />} />
-            <Route exact path='/admin/report/create' element={<CreateReport />} />
-            <Route exact path='/admin/report/details/:id' element={<ReportDetails/>}/>
-            <Route exact path='/challenges/submissions/:id' element={<ChallengesSubmissions/>}/>
-            <Route exact path='/challenges/docker' element={<DockerManagement/>}/>
-            <Route exact path='/repository' element={<Repository/>}/>
-            <Route exact path='/createRepo' element={<CreateRepo/>}/>
+            <Route exact path='/submissions' element={<ProtectedRoute Component={SubmissionTable} />} />
+            <Route exact path='/config' element={<ProtectedRoute Component={Configuration} />} />
+            <Route exact path='/admin/report' element={<ProtectedRoute Component={MainReportPage} />} />
+            <Route exact path='/admin/report/create' element={<ProtectedRoute Component={CreateReport} />} />
+            <Route exact path='/admin/report/details/:id' element={<ProtectedRoute Component={ReportDetails}/>}/>
+            <Route exact path='/challenges/submissions/:id' element={<ProtectedRoute Component={ChallengesSubmissions}/>}/>
+            <Route exact path='/challenges/docker' element={<ProtectedRoute Component={DockerManagement}/>}/>
+            <Route exact path='/repository' element={<ProtectedRoute Component={Repository}/>}/>
+            <Route exact path='/createRepo' element={<ProtectedRoute Component={CreateRepo}/>}/>
             <Route exact path='/userScores' element={<UserscoresComponent/>}/>
           </Routes>
           
