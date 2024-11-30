@@ -7,6 +7,7 @@ import SocketContext from '../../context/SocketContext';
 import "../../App.css";
 import AuthContext from '../../context/AuthContext';
 import FontContext from '../../context/FontContext';
+const BT = import.meta.env.VITE_BT;
 
 function ChatLists({ position }) {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -83,7 +84,7 @@ function ChatLists({ position }) {
             const userRole = user.role 
     
             // Determine the correct API based on the user's role
-            const apiEndpoint = userRole === 'BT' 
+            const apiEndpoint = userRole === BT
                 ? `${apiUrl}/api/auth/getWhiteUsersall` 
                 : `${apiUrl}/api/auth/getusersall`;
     

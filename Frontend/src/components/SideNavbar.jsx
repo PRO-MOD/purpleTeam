@@ -12,6 +12,9 @@ import ColorContext from "../context/ColorContext";
 import Dropdown from './Partials/Dropdown'; // Import the Dropdown component
 import FontContext from "../context/FontContext";
 
+const BT = import.meta.env.VITE_BT;
+const WT= import.meta.env.VITE_WT;
+
 const SideNavbar = () => {
   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
@@ -131,10 +134,10 @@ const SideNavbar = () => {
       icon: faPuzzlePiece,
       restricted: false, // Accessible to all
       items: [
-        { path: userRole === "WT" ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges == 'yes'  },
+        { path: userRole === WT ? "/admin/challenges" : "/challenges", label: "Challenges", visibility: visibilitySettings.challenges == 'yes'  },
         
-        { path: "/repository", label: "Repository", visibility: userRole === "WT"  },
-        { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === "WT" && visibilitySettings.challenges == 'yes'  },
+        { path: "/repository", label: "Repository", visibility: userRole === WT  },
+        { path: "/challenges/docker", label: "Docker Manager", visibility: userRole === WT && visibilitySettings.challenges == 'yes'  },
       ],
     },
     {
@@ -143,7 +146,7 @@ const SideNavbar = () => {
       restricted: true,
       items: [
         { path: "/config", label: "Configurations", visibility: visibilitySettings.config == 'yes'  },
-        { path: userRole === "WT" ? "/admin/report" : "/report", label: "Report Config", visibility: visibilitySettings.reportConfig == 'yes' },
+        { path: userRole === WT ? "/admin/report" : "/report", label: "Report Config", visibility: visibilitySettings.reportConfig == 'yes' },
       ],
     },
   ];
@@ -193,7 +196,7 @@ const SideNavbar = () => {
           {/* Categories Dropdowns */}
           {categories.map((category, index) => {
         // Check if the category is restricted and if the user has the appropriate role
-        if (category.restricted && userRole !== "WT") {
+        if (category.restricted && userRole !== WT) {
           return null; // Skip this category if it's restricted and the user is not "WT"
         }
 

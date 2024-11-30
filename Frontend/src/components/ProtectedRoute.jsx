@@ -1,6 +1,7 @@
 import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from '../context/AuthContext';
+const WT= import.meta.env.VITE_WT;
 
 function ProtectedRoute({ Component }) {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ function ProtectedRoute({ Component }) {
 
     useEffect(() => {
         // Redirect if user is not logged in or does not have required role
-        if (!user || user.role !== "WT" ) {
+        if (!user || user.role !== WT ) {
             navigate("/signin");
         }
     }, [user, navigate]);

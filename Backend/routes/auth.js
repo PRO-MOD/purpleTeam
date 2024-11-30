@@ -14,6 +14,8 @@ const multer = require('multer'); // For handling file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const uploadImageToCloudinary = require('../utils/imageUpload')
+const BT = process.env.BT;
+const WT = process.env.WT;
 
 // Route 1: route for the api with the route og localhost/api/auth/createuser
 router.post('/createuser', async (req, res) => {
@@ -73,7 +75,7 @@ router.post('/addUsers/:userId', async (req, res) => {
     // Find the user by userId
     const user = await User.findById(userId);
 
-    if (!user || !(user.role == "WT")) {
+    if (!user || !(user.role == WT)) {
       return res.status(404).json({ message: 'User not found or user might not be Volunteer' });
     }
 
@@ -134,7 +136,7 @@ router.post('/login', async (req, res) => {
 // Route to fetch all users
 router.get('/getallusers', async (req, res) => {
   try {
-    const users = await User.find({ role: "BT" }, '-password'); // Exclude password field
+    const users = await User.find({ role: BT }, '-password'); // Exclude password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -155,7 +157,7 @@ router.get('/getusersall', async (req, res) => {
 
 router.get('/getWhiteUsersall', async (req, res) => {
   try {
-    const users = await User.find({ role: { $ne: 'BT' } }).select("-password"); // Exclude users with role "BT" and password field
+    const users = await User.find({ role: { $ne: BT } }).select("-password"); // Exclude users with role "BT" and password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -224,7 +226,7 @@ router.delete('/deleteuser/:userId', async (req, res) => {
 // Route to fetch all Volunteer
 router.get('/getallVolunteer', async (req, res) => {
   try {
-    const users = await User.find({ role: "WT" }, '-password').populate('assignedTeams', 'name');; // Exclude password field
+    const users = await User.find({ role: WT }, '-password').populate('assignedTeams', 'name');; // Exclude password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);

@@ -7,6 +7,8 @@ import ChatInput from './ChatInput';
 import Notification from '/notification.mp3'
 import { io } from 'socket.io-client';
 import FontContext from '../../context/FontContext';
+const BT = import.meta.env.VITE_BT;
+const WT= import.meta.env.VITE_WT;
 
 function ChatWindow() {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -202,7 +204,7 @@ function ChatWindow() {
                         />
                         <div className="flex flex-col" style={{fontFamily:headingFont}}>
                             <h1 style={{fontFamily:headingFont}}>{userInfo.name}</h1>
-                            <h1 style={{fontFamily:headingFont}}>{userInfo.role == "BT" ? "Blue Team" : userInfo.role == "WT" ? "White Team" : ""}</h1>
+                            <h1 style={{fontFamily:headingFont}}>{userInfo.role == BT ? "Blue Team" : userInfo.role == WT ? "White Team" : ""}</h1>
                         </div>
                     </>
                 )}

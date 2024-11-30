@@ -2,12 +2,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Switch from 'react-switch';
 import FontContext from '../../context/FontContext';
+const BT = import.meta.env.VITE_BT;
+const WT= import.meta.env.VITE_WT;
 
 const AccessSettings = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
-  const [team, setTeam] = useState('BT'); // Default to 'BT', update based on your requirement
+  const [team, setTeam] = useState(BT); // Default to 'BT', update based on your requirement
   const [visibilitySettings, setVisibilitySettings] = useState({});
 
   useEffect(() => {
@@ -54,8 +56,8 @@ const AccessSettings = () => {
           onChange={(e) => setTeam(e.target.value)}
           className="form-select mt-1 block w-full"
           style={{fontFamily: paraFont}} >
-          <option value="BT">BT</option>
-          <option value="WT">WT</option>
+          <option value={BT}>BT</option>
+          <option value={WT}>WT</option>
         </select>
       </div>
       {Object.keys(visibilitySettings).map((section) => (

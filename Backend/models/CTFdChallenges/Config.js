@@ -16,7 +16,7 @@ const ConfigSchema = new mongoose.Schema({
     type: String,
   },
   visibilitySettings: {
-    BT: {
+    A3F9B7C2D8E5F1A4: {
       communication: { type: String, default: 'no' },
       dashboard: { type: String, default: 'no' },
       notes: { type: String, default: 'no' },
@@ -26,7 +26,7 @@ const ConfigSchema = new mongoose.Schema({
       profile: { type: String, default: 'no' },
       scoreBoard:{ type: String, default: 'no' }
     },
-    WT: {
+    D71A6E9B4C3F8D2E: {
       home: { type: String, default: 'no' },
       users: { type: String, default: 'no' },
       viewAll: { type: String, default: 'no' },

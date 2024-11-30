@@ -1,6 +1,7 @@
 const Notification = require('../models/Notification'); // Import Notification model
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const WT = process.env.WT;
 
 // const fetchuser = require('../middleware/fetchuser'); 
 /**
@@ -25,7 +26,7 @@ const handleNotifications = (socket, io, users) => {
         const user = await User.findById(userId);
 
         
-        if (user && user.role === 'WT') {
+        if (user && user.role === WT) {
           // Save the notification in the database
           const newNotification = new Notification({
             title,

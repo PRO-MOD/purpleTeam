@@ -7,6 +7,7 @@ import NotificationForm from "./NotificationForm"; // Import the NotificationFor
 import Modal from "../Partials/modal"; // Import the Modal component
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+const WT= import.meta.env.VITE_WT;
 
 const NotificationComponent = () => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
@@ -80,7 +81,7 @@ const NotificationComponent = () => {
     return (
         <div className="p-6">
             {/* Conditionally render the NotificationForm only if the user is an admin */}
-            {user?.role === 'WT' && (
+            {user?.role === WT && (
                 <NotificationForm socket={socket} fetchNotifications={fetchNotifications} />
             )}
 
@@ -105,7 +106,7 @@ const NotificationComponent = () => {
                                     </blockquote>
 
                                     {/* Admin can Edit or Delete */}
-                                    {user?.role === 'WT' && (
+                                    {user?.role === WT && (
                                         <div className="mt-2 flex justify-end space-x-4"> {/* Flex to align icons to the right */}
                                             <button
                                                 style={{ color: hoverColor }}

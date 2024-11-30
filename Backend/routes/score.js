@@ -11,6 +11,7 @@ const xlsx = require('xlsx');
 const fetchuser = require('../middleware/fetchuser');
 const ChallengeSolve = require('../models/ChallengeSolved');
 const Submission = require('../models/CTFdChallenges/Submission');
+const BT = process.env.BT;
 
 
 // Endpoint to export scores and report counts to Excel
@@ -149,7 +150,7 @@ router.get('/export/ctf', async (req, res) => {
 router.get('/getscores', async (req, res) => {
     try {
         // Fetch user information from your database
-        const users = await User.find({ role: "BT" }, 'name'); // Assuming you only need name to match users
+        const users = await User.find({ role: BT }, 'name'); // Assuming you only need name to match users
 
         // Extract names of users from the database
         const userNames = users.map(user => user.name);
@@ -218,7 +219,7 @@ router.get('/getscores', async (req, res) => {
 router.get('/getscores1', async (req, res) => {
     try {
         // Fetch user information from your database
-        const users = await User.find({ role: "BT" }, 'name'); // Assuming you only need name to match users
+        const users = await User.find({ role: BT }, 'name'); // Assuming you only need name to match users
 
         // Extract names of users from the database
         const userNames = users.map(user => user.name);

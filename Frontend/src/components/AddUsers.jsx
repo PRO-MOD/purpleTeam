@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import ColorContext from '../context/ColorContext';
 import FontContext from '../context/FontContext';
+const BT = import.meta.env.VITE_BT;
+const WT= import.meta.env.VITE_WT;
 
 // import axios from 'axios';
 
@@ -236,8 +238,8 @@ function AddUsers() {
                                     required
                                 >
                                     <option value="">Select Role</option>
-                                    <option value="WT">White Team</option>
-                                    <option value="BT">Blue Team</option>
+                                    <option value={WT}>White Team</option>
+                                    <option value={BT}>Blue Team</option>
                                 </select>
                             </div>
 

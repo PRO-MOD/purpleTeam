@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const BT = process.env.BT;
+
 
 // Assuming DynamicFlags and Users are the models for dynamic flags and users
 const DynamicFlags = require('../../models/CTFdChallenges/DynamicFlag');
@@ -23,7 +25,7 @@ router.get('/display/:challengeId', async (req, res) => {
 
     // Extract flags and their associated users with role 'BT'
     const flagsWithUsers = dynamicFlags.flags
-      .filter(flag => flag.userId && flag.userId.role === 'BT') // Filter based on user role
+      .filter(flag => flag.userId && flag.userId.role === BT) // Filter based on user role
       .map(flag => ({
         flag: flag.flag,
         assignedUser: flag.userId ? flag.userId.name : 'User not found', // Assuming username field exists

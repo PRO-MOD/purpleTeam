@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FontContext from '../../context/FontContext';
+const WT= import.meta.env.VITE_WT;
 
 const Dropdown = ({ icon, title, items, isActive, hoverColor, sidenavColor, userRole }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,7 @@ const Dropdown = ({ icon, title, items, isActive, hoverColor, sidenavColor, user
       </button>
       {isOpen && (
         <div className="ml-8 space-y-1">
-          {items.filter(item => item.visibility && (userRole === 'WT' || !item.restricted)).map((item, index) => (
+          {items.filter(item => item.visibility && (userRole === WT || !item.restricted)).map((item, index) => (
             <Link key={index} to={item.path} className={`block py-2 px-4 hover:text-white ${isActive(item.path) ? 'text-white' : 'text-white'}`}>
               {item.label}
             </Link>
