@@ -13,6 +13,7 @@ const { ObjectId } = require('mongoose').Types;
 const multer = require('multer'); // For handling file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+const xlsx = require('xlsx');
 const uploadImageToCloudinary = require('../utils/imageUpload')
 const BT = process.env.BT;
 const WT = process.env.WT;
@@ -35,7 +36,7 @@ router.post('/createuser', async (req, res) => {
 
       sendCredentials(req.body.email, "Check your Hackathon Credentials !!", `Your Credntials for this session are \nEmail: ${req.body.email} \n Password: ${req.body.password}`)
 
-      if(user.role == 'BT'){
+      if(user.role == BT){
         // Create associated score document
         const userScore = new Score({
         account_id: user._id.toString(), // Or another unique identifier if needed
@@ -67,6 +68,78 @@ router.post('/createuser', async (req, res) => {
     res.status(500).send("Internal Server Error occured while Authennticating")
   }
 })
+
+// Route to upload and process the file
+router.post('/uploadusers', upload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "Please upload a file." });
+  }
+
+  try {
+    let usersData = [];
+    const fileBuffer = req.file.buffer;
+    const fileExt = req.file.originalname.split('.').pop().toLowerCase();
+
+    if (fileExt === 'xlsx' || fileExt === 'xls') {
+      // Process Excel file
+      const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0]; // Assuming data is in the first sheet
+      const worksheet = workbook.Sheets[sheetName];
+      usersData = xlsx.utils.sheet_to_json(worksheet);
+
+      // Validate if the file contains user data
+      if (usersData.length === 0) {
+        return res.status(400).json({ error: "Uploaded file is empty or improperly formatted." });
+      }
+    } else {
+      return res.status(400).json({ error: "Invalid file format. Only Excel files are supported." });
+    }
+    console.log(usersData);
+    
+    // Process each user and create them
+    for (let userData of usersData) {
+      const userEmail = await User.findOne({ email: userData.email });
+      
+      if (!userEmail) {
+        let salt = bcrypt.genSaltSync(10);
+        let securedPass = bcrypt.hashSync(userData.password, salt);
+
+        const user = await User.create({
+          name: userData.name,
+          email: userData.email,
+          password: securedPass,
+          role: userData.role,
+        });
+
+        await user.save(); // Save user to the database
+
+        // Uncomment if you want to send credentials via email
+        // sendCredentials(userData.email, "Check your Hackathon Credentials !!", 
+        //   `Your Credentials for this session are \nEmail: ${userData.email} \n Password: ${userData.password}`);
+
+        if (user.role === BT) {
+          // Create associated score document
+          const userScore = new Score({
+            account_id: user._id.toString(),
+            name: user.name,
+            score: 0,
+            user: user._id,
+            date: new Date(),
+            staticScore: 0,
+          });
+
+          await userScore.save();
+        }
+      }
+    }
+
+    return res.json({ success: true, message: "Users created successfully." });
+  } catch (err) {
+    console.error("Error processing file:", err.message);
+    res.status(500).json({ error: "Internal Server Error occurred while uploading and processing the file.", details: err.message });
+  }
+});
+
 
 // Route to add multiple users to assignedTeams
 router.post('/addUsers/:userId', async (req, res) => {
