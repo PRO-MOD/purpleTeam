@@ -19,32 +19,30 @@ const UserChallengePage = () => {
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
   useEffect(() => {
-    
-
-    const fetchSolvedChallenges = async () => {
-      try {
-
-        const response = await fetch(`${apiUrl}/api/challenges/solved`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Auth-token': localStorage.getItem('Hactify-Auth-token')
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        
-        setSolvedChallenges(data.map(solved => solved.challengeId));
-        setSolvedChallengesData(data);
-      } catch (error) {
-        console.error('Error fetching solved challenges:', error);
-      }
-    };
-
     fetchChallenges();
     fetchSolvedChallenges();
   }, []);
+
+  const fetchSolvedChallenges = async () => {
+    try {
+
+      const response = await fetch(`${apiUrl}/api/challenges/solved`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-token': localStorage.getItem('Hactify-Auth-token')
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      
+      setSolvedChallenges(data.map(solved => solved.challengeId));
+      setSolvedChallengesData(data);
+    } catch (error) {
+      console.error('Error fetching solved challenges:', error);
+    }
+  };
 
   // const handleButtonClick = (challenge) => {
   //   setSelectedChallenge(challenge);
@@ -121,6 +119,7 @@ const UserChallengePage = () => {
           setSolvedChallenges(prevSolved => [...prevSolved, selectedChallenge._id]); // Update solved challenges state
           setTimeout(closeModal, 2000); // Close the modal after a delay
           socket.emit("challengeSolved", {});
+          fetchSolvedChallenges();
         } else {
           setAttempts(prev => prev + 1);
           if (selectedChallenge.max_attempts !== 0 && attempts + 1 >= selectedChallenge.max_attempts) {
