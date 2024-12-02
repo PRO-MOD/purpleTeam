@@ -17,7 +17,7 @@ const handleChallengeSolved = (socket, io, users) => {
       };
 
       // Broadcast the notification to all connected clients
-      io.emit('challengeSolvedNotification', data);
+      socket.broadcast.emit('challengeSolvedNotification', data);
 
       // Log the event
     //   console.log('A challenge was solved. Notification broadcasted.');

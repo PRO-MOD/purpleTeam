@@ -825,6 +825,11 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       
      
       if (userFlag && userFlag.flag === answer.trim()) {
+
+        const alreadySolved = await Submission.findOne({ userId, challengeId, isCorrect: true });
+        if (alreadySolved) {
+          return res.json({ message: 'Challenge already solved'});
+        }
         // Fetch the challenge document from the database first
         const challenge = await Challenge.findById(challengeId);
         
@@ -835,7 +840,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
         
         // Calculate the number of correct answers
         let solves = await Submission.countDocuments({ challengeId, isCorrect: true });
-    let value;
+        let value;
         // Calculate the dynamic score for the current correct answer
         if (decay === 0) {
           // If decay is 0, use a fixed value (or other fallback logic)
@@ -888,6 +893,10 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
       // Regular flag verification
 if (isCorrect) {
   const challenge = await Challenge.findById(challengeId);
+  const alreadySolved = await Submission.findOne({ userId, challengeId, isCorrect: true });
+        if (alreadySolved) {
+          return res.json({ message: 'Challenge already solved'});
+        }
     // Fetch scoring parameters from the challenge document
     let initial = challenge.initial;
     let minimum = challenge.minimum;
