@@ -536,7 +536,7 @@ router.post('/multiusers/:challengeId/add', async (req, res) => {
       // Generate unique flags for new users and add them to the dynamicFlags schema
       const newFlags = newUsers.map(userId => ({
         userId,
-        flag: generateUniqueFlag(userId), // Use your existing function
+        flag: generateUniqueFlag(userId, challengeId), // Use your existing function
       }));
 
       dynamicFlagsDoc.flags.push(...newFlags);
@@ -617,6 +617,11 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
 
   const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, answer, res) => {
     try {
+      const alreadySolved = await Submission.findOne({ userId, challengeId, isCorrect: true });
+    if (alreadySolved) {
+      return res.json({ message: 'Challenge already solved'});
+    }
+
       let userScore = await score.findOne({ user: userId });
       const user = await User.findOne({_id: userId});
   
@@ -945,7 +950,7 @@ router.get('/solved',fetchuser, async (req, res) => {
   try {
     const  userId = req.user.id;
     // const solvedChallenges = await Submission.find({ userId, isCorrect:true}).select('challengeId');
-    const solvedChallenges = await Submission.find({ userId, isCorrect: true }).select('challengeId');
+    const solvedChallenges = await Submission.find({ userId, isCorrect: true }).select('challengeId points');
     res.json(solvedChallenges);
   } catch (error) {
     console.error(error);
