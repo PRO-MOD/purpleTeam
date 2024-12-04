@@ -85,6 +85,9 @@ const SideNavbar = () => {
     try {
       const response = await fetch(`${apiUrl}/api/config/getVisibilitySettings/${team}`, {
         method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        },
       });
       const data = await response.json();
       setVisibilitySettings(data.settings);

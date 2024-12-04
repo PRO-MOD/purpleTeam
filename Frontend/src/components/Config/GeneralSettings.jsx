@@ -45,6 +45,7 @@ const GeneralSettings = () => {
       const response = await fetch(`${apiUrl}/api/config/update-general`, {
         method: 'POST',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ title, description }),

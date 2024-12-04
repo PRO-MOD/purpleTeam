@@ -25,6 +25,9 @@ const AppearanceSettings = () => {
             const response = await fetch(`${apiUrl}/api/config/update-logo`, {
                 method: 'POST',
                 body: formData,
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                },
             });
 
             const data = await response.json();
