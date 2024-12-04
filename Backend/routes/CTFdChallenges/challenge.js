@@ -536,7 +536,7 @@ router.post('/multiusers/:challengeId/add', async (req, res) => {
       // Generate unique flags for new users and add them to the dynamicFlags schema
       const newFlags = newUsers.map(userId => ({
         userId,
-        flag: generateUniqueFlag(userId), // Use your existing function
+        flag: generateUniqueFlag(userId, challengeId), // Use your existing function
       }));
 
       dynamicFlagsDoc.flags.push(...newFlags);
@@ -617,6 +617,13 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
 
   const handleCorrectAnswer = async (userId, challengeId, challengeName, updatedValue, answer, res) => {
     try {
+
+      const alreadySolved = await Submission.findOne({ userId, challengeId, isCorrect: true });
+    if (alreadySolved) {
+      return res.json({ message: 'Challenge already solved' });
+    }
+
+
       let userScore = await score.findOne({ user: userId });
       const user = await User.findOne({_id: userId});
   
@@ -667,56 +674,7 @@ router.post('/verify-answer', fetchuser, async (req, res) => {
   };
 
   
-  // const handleIncorrectAnswer = async (userId, challengeId, answer, res) => {
-  //   try {
-  //     // Count previous attempts for this user and challenge
-  //     const previousAttempts = await Submission.countDocuments({ userId, challengeId });
   
-  //     // Fetch the challenge details
-  //     const challenge = await Challenge.findById(challengeId);
-  //     if (!challenge) {
-  //       return res.status(404).json({ message: 'Challenge not found' });
-  //     }
-  
-  //     let isCheating = false; // Default to not cheating
-  
-  //     // Check if the challenge type is dynamic
-  //     if (challenge.type === 'dynamic') {
-  //       // Fetch the flags for this dynamic challenge from the DynamicFlag schema
-  //       const dynamicFlag = await DynamicFlag.findOne({ challengeId: challengeId });
-  
-  //       if (dynamicFlag) {
-  //         const flags = dynamicFlag.flags.map(flagEntry => flagEntry.flag); // Extract flags from entries
-         
-  
-  //         // Check if the answer matches any of the flags
-  //         isCheating = flags.includes(answer);
-          
-  //       }
-  //     }
-  
-  //     // Save the submission with cheating status
-  //     const newSubmission = new Submission({
-  //       userId: userId,
-  //       challengeId: challengeId,
-  //       answer: answer,
-  //       isCorrect: false,
-  //       attempt: previousAttempts + 1,
-  //       points: 0,
-  //       date: new Date(),
-  //       cheating: isCheating
-  //     });
-  
-  //     await newSubmission.save();
-  
-  //     return res.json({ correct: false, cheating: isCheating });
-  //   } catch (error) {
-  //     console.error('Error handling incorrect answer:', error);
-  //     return res.status(500).json({ success: false, message: 'An error occurred while processing the submission.' });
-  //   }
-  // };
-  
-
   const handleIncorrectAnswer = async (userId, challengeId, answer, res) => {
     try {
       // Count previous attempts for this user and challenge
@@ -945,7 +903,7 @@ router.get('/solved',fetchuser, async (req, res) => {
   try {
     const  userId = req.user.id;
     // const solvedChallenges = await Submission.find({ userId, isCorrect:true}).select('challengeId');
-    const solvedChallenges = await Submission.find({ userId, isCorrect: true }).select('challengeId');
+    const solvedChallenges = await Submission.find({ userId, isCorrect: true }).select('challengeId points');
     res.json(solvedChallenges);
   } catch (error) {
     console.error(error);
