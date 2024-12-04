@@ -20,7 +20,12 @@ const Users = ({ challengeId }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}`);
+        const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
         setUsers(data.users);
       } catch (error) {
@@ -30,7 +35,12 @@ const Users = ({ challengeId }) => {
 
     const fetchAllUsers = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/user/getallusers`);
+        const response = await fetch(`${apiUrl}/api/user/getallusers`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
 
         // Filter out users who are already added
@@ -55,7 +65,10 @@ const Users = ({ challengeId }) => {
     try {
       const response = await fetch(`${apiUrl}/api/challenges/multiusers/${challengeId}/add`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          'Content-Type': 'application/json' 
+        },
         body: JSON.stringify({ user_ids: selectedUsers }),
       });
 
@@ -81,6 +94,9 @@ const Users = ({ challengeId }) => {
     try {
       const response = await fetch(`${apiUrl}/api/challenges/users/${challengeId}/delete/${userId}`, {
         method: 'DELETE',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        }
       });
 
       if (!response.ok) {

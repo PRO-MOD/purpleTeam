@@ -21,7 +21,12 @@ const ChallengeDetailsPage = () => {
   useEffect(() => {
     const fetchChallenge = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/challenges/details/${id}`);
+        const response = await fetch(`${apiUrl}/api/challenges/details/${id}`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
         setChallenge(data);
       } catch (error) {
@@ -34,8 +39,13 @@ const ChallengeDetailsPage = () => {
 
   const handleDelete = async () => {
     try {
-      await fetch(`${apiUrl}/api/challenges/delete/${id}`, { method: 'DELETE' });
-      navigate('/challenges'); // Redirect to challenges page after deletion
+      await fetch(`${apiUrl}/api/challenges/delete/${id}`, 
+        { method: 'DELETE' ,
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
+      navigate('/admin/challenges'); // Redirect to challenges page after deletion
     } catch (error) {
       console.error('Error deleting challenge:', error);
     }

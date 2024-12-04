@@ -25,6 +25,9 @@ const CreateUsers = ({ fetchUsers, fetchVolunteers }) => {
             const response = await fetch(`${apiUrl}/api/auth/uploadusers`, {
                 method: 'POST',
                 body: formData,
+                headers: {
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token')
+                  },
             });
             if (response.ok) {
                 setMessage('File uploaded successfully!');

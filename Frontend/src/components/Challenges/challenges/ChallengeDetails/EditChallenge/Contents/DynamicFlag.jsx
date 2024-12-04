@@ -19,7 +19,12 @@ const DynamicFlags = ({ challengeId }) => {
   // Function to fetch dynamic flags and users
   const fetchDynamicFlags = async (challengeId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/dynamicFlags/display/${challengeId}`);
+      const response = await fetch(`${apiUrl}/api/dynamicFlags/display/${challengeId}`, {
+        method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        }
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch dynamic flags');
       }
@@ -49,6 +54,7 @@ const DynamicFlags = ({ challengeId }) => {
       const response = await fetch(`${apiUrl}/api/dynamicFlags/edit/${challengeId}`, {
         method: 'PUT',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ index: editingIndex, flag: editFlag }),
@@ -75,6 +81,7 @@ const DynamicFlags = ({ challengeId }) => {
       const response = await fetch(`${apiUrl}/api/dynamicFlags/delete/${challengeId}`, {
         method: 'DELETE',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ index }),

@@ -15,7 +15,12 @@ const Files = ({ challengeId }) => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/challenges/files/${challengeId}`);
+        const response = await fetch(`${apiUrl}/api/challenges/files/${challengeId}`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
         setFiles(data);
       } catch (error) {
@@ -44,6 +49,9 @@ const Files = ({ challengeId }) => {
       const response = await fetch(`${apiUrl}/api/challenges/files/${challengeId}/upload`, {
         method: 'POST',
         body: formData,
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        }
       });
 
       if (!response.ok) {
@@ -67,6 +75,9 @@ const Files = ({ challengeId }) => {
     try {
       const response = await fetch(`${apiUrl}/api/challenges/files/${challengeId}/delete/${filename}`, {
         method: 'DELETE',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        }
       });
 
       if (!response.ok) {

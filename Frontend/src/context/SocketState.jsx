@@ -121,7 +121,7 @@ const SocketState = (props) => {
         fetchUnreadMessages();
       }
     });
-    fetchUnreadMessages();
+    // fetchUnreadMessages();
 
     // Clean up timeout on component unmount
     return () => {
@@ -199,7 +199,7 @@ const SocketState = (props) => {
 
   useEffect(() => {
     // creteSocket();
-    fetchUnreadMessages();
+    // fetchUnreadMessages();
   }, []);
 
   return (

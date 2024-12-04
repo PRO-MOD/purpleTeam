@@ -7,11 +7,17 @@ const BT = process.env.BT;
 // Assuming DynamicFlags and Users are the models for dynamic flags and users
 const DynamicFlags = require('../../models/CTFdChallenges/DynamicFlag');
 const User = require('../../models/User');
+const fetchuser = require('../../middleware/fetchuser');
 
-router.get('/display/:challengeId', async (req, res) => {
+router.get('/display/:challengeId', fetchuser, async (req, res) => {
   const { challengeId } = req.params;
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     // Find the dynamic flags for the given challengeId, populating user details
     const dynamicFlags = await DynamicFlags.findOne({ challengeId })
       .populate({
@@ -39,7 +45,7 @@ router.get('/display/:challengeId', async (req, res) => {
   }
 });
 
-router.get('/userFlag/:challengeId/:emailId', async (req, res) => {
+router.get('/userFlag/:challengeId/:emailId', fetchuser, async (req, res) => {
   const { challengeId, emailId } = req.params;
 
   try {
@@ -69,11 +75,16 @@ router.get('/userFlag/:challengeId/:emailId', async (req, res) => {
 });
 
 // Edit a specific flag
-router.put('/edit/:challengeId', async (req, res) => {
+router.put('/edit/:challengeId', fetchuser, async (req, res) => {
   const { challengeId } = req.params;
   const { index, flag } = req.body;
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const dynamicFlags = await DynamicFlags.findOne({ challengeId });
 
     if (!dynamicFlags || !dynamicFlags.flags[index]) {
@@ -92,11 +103,16 @@ router.put('/edit/:challengeId', async (req, res) => {
 });
 
 // Delete a specific flag
-router.delete('/delete/:challengeId', async (req, res) => {
+router.delete('/delete/:challengeId', fetchuser, async (req, res) => {
   const { challengeId } = req.params;
   const { index } = req.body;
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const dynamicFlags = await DynamicFlags.findOne({ challengeId });
 
     if (!dynamicFlags || !dynamicFlags.flags[index]) {

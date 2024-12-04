@@ -17,7 +17,12 @@ function AssignTeams() {
     const fetchVolunteers = async () => {
         try {
             // Fetch volunteers from the backend
-            const response = await fetch(`${apiUrl}/api/auth/getallVolunteer`);
+            const response = await fetch(`${apiUrl}/api/auth/getallVolunteer`, {
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                }
+              });
             const data = await response.json();
             setVolunteers(data);
         } catch (error) {
@@ -28,7 +33,12 @@ function AssignTeams() {
     const fetchUsers = async () => {
         try {
             // Fetch users with role "BT" from the backend
-            const response = await fetch(`${apiUrl}/api/auth/getallusers`);
+            const response = await fetch(`${apiUrl}/api/auth/getallusers`, {
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                }
+              });
             const data = await response.json();
             setUsers(data);
         } catch (error) {
@@ -70,7 +80,8 @@ function AssignTeams() {
             const response = await fetch(`${apiUrl}/api/auth/addUsers/${selectedVolunteer}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token')
                 },
                 body: JSON.stringify({ selectedUserIds: selectedUsers })
             });
@@ -91,7 +102,8 @@ function AssignTeams() {
             const response = await fetch(`${apiUrl}/api/auth/removeUsers/${selectedVolunteer}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
                 },
                 body: JSON.stringify({ unselectedUserIds: unselectedUsers.map(user => user._id) })
             });

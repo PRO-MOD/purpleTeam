@@ -12,8 +12,13 @@ const DetailHint =require('../../models/CTFdChallenges/detailhint');
 
 
 // POST route to create a new challenge
-router.post('/create', async (req, res) => {
+router.post('/create', fetchuser, async (req, res) => {
     try {
+      const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
         const { name, description, category, value, type } = req.body;
         // console.log(type);
         // Create a new challenge instance
@@ -40,8 +45,13 @@ router.post('/create', async (req, res) => {
 });
 
 // Update challenge
-router.put('/edit/:id', async (req, res) => {
+router.put('/edit/:id', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const challengeId = req.params.id;
     const updatedData = req.body;
 
@@ -76,9 +86,14 @@ const generateUniqueFlag = require('../../utils/CTFdChallenges/generateUniqueFla
 
 
 // POST route to update an existing challenge with additional data
-router.post('/update/:challengeId', upload.array('file', 5), async (req, res) => {
+router.post('/update/:challengeId', upload.array('file', 5), fetchuser, async (req, res) => {
   const { challengeId } = req.params;
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
       // Find the existing challenge by ID
       const existingChallenge = await Challenge.findById(challengeId);
       if (!existingChallenge) {
@@ -158,8 +173,14 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
 
 
 
-router.patch('/updateState', async (req, res) => {
+router.patch('/updateState', fetchuser, async (req, res) => {
   const { ids, state } = req.body;
+
+  const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
 
   if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(400).json({ success: false, message: 'No challenge IDs provided.' });
@@ -180,7 +201,7 @@ router.patch('/updateState', async (req, res) => {
 
 
 // search challenge by ID
-router.get('/details/:id', async (req, res) => {
+router.get('/details/:id', fetchuser, async (req, res) => {
     try {
         const challenges = await Challenge.findOne({_id: req.params.id});
         res.status(200).json(challenges);
@@ -226,7 +247,7 @@ router.get('/details/:id', async (req, res) => {
 
  
 
-  router.get('/hints/:id', async (req, res) => {
+  router.get('/hints/:id', fetchuser, async (req, res) => {
     try {
         const hints = await Challenge.find({_id: req.params.id}).select('hints');
         res.status(200).json(hints);
@@ -238,8 +259,13 @@ router.get('/details/:id', async (req, res) => {
  
  
 
-router.get('/toDisplayAllChallenges', async (req, res) => {
+router.get('/toDisplayAllChallenges', fetchuser, async (req, res) => {
     try {
+      const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
         const challenges = await Challenge.find().select('name initial category type state');
         res.status(200).json(challenges);
     } catch (error) {
@@ -249,8 +275,14 @@ router.get('/toDisplayAllChallenges', async (req, res) => {
     });
 
 // Delete challenges by IDs
-router.delete('/deleteChallenges', async (req, res) => {
+router.delete('/deleteChallenges', fetchuser, async (req, res) => {
     const { ids } = req.body;
+
+    const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
   
     if (!ids || !Array.isArray(ids)) {
       return res.status(400).json({ error: 'Invalid input. Please provide an array of IDs.' });
@@ -266,9 +298,14 @@ router.delete('/deleteChallenges', async (req, res) => {
   });
 
 
-  router.delete('/delete/:id', async (req, res) => {
+  router.delete('/delete/:id', fetchuser, async (req, res) => {
     const { id } = req.params; // Extract the challenge ID from the URL parameters
-  
+    const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
+
     if (!id) {
       return res.status(400).json({ error: 'No ID provided. Please provide a valid challenge ID.' });
     }
@@ -287,7 +324,7 @@ router.delete('/deleteChallenges', async (req, res) => {
     }
   });
   
-  router.get('/files/:id', async (req, res) => {
+  router.get('/files/:id', fetchuser, async (req, res) => {
     try {
       const challenge = await Challenge.findById(req.params.id);
       if (!challenge) {
@@ -300,8 +337,13 @@ router.delete('/deleteChallenges', async (req, res) => {
   });
 
   // upload new file in specific challenges
-  router.post('/files/:id/upload', upload.single('file'), async (req, res) => {
+  router.post('/files/:id/upload', upload.single('file'), fetchuser, async (req, res) => {
     try {
+      const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
       const challenge = await Challenge.findById(req.params.id);
       if (!challenge) {
         return res.status(404).send('Challenge not found');
@@ -317,8 +359,13 @@ router.delete('/deleteChallenges', async (req, res) => {
   
 
   // delete particular file
-  router.delete('/files/:id/delete/:filename', async (req, res) => {
+  router.delete('/files/:id/delete/:filename', fetchuser, async (req, res) => {
     try {
+      const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
       const challenge = await Challenge.findById(req.params.id);
       if (!challenge) {
         return res.status(404).send('Challenge not found');
@@ -348,8 +395,13 @@ router.delete('/deleteChallenges', async (req, res) => {
   });
 
 // get all flags
-router.get('/flags/:id', async (req, res) => {
+router.get('/flags/:id', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const challenge = await Challenge.findById(req.params.id);
     if (!challenge) {
       return res.status(404).send('Challenge not found');
@@ -361,11 +413,16 @@ router.get('/flags/:id', async (req, res) => {
 });
 
 // POST route to add a flag to a challenge
-router.post('/flags/:id/add', async (req, res) => {
+router.post('/flags/:id/add', fetchuser, async (req, res) => {
   const { id: challengeId } = req.params;
   const { flag, flag_data } = req.body;
   // console.log(flag);
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     // Find the challenge by ID
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
@@ -388,10 +445,15 @@ router.post('/flags/:id/add', async (req, res) => {
 });
 
 // DELETE route to delete a flag from a challenge
-router.delete('/flags/:id/delete/:flag', async (req, res) => {
+router.delete('/flags/:id/delete/:flag', fetchuser, async (req, res) => {
   const { id: challengeId, flag } = req.params;
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     // Find the challenge by ID
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
@@ -414,11 +476,16 @@ router.delete('/flags/:id/delete/:flag', async (req, res) => {
 });
 
 // PUT route for editing a flag associated with a challenge
-router.put('/flags/:challengeId/edit/:index', async (req, res) => {
+router.put('/flags/:challengeId/edit/:index', fetchuser, async (req, res) => {
   const { challengeId, index } = req.params;
   const { flag, flag_data } = req.body; // Assuming you are sending flag and flag_data in the request body
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     // Find the challenge by ID
     const challenge = await Challenge.findById(challengeId);
 
@@ -455,8 +522,14 @@ router.put('/flags/:challengeId/edit/:index', async (req, res) => {
 // });
 
 
-router.get('/users/:challengeId', async (req, res) => {
+router.get('/users/:challengeId', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
+
     const { challengeId } = req.params;
     const challenge = await Challenge.findById(challengeId).populate('user_ids', 'name');
     if (!challenge) {
@@ -500,7 +573,7 @@ router.post('/users/:challengeId/add', async (req, res) => {
 });
 
 
-router.post('/multiusers/:challengeId/add', async (req, res) => {
+router.post('/multiusers/:challengeId/add', fetchuser, async (req, res) => {
   try {
     const { challengeId } = req.params;
     const { user_ids } = req.body; // expecting an array of user IDs
@@ -554,7 +627,7 @@ router.post('/multiusers/:challengeId/add', async (req, res) => {
 
 
 
-router.delete('/users/:challengeId/delete/:userId', async (req, res) => {
+router.delete('/users/:challengeId/delete/:userId', fetchuser, async (req, res) => {
   try {
     const { challengeId, userId } = req.params;
 

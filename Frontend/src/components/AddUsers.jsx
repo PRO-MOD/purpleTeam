@@ -33,7 +33,12 @@ function AddUsers() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/auth/getallusers`);
+            const response = await fetch(`${apiUrl}/api/auth/getallusers`, {
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                }
+              });
             const data = await response.json();
             setUsers(data);
         } catch (error) {
@@ -43,7 +48,12 @@ function AddUsers() {
 
     const fetchVolunteers = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/auth/getallVolunteer`);
+            const response = await fetch(`${apiUrl}/api/auth/getallVolunteer`, {
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                }
+              });
             const data = await response.json();
             setVolunteers(data);
         } catch (error) {
@@ -64,6 +74,7 @@ function AddUsers() {
             const response = await fetch(url, {
                 method,
                 headers: {
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
@@ -144,7 +155,10 @@ function AddUsers() {
         try {
             const url = `${apiUrl}/api/auth/deleteuser/${userId}`;
             const response = await fetch(url, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                }
             });
             if (response.ok) {
                 // Remove the deleted user from the users or volunteers array
