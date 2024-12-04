@@ -81,7 +81,12 @@ function UserDetails() {
 
     const fetchSubmissions = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/submissions/userSubmissions/${userId}`);
+        const response = await fetch(`${apiUrl}/api/submissions/userSubmissions/${userId}`,{
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'), 
+          },
+        });
         const data = await response.json();
         setSubmissionData(data);
       } catch (error) {
@@ -101,7 +106,10 @@ function UserDetails() {
 
     const fetchtotalHintCost = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/hints/totalHintCost/${userId}`);
+        const response = await fetch(`${apiUrl}/api/hints/totalHintCost/${userId}`,{
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token')},
+        });
         const data = await response.json();
         setHintCost(data);
       } catch (error) {

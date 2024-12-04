@@ -44,13 +44,24 @@ function AdminDataVisualization() {
       .then(data => setReportData(data))
       .catch(error => console.error('Error fetching report data:', error));
 
-      fetch(`${apiUrl}/api/submissions/all`)
+      fetch(`${apiUrl}/api/submissions/all`,{
+        method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),}
+        
+      })
       .then(res => res.json())
       .then(data => setSubmissionData(data))
       .catch(error => console.error('Error fetching submissions data:', error));
 
       // Fetch submission types count
-    fetch(`${apiUrl}/api/submissions/submission-types-count`)
+    fetch(`${apiUrl}/api/submissions/submission-types-count`,{
+      method: 'GET',
+      headers: {
+        'Auth-token': localStorage.getItem('Hactify-Auth-token'), // Include the auth token
+      },
+
+    })
     .then(res => res.json())
     .then(data => setSubmissionTypes(data))
     .catch(error => console.error('Error fetching submission types count:', error));
