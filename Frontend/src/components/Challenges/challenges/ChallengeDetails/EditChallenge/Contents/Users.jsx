@@ -30,7 +30,12 @@ const Users = ({ challengeId }) => {
 
     const fetchAllUsers = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/user/getallusers`);
+        const response = await fetch(`${apiUrl}/api/user/getallusers`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
 
         // Filter out users who are already added

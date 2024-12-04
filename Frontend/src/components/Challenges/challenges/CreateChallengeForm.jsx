@@ -40,6 +40,7 @@ const CreateChallengeForm = ({ selectedOption }) => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),

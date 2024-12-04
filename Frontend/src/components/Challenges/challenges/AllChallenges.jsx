@@ -76,6 +76,7 @@ const AllChallenges = () => {
         const response = await fetch(`${apiUrl}/api/challenges/updateState`, {
           method: 'PATCH',
           headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ ids: selectedChallenges, state: newState }),

@@ -21,7 +21,12 @@ const ChallengeDetailsPage = () => {
   useEffect(() => {
     const fetchChallenge = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/challenges/details/${id}`);
+        const response = await fetch(`${apiUrl}/api/challenges/details/${id}`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
         setChallenge(data);
       } catch (error) {

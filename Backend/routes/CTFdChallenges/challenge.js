@@ -12,8 +12,13 @@ const DetailHint =require('../../models/CTFdChallenges/detailhint');
 
 
 // POST route to create a new challenge
-router.post('/create', async (req, res) => {
+router.post('/create', fetchuser, async (req, res) => {
     try {
+      const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
         const { name, description, category, value, type } = req.body;
         // console.log(type);
         // Create a new challenge instance
@@ -40,8 +45,13 @@ router.post('/create', async (req, res) => {
 });
 
 // Update challenge
-router.put('/edit/:id', async (req, res) => {
+router.put('/edit/:id', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const challengeId = req.params.id;
     const updatedData = req.body;
 
@@ -76,9 +86,14 @@ const generateUniqueFlag = require('../../utils/CTFdChallenges/generateUniqueFla
 
 
 // POST route to update an existing challenge with additional data
-router.post('/update/:challengeId', upload.array('file', 5), async (req, res) => {
+router.post('/update/:challengeId', upload.array('file', 5), fetchuser, async (req, res) => {
   const { challengeId } = req.params;
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
       // Find the existing challenge by ID
       const existingChallenge = await Challenge.findById(challengeId);
       if (!existingChallenge) {
@@ -158,8 +173,14 @@ router.post('/update/:challengeId', upload.array('file', 5), async (req, res) =>
 
 
 
-router.patch('/updateState', async (req, res) => {
+router.patch('/updateState', fetchuser, async (req, res) => {
   const { ids, state } = req.body;
+
+  const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
 
   if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(400).json({ success: false, message: 'No challenge IDs provided.' });
@@ -180,7 +201,7 @@ router.patch('/updateState', async (req, res) => {
 
 
 // search challenge by ID
-router.get('/details/:id', async (req, res) => {
+router.get('/details/:id', fetchuser, async (req, res) => {
     try {
         const challenges = await Challenge.findOne({_id: req.params.id});
         res.status(200).json(challenges);

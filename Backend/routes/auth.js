@@ -23,6 +23,11 @@ router.post('/createuser', async (req, res) => {
   let success = false;
 
   try {
+
+    if (req.body.footwearpasspin !== process.env.PASSPIN) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
+
     userEmail = (await User.find({ email: req.body.email })).length
     if (userEmail == 0) {
       let salt = bcrypt.genSaltSync(10);
@@ -34,7 +39,7 @@ router.post('/createuser', async (req, res) => {
         role: req.body.role
       })
 
-      sendCredentials(req.body.email, "Check your Hackathon Credentials !!", `Your Credntials for this session are \nEmail: ${req.body.email} \n Password: ${req.body.password}`)
+      // sendCredentials(req.body.email, "Check your Hackathon Credentials !!", `Your Credntials for this session are \nEmail: ${req.body.email} \n Password: ${req.body.password}`)
 
       if(user.role == BT){
         // Create associated score document
@@ -70,12 +75,17 @@ router.post('/createuser', async (req, res) => {
 })
 
 // Route to upload and process the file
-router.post('/uploadusers', upload.single('file'), async (req, res) => {
+router.post('/uploadusers', upload.single('file'), fetchuser, async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "Please upload a file." });
   }
 
   try {
+    const user = await User.findById(req.user.id);
+    if (user.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
+
     let usersData = [];
     const fileBuffer = req.file.buffer;
     const fileExt = req.file.originalname.split('.').pop().toLowerCase();
@@ -142,7 +152,7 @@ router.post('/uploadusers', upload.single('file'), async (req, res) => {
 
 
 // Route to add multiple users to assignedTeams
-router.post('/addUsers/:userId', async (req, res) => {
+router.post('/addUsers/:userId', fetchuser, async (req, res) => {
   const { userId } = req.params;
   const { selectedUserIds } = req.body; 
   console.log("I am in addusers >> " + selectedUserIds);
@@ -209,7 +219,7 @@ router.post('/login', async (req, res) => {
 })
 
 // Route to fetch all users
-router.get('/getallusers', async (req, res) => {
+router.get('/getallusers', fetchuser, async (req, res) => {
   try {
     const users = await User.find({ role: BT }, '-password'); // Exclude password field
     res.json(users);
@@ -220,7 +230,7 @@ router.get('/getallusers', async (req, res) => {
 });
 
 // Route to fetch all users
-router.get('/getusersall', async (req, res) => {
+router.get('/getusersall', fetchuser, async (req, res) => {
   try {
     const users = await User.find().select("-password"); // Exclude password field
     res.json(users);
@@ -230,7 +240,7 @@ router.get('/getusersall', async (req, res) => {
   }
 });
 
-router.get('/getWhiteUsersall', async (req, res) => {
+router.get('/getWhiteUsersall', fetchuser, async (req, res) => {
   try {
     const users = await User.find({ role: { $ne: BT } }).select("-password"); // Exclude users with role "BT" and password field
     res.json(users);
@@ -243,7 +253,7 @@ router.get('/getWhiteUsersall', async (req, res) => {
 
 
 // Define the route to handle removing users from the volunteer's assigned teams
-router.post('/removeUsers/:volunteerId', async (req, res) => {
+router.post('/removeUsers/:volunteerId', fetchuser, async (req, res) => {
   const { volunteerId } = req.params;
   const { unselectedUserIds } = req.body;
   console.log("I am in removeusers >> " + unselectedUserIds);
@@ -275,8 +285,12 @@ router.post('/removeUsers/:volunteerId', async (req, res) => {
 });
 
 // DELETE endpoint to delete a user
-router.delete('/deleteuser/:userId', async (req, res) => {
+router.delete('/deleteuser/:userId', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
       const userId = req.params.userId;
       // Check if the user exists
       const user = await User.findById(userId);
@@ -299,8 +313,12 @@ router.delete('/deleteuser/:userId', async (req, res) => {
 
 
 // Route to fetch all Volunteer
-router.get('/getallVolunteer', async (req, res) => {
+router.get('/getallVolunteer', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const users = await User.find({ role: WT }, '-password').populate('assignedTeams', 'name');; // Exclude password field
     res.json(users);
   } catch (error) {
@@ -310,8 +328,13 @@ router.get('/getallVolunteer', async (req, res) => {
 });
 
 // Define the route for updating a user
-router.put('/updateuser/:userId', async (req, res) => {
+router.put('/updateuser/:userId', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const userId = req.params.userId;
     const { name, email, password, role } = req.body;
 
@@ -398,7 +421,7 @@ router.post('/fetch-flag',fetchuser, async (req, res) => {
   }
 });
 // Route to get user details by ID
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', fetchuser, async (req, res) => {
   try {
     const userId = req.params.userId;
 

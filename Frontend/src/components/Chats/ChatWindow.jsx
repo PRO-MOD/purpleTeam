@@ -125,7 +125,10 @@ function ChatWindow() {
     const fetchUserInfo = async (userId) => {
         try {
             const response = await fetch(`${apiUrl}/api/auth/${userId}`, {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                }
             });
             const userData = await response.json();
             setUserInfo(userData);

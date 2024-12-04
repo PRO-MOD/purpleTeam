@@ -41,6 +41,7 @@ const EditChallenge = ({ challenge }) => {
       const response = await fetch(`${apiUrl}/api/challenges/edit/${challenge._id}`, {
         method: 'PUT',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updatedChallenge),

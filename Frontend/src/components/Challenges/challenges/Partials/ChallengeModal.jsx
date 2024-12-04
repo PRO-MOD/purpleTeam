@@ -32,7 +32,12 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
         // Fetch user data from the API
         const fetchUsers = async () => {
             try {
-                const response = await fetch(`${apiUrl}/api/user/getallusers`);
+                const response = await fetch(`${apiUrl}/api/user/getallusers`, {
+                    method: 'GET',
+                    headers: {
+                      'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                    }
+                  });
                 const data = await response.json();
                 const userOptions = data.map(user => ({ value: user._id, label: user.name }));
                 setUsers([{ value: 'select-all', label: 'Select All' }, ...userOptions]);
@@ -163,7 +168,10 @@ const ChallengeModal = ({ challengeId, selectedOption, closeModal }) => {
         try {
             const response = await fetch(`${apiUrl}/api/challenges/update/${challengeId}`, {
                 method: 'POST',
-                body: formDataToSend
+                body: formDataToSend,
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                },
             });
     
             if (!response.ok) {
