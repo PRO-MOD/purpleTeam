@@ -6,13 +6,19 @@ const DetailHint =require('../../models/CTFdChallenges/detailhint');
 const fetchuser =require('../../middleware/fetchuser');
 const Score =require('../../models/score')
 const mongoose = require('mongoose');
+const User = require('../../models/User')
 
 // POST /api/hints/add/:challengeId to add hints
-router.post('/add/:challengeId', async (req, res) => {
+router.post('/add/:challengeId', fetchuser, async (req, res) => {
   const { challengeId } = req.params;
   const { content, cost } = req.body;
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const newHint = new Hint({ content, cost });
     await newHint.save();
 
@@ -32,7 +38,7 @@ router.post('/add/:challengeId', async (req, res) => {
 });
 
 // GET /api/hints/get/:challengeId
-router.get('/get/:challengeId', async (req, res) => {
+router.get('/get/:challengeId', fetchuser, async (req, res) => {
   const { challengeId } = req.params;
 
   try {
@@ -49,11 +55,17 @@ router.get('/get/:challengeId', async (req, res) => {
 });
 
 // PUT /api/hints/edit/:challengeId/hints/:hintId
-router.put('/edit/:challengeId/hints/:hintId', async (req, res) => {
+router.put('/edit/:challengeId/hints/:hintId', fetchuser, async (req, res) => {
   const { challengeId, hintId } = req.params;
   const { content, cost } = req.body;
 
   try {
+
+    const userAdmin = await User.findById(req.user.id);
+    
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
     const updatedHint = await Hint.findByIdAndUpdate(hintId, { content, cost }, { new: true });
 
     if (!updatedHint) {
@@ -68,10 +80,16 @@ router.put('/edit/:challengeId/hints/:hintId', async (req, res) => {
 });
 
 // DELETE /api/hints/:challengeId/hints/delete/:hintId
-router.delete('/:challengeId/hints/delete/:hintId', async (req, res) => {
+router.delete('/:challengeId/hints/delete/:hintId', fetchuser, async (req, res) => {
   const { challengeId, hintId } = req.params;
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
+
     // Remove hint reference from challenge
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
@@ -98,7 +116,7 @@ router.delete('/:challengeId/hints/delete/:hintId', async (req, res) => {
 });
 
 //content and cost of hint using hint id 
-router.get('/hints/:id', async (req, res) => {
+router.get('/hints/:id', fetchuser, async (req, res) => {
   try {
       const hints = await Hint.find({_id: req.params.id});
       res.status(200).json(hints);
@@ -108,7 +126,7 @@ router.get('/hints/:id', async (req, res) => {
   }
 });
 
-router.get('/cost/:id', async (req, res) => {
+router.get('/cost/:id', fetchuser, async (req, res) => {
   try {
       const hints = await Hint.find({_id: req.params.id});
            
@@ -120,7 +138,7 @@ router.get('/cost/:id', async (req, res) => {
 });
 
 
-router.get('/locked/hints/:id', async (req, res) => {
+router.get('/locked/hints/:id',fetchuser, async (req, res) => {
   try {
       const hints = await Hint.find({_id: req.params.id});
       res.status(200).json(hints);
@@ -253,7 +271,7 @@ router.post('/use-hint', fetchuser, async (req, res) => {
 });
 
 
-router.get('/totalHintCost/:userId', async (req, res) => {
+router.get('/totalHintCost/:userId',fetchuser, async (req, res) => {
   try {
     // Extract the userId from the request parameters
     const { userId } = req.params;

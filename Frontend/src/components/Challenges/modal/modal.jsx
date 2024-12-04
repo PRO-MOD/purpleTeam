@@ -94,7 +94,10 @@ const Modal = ({
   //for getting cost of hint before unlocking it 
   const costOfHint = async (hintId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/hints/cost/${hintId}`);
+      const response = await fetch(`${apiUrl}/api/hints/cost/${hintId}`,{
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),}
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -113,7 +116,12 @@ const Modal = ({
   //detail of hint by using id
   const fetchHintDetails = async (hintId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/hints/hints/${hintId}`);
+      const response = await fetch(`${apiUrl}/api/hints/hints/${hintId}`
+        ,{
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),}
+        }
+      );
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -133,7 +141,10 @@ const Modal = ({
 
   const fetchLockedHintDetails = async (hintId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/hints/locked/hints/${hintId}`);
+      const response = await fetch(`${apiUrl}/api/hints/locked/hints/${hintId}`,{
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),}
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
