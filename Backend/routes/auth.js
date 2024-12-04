@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const path = require('path');
 const Score = require('../models/score');
 const Submission = require('../models/CTFdChallenges/Submission');
 const Flag=require('../models/flags');
@@ -17,6 +18,9 @@ const xlsx = require('xlsx');
 const uploadImageToCloudinary = require('../utils/imageUpload')
 const BT = process.env.BT;
 const WT = process.env.WT;
+const createUploadMiddleware =require('../utils/CTFdChallenges/multerConfig');
+const uploadPath = path.join(__dirname, '../uploads/profilephotos');
+const uploadnew = createUploadMiddleware(uploadPath);
 
 // Route 1: route for the api with the route og localhost/api/auth/createuser
 router.post('/createuser', async (req, res) => {
@@ -440,23 +444,61 @@ router.get('/:userId', fetchuser, async (req, res) => {
   }
 });
 
-router.post('/change-picture', upload.single('profilePicture'), fetchuser, async (req, res) => {
+// router.post('/change-picture', upload.single('profilePicture'), fetchuser, async (req, res) => {
+//   try {
+//     // Check if a file was uploaded
+//     if (!req.file) {
+//       return res.status(400).json({ error: 'No file uploaded' });
+//     }
+
+    
+//     // Upload image to Cloudinary
+//     const imageUrl = await uploadImageToCloudinary(req.file);
+
+//     // Assuming a User model and store the profile picture URL in the user document
+//     const userId = req.user.id; 
+
+//     const user = await User.findById(userId);
+//     user.profile = imageUrl;
+//     // const updatedUser = await (userId, imageUrl);
+//     user.save()
+//     return res.status(200).json(user);
+//   } catch (error) {
+//     console.error('Error changing profile picture:', error);
+//     return res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
+
+router.post('/change-picture', uploadnew.single('profilePicture'), fetchuser, async (req, res) => {
   try {
     // Check if a file was uploaded
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Upload image to Cloudinary
-    const imageUrl = await uploadImageToCloudinary(req.file);
+    // Check if the file is an image (png, jpg, jpeg)
+    const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Only image files (PNG, JPG, JPEG) are allowed' });
+    }
+
+    // Assuming the uploaded file is saved locally, get the file path
+    const filePath = path.join('uploads', 'profilephotos', req.file.filename);
 
     // Assuming a User model and store the profile picture URL in the user document
-    const userId = req.user.id; 
-
+    const userId = req.user.id; // Get the user ID from the fetched user
     const user = await User.findById(userId);
-    user.profile = imageUrl;
-    // const updatedUser = await (userId, imageUrl);
-    user.save()
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    user.profile = filePath; // Save the image path in the user's profile field
+    await user.save(user.profile);
+    console.log()
+
+    // Return the updated user object
     return res.status(200).json(user);
   } catch (error) {
     console.error('Error changing profile picture:', error);

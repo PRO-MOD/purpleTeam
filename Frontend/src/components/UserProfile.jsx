@@ -66,7 +66,7 @@ const UserProfile = () => {
       <h1 className="text-3xl font-bold mb-4 text-center" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>User Profile</h1>
       <div className="flex flex-col items-center mb-8">
         {/* Display current profile picture */}
-        <img src={userData.profile || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="Profile" className="w-32 h-32 rounded-full mb-4 shadow-md" />
+        <img src={` ${apiUrl}/${ userData.profile}` || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="Profile" className="w-32 h-32 rounded-full mb-4 shadow-md" />
         <p className="mb-2"><span className="font-semibold"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Name:</span> <span  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{userData.name}</span></p>
         <p className="mb-4"><span className="font-semibold"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Email:</span> <span  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{userData.email}</span></p>
       </div>
