@@ -50,13 +50,16 @@ const UserProfile = () => {
           },
         body: formData,
       });
+      
 
       // Refresh user data to reflect the changes
       fetchUserData();
 
       // Reset the state
       setNewProfilePicture(null);
+      
     } catch (error) {
+
       console.error('Error changing profile picture:', error);
     }
   };

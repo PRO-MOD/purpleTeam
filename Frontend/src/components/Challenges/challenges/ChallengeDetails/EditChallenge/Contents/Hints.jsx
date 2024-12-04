@@ -24,7 +24,10 @@ const Hints = ({ challengeId }) => {
 
   const fetchHints = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/hints/get/${challengeId}`);
+      const response = await fetch(`${apiUrl}/api/hints/get/${challengeId}`,{
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token')}
+      })
       const data = await response.json();
       setHints(data.hints);
     } catch (error) {
@@ -42,6 +45,7 @@ const Hints = ({ challengeId }) => {
       const response = await fetch(`${apiUrl}/api/hints/add/${challengeId}`, {
         method: 'POST',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ content: newHint.trim(), cost: newHintCost }),
@@ -67,6 +71,8 @@ const Hints = ({ challengeId }) => {
     try {
       const response = await fetch(`${apiUrl}/api/hints/${challengeId}/hints/delete/${hintId}`, {
         method: 'DELETE',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token')}
       });
 
       if (!response.ok) {
@@ -92,6 +98,7 @@ const Hints = ({ challengeId }) => {
       const response = await fetch(`${apiUrl}/api/hints/edit/${challengeId}/hints/${editingIndex}`, {
         method: 'PUT',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ content: editHint.trim(), cost: editHintCost }),

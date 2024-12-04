@@ -5,10 +5,18 @@ const fs = require('fs');
 const Submission =require('../../models/CTFdChallenges/Submission');
 const Score =require('../../models/score');
 const mongoose = require('mongoose');
+const fetchuser =require('../../middleware/fetchuser');
+const User = require('../../models/User')
 
 
-router.get('/all', async (req, res) => {
+router.get('/all',fetchuser, async (req, res) => {
   try {
+
+    const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const Submissions = await Submission.find()
       .populate('userId', 'name')  // Populate with 'User' model (userId field)
       .populate('challengeId', 'name type')  // Populate with 'Challenge' model (challengeId field)
@@ -25,7 +33,7 @@ router.get('/all', async (req, res) => {
 });
 
 
-router.get('/submission-types-count', async (req, res) => {
+router.get('/submission-types-count',fetchuser, async (req, res) => {
   try {
     // Define all possible challenge types
     const allTypes = ['standard', 'code', 'dynamic', 'manual_verification', 'multiple_choice'];
@@ -77,7 +85,7 @@ router.get('/submission-types-count', async (req, res) => {
   }
 });
 
-router.get('/types-count/:userId', async (req, res) => {
+router.get('/types-count/:userId', fetchuser, async (req, res) => {
   try {
     // Extract the userId from the request parameters
     const { userId } = req.params;
@@ -144,8 +152,14 @@ router.get('/types-count/:userId', async (req, res) => {
 });
 
 
-router.delete('/delete', async (req, res) => {
+router.delete('/delete',fetchuser, async (req, res) => {
   try {
+
+    const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const { submissionIds } = req.body;
 
     // Fetch all the submissions to delete and their points
@@ -184,10 +198,15 @@ router.delete('/delete', async (req, res) => {
 });
 
 
-router.get('/submissions/:challengeId', async (req, res) => {
+router.get('/submissions/:challengeId', fetchuser,async (req, res) => {
   const { challengeId } = req.params; // Extract challengeId from URL parameters
 
   try {
+    const userAdmin = await User.findById(req.user.id);
+    
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const submissions = await Submission.find({ challengeId }) // Filter by challengeId
       .populate('userId', 'name') // Populate user details with only the name field
       .populate('challengeId', 'name') // Populate challenge details with only the name field
@@ -201,7 +220,7 @@ router.get('/submissions/:challengeId', async (req, res) => {
 });
 
 
-router.get('/userSubmissions/:userId', async (req, res) => {
+router.get('/userSubmissions/:userId',fetchuser, async (req, res) => {
   const { userId } = req.params; // Extract challengeId from URL parameters
 
   try {

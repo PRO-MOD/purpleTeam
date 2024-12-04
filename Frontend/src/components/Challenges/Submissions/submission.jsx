@@ -33,7 +33,12 @@ const SubmissionTable = ({ challengeId, userId }) => {
           url = `${apiUrl}/api/submissions/userSubmissions/${userId}`;
         }
 
-        const response = await fetch(url);
+        const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        },
+        });
         const data = await response.json();
         setSubmissions(data);
       } catch (error) {
@@ -66,6 +71,7 @@ const SubmissionTable = ({ challengeId, userId }) => {
       await fetch(`${apiUrl}/api/submissions/delete`, {
         method: 'DELETE',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ submissionIds: selectedSubmissions }),

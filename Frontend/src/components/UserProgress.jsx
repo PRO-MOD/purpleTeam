@@ -55,7 +55,14 @@ function UserProgress() {
               .then(data=>setMode(data.mode))
               .catch(error => console.error('Error fetching score data:', error));
 
-              fetch(`${apiUrl}/api/submissions/userSubmissions/${user._id}`)
+              fetch(`${apiUrl}/api/submissions/userSubmissions/${user._id}`,
+                {
+                  method: 'GET',
+                  headers: {
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                  },
+                }
+              )
     .then(response => response.json())
     .then(data => {
       setSubmissionData(data);
@@ -75,7 +82,10 @@ function UserProgress() {
     //   console.error('Error fetching submission types count:', error);
     // });
 
-    fetch(`${apiUrl}/api/hints/totalHintCost/${user._id}`)
+    fetch(`${apiUrl}/api/hints/totalHintCost/${user._id}`,{
+      headers: {
+        'Auth-token': localStorage.getItem('Hactify-Auth-token')},
+    })
     .then(response => response.json())
     .then(data => {
       setHintCost(data);
