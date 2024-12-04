@@ -23,7 +23,12 @@ const Flags = ({ challengeId }) => {
   useEffect(() => {
     const fetchFlags = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}`);
+        const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
         setFlags(data.flags);
         setFlagData(data.flag_data);
@@ -61,6 +66,7 @@ const Flags = ({ challengeId }) => {
       const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}/add`, {
         method: 'POST',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ flag: newFlag.trim(), flag_data: newFlagData }),
@@ -87,6 +93,9 @@ const Flags = ({ challengeId }) => {
     try {
       const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}/delete/${flag}`, {
         method: 'DELETE',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        }
       });
 
       if (!response.ok) {
@@ -113,6 +122,7 @@ const Flags = ({ challengeId }) => {
       const response = await fetch(`${apiUrl}/api/challenges/flags/${challengeId}/edit/${editingIndex}`, {
         method: 'PUT',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ flag: editFlag.trim(), flag_data: editFlagData }),

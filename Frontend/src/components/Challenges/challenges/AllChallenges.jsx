@@ -20,7 +20,12 @@ const AllChallenges = () => {
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/challenges/toDisplayAllChallenges`);
+        const response = await fetch(`${apiUrl}/api/challenges/toDisplayAllChallenges`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const data = await response.json();
         setChallenges(data);
       } catch (error) {
@@ -46,6 +51,7 @@ const AllChallenges = () => {
         const response = await fetch(`${apiUrl}/api/challenges/deleteChallenges`, {
           method: 'DELETE',
           headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ ids: selectedChallenges }),

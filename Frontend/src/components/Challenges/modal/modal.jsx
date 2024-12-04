@@ -73,7 +73,12 @@ const Modal = ({
   //for getting ids of all the hints of the paeticular challenge
   const fetchHints = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/challenges/hints/${challenge._id}`);
+      const response = await fetch(`${apiUrl}/api/challenges/hints/${challenge._id}`, {
+        method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        }
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

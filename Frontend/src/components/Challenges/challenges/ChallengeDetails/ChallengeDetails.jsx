@@ -39,8 +39,13 @@ const ChallengeDetailsPage = () => {
 
   const handleDelete = async () => {
     try {
-      await fetch(`${apiUrl}/api/challenges/delete/${id}`, { method: 'DELETE' });
-      navigate('/challenges'); // Redirect to challenges page after deletion
+      await fetch(`${apiUrl}/api/challenges/delete/${id}`, 
+        { method: 'DELETE' ,
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
+      navigate('/admin/challenges'); // Redirect to challenges page after deletion
     } catch (error) {
       console.error('Error deleting challenge:', error);
     }

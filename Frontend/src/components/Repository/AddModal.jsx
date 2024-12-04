@@ -15,7 +15,12 @@ const AddModal = ({ onClose, repositoryId }) => {
     const fetchChallenges = async () => {
       try {
         // Fetch all challenges
-        const response = await fetch(`${apiUrl}/api/challenges/toDisplayAllChallenges`);
+        const response = await fetch(`${apiUrl}/api/challenges/toDisplayAllChallenges`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          }
+        });
         const allChallenges = await response.json();
 
         // Fetch challenges that are already added to the repository
