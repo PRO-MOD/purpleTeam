@@ -317,6 +317,18 @@ router.get('/get-scores', async (req, res) => {
     }
 });
 
+router.get('/get-user-scores', async (req, res) => {
+  try {
+      // Fetch scores from the Scores collection
+      const scores = await Score.find().select("name score manualScore staticScore read");
+      // Send the organized scores back as the response
+      res.json(scores);
+  } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error fetching scores:', error);
+      res.status(500).json({ error: 'An error occurred while fetching scores' });
+  }
+});
 
 router.get('/sum-manual-scores', async (req, res) => {
     try {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const CreateChallenge = () => {
+const CreateUsers = ({ fetchUsers, fetchVolunteers }) => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
@@ -22,7 +22,7 @@ const CreateChallenge = () => {
 
         try {
             setLoading(true); // Set loading to true when starting the upload
-            const response = await fetch(`${apiUrl}/api/challenge/create`, {
+            const response = await fetch(`${apiUrl}/api/auth/uploadusers`, {
                 method: 'POST',
                 body: formData,
             });
@@ -31,6 +31,8 @@ const CreateChallenge = () => {
                 setTimeout(() => {
                     setMessage('');
                 }, 5000);
+                fetchUsers();
+                fetchVolunteers();
             } else {
                 const errorData = await response.json();
                 setMessage('Error uploading file: ' + errorData.message);
@@ -49,7 +51,7 @@ const CreateChallenge = () => {
         <form onSubmit={handleSubmit} className='flex flex-row items-center'>
             <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2 text-red-500" htmlFor="file">
-                    Create CTFD Challenges
+                    Uploads Users Excel
                 </label>
                 <input
                     type="file"
@@ -75,4 +77,4 @@ const CreateChallenge = () => {
     );
 };
 
-export default CreateChallenge;
+export default CreateUsers;

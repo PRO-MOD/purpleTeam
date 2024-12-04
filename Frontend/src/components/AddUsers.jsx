@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext} from 'react';
-import CreateChallenge from './CreateChallenge';
+import CreateUsers from './CreateChallenge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import ColorContext from '../context/ColorContext';
@@ -177,7 +177,7 @@ function AddUsers() {
                 </button>
 
                 <div className="flex flex-row ms-8">
-                    <CreateChallenge/>
+                    <CreateUsers fetchUsers={fetchUsers} fetchVolunteers={fetchVolunteers}/>
                  
                 </div>
             </div>

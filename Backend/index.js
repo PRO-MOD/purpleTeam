@@ -28,6 +28,7 @@ const io = require('socket.io')(server, {
 // const { router: chatRouter, handleSocket, users } = require('./routes/chat');
 const chatRouter = require('./routes/chat').router;
 const {handleNotifications} = require('./controllers/notifications.js')
+const {handleChallengeSolved} = require('./controllers/handleChallengeSolved.js')
 // console.log("Users from Index.js >> "+users);
 
 // Function to handle socket logic
@@ -79,6 +80,7 @@ const handleSocket = (io) => {
 
     // Delegate notification handling to the notifications module
     handleNotifications(socket, io, users);
+    handleChallengeSolved(socket, io, users);
 
     socket.on('disconnect', () => {
       users = users.filter((user) => user.socketId !== socket.id);
@@ -223,7 +225,7 @@ app.post('/', async (req, res) => {
         console.log("Users: " + users);
         if (user) {
           // console.log("socketId:" +user.socketId);
-          io.to(user.socketId).emit('challengeSolved', { challenge: match.challenge.name });
+          // io.to(user.socketId).emit('challengeSolved', { challenge: match.challenge.name });
           console.log("Emmited ChallengeSolved to frontend");
         } else {
           console.log(`User ${score.name} is not connected to the server`);

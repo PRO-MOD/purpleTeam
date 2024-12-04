@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import ColorContext from '../../../context/ColorContext'
 import FontContext from '../../../context/FontContext';
 
-const ChallengeButton = ({ challenge, onClick, solved }) => {
+const ChallengeButton = ({ challenge, onClick, solved, assignedPoints }) => {
   const { bgColor, textColor, sidenavColor, hoverColor } = useContext(ColorContext);
   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);  
 
@@ -14,7 +14,7 @@ const ChallengeButton = ({ challenge, onClick, solved }) => {
         style={{backgroundColor: solved ? '#2AC82F' : sidenavColor,fontFamily: headingFont.fontFamily }}
       >
         {challenge.name}
-        <div className="text-xl mt-2"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{challenge.value}</div>
+        <div className="text-xl mt-2"  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{solved ? assignedPoints : challenge.value}</div>
       </button>
     </div>
   );

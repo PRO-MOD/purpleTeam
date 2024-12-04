@@ -16,6 +16,25 @@ const SocketState = (props) => {
   const [timeoutId, setTimeoutId] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [challenges, setChallenges] = useState([]);
+
+  const fetchChallenges = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/challenges/all`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-token': localStorage.getItem('Hactify-Auth-token')
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setChallenges(data);
+    } catch (error) {
+      console.error('Error fetching challenges:', error);
+    }
+  };
   
   // Fetch notifications from the backend
   const fetchNotifications = async () => {
@@ -55,25 +74,25 @@ const SocketState = (props) => {
 
   useEffect(() => {
 
-    socket?.on('challengeSolved', (data) => {
-      console.log('Challenge solved:', data);
-      setChallenge(data.challenge);
-      setModalIsOpen(true);
+    // socket?.on('challengeSolved', (data) => {
+    //   console.log('Challenge solved:', data);
+    //   setChallenge(data.challenge);
+    //   setModalIsOpen(true);
 
-      // Clear any existing timeout
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+    //   // Clear any existing timeout
+    //   if (timeoutId) {
+    //     clearTimeout(timeoutId);
+    //   }
 
-      // Set a new timeout to clear the challenge and close the modal after 10 seconds
-      const newTimeoutId = setTimeout(() => {
-        setChallenge('');
-        setModalIsOpen(false);
-      }, 10000);
+    //   // Set a new timeout to clear the challenge and close the modal after 10 seconds
+    //   const newTimeoutId = setTimeout(() => {
+    //     setChallenge('');
+    //     setModalIsOpen(false);
+    //   }, 10000);
 
-      setTimeoutId(newTimeoutId);
-      fetchSubmissions();
-    });
+    //   setTimeoutId(newTimeoutId);
+    //   fetchSubmissions();
+    // });
 
     socket?.on('receiveNotification', (data) => {
       playNotificationSound();
@@ -83,7 +102,10 @@ const SocketState = (props) => {
       fetchNotifications();
       
     })
-
+    socket?.on('challengeSolvedNotification', (data) => {
+      fetchChallenges();
+      // console.log(data);
+    })
     socket?.on('getMessage', message => {
       if (!window.location.href.includes('/chat')) {
         // Play notification sound
@@ -181,7 +203,7 @@ const SocketState = (props) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, submissions, fetchUnreadMessagesByUser, challenge, fetchSubmissions, notifications, setNotifications, fetchNotifications }}>
+    <SocketContext.Provider value={{ socket, creteSocket, unreadMessages, fetchUnreadMessages, messages, setMessages, unreadCounts, submissions, fetchUnreadMessagesByUser, challenge, fetchSubmissions, notifications, setNotifications, fetchNotifications, challenges, setChallenges, fetchChallenges }}>
       {modalIsOpen && <p className="bg-red-500 text-white text-center w-full py-2 absolute left-[13%] ps-4 z-10">Red Team Captured {challenge}</p>}
       {/* <p className="bg-red-500 text-white w-full py-2 text-center absolute left-[13%] ps-4">Red Team Captured</p> */}
       {props.children}
