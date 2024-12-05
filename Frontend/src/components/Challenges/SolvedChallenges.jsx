@@ -8,37 +8,46 @@ const SolvedChallenges = () => {
     const [loading, setLoading] = useState(true); // Add loading state
     const { tableColor, sidenavColor } = useContext(ColorContext);
 
-    useEffect(() => {
-        // Fetch the solved challenges data from the backend
-        const fetchSolvedChallenges = async () => {
-            try {
-                const response = await fetch(`${apiUrl}/api/submissions/solved-challenges`, {
-                    method: 'GET',
-                    headers: {
-                        'Auth-token': localStorage.getItem('Hactify-Auth-token'),
-                        'Content-Type': 'application/json',
-                    },
-                });
+    // Fetch the solved challenges data from the backend
+    const fetchSolvedChallenges = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/api/submissions/solved-challenges`, {
+                method: 'GET',
+                headers: {
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                    'Content-Type': 'application/json',
+                },
+            });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                 // Sort challenges alphabetically by name
-                 const sortedData = data.data.sort((a, b) =>
-                    a.challengeName.localeCompare(b.challengeName)
-                );
-                setChallengeData(sortedData); // Assuming response has a 'data' field with the challenge info
-            } catch (error) {
-                console.error('Error fetching solved challenges:', error);
-            } finally {
-                setLoading(false); // Set loading to false after fetching
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
 
-        fetchSolvedChallenges();
+            const data = await response.json();
+
+             // Sort challenges alphabetically by name
+             const sortedData = data.data.sort((a, b) =>
+                a.challengeName.localeCompare(b.challengeName)
+            );
+            setChallengeData(sortedData); // Assuming response has a 'data' field with the challenge info
+        } catch (error) {
+            console.error('Error fetching solved challenges:', error);
+        } finally {
+            setLoading(false); // Set loading to false after fetching
+        }
+    };
+
+
+    useEffect(() => {
+        fetchSolvedChallenges(); // Fetch immediately on mount
+
+        // Set up interval to fetch every minute
+        const intervalId = setInterval(() => {
+            fetchSolvedChallenges();
+        }, 60000); // 60000ms = 1 minute
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(intervalId);
     }, []);
 
     // Columns for the InfoTable
