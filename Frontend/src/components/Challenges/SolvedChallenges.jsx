@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ColorContext from '../../context/ColorContext';
+import FontContext from '../../context/FontContext';
 
 const SolvedChallenges = () => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
     const [challengeData, setChallengeData] = useState([]);
     const [loading, setLoading] = useState(true); // Add loading state
-    const { sidenavColor } = useContext(ColorContext);
+    const { sidenavColor, textColor } = useContext(ColorContext);
+    const { navbarFont, paraFont } = useContext(FontContext);
 
     // Fetch the solved challenges data from the backend
     const fetchSolvedChallenges = async () => {
@@ -84,7 +86,7 @@ const SolvedChallenges = () => {
                 <div className="bg-white shadow-md rounded-lg p-6 overflow-x-auto">
                     <table className="w-full border-collapse border border-gray-200">
                         <thead>
-                            <tr>
+                            <tr className='text-white' style={{ ...navbarFont, backgroundColor: sidenavColor}}>
                                 <th className="border border-gray-300 px-4 py-2">Users</th>
                                 {challengeData.map((challenge, index) => (
                                     <th
@@ -99,7 +101,7 @@ const SolvedChallenges = () => {
                         <tbody>
                             {users.map((userName, userIndex) => (
                                 <tr key={userIndex} className="text-center">
-                                    <td className="border border-gray-300 px-4 py-2">
+                                    <td className="border border-gray-300 px-4 py-2 font-bold text-left">
                                         {userName}
                                     </td>
                                     {challengeData.map((challenge, challengeIndex) => {

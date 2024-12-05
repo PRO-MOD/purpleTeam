@@ -288,7 +288,7 @@ router.get('/userSubmissions/:userId',fetchuser, async (req, res) => {
 //   }
 // });
 
-router.get('/solved-challenges', async (req, res) => {
+router.get('/solved-challenges', fetchuser, async (req, res) => {
   try {
     // Step 1: Fetch all users
     const allUsers = await User.find({ role: process.env.BT }).select('_id name');
