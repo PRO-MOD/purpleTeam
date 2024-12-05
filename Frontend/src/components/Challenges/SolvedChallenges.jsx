@@ -55,7 +55,7 @@ const SolvedChallenges = () => {
     return (
         <div className="w-[90%] mx-auto mt-8">
             <img 
-                    src="http://localhost/uploads/CTFdChallenges/CyberShakti.jpg-1732718442286-353567371.jpg"  // Replace with your image URL
+                    src={`${apiUrl}/uploads/CTFdChallenges/CyberShakti.jpg-1732718442286-353567371.jpg`}  // Replace with your image URL
                     alt="CTF Header"
                     className="w-full h-[150px] fit-cover rounded-lg mb-4"
                 />
