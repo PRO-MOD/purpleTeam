@@ -27,7 +27,12 @@ function UserDetails() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/auth/${userId}`);
+        const response = await fetch(`${apiUrl}/api/auth/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setUser(data);

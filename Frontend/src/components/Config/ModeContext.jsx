@@ -38,6 +38,7 @@ export const ModeProvider = ({ children }) => {
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ mode: newMode }),

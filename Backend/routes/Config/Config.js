@@ -6,6 +6,7 @@ const Config=require('../../models/CTFdChallenges/Config');
 
 
 const createUploadMiddleware = require('../../utils/CTFdChallenges/multerConfig');
+const fetchuser = require('../../middleware/fetchuser');
 // Define the upload path
 const uploadPath = path.join(__dirname, '../../uploads/CTFdChallenges');
 
@@ -13,9 +14,14 @@ const uploadPath = path.join(__dirname, '../../uploads/CTFdChallenges');
 const upload = createUploadMiddleware(uploadPath);
 
 
-router.post('/update-general', async (req, res) => {
+router.post('/update-general', fetchuser, async (req, res) => {
   try {
     const { title, description } = req.body;
+    const userAdmin = await User.findById(req.user.id);
+      
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
 
     // Assuming you want to update the existing config or create a new one if not exists
     const config = await Config.findOne();
@@ -36,8 +42,13 @@ router.post('/update-general', async (req, res) => {
 });
 
 
-router.post('/update-logo', upload.single('logo'), async (req, res) => {
+router.post('/update-logo', upload.single('logo'), fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+      
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const url = req.file ? `/uploads/CTFdChallenges/${req.file.filename}` : null;
 
     // Assuming you want to update the existing config or create a new one if not exists
@@ -80,7 +91,7 @@ router.get('/eventDetails', async (req, res) => {
 
 
 // Get visibility settings for a specific team
-router.get('/getVisibilitySettings/:team', async (req, res) => {
+router.get('/getVisibilitySettings/:team', fetchuser, async (req, res) => {
   const { team } = req.params;
   try {
       const config = await Config.findOne();
@@ -94,8 +105,13 @@ router.get('/getVisibilitySettings/:team', async (req, res) => {
 });
 
 // Update visibility settings for a specific team and section
-router.post('/setVisibilitySettings', async (req, res) => {
+router.post('/setVisibilitySettings', fetchuser, async (req, res) => {
   const { team, section, visibility } = req.body;
+  const userAdmin = await User.findById(req.user.id);
+      
+  if (userAdmin.role !== process.env.WT) {
+    return res.status(403).json({ error: "Bad Request" });
+  }
   try {
       const config = await Config.findOne();
       if (!config || !config.visibilitySettings[team]) {
@@ -123,9 +139,13 @@ router.get('/mode', async (req, res) => {
 });
 
 // Set Mode API
-router.post('/mode', async (req, res) => {
+router.post('/mode', fetchuser, async (req, res) => {
   const { mode } = req.body;
-
+  const userAdmin = await User.findById(req.user.id);
+      
+  if (userAdmin.role !== process.env.WT) {
+    return res.status(403).json({ error: "Bad Request" });
+  }
   // Validate mode
   if (!['ctfd', 'purpleTeam'].includes(mode)) {
     return res.status(400).json({ success: false, message: 'Invalid mode value.' });

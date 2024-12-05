@@ -194,6 +194,11 @@ router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email })
     if (user) {
+      
+      if(user.role !== BT && user.role !== WT){
+        return res.status(403).json({ error: "Bad Request" });
+      }
+
       const comparePass = bcrypt.compareSync(req.body.password, user.password);
       if (comparePass) {
         const data = {
@@ -225,6 +230,11 @@ router.post('/login', async (req, res) => {
 // Route to fetch all users
 router.get('/getallusers', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+      
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const users = await User.find({ role: BT }, '-password'); // Exclude password field
     res.json(users);
   } catch (error) {
@@ -236,6 +246,11 @@ router.get('/getallusers', fetchuser, async (req, res) => {
 // Route to fetch all users
 router.get('/getusersall', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+      
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const users = await User.find().select("-password"); // Exclude password field
     res.json(users);
   } catch (error) {
@@ -246,6 +261,11 @@ router.get('/getusersall', fetchuser, async (req, res) => {
 
 router.get('/getWhiteUsersall', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+      
+      if (userAdmin.role !== process.env.WT) {
+        return res.status(403).json({ error: "Bad Request" });
+      }
     const users = await User.find({ role: { $ne: BT } }).select("-password"); // Exclude users with role "BT" and password field
     res.json(users);
   } catch (error) {

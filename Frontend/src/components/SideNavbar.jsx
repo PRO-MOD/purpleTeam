@@ -85,6 +85,9 @@ const SideNavbar = () => {
     try {
       const response = await fetch(`${apiUrl}/api/config/getVisibilitySettings/${team}`, {
         method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        },
       });
       const data = await response.json();
       setVisibilitySettings(data.settings);
@@ -159,7 +162,7 @@ const SideNavbar = () => {
     { path: "/UserHome", icon: faCircleUser, label: "Dashboard", visibility: visibilitySettings.dashboard == 'yes' },
     { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes == 'yes' },
     { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress == 'yes' },
-    { path: "/userScores", icon: faTrophy, label: "ScoreBoard", visibility: visibilitySettings.scoreBoard == 'yes' },
+    { path: "/userScores", icon: faTrophy, label: "Statistics", visibility: visibilitySettings.scoreBoard == 'yes' },
     // { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     { path: "/notifications", icon: faBell, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     

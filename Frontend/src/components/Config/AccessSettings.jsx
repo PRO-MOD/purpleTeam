@@ -20,6 +20,9 @@ const AccessSettings = () => {
     try {
       const response = await fetch(`${apiUrl}/api/config/getVisibilitySettings/${team}`, {
         method: 'GET',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+        },
       });
       const data = await response.json();
       setVisibilitySettings(data.settings || {});
@@ -36,6 +39,7 @@ const AccessSettings = () => {
       await fetch(`${apiUrl}/api/config/setVisibilitySettings`, {
         method: 'POST',
         headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ team, section, visibility: newVisibility }),
