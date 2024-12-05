@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState, useContext } from 'react';
 import PageHeader from '../navbar/PageHeader';
 import { FaTrash } from 'react-icons/fa';
