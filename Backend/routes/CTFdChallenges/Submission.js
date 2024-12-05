@@ -236,11 +236,67 @@ router.get('/userSubmissions/:userId',fetchuser, async (req, res) => {
   }
 });
 
-router.get('/solved-challenges', fetchuser, async (req, res) => {
+// router.get('/solved-challenges', fetchuser, async (req, res) => {
+//   try {
+//     const solvedChallenges = await Submission.aggregate([
+//       {
+//         $match: { isCorrect: true } // Only solved submissions
+//       },
+//       {
+//         $group: {
+//           _id: '$challengeId', // Group by challengeId
+//           solvedUsers: { $addToSet: '$userId' } // Collect unique user IDs
+//         }
+//       },
+//       {
+//         $lookup: {
+//           from: 'challenges', // Challenges collection
+//           localField: '_id', // challengeId in Submission
+//           foreignField: '_id', // _id in Challenge
+//           as: 'challengeDetails'
+//         }
+//       },
+//       {
+//         $unwind: '$challengeDetails' // Flatten the challenge details
+//       },
+//       {
+//         $match: {
+//           'challengeDetails.state': 'visible' // Ensure the challenge is visible
+//         }
+//       },
+//       {
+//         $lookup: {
+//           from: 'users', // Users collection
+//           localField: 'solvedUsers', // User IDs who solved the challenge
+//           foreignField: '_id', // _id in User
+//           as: 'userDetails'
+//         }
+//       },
+//       {
+//         $project: {
+//           _id: 0, // Exclude the default MongoDB _id
+//           challengeName: '$challengeDetails.name', // Include challenge name
+//           solvedUsers: '$userDetails.name' // Map solved user names
+//         }
+//       }
+//     ]);
+
+//     res.status(200).json({ success: true, data: solvedChallenges });
+//   } catch (error) {
+//     console.error('Error fetching solved challenges:', error);
+//     res.status(500).json({ success: false, message: 'Failed to fetch solved challenges' });
+//   }
+// });
+
+router.get('/solved-challenges', async (req, res) => {
   try {
-    const solvedChallenges = await Submission.aggregate([
+    // Step 1: Fetch all users
+    const allUsers = await User.find({ role: process.env.BT }).select('_id name');
+
+    // Step 2: Aggregate solved challenges
+    const challengesWithSubmissions = await Submission.aggregate([
       {
-        $match: { isCorrect: true } // Only solved submissions
+        $match: { isCorrect: true } // Only correct submissions
       },
       {
         $group: {
@@ -261,32 +317,45 @@ router.get('/solved-challenges', fetchuser, async (req, res) => {
       },
       {
         $match: {
-          'challengeDetails.state': 'visible' // Ensure the challenge is visible
-        }
-      },
-      {
-        $lookup: {
-          from: 'users', // Users collection
-          localField: 'solvedUsers', // User IDs who solved the challenge
-          foreignField: '_id', // _id in User
-          as: 'userDetails'
+          'challengeDetails.state': 'visible' // Only include visible challenges
         }
       },
       {
         $project: {
-          _id: 0, // Exclude the default MongoDB _id
-          challengeName: '$challengeDetails.name', // Include challenge name
-          solvedUsers: '$userDetails.name' // Map solved user names
+          challengeId: '$_id', // Include challengeId for reference
+          challengeName: '$challengeDetails.name', // Challenge name
+          solvedUsers: 1 // Keep solvedUsers array
         }
       }
     ]);
 
-    res.status(200).json({ success: true, data: solvedChallenges });
+    // Step 3: Combine challenge data with all users
+    const result = challengesWithSubmissions.map((challenge) => {
+      const userStatuses = allUsers.map((user) => {
+        const isSolved = challenge.solvedUsers.some(
+          (solvedUserId) => solvedUserId.toString() === user._id.toString() // Ensure proper comparison
+        );
+
+        return {
+          name: user.name,
+          solved: isSolved
+        };
+      });
+
+      return {
+        challengeName: challenge.challengeName,
+        users: userStatuses
+      };
+    });
+
+    // Step 4: Send response
+    res.status(200).json({ success: true, data: result });
   } catch (error) {
     console.error('Error fetching solved challenges:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch solved challenges' });
   }
 });
+
 
 
 module.exports = router;

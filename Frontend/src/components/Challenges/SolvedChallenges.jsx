@@ -1,11 +1,12 @@
+
 import React, { useState, useEffect, useContext } from 'react';
-import InformationTable from './challenges/Partials/InformationTable';
 import ColorContext from '../../context/ColorContext';
 
 const SolvedChallenges = () => {
     const apiUrl = import.meta.env.VITE_Backend_URL;
     const [challengeData, setChallengeData] = useState([]);
-    const [loading, setLoading] = useState(true); // Add loading state
+    const [userList, setUserList] = useState([]);
+    const [loading, setLoading] = useState(true);
     const { tableColor, sidenavColor } = useContext(ColorContext);
 
     // Fetch the solved challenges data from the backend
@@ -25,18 +26,22 @@ const SolvedChallenges = () => {
 
             const data = await response.json();
 
-             // Sort challenges alphabetically by name
-             const sortedData = data.data.sort((a, b) =>
-                a.challengeName.localeCompare(b.challengeName)
-            );
-            setChallengeData(sortedData); // Assuming response has a 'data' field with the challenge info
+            // Extract user names dynamically
+            const uniqueUsers = new Set();
+            data.data.forEach((challenge) => {
+                challenge.users.forEach((user) => {
+                    uniqueUsers.add(user.name);
+                });
+            });
+
+            setUserList(Array.from(uniqueUsers)); // Convert Set to Array
+            setChallengeData(data.data);
         } catch (error) {
             console.error('Error fetching solved challenges:', error);
         } finally {
-            setLoading(false); // Set loading to false after fetching
+            setLoading(false);
         }
     };
-
 
     useEffect(() => {
         fetchSolvedChallenges(); // Fetch immediately on mount
@@ -50,24 +55,13 @@ const SolvedChallenges = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    // Columns for the InfoTable
-    const columns = [
-        { header: 'Challenge Name', accessor: 'challengeName' },
-        { header: 'Solved By', accessor: 'solvedUsers' },
-    ];
-
-    // Handle row click
-    const handleRowClick = (id) => {
-        console.log(`Row clicked: ${id}`);
-    };
-
     return (
         <div className="w-[90%] mx-auto mt-8">
-            <img 
-                    src={`${apiUrl}/uploads/CTFdChallenges/CyberShakti.jpg-1732718442286-353567371.jpg`}  // Replace with your image URL
-                    alt="CTF Header"
-                    className="w-full h-[150px] fit-cover rounded-lg mb-4"
-                />
+            <img
+                src={`${apiUrl}/uploads/CTFdChallenges/CyberShakti.jpg-1732718442286-353567371.jpg`} // Replace with your image URL
+                alt="CTF Header"
+                className="w-full h-[150px] fit-cover rounded-lg mb-4"
+            />
             <h1
                 className="text-4xl font-bold text-center mb-8"
                 style={{ fontFamily: 'headingFont', color: sidenavColor }}
@@ -83,16 +77,48 @@ const SolvedChallenges = () => {
                     <p className="text-xl font-medium text-gray-500">No challenges found.</p>
                 </div>
             ) : (
-                <div className="bg-white shadow-md rounded-lg p-6">
-                    <InformationTable
-                        data={challengeData.map((item, index) => ({
-                            _id: index, // For unique key in the table
-                            challengeName: item.challengeName,
-                            solvedUsers: item.solvedUsers.join(', '), // Convert array to a string for display
-                        }))}
-                        columns={columns}
-                        onRowClick={handleRowClick}
-                    />
+                <div className="bg-white shadow-md rounded-lg p-6 overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-200">
+                        <thead>
+                            <tr className="bg-gray-100">
+                                <th className="border border-gray-300 px-8 py-2 text-left">Challenge Name</th>
+                                {userList.map((user) => (
+                                    <th
+                                        key={user}
+                                        className="border border-gray-300 px-4 py-2 text-left"
+                                    >
+                                        {user}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {challengeData.map((challenge) => (
+                                <tr key={challenge.challengeName} className="hover:bg-gray-50">
+                                    <td className="border border-gray-300 px-4 py-2">
+                                        {challenge.challengeName}
+                                    </td>
+                                    {userList.map((user) => {
+                                        const userStatus = challenge.users.find(
+                                            (u) => u.name === user
+                                        );
+                                        return (
+                                            <td
+                                                key={user}
+                                                className="border border-gray-300 px-4 py-2 text-center"
+                                            >
+                                                {userStatus?.solved ? (
+                                                    <span className="text-green-500">✔</span>
+                                                ) : (
+                                                    <span className="text-red-500">✘</span>
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </div>
