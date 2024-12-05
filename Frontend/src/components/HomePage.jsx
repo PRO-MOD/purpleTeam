@@ -48,7 +48,7 @@ import NotificationComponent from './Notification/NotificationComponent';
 import MainPage from './LandingPage';
 import CyberShakti from './DataVisualization/CyberShakti';
 import UserscoresComponent from './UserScorePage';
-
+import SolvedChallenges from './Challenges/SolvedChallenges';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -128,6 +128,7 @@ function HomePage() {
             <Route exact path='/repository' element={<ProtectedRoute Component={Repository}/>}/>
             <Route exact path='/createRepo' element={<ProtectedRoute Component={CreateRepo}/>}/>
             {/* <Route exact path='/userScores' element={<UserscoresComponent/>}/> */}
+            <Route exact path='/userScores' element={<SolvedChallenges/>}/>
           </Routes>
           
         </div>

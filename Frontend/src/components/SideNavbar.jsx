@@ -162,7 +162,7 @@ const SideNavbar = () => {
     { path: "/UserHome", icon: faCircleUser, label: "Dashboard", visibility: visibilitySettings.dashboard == 'yes' },
     { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes == 'yes' },
     { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress == 'yes' },
-    // { path: "/userScores", icon: faTrophy, label: "ScoreBoard", visibility: visibilitySettings.scoreBoard == 'yes' },
+    { path: "/userScores", icon: faTrophy, label: "ScoreBoard", visibility: visibilitySettings.scoreBoard == 'yes' },
     // { path: "/attacks", icon: faShieldHalved, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     { path: "/notifications", icon: faBell, label: "Notification", visibility: visibilitySettings.notification == 'yes' },
     
