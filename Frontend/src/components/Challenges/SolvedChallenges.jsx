@@ -18,28 +18,34 @@ const SolvedChallenges = () => {
                     'Content-Type': 'application/json',
                 },
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
+    
             const data = await response.json();
-
-            // Sort challenges alphabetically within each category
-            const sortedData = {};
-            Object.entries(data.data).forEach(([category, challenges]) => {
-                sortedData[category] = challenges.sort((a, b) =>
-                    a.challengeName.localeCompare(b.challengeName)
-                );
-            });
-
-            setChallengeData(sortedData);
+    
+            // Process the data to sort categories and challenges
+            const sortedData = Object.entries(data.data)
+                // Sort categories in reverse alphabetical order
+                .sort(([categoryA], [categoryB]) => categoryB.localeCompare(categoryA))
+                .reduce((acc, [category, challenges]) => {
+                    // Sort challenges alphabetically within the category
+                    const sortedChallenges = challenges.sort((a, b) =>
+                        a.challengeName.localeCompare(b.challengeName)
+                    );
+                    acc[category] = sortedChallenges;
+                    return acc;
+                }, {});
+    
+            setChallengeData(sortedData); // Update the state with sorted data
         } catch (error) {
             console.error('Error fetching solved challenges:', error);
         } finally {
             setLoading(false);
         }
     };
+    
 
     useEffect(() => {
         fetchSolvedChallenges();
