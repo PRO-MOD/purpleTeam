@@ -63,11 +63,11 @@ const SolvedChallenges = () => {
 
     return (
         <div className="w-[90%] mx-auto mt-8">
-            <img 
+            {/* <img 
                 src={`${apiUrl}/uploads/CTFdChallenges/CyberShakti.jpg-1732718442286-353567371.jpg`} // Replace with your image URL
                 alt="CTF Header"
                 className="w-full h-[150px] fit-cover rounded-lg mb-4"
-            />
+            /> */}
             <h1
                 className="text-4xl font-bold text-center mb-8"
                 style={{ fontFamily: 'headingFont', color: sidenavColor }}
