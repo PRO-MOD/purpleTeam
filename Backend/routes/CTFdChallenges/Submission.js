@@ -7,6 +7,7 @@ const Score =require('../../models/score');
 const mongoose = require('mongoose');
 const fetchuser =require('../../middleware/fetchuser');
 const User = require('../../models/User')
+const Challenge = require('../../models/CTFdChallenges/challenge');
 
 
 router.get('/all',fetchuser, async (req, res) => {
@@ -288,73 +289,130 @@ router.get('/userSubmissions/:userId',fetchuser, async (req, res) => {
 //   }
 // });
 
-router.get('/solved-challenges', fetchuser, async (req, res) => {
+// router.get('/solved-challenges', fetchuser, async (req, res) => {
+//   try {
+//     // Step 1: Fetch all users
+//     const allUsers = await User.find({ role: process.env.BT }).select('_id name');
+
+//     // Step 2: Aggregate solved challenges
+//     const challengesWithSubmissions = await Submission.aggregate([
+//       {
+//         $match: { isCorrect: true } // Only correct submissions
+//       },
+//       {
+//         $group: {
+//           _id: '$challengeId', // Group by challengeId
+//           solvedUsers: { $addToSet: '$userId' } // Collect unique user IDs
+//         }
+//       },
+//       {
+//         $lookup: {
+//           from: 'challenges', // Challenges collection
+//           localField: '_id', // challengeId in Submission
+//           foreignField: '_id', // _id in Challenge
+//           as: 'challengeDetails'
+//         }
+//       },
+//       {
+//         $unwind: '$challengeDetails' // Flatten the challenge details
+//       },
+//       {
+//         $match: {
+//           'challengeDetails.state': 'visible' // Only include visible challenges
+//         }
+//       },
+//       {
+//         $project: {
+//           challengeId: '$_id', // Include challengeId for reference
+//           challengeName: '$challengeDetails.name', // Challenge name
+//           solvedUsers: 1 // Keep solvedUsers array
+//         }
+//       }
+//     ]);
+
+//     // Step 3: Combine challenge data with all users
+//     const result = challengesWithSubmissions.map((challenge) => {
+//       const userStatuses = allUsers.map((user) => {
+//         const isSolved = challenge.solvedUsers.some(
+//           (solvedUserId) => solvedUserId.toString() === user._id.toString() // Ensure proper comparison
+//         );
+
+//         return {
+//           name: user.name,
+//           solved: isSolved
+//         };
+//       });
+
+//       return {
+//         challengeName: challenge.challengeName,
+//         users: userStatuses
+//       };
+//     });
+
+//     // Step 4: Send response
+//     res.status(200).json({ success: true, data: result });
+//   } catch (error) {
+//     console.error('Error fetching solved challenges:', error);
+//     res.status(500).json({ success: false, message: 'Failed to fetch solved challenges' });
+//   }
+// });
+
+
+
+
+router.get('/solved-challenges', async (req, res) => {
   try {
     // Step 1: Fetch all users
     const allUsers = await User.find({ role: process.env.BT }).select('_id name');
 
-    // Step 2: Aggregate solved challenges
-    const challengesWithSubmissions = await Submission.aggregate([
-      {
-        $match: { isCorrect: true } // Only correct submissions
-      },
-      {
-        $group: {
-          _id: '$challengeId', // Group by challengeId
-          solvedUsers: { $addToSet: '$userId' } // Collect unique user IDs
-        }
-      },
-      {
-        $lookup: {
-          from: 'challenges', // Challenges collection
-          localField: '_id', // challengeId in Submission
-          foreignField: '_id', // _id in Challenge
-          as: 'challengeDetails'
-        }
-      },
-      {
-        $unwind: '$challengeDetails' // Flatten the challenge details
-      },
-      {
-        $match: {
-          'challengeDetails.state': 'visible' // Only include visible challenges
-        }
-      },
-      {
-        $project: {
-          challengeId: '$_id', // Include challengeId for reference
-          challengeName: '$challengeDetails.name', // Challenge name
-          solvedUsers: 1 // Keep solvedUsers array
-        }
+    // Step 2: Fetch all challenges
+    const allChallenges = await Challenge.find().select('_id name category');
+
+    // Step 3: Fetch all correct submissions
+    const correctSubmissions = await Submission.find({ isCorrect: true }).select('challengeId userId');
+
+    // Step 4: Create a map of challenges with solved user IDs
+    const solvedChallengesMap = {};
+    correctSubmissions.forEach((submission) => {
+      const challengeId = submission.challengeId.toString();
+      if (!solvedChallengesMap[challengeId]) {
+        solvedChallengesMap[challengeId] = new Set();
       }
-    ]);
+      solvedChallengesMap[challengeId].add(submission.userId.toString());
+    });
 
-    // Step 3: Combine challenge data with all users
-    const result = challengesWithSubmissions.map((challenge) => {
+    // Step 5: Group challenges by category and combine user statuses
+    const challengesByCategory = {};
+    allChallenges.forEach((challenge) => {
+      const categoryName = challenge.category || 'Uncategorized'; // Default category if none provided
+
+      if (!challengesByCategory[categoryName]) {
+        challengesByCategory[categoryName] = [];
+      }
+
       const userStatuses = allUsers.map((user) => {
-        const isSolved = challenge.solvedUsers.some(
-          (solvedUserId) => solvedUserId.toString() === user._id.toString() // Ensure proper comparison
-        );
-
+        const isSolved = solvedChallengesMap[challenge._id.toString()]?.has(user._id.toString());
         return {
           name: user.name,
-          solved: isSolved
+          solved: isSolved || false, // Default to false if not solved
         };
       });
 
-      return {
-        challengeName: challenge.challengeName,
-        users: userStatuses
-      };
+      challengesByCategory[categoryName].push({
+        challengeName: challenge.name,
+        users: userStatuses,
+      });
     });
 
-    // Step 4: Send response
-    res.status(200).json({ success: true, data: result });
+    // Step 6: Send response
+    res.status(200).json({ success: true, data: challengesByCategory });
   } catch (error) {
     console.error('Error fetching solved challenges:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch solved challenges' });
   }
 });
+
+
 
 
 
