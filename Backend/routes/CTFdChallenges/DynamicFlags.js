@@ -45,34 +45,34 @@ router.get('/display/:challengeId', fetchuser, async (req, res) => {
   }
 });
 
-router.get('/userFlag/:challengeId/:emailId', fetchuser, async (req, res) => {
-  const { challengeId, emailId } = req.params;
+// router.get('/userFlag/:challengeId/:emailId', fetchuser, async (req, res) => {
+//   const { challengeId, emailId } = req.params;
 
-  try {
-    // Find the user by emailId
-    const user = await User.findOne({ email: emailId });
-    // Fetch the user-specific flag for the given challenge
-    const userChallenge = await DynamicFlags.findOne(
-      {
-        challengeId: challengeId,
-        "flags.userId": user._id
-      },
-      { "flags.$": 1 } // Only return the matched flag
-    );
+//   try {
+//     // Find the user by emailId
+//     const user = await User.findOne({ email: emailId });
+//     // Fetch the user-specific flag for the given challenge
+//     const userChallenge = await DynamicFlags.findOne(
+//       {
+//         challengeId: challengeId,
+//         "flags.userId": user._id
+//       },
+//       { "flags.$": 1 } // Only return the matched flag
+//     );
 
-    // Handle cases where the user has no flag for the challenge
-    if (!userChallenge || !userChallenge.flags.length) {
-      return res.status(404).json({ error: 'User flag not found for this challenge' });
-    }
+//     // Handle cases where the user has no flag for the challenge
+//     if (!userChallenge || !userChallenge.flags.length) {
+//       return res.status(404).json({ error: 'User flag not found for this challenge' });
+//     }
 
-    // Extract and return the user's flag
-    const userFlag = userChallenge.flags.map(f => f.flag).join(', ');
-    res.status(200).json({ flag: userFlag });
-  } catch (error) {
-    console.error('Error fetching user-specific flag:', error);
-    res.status(500).json({ error: 'Failed to fetch user-specific flag' });
-  }
-});
+//     // Extract and return the user's flag
+//     const userFlag = userChallenge.flags.map(f => f.flag).join(', ');
+//     res.status(200).json({ flag: userFlag });
+//   } catch (error) {
+//     console.error('Error fetching user-specific flag:', error);
+//     res.status(500).json({ error: 'Failed to fetch user-specific flag' });
+//   }
+// });
 
 // Edit a specific flag
 router.put('/edit/:challengeId', fetchuser, async (req, res) => {
