@@ -10,21 +10,52 @@ const User = require('../../models/User')
 const Challenge = require('../../models/CTFdChallenges/challenge');
 
 
-router.get('/all',fetchuser, async (req, res) => {
-  try {
+// router.get('/all',fetchuser, async (req, res) => {
+//   try {
 
-    const userAdmin = await User.findById(req.user.id);
+//     const userAdmin = await User.findById(req.user.id);
     
-      if (userAdmin.role !== process.env.WT) {
-        return res.status(403).json({ error: "Bad Request" });
-      }
-    const Submissions = await Submission.find()
+//       if (userAdmin.role !== process.env.WT) {
+//         return res.status(403).json({ error: "Bad Request" });
+//       }
+//     const Submissions = await Submission.find()
+//       .populate('userId', 'name')  // Populate with 'User' model (userId field)
+//       .populate('challengeId', 'name type')  // Populate with 'Challenge' model (challengeId field)
+//       .select('userId challengeId answer date isCorrect points cheating attempt copiedFrom hintsUsed totalHintCost');
+
+//     // Filter out any submissions where userId or challengeId doesn't exist
+//     const filteredSubmissions = Submissions.filter(submission => submission.userId !== null && submission.challengeId !== null);
+
+//     res.json(filteredSubmissions);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Server Error' });
+//   }
+// });
+
+router.get('/all', fetchuser, async (req, res) => {
+  try {
+    const userAdmin = await User.findById(req.user.id);
+
+    // Check if the user has the required role
+    if (userAdmin.role !== process.env.WT) {
+      return res.status(403).json({ error: "Bad Request" });
+    }
+
+    // Fetch users with userVisibility set to true
+    const visibleUsers = await User.find({ userVisibility: true }).select('_id');
+
+    // Extract user IDs
+    const userIds = visibleUsers.map(user => user._id);
+
+    // Fetch submissions where user is in the list of visible users
+    const submissions = await Submission.find({ userId: { $in: userIds } })
       .populate('userId', 'name')  // Populate with 'User' model (userId field)
       .populate('challengeId', 'name type')  // Populate with 'Challenge' model (challengeId field)
       .select('userId challengeId answer date isCorrect points cheating attempt copiedFrom hintsUsed totalHintCost');
 
     // Filter out any submissions where userId or challengeId doesn't exist
-    const filteredSubmissions = Submissions.filter(submission => submission.userId !== null && submission.challengeId !== null);
+    const filteredSubmissions = submissions.filter(submission => submission.userId !== null && submission.challengeId !== null);
 
     res.json(filteredSubmissions);
   } catch (error) {
@@ -363,7 +394,7 @@ router.get('/userSubmissions/:userId',fetchuser, async (req, res) => {
 router.get('/solved-challenges', async (req, res) => {
   try {
     // Step 1: Fetch all users
-    const allUsers = await User.find({ role: process.env.BT }).select('_id name');
+    const allUsers = await User.find({ role: process.env.BT, userVisibility: true }).select('_id name');
 
     // Step 2: Fetch all challenges
     const allChallenges = await Challenge.find().select('_id name category');

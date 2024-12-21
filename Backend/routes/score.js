@@ -150,7 +150,7 @@ router.get('/export/ctf', async (req, res) => {
 router.get('/getscores', async (req, res) => {
     try {
         // Fetch user information from your database
-        const users = await User.find({ role: BT }, 'name'); // Assuming you only need name to match users
+        const users = await User.find({ role: BT, userVisibility: true }, 'name'); // Assuming you only need name to match users
 
         // Extract names of users from the database
         const userNames = users.map(user => user.name);
@@ -219,7 +219,7 @@ router.get('/getscores', async (req, res) => {
 router.get('/getscores1', async (req, res) => {
     try {
         // Fetch user information from your database
-        const users = await User.find({ role: BT }, 'name'); // Assuming you only need name to match users
+        const users = await User.find({ role: BT, userVisibility: true }, 'name'); // Assuming you only need name to match users
 
         // Extract names of users from the database
         const userNames = users.map(user => user.name);
@@ -304,18 +304,39 @@ router.get('/getscores1', async (req, res) => {
     }
 });
 
+// router.get('/get-scores', async (req, res) => {
+//     try {
+//         // Fetch scores from the Scores collection
+//         const scores = await Score.find();
+//         // Send the organized scores back as the response
+//         res.json(scores);
+//     } catch (error) {
+//         // Handle any errors that occur during the request
+//         console.error('Error fetching scores:', error);
+//         res.status(500).json({ error: 'An error occurred while fetching scores' });
+//     }
+// });
+
 router.get('/get-scores', async (req, res) => {
-    try {
-        // Fetch scores from the Scores collection
-        const scores = await Score.find();
-        // Send the organized scores back as the response
-        res.json(scores);
-    } catch (error) {
-        // Handle any errors that occur during the request
-        console.error('Error fetching scores:', error);
-        res.status(500).json({ error: 'An error occurred while fetching scores' });
-    }
+  try {
+    // Find users with userVisibility set to true
+    const visibleUsers = await User.find({ userVisibility: true }).select('_id');
+
+    // Extract user IDs
+    const userIds = visibleUsers.map(user => user._id);
+
+    // Fetch scores for these user IDs
+    const scores = await Score.find({ user: { $in: userIds } });
+
+    // Send the scores back as the response
+    res.json(scores);
+  } catch (error) {
+    // Handle any errors that occur during the request
+    console.error('Error fetching scores:', error);
+    res.status(500).json({ error: 'An error occurred while fetching scores' });
+  }
 });
+
 
 router.get('/get-user-scores', async (req, res) => {
   try {
@@ -479,62 +500,146 @@ router.put('/assign-static-score/:userId', async (req, res) => {
 
 
 
+// router.get('/highest-scores', async (req, res) => {
+//     try {
+//       // Find the user with the highest manual score
+//       const highestManualScore = await Score.findOne()
+//         .sort({ manualScore: -1 })
+//         .populate('user')
+//         .exec();
+  
+//       // Find the user with the highest total score (score + staticScore)
+//       const highestTotalScore = await Score.aggregate([
+//         {
+//           $addFields: {
+//             totalScore: { $add: ['$score', '$staticScore'] }, // Add score and staticScore to calculate total
+//           },
+//         },
+//         {
+//           $sort: { totalScore: -1 }, // Sort by totalScore in descending order
+//         },
+//         {
+//           $limit: 1, // Limit the result to the highest total score
+//         },
+//       ]);
+//       console.log(highestTotalScore);
+  
+//       // Fetch user details for the highest total score
+//       let highestTotalScoreUser = null;
+//       if (highestTotalScore.length > 0) {
+//         const [{ name }] = highestTotalScore;
+//         highestTotalScoreUser = { name };
+//       }
+  
+//       res.json({
+//         highestManualScore: highestManualScore ? highestManualScore.name : null,
+//         highestTotalScore: highestTotalScoreUser ? highestTotalScoreUser.name : null,
+//       });
+//     } catch (error) {
+//       console.error('Error fetching highest scores:', error);
+//       res.status(500).json({ success: false, message: 'Failed to fetch highest scores.' });
+//     }
+//   });
+
+
+
 router.get('/highest-scores', async (req, res) => {
-    try {
-      // Find the user with the highest manual score
-      const highestManualScore = await Score.findOne()
-        .sort({ manualScore: -1 })
-        .populate('user')
-        .exec();
-  
-      // Find the user with the highest total score (score + staticScore)
-      const highestTotalScore = await Score.aggregate([
-        {
-          $addFields: {
-            totalScore: { $add: ['$score', '$staticScore'] }, // Add score and staticScore to calculate total
-          },
+  try {
+    // Find users with userVisibility set to true
+    const visibleUsers = await User.find({ userVisibility: true }).select('_id');
+
+    // Extract user IDs
+    const userIds = visibleUsers.map(user => user._id);
+
+    // Find the user with the highest manual score among the visible users
+    const highestManualScore = await Score.find({ user: { $in: userIds } })
+      .sort({ manualScore: -1 })
+      .populate('user')
+      .exec();
+
+    // Find the user with the highest total score (score + staticScore) among the visible users
+    const highestTotalScore = await Score.aggregate([
+      {
+        $match: { user: { $in: userIds } }, // Filter by visible users
+      },
+      {
+        $addFields: {
+          totalScore: { $add: ['$score', '$staticScore'] }, // Calculate total score
         },
-        {
-          $sort: { totalScore: -1 }, // Sort by totalScore in descending order
-        },
-        {
-          $limit: 1, // Limit the result to the highest total score
-        },
-      ]);
-      console.log(highestTotalScore);
-  
-      // Fetch user details for the highest total score
-      let highestTotalScoreUser = null;
-      if (highestTotalScore.length > 0) {
-        const [{ name }] = highestTotalScore;
-        highestTotalScoreUser = { name };
-      }
-  
-      res.json({
-        highestManualScore: highestManualScore ? highestManualScore.name : null,
-        highestTotalScore: highestTotalScoreUser ? highestTotalScoreUser.name : null,
-      });
-    } catch (error) {
-      console.error('Error fetching highest scores:', error);
-      res.status(500).json({ success: false, message: 'Failed to fetch highest scores.' });
+      },
+      {
+        $sort: { totalScore: -1 }, // Sort by totalScore in descending order
+      },
+      {
+        $limit: 1, // Limit the result to the highest total score
+      },
+    ]);
+
+    // Fetch user details for the highest total score
+    let highestTotalScoreUser = null;
+    if (highestTotalScore.length > 0) {
+      const [{ name }] = highestTotalScore;
+      highestTotalScoreUser = { name };
     }
-  });
+
+    res.json({
+      highestManualScore: highestManualScore ? highestManualScore.name : null,
+      highestTotalScore: highestTotalScoreUser ? highestTotalScoreUser.name : null,
+    });
+  } catch (error) {
+    console.error('Error fetching highest scores:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch highest scores.' });
+  }
+});
+
   
   // API to get the score of each user
-router.get('/user-scores', async (req, res) => {
-    try {
-      // Fetch all users with their scores
-      const userScores = await Score.find().select('name score').exec();
+// router.get('/user-scores', async (req, res) => {
+//     try {
+//       // Fetch all users with their scores
+//       const userScores = await Score.find().select('name score').exec();
   
-      res.json({
-        success: true,
-        userScores
-      });
-    } catch (error) {
-      console.error('Error fetching user scores:', error);
-      res.status(500).json({ success: false, message: 'Failed to fetch user scores.' });
-    }
-  });
+//       res.json({
+//         success: true,
+//         userScores
+//       });
+//     } catch (error) {
+//       console.error('Error fetching user scores:', error);
+//       res.status(500).json({ success: false, message: 'Failed to fetch user scores.' });
+//     }
+//   });
+
+router.get('/user-scores', async (req, res) => {
+  try {
+    // Find users with userVisibility set to true
+    const visibleUsers = await User.find({ userVisibility: true }).select('_id');
+
+    // Extract user IDs
+    const userIds = visibleUsers.map(user => user._id);
+
+    // Fetch scores for these user IDs and populate the 'user' field
+    const scores = await Score.find({ user: { $in: userIds } })
+      .populate('user', 'name') // Populate 'user' field with 'name'
+      .select('name score user');
+
+    // Map scores to include user name
+    const userScores = scores.map(score => ({
+      name: score.user.name,
+      score: score.score
+    }));
+
+    // Send the user scores back as the response
+    res.json({
+      success: true,
+      userScores
+    });
+  } catch (error) {
+    console.error('Error fetching user scores:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch user scores.' });
+  }
+});
+
+
 
 
   router.get('/user-manualscores', async (req, res) => {

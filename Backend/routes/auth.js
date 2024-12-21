@@ -192,7 +192,7 @@ router.post('/login', async (req, res) => {
   let success = false;
 
   try {
-    const user = await User.findOne({ email: req.body.email })
+    const user = await User.findOne({ email: req.body.email, userVisibility: true  })
     if (user) {
       
       if(user.role !== BT && user.role !== WT){
@@ -235,7 +235,7 @@ router.get('/getallusers', fetchuser, async (req, res) => {
       if (userAdmin.role !== process.env.WT) {
         return res.status(403).json({ error: "Bad Request" });
       }
-    const users = await User.find({ role: BT }, '-password'); // Exclude password field
+    const users = await User.find({ role: BT  }, '-password'); // Exclude password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -251,7 +251,7 @@ router.get('/getusersall', fetchuser, async (req, res) => {
       if (userAdmin.role !== process.env.WT) {
         return res.status(403).json({ error: "Bad Request" });
       }
-    const users = await User.find().select("-password"); // Exclude password field
+    const users = await User.find({userVisibility: true }).select("-password"); // Exclude password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -266,7 +266,7 @@ router.get('/getWhiteUsersall', fetchuser, async (req, res) => {
       if (userAdmin.role !== process.env.WT) {
         return res.status(403).json({ error: "Bad Request" });
       }
-    const users = await User.find({ role: { $ne: BT } }).select("-password"); // Exclude users with role "BT" and password field
+    const users = await User.find({ role: { $ne: BT }  }).select("-password"); // Exclude users with role "BT" and password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -343,7 +343,7 @@ router.get('/getallVolunteer', fetchuser, async (req, res) => {
     if (userAdmin.role !== process.env.WT) {
       return res.status(403).json({ error: "Bad Request" });
     }
-    const users = await User.find({ role: WT }, '-password').populate('assignedTeams', 'name');; // Exclude password field
+    const users = await User.find({ role: WT, userVisibility: true  }, '-password').populate('assignedTeams', 'name');; // Exclude password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -392,25 +392,43 @@ router.put('/updateuser/:userId', fetchuser, async (req, res) => {
 
 
 // Route 3: route for the api with the route of localhost/api/auth/getuser with a MIDDLEWARE
-router.post('/getuser', fetchuser, async (req, res) => {
+// router.post('/getuser', fetchuser, async (req, res) => {
 
+//   try {
+//     const userId = req.user.id;
+//     const user = await User.findById(userId).select("-password");
+//     res.send(user);
+
+
+//   } catch (err) {
+//     res.status(500).send("Internal Server Error occured while getting the user from JWT token || MiddleWare")
+//   }
+// })
+
+router.post('/getuser', fetchuser, async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId).select("-password");
-    res.send(user);
+    // Find the user by ID, ensure userVisibility is true, and exclude the password field
+    const user = await User.findOne({ _id: userId, userVisibility: true }).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found or not visible' });
+    }
 
-
+    res.json(user);
   } catch (err) {
-    res.status(500).send("Internal Server Error occured while getting the user from JWT token || MiddleWare")
+    console.error('Error fetching user:', err);
+    res.status(500).send('Internal Server Error occurred while retrieving the user');
   }
-})
+});
+
 
 // Route to search for user by name
 router.get('/user', async (req, res) => {
   const { name } = req.query;
 
   try {
-    const user = await User.findOne({ name });
+    const user = await User.findOne({ name, userVisibility: true });
     if (user) {
       res.json({ _id: user._id });
     } else {
@@ -423,16 +441,42 @@ router.get('/user', async (req, res) => {
 });
 
 
-router.post('/fetch-flag',fetchuser, async (req, res) => {
+// router.post('/fetch-flag',fetchuser, async (req, res) => {
   
-  const userId = req.user.id;
-  const user = await User.findById(userId).select("-password");
-  const {ctfdFlag } = req.body;
-  const  teamName=user.name;
+//   const userId = req.user.id;
+//   const user = await User.findById(userId).select("-password");
+//   const {ctfdFlag } = req.body;
+//   const  teamName=user.name;
 
-  try {
-    const flag = await Flag.findOne({ teamName, ctfdFlag });
+//   try {
+//     const flag = await Flag.findOne({ teamName, ctfdFlag });
     
+
+//     if (flag) {
+//       return res.json({ encryptedFlag: flag.encryptedFlag });
+//     } else {
+//       return res.status(404).json({ error: 'Flag not found' });
+//     }
+//   } catch (error) {
+//     console.error('Error fetching encrypted flag:', error);
+//     return res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+// Route to get user details by ID
+router.post('/fetch-flag', fetchuser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    // Find the user by ID, ensure userVisibility is true, and exclude the password field
+    const user = await User.findOne({ _id: userId, userVisibility: true }).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found or not visible' });
+    }
+
+    const { ctfdFlag } = req.body;
+    const teamName = user.name;
+
+    const flag = await Flag.findOne({ teamName, ctfdFlag });
 
     if (flag) {
       return res.json({ encryptedFlag: flag.encryptedFlag });
@@ -444,25 +488,26 @@ router.post('/fetch-flag',fetchuser, async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-// Route to get user details by ID
-router.get('/:userId', fetchuser, async (req, res) => {
-  try {
-    const userId = req.params.userId;
 
-    // Query the database to find the user by ID
-    const user = await User.findById(userId).select('-password'); // Excluding the password field
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+// router.get('/:userId', fetchuser, async (req, res) => {
+//   try {
+//     const userId = req.params.userId;
 
-    // Send the user details as a response
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
+//     // Query the database to find the user by ID
+//     const user = await User.findById(userId).select('-password'); // Excluding the password field
+
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Send the user details as a response
+//     res.json(user);
+//   } catch (error) {
+//     console.error('Error fetching user:', error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
 
 // router.post('/change-picture', upload.single('profilePicture'), fetchuser, async (req, res) => {
 //   try {
@@ -488,6 +533,26 @@ router.get('/:userId', fetchuser, async (req, res) => {
 //     return res.status(500).json({ error: 'Internal server error' });
 //   }
 // });
+
+
+router.get('/:userId', fetchuser, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find the user by ID and ensure userVisibility is true, excluding the password field
+    const user = await User.findOne({ _id: userId, userVisibility: true }).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found or not visible' });
+    }
+
+    // Send the user details as a response
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 router.post('/change-picture', uploadnew.single('profilePicture'), fetchuser, async (req, res) => {
@@ -525,6 +590,65 @@ router.post('/change-picture', uploadnew.single('profilePicture'), fetchuser, as
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+router.put('/toggle-visibility/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Toggle the userVisibility status
+        user.userVisibility = !user.userVisibility;
+
+        await user.save();
+        res.json({ success: true, userVisibility: user.userVisibility });
+    } catch (error) {
+        console.error('Error updating user visibility:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+
+// API to toggle userVisibility
+router.put('/toggleVisibility/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID
+        const user = await User.findById(userId);
+
+        // If user not found, return 404 error
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Toggle the userVisibility field
+        user.userVisibility = !user.userVisibility;
+
+        // Save the updated user
+        await user.save();
+
+        // Return the updated user object
+        res.status(200).json({
+            success: true,
+            message: 'User visibility toggled successfully',
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                userVisibility: user.userVisibility,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+    }
+});
+
 
 
 module.exports = router
