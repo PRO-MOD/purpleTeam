@@ -81,13 +81,17 @@ function ChatLists({ position }) {
     const fetchVolunteers = async () => {
         try {
            
+            if (!user?.role) {
+                console.error('User role is not defined yet');
+                return; // Exit the function if user role is not defined
+            }
             const userRole = user.role 
     
             // Determine the correct API based on the user's role
             const apiEndpoint = userRole === BT
                 ? `${apiUrl}/api/auth/getWhiteUsersall` 
                 : `${apiUrl}/api/auth/getusersall`;
-    
+
             const response = await fetch(apiEndpoint, {
                 method: 'GET',
                 headers: {

@@ -15,7 +15,8 @@ function UserProgress() {
     const navigate = useNavigate();
     const context = useContext(AuthContext);
     const { user, fetchUserRole } = context;
-    const[mode,setMode]=useState("purpleTeam");
+    // const[mode,setMode]=useState("purpleTeam");
+    const mode="ctfd";
     const [submissionData, setSubmissionData]=useState(null);
     const [submissionTypes, setSubmissionTypes]=useState(null);
     const [hintCost,setHintCost]=useState(null);
@@ -50,10 +51,10 @@ function UserProgress() {
                 .then(data => setScoreData(data))
                 .catch(error => console.error('Error fetching score data:', error));
 
-              fetch(`${apiUrl}/api/config/mode`)
-              .then(response=>response.json())
-              .then(data=>setMode(data.mode))
-              .catch(error => console.error('Error fetching score data:', error));
+              // fetch(`${apiUrl}/api/config/mode`)
+              // .then(response=>response.json())
+              // .then(data=>setMode(data.mode))
+              // .catch(error => console.error('Error fetching score data:', error));
 
               fetch(`${apiUrl}/api/submissions/userSubmissions/${user._id}`,
                 {

@@ -27,12 +27,12 @@ const NavBar = ({ activeSection, setActiveSection }) => {
          style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
           Access
         </button>
-        <button
+        {/* <button
           className={`text-left pb-2 border-b-2 ${activeSection === 'mode' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-600 hover:text-blue-500'}`}
           onClick={() => setActiveSection('mode')}
          style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}}>
           Mode
-        </button>
+        </button> */}
       </nav>
     </div>
   );

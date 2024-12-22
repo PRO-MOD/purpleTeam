@@ -11,26 +11,26 @@ function ScoreTable({ scores, loading, isHomePage }) {
   const navigate = useNavigate();
   const [sortedScores, setSortedScores] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: 'totalScore', direction: 'descending' });
-  const [mode, setMode] = useState(''); // State to store the mode
-
+  // const [mode, setMode] = useState(''); // State to store the mode
+  const mode="ctfd";
   // Fetch the mode from the API
-  useEffect(() => {
-    const fetchMode = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/api/config/mode`);
-        if (response.ok) {
-          const data = await response.json();
-          setMode(data.mode);
-        } else {
-          console.error('Failed to fetch mode');
-        }
-      } catch (error) {
-        console.error('Error fetching mode:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchMode = async () => {
+  //     try {
+  //       const response = await fetch(`${apiUrl}/api/config/mode`);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setMode(data.mode);
+  //       } else {
+  //         console.error('Failed to fetch mode');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching mode:', error);
+  //     }
+  //   };
 
-    fetchMode();
-  }, [apiUrl]);
+  //   fetchMode();
+  // }, [apiUrl]);
 
   // Sort scores when scores, loading state, or sortConfig changes
   useEffect(() => {

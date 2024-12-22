@@ -16,7 +16,8 @@ function AdminDataVisualization() {
   const [reportData, setReportData] = useState([]);
   const [submissionData, setSubmissionData] = useState([]);
   const [submissionTypes, setSubmissionTypes] = useState([]);
-  const[mode,setMode]=useState("purpleTeam");
+  // const[mode,setMode]=useState("purpleTeam");
+  const mode="ctfd";
   
 
   useEffect(() => {
@@ -67,14 +68,14 @@ function AdminDataVisualization() {
     .catch(error => console.error('Error fetching submission types count:', error));
       
 
-    fetch(`${apiUrl}/api/config/mode`)
-      .then(response => response.json())
-      .then(data => {
-        setMode(data.mode);
-      })
-      .catch(error => {
-        console.error('Error fetching mode:', error);
-      });
+    // fetch(`${apiUrl}/api/config/mode`)
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     setMode(data.mode);
+    //   })
+    //   .catch(error => {
+    //     console.error('Error fetching mode:', error);
+    //   });
   }, [apiUrl]);
   
 

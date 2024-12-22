@@ -22,7 +22,7 @@ const SideNavbar = () => {
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState();
   const [logoUrl, setLogoUrl] = useState(null);
-  const [mode, setMode] = useState("purpleTeam");
+  // const [mode, setMode] = useState("purpleTeam");
   const [visibilitySettings, setVisibilitySettings] = useState({});
   const navigate = useNavigate();
   const { creteSocket, fetchUnreadMessages } = useContext(SocketContext);
@@ -31,7 +31,7 @@ const SideNavbar = () => {
     fetchUserRole();
     fetchUnreadMessages();
     fetchLogoUrl();
-    fetchMode();
+    // fetchMode();
   }, []);
 
   useEffect(() => {
@@ -69,17 +69,17 @@ const SideNavbar = () => {
     }
   };
 
-  const fetchMode = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/config/mode`, {
-        method: 'GET',
-      });
-      const data = await response.json();
-      setMode(data.mode);
-    } catch (error) {
-      console.error('Error fetching mode:', error);
-    }
-  };
+  // const fetchMode = async () => {
+  //   try {
+  //     const response = await fetch(`${apiUrl}/api/config/mode`, {
+  //       method: 'GET',
+  //     });
+  //     const data = await response.json();
+  //     setMode(data.mode);
+  //   } catch (error) {
+  //     console.error('Error fetching mode:', error);
+  //   }
+  // };
 
   const fetchVisibilitySettings = async (team) => {
     try {

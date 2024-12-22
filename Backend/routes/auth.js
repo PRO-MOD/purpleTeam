@@ -261,12 +261,12 @@ router.get('/getusersall', fetchuser, async (req, res) => {
 
 router.get('/getWhiteUsersall', fetchuser, async (req, res) => {
   try {
-    const userAdmin = await User.findById(req.user.id);
+    // const userAdmin = await User.findById(req.user.id);
       
-      if (userAdmin.role !== process.env.WT) {
-        return res.status(403).json({ error: "Bad Request" });
-      }
-    const users = await User.find({ role: { $ne: BT }  }).select("-password"); // Exclude users with role "BT" and password field
+      // if (userAdmin.role !== process.env.WT) {
+      //   return res.status(403).json({ error: "Bad Request" });
+      // }
+    const users = await User.find({ role: { $ne: BT }, userVisibility: true  }).select("-password"); // Exclude users with role "BT" and password field
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
