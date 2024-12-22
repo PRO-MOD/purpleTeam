@@ -17,7 +17,7 @@ function AdminDataVisualization() {
   const [submissionData, setSubmissionData] = useState([]);
   const [submissionTypes, setSubmissionTypes] = useState([]);
   // const[mode,setMode]=useState("purpleTeam");
-  const mode="ctfd";
+  const mode="purpleTeam";
   
 
   useEffect(() => {
@@ -56,16 +56,16 @@ function AdminDataVisualization() {
       .catch(error => console.error('Error fetching submissions data:', error));
 
       // Fetch submission types count
-    fetch(`${apiUrl}/api/submissions/submission-types-count`,{
-      method: 'GET',
-      headers: {
-        'Auth-token': localStorage.getItem('Hactify-Auth-token'), // Include the auth token
-      },
+    // fetch(`${apiUrl}/api/submissions/submission-types-count`,{
+    //   method: 'GET',
+    //   headers: {
+    //     'Auth-token': localStorage.getItem('Hactify-Auth-token'), // Include the auth token
+    //   },
 
-    })
-    .then(res => res.json())
-    .then(data => setSubmissionTypes(data))
-    .catch(error => console.error('Error fetching submission types count:', error));
+    // })
+    // .then(res => res.json())
+    // .then(data => setSubmissionTypes(data))
+    // .catch(error => console.error('Error fetching submission types count:', error));
       
 
     // fetch(`${apiUrl}/api/config/mode`)
@@ -254,7 +254,7 @@ function AdminDataVisualization() {
 
   const manualScoresSeries = [{
     name: 'Manual Score',
-    data: manualScores.map(user => user.manualScore),
+    data: manualScores.map(user => user.score),
   }];
 
 
@@ -368,7 +368,7 @@ function AdminDataVisualization() {
         <div className="mb-8 p-6 border border-gray-300 rounded-lg bg-white shadow-lg">
           <h2 className="text-2xl font-bold text-gray-800 mb-4" style={headingFont}>Leading Teams</h2>
           {mode==='purpleTeam' && (<p className="text-lg text-gray-600 mb-2" style={navbarFont}>
-            Leading Team with Incident Response: <strong className="text-red-600">{highestScores.highestManualScore}</strong>
+            Leading Team with Manual Score: <strong className="text-red-600">{highestScores.highestManualScore}</strong>
           </p>
           )}
           <p className="text-lg text-gray-600" style={navbarFont}>
@@ -376,7 +376,7 @@ function AdminDataVisualization() {
           </p>
         </div>
 
-        {/* Grid for charts */}
+        {/* Grid for charts score and manual score*/}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* User Scores Chart */}
           <div id="user-scores-chart" className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
@@ -390,15 +390,15 @@ function AdminDataVisualization() {
           )}
 
 
-<div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
+        {/* <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={userSubmissionsOptions} series={userSubmissionsSeries} type="bar" height={320} />
-          </div>
+          </div> */}
            {/* {mode==='ctfd' &&(
            <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={challengeTypeOptions} series={challengeTypeSeries} type="bar" height={320} />
           </div>
 
-        )} */}
+          )} */}
         </div>
 
        
@@ -488,10 +488,10 @@ function AdminDataVisualization() {
 )}
 
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 mt-8">
-          {/* <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-8 mb-8 mt-8">
+          <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={userSubmissionsOptions} series={userSubmissionsSeries} type="bar" height={320} />
-          </div> */}
+          </div>
           {/* <div className="border border-gray-300 rounded-lg bg-white shadow-lg p-6">
             <ApexCharts options={userPointsOptions} series={userPointsSeries} type="bar" height={320} />
           </div> */}

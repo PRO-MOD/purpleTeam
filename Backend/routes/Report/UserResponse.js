@@ -6,6 +6,7 @@ const moment = require('moment-timezone');
 const Score= require('../../models/score');
 const multer = require('multer');
 const path = require('path');
+const User=require('../../models/User');
 
 
 const storage = multer.diskStorage({
@@ -340,52 +341,118 @@ router.put('/update/:responseId', async (req, res) => {
 
 
 
+// router.get('/unique-reports', async (req, res) => {
+//   try {
+//     // Aggregation pipeline
+//     const results = await UserResponse.aggregate([
+//       {
+//         $lookup: {
+//           from: 'users', // Name of the collection for User model
+//           localField: 'userId',
+//           foreignField: '_id',
+//           as: 'user'
+//         }
+//       },
+//       {
+//         $lookup: {
+//           from: 'newreports', // Name of the collection for NewReport model
+//           localField: 'reportId',
+//           foreignField: '_id',
+//           as: 'report'
+//         }
+//       },
+//       {
+//         $unwind: '$user'
+//       },
+//       {
+//         $unwind: '$report'
+//       },
+//       {
+//         $group: {
+//           _id: {
+//             reportName: '$report.name'
+//           },
+//           users: {
+//             $push: {
+//               userName: '$user.name',
+//               createdAt: '$createdAt'
+//             }
+//           }
+//         }
+//       },
+//       {
+//         $project: {
+//           _id: 0,
+//           reportName: '$_id.reportName',
+//           users: 1
+//         }
+//       }
+//     ]);
+
+//     res.json(results);
+//   } catch (error) {
+//     console.error('Error fetching reports:', error);
+//     res.status(500).json({ success: false, message: 'Failed to fetch reports.' });
+//   }
+// });
+
 router.get('/unique-reports', async (req, res) => {
   try {
+    // Fetch IDs of users with userVisibility set to true
+    const visibleUsers = await User.find({ userVisibility: true }).select('_id');
+
+    // Extract user IDs
+    const visibleUserIds = visibleUsers.map(user => user._id);
+
     // Aggregation pipeline
     const results = await UserResponse.aggregate([
+      {
+        $match: {
+          userId: { $in: visibleUserIds }, // Match only visible users
+        },
+      },
       {
         $lookup: {
           from: 'users', // Name of the collection for User model
           localField: 'userId',
           foreignField: '_id',
-          as: 'user'
-        }
+          as: 'user',
+        },
       },
       {
         $lookup: {
           from: 'newreports', // Name of the collection for NewReport model
           localField: 'reportId',
           foreignField: '_id',
-          as: 'report'
-        }
+          as: 'report',
+        },
       },
       {
-        $unwind: '$user'
+        $unwind: '$user',
       },
       {
-        $unwind: '$report'
+        $unwind: '$report',
       },
       {
         $group: {
           _id: {
-            reportName: '$report.name'
+            reportName: '$report.name',
           },
           users: {
             $push: {
               userName: '$user.name',
-              createdAt: '$createdAt'
-            }
-          }
-        }
+              createdAt: '$createdAt',
+            },
+          },
+        },
       },
       {
         $project: {
           _id: 0,
           reportName: '$_id.reportName',
-          users: 1
-        }
-      }
+          users: 1,
+        },
+      },
     ]);
 
     res.json(results);

@@ -16,7 +16,7 @@ function UserProgress() {
     const context = useContext(AuthContext);
     const { user, fetchUserRole } = context;
     // const[mode,setMode]=useState("purpleTeam");
-    const mode="ctfd";
+    const mode="purpleTeam";
     const [submissionData, setSubmissionData]=useState(null);
     const [submissionTypes, setSubmissionTypes]=useState(null);
     const [hintCost,setHintCost]=useState(null);
@@ -155,9 +155,9 @@ function UserProgress() {
 
               {selectedTab === 'challenges' && (
                 <>
-                  <ChallengesDataVisualization submissionData={submissionData}  />
-                  <h1 className="text-3xl font-bold mb-4"style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
-                  <SubmissionTable userId={user._id} />
+                 <ChallengesDataVisualization submissionData={submissionData}  hintCost={hintCost}  />
+              <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
+              <SubmissionTable userId={user._id} />
                 </>
               )}
             </>
