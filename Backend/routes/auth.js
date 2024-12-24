@@ -21,6 +21,16 @@ const WT = process.env.WT;
 const createUploadMiddleware =require('../utils/CTFdChallenges/multerConfig');
 const uploadPath = path.join(__dirname, '../uploads/profilephotos');
 const uploadnew = createUploadMiddleware(uploadPath);
+const rateLimit = require('express-rate-limit');
+
+
+// Create a rate limiter
+const loginLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per `windowMs`
+  message: 'Too many login attempts, please try again after 5 minutes.',
+  headers: true,
+});
 
 // Route 1: route for the api with the route og localhost/api/auth/createuser
 router.post('/createuser', async (req, res) => {
@@ -188,7 +198,7 @@ router.post('/addUsers/:userId', fetchuser, async (req, res) => {
 
 
 // Route 2: route for the api with the route og localhost/api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login',loginLimiter, async (req, res) => {
   let success = false;
 
   try {
