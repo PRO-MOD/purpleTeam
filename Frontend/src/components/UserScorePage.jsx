@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ScoreTable from './ScoreTable';
 // import UserScoreTable from './UserScoreTable';
-import UserScoreTable from './userscoretable';
+// import UserScoreTable from './UserScoreTable';
+import UserScoreTable from './UserScoreTable';
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faDownload, faList } from '@fortawesome/free-solid-svg-icons';

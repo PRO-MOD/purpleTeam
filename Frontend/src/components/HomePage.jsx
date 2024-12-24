@@ -128,7 +128,7 @@ function HomePage() {
             <Route exact path='/repository' element={<ProtectedRoute Component={Repository}/>}/>
             <Route exact path='/createRepo' element={<ProtectedRoute Component={CreateRepo}/>}/>
             <Route exact path='/userScores' element={<UserscoresComponent/>}/>
-            <Route exact path='/solvedChallenges' element={<SolvedChallenges/>}/>
+            {/* <Route exact path='/solvedChallenges' element={<SolvedChallenges/>}/> */}
           </Routes>
           
         </div>
