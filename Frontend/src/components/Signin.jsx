@@ -37,8 +37,9 @@ const Signin = () => {
         const response = await fetch(`${apiUrl}/api/config/eventDetails`);
         const data = await response.json();
         if (response.ok) {
-          setLogoUrl(`${apiUrl}${data.url}`);
+          setLogoUrl(`${data.url}`);
           setTitle(data.title);
+          console.log(logoUrl);
         } else {
           console.error('Error fetching logo and title:', data.error);
         }
@@ -49,6 +50,40 @@ const Signin = () => {
 
     fetchConfig();
   }, [apiUrl]);
+
+  const [logoPic, setLogoPic] = useState("");
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(`${apiUrl}${logoUrl}`, {
+          method: "GET",
+          headers: {
+           "auth-token": localStorage.getItem("Hactify-Auth-token"),
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch the logo");
+        }
+  
+        // Convert the response to a blob
+        const blob = await response.blob();
+  
+        // Create a URL for the blob
+        const url = URL.createObjectURL(blob);
+        setLogoPic(url);
+      } catch (error) {
+        console.error("Error fetching the logo:", error);
+      }
+    };
+  
+    fetchLogo();
+  
+    // Clean up the URL to avoid memory leaks
+    return () => {
+      if (logoPic) URL.revokeObjectURL(logoPic);
+    };
+  }, [apiUrl, logoUrl]);
 
 
     const handleChange = (e) => {
@@ -97,7 +132,7 @@ const Signin = () => {
             </div>
 
             {/* Sign-in div */}
-            <img src={logoUrl} alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
+            <img src={logoPic} alt="Hacktify Logo" className="w-128 h-64 pt-8 " />
             <div className="w-full h-max md:max-w-md bg-opacity-100 p-8 rounded-lg shadow-lg mt-8">
             <div className="mb-8 text-center">
                    <h1 className='block  text-2xl font-bold mb-2' style={{color:sidenavColor,fontFamily: headingFont}}>LOGIN</h1>

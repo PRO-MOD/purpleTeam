@@ -5,7 +5,10 @@ const crypto = require('crypto');
 const http = require('http');
 const Score = require('./models/score.js')
 const ChallengeSolve = require('./models/ChallengeSolved.js');
+const fetchuser = require('./middleware/fetchuser.js');
+const path = require('path');
 require('dotenv').config();
+const User = require('./models/User')
 
 connectToMongo();
 const app = express();
@@ -13,7 +16,64 @@ app.use(cors());
 const port = process.env.PORT || 80;
 
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
+
+app.get("/uploads/Report/*", fetchuser,async (req, res) => {
+  try {
+    const requestedFilePath = path.join(__dirname, req.path);
+
+    // Extract the filename from the path
+    const fileName = path.basename(req.path);
+
+    // Extract reportId from the fileName (assuming the fileName contains the reportId)
+    const reportId = fileName.split("_")[1]; // Adjust based on your file naming convention
+
+     const userAdmin = await User.findById(req.user.id);
+        
+        if (userAdmin.role == process.env.WT) {
+          return res.sendFile(requestedFilePath, (err) => {
+            if (err) {
+              console.error("Error serving file:", err);
+              return res.status(404).send({ error: "File not found" });
+            }
+          });
+        }
+    
+    // Check ownership in the database
+    const userResponse = await UserResponse.findOne({ reportId, userId: req.user.id });
+
+    if (!userResponse) {
+      return res.status(403).send({ error: "Bad Request" });
+    }
+
+    // Serve the file if authorized
+    res.sendFile(requestedFilePath, (err) => {
+      if (err) {
+        console.error("Error serving file:", err);
+        return res.status(404).send({ error: "File not found" });
+      }
+    });
+  } catch (error) {
+    console.error("Error retrieving report:", error);
+    res.status(500).send({ error: "Internal server error" });
+  }
+});
+
+app.get("/uploads/*",async (req, res) => {
+  try {
+    const requestedFilePath = path.join(__dirname, req.path);
+    // Serve the file if authorized
+    res.sendFile(requestedFilePath, (err) => {
+      if (err) {
+        console.error("Error serving file:", err);
+        return res.status(404).send({ error: "File not found" });
+      }
+    });
+  } catch (error) {
+    console.error("Error retrieving report:", error);
+    res.status(500).send({ error: "Internal server error" });
+  }
+});
 
 
 // Create an HTTP server using express app
@@ -28,7 +88,8 @@ const io = require('socket.io')(server, {
 // const { router: chatRouter, handleSocket, users } = require('./routes/chat');
 const chatRouter = require('./routes/chat').router;
 const {handleNotifications} = require('./controllers/notifications.js')
-const {handleChallengeSolved} = require('./controllers/handleChallengeSolved.js')
+const {handleChallengeSolved} = require('./controllers/handleChallengeSolved.js');
+const UserResponse = require('./models/Report/UserResponse.js');
 // console.log("Users from Index.js >> "+users);
 
 // Function to handle socket logic

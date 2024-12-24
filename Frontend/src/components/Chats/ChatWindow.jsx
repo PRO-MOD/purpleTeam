@@ -200,7 +200,8 @@ function ChatWindow() {
                 {userInfo && (
                     <>
                         <Avatar className='mx-4 rounded-full border-2'
-                            src={userInfo.profile || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+                            // src={userInfo.profile || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+                            src={"https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
                             alt={userInfo.name}
                             size="large"
                         // type="rounded"
