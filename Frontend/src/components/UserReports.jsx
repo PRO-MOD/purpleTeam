@@ -118,13 +118,45 @@ function UserReports({ userId, route }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.fileName) {
-          const pdfUrl = `${apiUrl}/uploads/Report/${data.fileName}`;
-          window.open(pdfUrl, "_blank");
+          // const pdfUrl = `${apiUrl}/uploads/Report/${data.fileName}`;
+          // window.open(pdfUrl, "_blank");
+          handleGeneratePDF(data.fileName); 
         } else {
           console.error("Failed to generate or retrieve PDF");
         }
       })
       .catch((err) => console.error("Error viewing report:", err));
+  };
+
+  const handleGeneratePDF = async (reportData) => {
+    try {
+      // Make a fetch request to the backend to retrieve the file
+      const response = await fetch(
+        `${apiUrl}/uploads/Report/${reportData}`,
+        {
+          method: "GET",
+          headers: {
+            "auth-token": localStorage.getItem("Hactify-Auth-token"),
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch the PDF file");
+      }
+
+      // Convert the response to a blob
+      const blob = await response.blob();
+
+      // Create a URL for the blob and open it in a new tab
+      const fileUrl = URL.createObjectURL(blob);
+      window.open(fileUrl, "_blank");
+
+      // Clean up the created URL after the file is opened
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error fetching the PDF:", error);
+    }
   };
 
   const handleScoreChange = (index, value) => {
