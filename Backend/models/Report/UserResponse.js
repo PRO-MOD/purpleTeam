@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const userResponseSchema = new mongoose.Schema({
   reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewReport', required: true },
+  scenarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Scenario', required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   responses: [
     {

@@ -141,7 +141,7 @@ const PDFUtils = {
       // });
 
       questions.forEach((question, index) => {
-        const questionText = `Q${question.index + 1}. ${question.text}`;
+        const questionText = `Q${question.index}. ${question.text}`;
         const answer = userResponse.responses[index]?.answer; // Safely access the answer
       
         doc.text(questionText, margin, y);

@@ -16,12 +16,12 @@ async function generateReportPDF(reportId, userId, userResponseId, outputFilePat
         const report = await Report.findById(reportId);
         if (!report) throw new Error('Report not found');
 
-        // Fetch the questions for the report
-        const questions = await Question.find({ report: reportId }).sort({ index: 1 });
-
         // Fetch the user's responses for the report
         const userResponse = await UserResponse.findOne({ reportId, userId, _id: userResponseId }).populate('responses.questionId');
         if (!userResponse) throw new Error('User responses not found');
+
+        // Fetch the questions for the report
+        const questions = await Question.find({ report: reportId, scenarioId: userResponse.scenarioId }).sort({ index: 1 });
 
         const reportConfig = await ReportConfig.findOne({ report: reportId })
             .populate('header')

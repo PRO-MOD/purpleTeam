@@ -20,7 +20,13 @@ const Questions = ({ reportId }) => {
 
     const fetchQuestions = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`);
+            const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`, {
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                  'Content-Type': 'application/json',
+                },
+              });
             if (!response.ok) {
                 throw new Error('Failed to fetch questions');
             }
@@ -42,6 +48,10 @@ const Questions = ({ reportId }) => {
         try {
             const response = await fetch(`${apiUrl}/api/questions/delete/${id}`, {
                 method: 'DELETE',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                  'Content-Type': 'application/json',
+                },
             });
             if (!response.ok) {
                 throw new Error('Failed to delete question');
@@ -62,6 +72,7 @@ const Questions = ({ reportId }) => {
             setQuestions(questions.map((question) =>
                 question._id === newQuestion._id ? newQuestion : question
             ));
+            await fetchQuestions();
         } else {
             setQuestions([...questions, newQuestion].sort((a, b) => a.index - b.index));
             await fetchQuestions();
@@ -79,6 +90,7 @@ const Questions = ({ reportId }) => {
 
     const columns = [
         { header: "Order", accessor: "index" },
+        { header: "Scenario ID", accessor: "scenarioName" },
         { header: "Question", accessor: "text" },
         { header: "Type", accessor: "type" },
         { header: "Options", accessor: "options" },

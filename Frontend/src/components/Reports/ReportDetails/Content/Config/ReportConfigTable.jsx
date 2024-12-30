@@ -37,7 +37,7 @@ const ReportConfigTable = ({ reportId }) => {
                     const response = await fetch(`${apiUrl}/uploads/headers/${imageUrl}`, {
                         method: 'GET',
                         headers: {
-                            'auth-token': localStorage.getItem('Hactify-Auth-token'),
+                            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
                         },
                     });
 
