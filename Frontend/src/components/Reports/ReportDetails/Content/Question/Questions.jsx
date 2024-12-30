@@ -62,6 +62,7 @@ const Questions = ({ reportId }) => {
             setQuestions(questions.map((question) =>
                 question._id === newQuestion._id ? newQuestion : question
             ));
+            await fetchQuestions();
         } else {
             setQuestions([...questions, newQuestion].sort((a, b) => a.index - b.index));
             await fetchQuestions();
@@ -79,6 +80,7 @@ const Questions = ({ reportId }) => {
 
     const columns = [
         { header: "Order", accessor: "index" },
+        { header: "Scenario ID", accessor: "scenarioName" },
         { header: "Question", accessor: "text" },
         { header: "Type", accessor: "type" },
         { header: "Options", accessor: "options" },

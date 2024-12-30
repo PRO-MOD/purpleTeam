@@ -37,30 +37,95 @@ function UserReports({ userId, route }) {
     setImages(imagePaths);
     setShowImagesModal(true);
   };
+
+
+  const fetchImageBlob = async (imagePath) => {
+    try {
+      const response = await fetch(`${apiUrl}/${imagePath}`, {
+        method: "GET",
+        headers: {
+          "Auth-token": localStorage.getItem("Hactify-Auth-token"),
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch the image");
+      }
+  
+      // Convert response to a blob
+      const blob = await response.blob();
+  
+      // Create a URL for the blob
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error("Error fetching the image:", error);
+      return null; // Return null if an error occurs
+    }
+  };
   // Modal to display images
-  const ImagesModal = () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[80%] overflow-y-auto">
-        <h3 className="text-xl font-semibold mb-4">Images</h3>
-        <div className="flex flex-col gap-4">
-          {images.map((image, index) => (
-            <img
-              key={index}
-              src={`${apiUrl}/${image}`}
-              alt={`Image ${index + 1}`}
-              className="w-full h-auto object-cover rounded"
-            />
-          ))}
+  // const ImagesModal = () => (
+  //   <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+  //     <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[80%] overflow-y-auto">
+  //       <h3 className="text-xl font-semibold mb-4">Images</h3>
+  //       <div className="flex flex-col gap-4">
+  //         {images.map((image, index) => (
+  //           <img
+  //             key={index}
+  //             src={`${apiUrl}/${image}`}
+  //             alt={`Image ${index + 1}`}
+  //             className="w-full h-auto object-cover rounded"
+  //           />
+  //         ))}
+  //       </div>
+  //       <button
+  //         onClick={() => setShowImagesModal(false)}
+  //         className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-4"
+  //       >
+  //         Close
+  //       </button>
+  //     </div>
+  //   </div>
+  // );
+
+  const ImagesModal = () => {
+    const [imageURLs, setImageURLs] = useState([]);
+  
+    // Fetch all image blobs when the modal is shown
+    useEffect(() => {
+      const fetchAllImages = async () => {
+        const urls = await Promise.all(
+          images.map((image) => fetchImageBlob(image))
+        );
+        setImageURLs(urls.filter((url) => url !== null)); // Filter out failed URLs
+      };
+  
+      fetchAllImages();
+    }, [images]);
+  
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[80%] overflow-y-auto">
+          <h3 className="text-xl font-semibold mb-4">Images</h3>
+          <div className="flex flex-col gap-4">
+            {imageURLs.map((imageURL, index) => (
+              <img
+                key={index}
+                src={imageURL}
+                alt={`Image ${index + 1}`}
+                className="w-full h-auto object-cover rounded"
+              />
+            ))}
+          </div>
+          <button
+            onClick={() => setShowImagesModal(false)}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-4"
+          >
+            Close
+          </button>
         </div>
-        <button
-          onClick={() => setShowImagesModal(false)}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-4"
-        >
-          Close
-        </button>
       </div>
-    </div>
-  );
+    );
+  };
 
   const apiUrl = import.meta.env.VITE_Backend_URL;
 
@@ -103,7 +168,7 @@ function UserReports({ userId, route }) {
   };
 
   const viewReport = (reportId, userId, responseId) => {
-    console.log(reportId, userId, responseId);
+    // console.log(reportId, userId, responseId);
 
     fetch(
       `${apiUrl}/api/generatePDF/generateReport/${reportId}/${userId}/${responseId}`,

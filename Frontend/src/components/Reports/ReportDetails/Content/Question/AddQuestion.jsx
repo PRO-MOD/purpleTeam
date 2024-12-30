@@ -3,12 +3,14 @@ import InputField from "../../../../Challenges/challenges/Partials/InputFeild";
 import FontContext from "../../../../../context/FontContext";
 
 const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
-    const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
+    const { navbarFont, headingFont, paraFont } = useContext(FontContext);
     const [text, setText] = useState(existingQuestion ? existingQuestion.text : "");
     const [type, setType] = useState(existingQuestion ? existingQuestion.type : "input");
     const [options, setOptions] = useState(existingQuestion ? existingQuestion.options.join(", ") : "");
     const [index, setIndex] = useState(existingQuestion ? existingQuestion.index : 0);
     const [maxScore, setMaxScore] = useState(existingQuestion ? existingQuestion.maxScore : 0);
+    const [scenarioId, setScenarioId] = useState(existingQuestion ? existingQuestion.scenarioId : "");
+    const [availableScenarios, setAvailableScenarios] = useState([]);
     const [message, setMessage] = useState("");
     const apiUrl = import.meta.env.VITE_Backend_URL;
 
@@ -19,8 +21,27 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
             setOptions(existingQuestion.options.join(", "));
             setIndex(existingQuestion.index);
             setMaxScore(existingQuestion.maxScore);
+            setScenarioId(existingQuestion.scenarioId._id);
         }
     }, [existingQuestion]);
+
+    // Fetch scenarios for the reportId
+    useEffect(() => {
+        const fetchScenarios = async () => {
+            try {
+                const response = await fetch(`${apiUrl}/api/scenario/${reportId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch scenarios");
+                }
+                const data = await response.json();
+                setAvailableScenarios(data); // Assuming data contains an array of scenarios
+            } catch (error) {
+                console.error("Error fetching scenarios:", error);
+            }
+        };
+
+        fetchScenarios();
+    }, [reportId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,6 +54,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
             index,
             maxScore,
             report: reportId, // Ensure report ID is included
+            scenarioId, // Include scenarioId from the input field
         };
 
         try {
@@ -60,6 +82,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
                     setOptions("");
                     setIndex(0);
                     setMaxScore(0);
+                    setScenarioId("");
                 }
             } else {
                 setMessage(`Failed to ${existingQuestion ? "update" : "create"} question`);
@@ -72,9 +95,34 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
 
     return (
         <div className="p-4">
-            <h3 className="text-lg font-semibold" style={{fontFamily:headingFont}}>{existingQuestion ? "Edit" : "Add"} Question</h3>
+            <h3 className="text-lg font-semibold" style={{ fontFamily: headingFont }}>
+                {existingQuestion ? "Edit" : "Add"} Question
+            </h3>
             {message && <div className="text-green-500 mt-2">{message}</div>}
             <form onSubmit={handleSubmit} className="mt-4">
+                {/* Scenario ID Dropdown */}
+                <div className="mb-4">
+                    <label htmlFor="scenarioId" className="block text-sm font-medium text-gray-700" style={{ fontFamily: paraFont }}>
+                        Scenario ID
+                    </label>
+                    <select
+                        id="scenarioId"
+                        value={scenarioId}
+                        onChange={(e) => setScenarioId(e.target.value)}
+                        className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                        style={{ fontFamily: paraFont }}
+                        required
+                    >
+                        <option value="">Select Scenario</option>
+                        {availableScenarios.map((scenario) => (
+                            <option key={scenario._id} value={scenario._id}>
+                                {scenario.scenarioId} {/* Assuming scenario has 'scenarioId' field */}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Rest of the fields */}
                 <InputField
                     label="Question in Report"
                     type="text"
@@ -85,14 +133,15 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
                     required
                 />
                 <div className="mb-4">
-                    <label htmlFor="type" className="block text-sm font-medium text-gray-700" style={{fontFamily:paraFont}}>
+                    <label htmlFor="type" className="block text-sm font-medium text-gray-700" style={{ fontFamily: paraFont }}>
                         Type
                     </label>
                     <select
                         id="type"
                         value={type}
                         onChange={(e) => setType(e.target.value)}
-                        className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"style={{fontFamily:paraFont}}
+                        className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+                        style={{ fontFamily: paraFont }}
                     >
                         <option value="input">Input</option>
                         <option value="checkbox">Checkbox</option>
@@ -130,14 +179,16 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2 hover:text-red-500"style={{fontFamily:navbarFont}}
+                        className="px-4 py-2 hover:text-red-500"
+                        style={{ fontFamily: navbarFont }}
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
                         className="p-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-700"
-                       style={{fontFamily:navbarFont.fontFamily, fontSize:navbarFont.fontSize}} >
+                        style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}
+                    >
                         {existingQuestion ? "Update" : "Add"} Question
                     </button>
                 </div>

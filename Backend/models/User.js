@@ -22,6 +22,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    userVisibility: {
+        type: Boolean,
+        default: true,
+      },
     assignedTeams: {
         type: [{ type: Schema.Types.ObjectId, ref: 'User' }], // Reference to other users
     },

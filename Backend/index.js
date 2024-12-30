@@ -8,6 +8,7 @@ const ChallengeSolve = require('./models/ChallengeSolved.js');
 const fetchuser = require('./middleware/fetchuser.js');
 const path = require('path');
 require('dotenv').config();
+const User = require('./models/User')
 
 connectToMongo();
 const app = express();
@@ -26,6 +27,17 @@ app.get("/uploads/Report/*", fetchuser,async (req, res) => {
 
     // Extract reportId from the fileName (assuming the fileName contains the reportId)
     const reportId = fileName.split("_")[1]; // Adjust based on your file naming convention
+
+     const userAdmin = await User.findById(req.user.id);
+        
+        if (userAdmin.role == process.env.WT) {
+          return res.sendFile(requestedFilePath, (err) => {
+            if (err) {
+              console.error("Error serving file:", err);
+              return res.status(404).send({ error: "File not found" });
+            }
+          });
+        }
     
     // Check ownership in the database
     const userResponse = await UserResponse.findOne({ reportId, userId: req.user.id });
@@ -34,6 +46,22 @@ app.get("/uploads/Report/*", fetchuser,async (req, res) => {
       return res.status(403).send({ error: "Bad Request" });
     }
 
+    // Serve the file if authorized
+    res.sendFile(requestedFilePath, (err) => {
+      if (err) {
+        console.error("Error serving file:", err);
+        return res.status(404).send({ error: "File not found" });
+      }
+    });
+  } catch (error) {
+    console.error("Error retrieving report:", error);
+    res.status(500).send({ error: "Internal server error" });
+  }
+});
+
+app.get("/uploads/*",async (req, res) => {
+  try {
+    const requestedFilePath = path.join(__dirname, req.path);
     // Serve the file if authorized
     res.sendFile(requestedFilePath, (err) => {
       if (err) {
@@ -162,6 +190,7 @@ app.use('/api/config',require('./routes/Config/Config.js'));
 // routes for report handling (new logic)
 app.use('/api/reports',require('./routes/Report/report.js'))
 app.use('/api/questions',require('./routes/Report/questions.js'))
+app.use('/api/scenario',require('./routes/Report/Scenario.js'))
 app.use('/api/responses',require('./routes/Report/UserResponse.js'))
 app.use('/api/reports/headers', require('./routes/Report/Config/Header.js'));
 app.use('/api/reports/footers', require('./routes/Report/Config/Footer.js'));

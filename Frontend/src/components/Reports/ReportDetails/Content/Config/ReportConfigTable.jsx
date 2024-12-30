@@ -9,6 +9,8 @@ const ReportConfigTable = ({ reportId }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
+    const [headerImageSrc, setHeaderImageSrc] = useState(null);
+    const [footerImageSrc, setFooterImageSrc] = useState(null);
     const apiUrl = import.meta.env.VITE_Backend_URL;
 
     useEffect(() => {
@@ -28,6 +30,72 @@ const ReportConfigTable = ({ reportId }) => {
         fetchReportConfig();
     }, [reportId]);
 
+    useEffect(() => {
+        const fetchImage = async (imageUrl, setImageState) => {
+            if (imageUrl) {
+                try {
+                    const response = await fetch(`${apiUrl}/uploads/headers/${imageUrl}`, {
+                        method: 'GET',
+                        headers: {
+                            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                        },
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const imageObjectUrl = URL.createObjectURL(blob);
+                        setImageState(imageObjectUrl);
+                    } else {
+                        console.error('Failed to fetch image');
+                    }
+                } catch (error) {
+                    console.error('Error fetching image:', error);
+                }
+            }
+        };
+
+        if (config) {
+            if (config.header?.imageUrl) {
+                fetchImage(config.header.imageUrl, setHeaderImageSrc);
+            }
+            if (config.footer?.imageUrl) {
+                fetchImage(config.footer.imageUrl, setFooterImageSrc);
+            }
+        }
+    }, [config, apiUrl]);
+
+    useEffect(() => {
+        const fetchImage = async (imageUrl, setImageState) => {
+            if (imageUrl) {
+                try {
+                    const response = await fetch(`${apiUrl}/uploads/footers/${imageUrl}`, {
+                        method: 'GET',
+                        headers: {
+                            'auth-token': localStorage.getItem('Hactify-Auth-token'),
+                        },
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const imageObjectUrl = URL.createObjectURL(blob);
+                        setImageState(imageObjectUrl);
+                    } else {
+                        console.error('Failed to fetch image');
+                    }
+                } catch (error) {
+                    console.error('Error fetching image:', error);
+                }
+            }
+        };
+
+        if (config) {
+            if (config.footer?.imageUrl) {
+                fetchImage(config.footer.imageUrl, setFooterImageSrc);
+            }
+        }
+    }, [config, apiUrl]);
+
+
     const columns = [
         { header: 'Feature', accessor: 'feature' },
         { header: 'Content', accessor: 'content' },
@@ -45,21 +113,32 @@ const ReportConfigTable = ({ reportId }) => {
         {
             feature: 'Header',
             content: config.header?.imageUrl ? (
+                // <img
+                //     src={`${apiUrl}/uploads/headers/${config.header.imageUrl}`}
+                //     alt="Header"
+                //     className="h-12 mx-auto"
+                // />
                 <img
-                    src={`${apiUrl}/uploads/headers/${config.header.imageUrl}`}
-                    alt="Header"
-                    className="h-12 mx-auto"
-                />
+                src={headerImageSrc}
+                alt="Header"
+                className="h-12 mx-auto"
+            />
             ) : 'No header configured',
         },
         {
             feature: 'Footer',
             content: config.footer?.imageUrl ? (
+                // <img
+                //     src={`${apiUrl}/uploads/footers/${config.footer.imageUrl}`}
+                //     alt="Footer"
+                //     className="h-12 mx-auto"
+                // />
+
                 <img
-                    src={`${apiUrl}/uploads/footers/${config.footer.imageUrl}`}
-                    alt="Footer"
-                    className="h-12 mx-auto"
-                />
+                src={footerImageSrc}
+                alt="Footer"
+                className="h-12 mx-auto"
+            />
             ) : 'No footer configured',
         },
         {

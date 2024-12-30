@@ -22,7 +22,7 @@ const SideNavbar = () => {
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState();
   const [logoUrl, setLogoUrl] = useState(null);
-  const [mode, setMode] = useState("purpleTeam");
+  // const [mode, setMode] = useState("purpleTeam");
   const [visibilitySettings, setVisibilitySettings] = useState({});
   const navigate = useNavigate();
   const { creteSocket, fetchUnreadMessages } = useContext(SocketContext);
@@ -31,7 +31,7 @@ const SideNavbar = () => {
     fetchUserRole();
     fetchUnreadMessages();
     fetchLogoUrl();
-    fetchMode();
+    // fetchMode();
   }, []);
 
   useEffect(() => {
@@ -69,17 +69,52 @@ const SideNavbar = () => {
     }
   };
 
-  const fetchMode = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/config/mode`, {
-        method: 'GET',
-      });
-      const data = await response.json();
-      setMode(data.mode);
-    } catch (error) {
-      console.error('Error fetching mode:', error);
-    }
-  };
+
+  // const [logoPic, setLogoPic] = useState("");
+  // useEffect(() => {
+  //   const fetchLogo = async () => {
+  //     try {
+  //       const response = await fetch(`${logoUrl}`, {
+  //         method: "GET",
+  //         headers: {
+  //          "auth-token": localStorage.getItem("Hactify-Auth-token"),
+  //         },
+  //       });
+  
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch the logo");
+  //       }
+  
+  //       // Convert the response to a blob
+  //       const blob = await response.blob();
+  
+  //       // Create a URL for the blob
+  //       const url = URL.createObjectURL(blob);
+  //       setLogoPic(url);
+  //     } catch (error) {
+  //       console.error("Error fetching the logo:", error);
+  //     }
+  //   };
+  
+  //   fetchLogo();
+  
+  //   // Clean up the URL to avoid memory leaks
+  //   return () => {
+  //     if (logoPic) URL.revokeObjectURL(logoPic);
+  //   };
+  // }, [logoUrl]);
+
+  // const fetchMode = async () => {
+  //   try {
+  //     const response = await fetch(`${apiUrl}/api/config/mode`, {
+  //       method: 'GET',
+  //     });
+  //     const data = await response.json();
+  //     setMode(data.mode);
+  //   } catch (error) {
+  //     console.error('Error fetching mode:', error);
+  //   }
+  // };
 
   const fetchVisibilitySettings = async (team) => {
     try {
@@ -169,6 +204,8 @@ const SideNavbar = () => {
     { path: "/profile", icon: faUser, label: "Profile", visibility: visibilitySettings.profile == 'yes' },
     { path: "/chat", icon: faComment, label: "Communication", visibility: visibilitySettings.communication == 'yes' },
   ];
+
+   
 
   return (
     <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 overflow-y-auto" style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
