@@ -8,7 +8,6 @@ const User = require('../../models/User')
 
 const createUploadMiddleware = require('../../utils/CTFdChallenges/multerConfig');
 const fetchuser = require('../../middleware/fetchuser');
-const User = require('../../models/User');
 // Define the upload path
 const uploadPath = path.join(__dirname, '../../uploads/CTFdChallenges');
 

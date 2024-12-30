@@ -7,6 +7,7 @@ const CreateReportForm = () => {
     name: '',
     description: '',
     deadline: '',
+    visibility: true, // Add visibility to the form data
   });
   const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
 
@@ -42,6 +43,7 @@ const CreateReportForm = () => {
         name: '',
         description: '',
         deadline: '',
+        visibility: true, 
       });
     } catch (error) {
       console.error('Error creating report:', error);
@@ -89,6 +91,25 @@ const CreateReportForm = () => {
             onChange={handleChange}
           />
         ))}
+
+         {/* Visibility Dropdown */}
+         <div className="form-group">
+          <label htmlFor="visibility" className="block text-gray-700" style={{ fontFamily: paraFont }}>
+            Visibility
+          </label>
+          <select
+            id="visibility"
+            name="visibility"
+            value={formData.visibility}
+            onChange={handleChange}
+            className="form-control outline-0 w-full p-2 border border-gray-300 rounded mt-1 focus:border-green-500 focus:ring focus:ring-green-200"
+            style={{ fontFamily: paraFont }} // Apply the same font as other fields
+          >
+            <option value={true}>Visible</option>
+            <option value={false}>Invisible</option>
+          </select>
+        </div>
+
         <div className="form-group">
           <button
             className="btn btn-primary bg-blue-500 text-white py-2 px-4 rounded float-right"

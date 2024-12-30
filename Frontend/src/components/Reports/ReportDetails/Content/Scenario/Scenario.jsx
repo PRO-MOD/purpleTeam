@@ -5,6 +5,7 @@ import InputField from '../../../../Challenges/challenges/Partials/InputFeild'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../../../../context/FontContext';
+import ConfirmationModal from '../../../../Challenges/challenges/Partials/ConfirmationModal';
 
 const Scenarios = ({ reportId }) => {
   const { navbarFont, headingFont, paraFont, updateFontSettings } = useContext(FontContext);
@@ -14,6 +15,8 @@ const Scenarios = ({ reportId }) => {
   const [showModal, setShowModal] = useState(false);
   const [editingScenario, setEditingScenario] = useState(null);
   const apiUrl = import.meta.env.VITE_Backend_URL;
+const [showConfirmModal, setShowConfirmModal] = useState(false); // State to control confirm modal
+    const [scenarioToDelete, setScenarioToDelete] = useState(null); // Store the question to be deleted
 
   useEffect(() => {
     fetchScenarios();
@@ -44,9 +47,15 @@ const Scenarios = ({ reportId }) => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
+   const handleDelete = (id) => {
+    setScenarioToDelete(id); // Set the question to be deleted
+        setShowConfirmModal(true); // Show the confirmation modal
+    };
+
+
+  const confirmDelete = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/scenario/${id}`, {
+      const response = await fetch(`${apiUrl}/api/scenario/${scenarioToDelete}`, {
         method: 'DELETE',
         headers: {
           'Auth-token': localStorage.getItem('Hactify-Auth-token'),
@@ -56,7 +65,8 @@ const Scenarios = ({ reportId }) => {
       if (!response.ok) {
         throw new Error('Failed to delete scenario');
       }
-      setScenarios(scenarios.filter((scenario) => scenario._id !== id));
+      setScenarios(scenarios.filter((scenario) => scenario._id !== scenarioToDelete));
+      setShowConfirmModal(false);
     } catch (error) {
       setError('Failed to delete scenario');
     }
@@ -161,6 +171,14 @@ const Scenarios = ({ reportId }) => {
         />
         {/* Add more fields as needed */}
       </Modal>
+        {/* Confirmation Modal for Deletion */}
+        {showConfirmModal && (
+                <ConfirmationModal
+                    message="Are you sure you want to delete this Scenario?"
+                    onConfirm={confirmDelete}
+                    onCancel={() => setShowConfirmModal(false)}
+                />
+            )}
     </div>
   );
 };

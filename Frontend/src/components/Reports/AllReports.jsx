@@ -1,10 +1,9 @@
 import React, { useEffect, useState,useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FontContext from '../../context/FontContext';
-
 import { formatDate } from '../../assets/utils/formatDate';
-
 import ReusableTable from '../Challenges/challenges/Partials/InfoTable';
+import ConfirmationModal from '../Challenges/challenges/Partials/ConfirmationModal';
 
 
 const AllReports = () => {
@@ -13,6 +12,9 @@ const AllReports = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
+    const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+    const [message, setMessage] = useState(""); // State to store the confirmation message
+    const [reportsToDelete, setReportsToDelete] = useState([]);
 
     const apiUrl = import.meta.env.VITE_Backend_URL;
 
@@ -83,9 +85,22 @@ const AllReports = () => {
             } else {
                 console.error('Error deleting challenges:', await response.json());
             }
+            setShowModal(false);
         } catch (error) {
             console.error('Error deleting challenges:', await response.json());
         }
+        finally {
+            setShowModal(false); // Close the modal after deletion
+        }
+    };
+
+    const handleShowModal = () => {
+        setMessage('Are you sure you want to delete the selected reports?');
+        setReportsToDelete(selectedReports);
+        setShowModal(true);
+    };
+    const handleCancelModal = () => {
+        setShowModal(false);
     };
 
     const columns = [
@@ -94,6 +109,7 @@ const AllReports = () => {
         { header: 'Description', accessor: 'description' },
         { header: 'Deadline', accessor: 'deadline' },
         { header: 'Created At', accessor: 'createdAt' },
+        { header: 'Visibility', accessor: 'visibility' },
     ];
 
     return (
@@ -106,8 +122,16 @@ const AllReports = () => {
                 selectedItems={selectedReports}
                 onItemSelect={handleSelectReport}
                 onSelectAll={handleSelectAllReports}
-                onDelete={handleDeleteReports}
+                onDelete={handleShowModal}
             />
+
+{showModal && (
+                <ConfirmationModal
+                    message={message}
+                    onConfirm={handleDeleteReports}
+                    onCancel={handleCancelModal}
+                />
+            )}
         </div>
     );
 };

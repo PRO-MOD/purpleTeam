@@ -10,6 +10,7 @@ const EditReport = ({ report }) => {
     description: report.description,
     deadline: report.deadline ? report.deadline.split('T')[0] : '', // Extract date from ISO string
     index: report.index || 0, // Default to 0 if not provided
+    visibility: report.visibility, // Add visibility field
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -83,6 +84,20 @@ const EditReport = ({ report }) => {
             onChange={handleChange}
           />
         ))}
+
+<div className="form-group">
+          <label htmlFor="visibility">Visibility</label>
+          <select
+            id="visibility"
+            name="visibility"
+            value={fields.visibility}
+            onChange={handleChange}
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+          >
+            <option value={true}>Visible</option>
+            <option value={false}>Invisible</option>
+          </select>
+        </div>
 
         <div className="flex justify-end">
           <button

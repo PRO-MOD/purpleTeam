@@ -6,6 +6,7 @@ const reportSchema = new mongoose.Schema({
   description: { type: String },
   deadline: { type: Date },
   createdAt: { type: Date, default: Date.now },
+  visibility: { type: Boolean, default: true },
 });
 
 // Add auto-incrementing index field

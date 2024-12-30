@@ -21,13 +21,14 @@ router.get('/details/:id', async (req, res) => {
 // POST route to add a new report
 router.post('/create', async (req, res) => {
     try {
-        const { name, description, deadline } = req.body;
+        const { name, description, deadline, visibility  } = req.body;
 
         // Create a new report instance
         const newReport = new Report({
             name,
             description,
-            deadline
+            deadline,
+            visibility: visibility !== undefined ? visibility : true,
         });
 
         // Save the report to the database
@@ -45,6 +46,15 @@ router.post('/create', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const reports = await Report.find();
+        res.json(reports);
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+router.get('/userReports', async (req, res) => {
+    try {
+        const reports = await Report.find({visibility:true});
         res.json(reports);
     } catch (error) {
         res.status(500).json({ error: 'Server error' });
@@ -70,13 +80,13 @@ router.delete('/deleteReport', async (req, res) => {
 // PUT endpoint to update a report
 router.put('/edit/:id', async (req, res) => {
     const reportId = req.params.id;
-    const { name, description, deadline, index } = req.body;
+    const { name, description, deadline, index, visibility  } = req.body;
 
     try {
         // Find the report by ID and update it
         const updatedReport = await Report.findByIdAndUpdate(
             reportId,
-            { name, description, deadline, index },
+            { name, description, deadline, index, visibility  },
             { new: true, runValidators: true }
         );
 
