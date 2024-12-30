@@ -16,7 +16,12 @@ function ScoresComponent() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/score/get-scores`);
+        const response = await fetch(`${apiUrl}/api/score/get-scores`, {
+          headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+            'Content-Type': 'application/json',
+          },
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch scores');
         }

@@ -15,7 +15,7 @@ const userResponseSchema = new mongoose.Schema({
     }
   ],
   penaltyScore: { type: Number, default: 0 },
-  finalScore: { type: Number, default: 0 }, // Field to store penalty score
+  finalScore: { type: Number, default: null }, // Field to store penalty score
   createdAt: { type: Date, default: Date.now }
 });
 
