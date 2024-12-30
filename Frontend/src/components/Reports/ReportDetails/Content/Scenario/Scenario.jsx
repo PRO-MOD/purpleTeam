@@ -21,7 +21,12 @@ const Scenarios = ({ reportId }) => {
 
   const fetchScenarios = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/scenario/${reportId}`);
+      const response = await fetch(`${apiUrl}/api/scenario/${reportId}`, {
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          'Content-Type': 'application/json',
+        },
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch scenarios');
       }
@@ -43,6 +48,10 @@ const Scenarios = ({ reportId }) => {
     try {
       const response = await fetch(`${apiUrl}/api/scenario/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+          'Content-Type': 'application/json',
+        },
       });
       if (!response.ok) {
         throw new Error('Failed to delete scenario');
@@ -71,6 +80,7 @@ const Scenarios = ({ reportId }) => {
         const response = await fetch(`${apiUrl}/api/scenario/${editingScenario._id}`, {
           method: 'PUT',
           headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(newScenario),
@@ -93,6 +103,7 @@ const Scenarios = ({ reportId }) => {
         const response = await fetch(`${apiUrl}/api/scenario`, {
           method: 'POST',
           headers: {
+            'Auth-token': localStorage.getItem('Hactify-Auth-token'),
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(newScenario),

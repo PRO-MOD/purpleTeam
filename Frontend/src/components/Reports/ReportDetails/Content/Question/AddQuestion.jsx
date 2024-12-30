@@ -29,7 +29,12 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
     useEffect(() => {
         const fetchScenarios = async () => {
             try {
-                const response = await fetch(`${apiUrl}/api/scenario/${reportId}`);
+                const response = await fetch(`${apiUrl}/api/scenario/${reportId}`, {
+                    headers: {
+                      'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                      'Content-Type': 'application/json',
+                    },
+                  });
                 if (!response.ok) {
                     throw new Error("Failed to fetch scenarios");
                 }
@@ -66,6 +71,7 @@ const AddQuestion = ({ reportId, onClose, existingQuestion, onSubmit }) => {
             const response = await fetch(url, {
                 method,
                 headers: {
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(questionData),

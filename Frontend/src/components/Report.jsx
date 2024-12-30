@@ -23,8 +23,8 @@ function Report() {
       try {
         const response = await fetch(`${apiUrl}/api/scenario/${reportId}`, {
           headers: {
-            'Content-Type': 'application/json',
             'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+            'Content-Type': 'application/json',
           },
         });
 

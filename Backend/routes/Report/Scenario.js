@@ -1,9 +1,11 @@
 const express = require('express');
 const Scenario = require('../../models/Report/Scenario'); // Import Scenario model
+const fetchuser = require('../../middleware/fetchuser');
+const User = require('../../models/User');
 const router = express.Router();
 
 // Get all scenarios or filter by reportId
-router.get('/:reportId', async (req, res) => {
+router.get('/:reportId', fetchuser, async (req, res) => {
   try {
     const { reportId } = req.params; // Optional filter by reportId
     const scenarios = await Scenario.find({ reportId });
@@ -15,11 +17,17 @@ router.get('/:reportId', async (req, res) => {
 });
 
 // Add a new scenario
-router.post('/', async (req, res) => {
+router.post('/', fetchuser, async (req, res) => {
   try {
     const { scenarioId, reportId } = req.body;
 
-    if (!scenarioId || !reportId ) {
+    const userAdmin = await User.findById(req.user.id);
+
+    if (userAdmin.role != process.env.WT) {
+      return res.status(403).send({ error: "Bad Request" });
+    }
+
+    if (!scenarioId || !reportId) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -33,10 +41,16 @@ router.post('/', async (req, res) => {
 });
 
 // Edit a scenario by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', fetchuser, async (req, res) => {
   try {
     const { id } = req.params;
     const { scenarioId, reportId } = req.body;
+
+    const userAdmin = await User.findById(req.user.id);
+
+    if (userAdmin.role != process.env.WT) {
+      return res.status(403).send({ error: "Bad Request" });
+    }
 
     const updatedScenario = await Scenario.findByIdAndUpdate(
       id,
@@ -56,9 +70,15 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a scenario by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', fetchuser, async (req, res) => {
   try {
     const { id } = req.params;
+
+    const userAdmin = await User.findById(req.user.id);
+
+    if (userAdmin.role != process.env.WT) {
+      return res.status(403).send({ error: "Bad Request" });
+    }
 
     const deletedScenario = await Scenario.findByIdAndDelete(id);
 

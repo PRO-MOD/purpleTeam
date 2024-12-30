@@ -20,7 +20,13 @@ const Questions = ({ reportId }) => {
 
     const fetchQuestions = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`);
+            const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`, {
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                  'Content-Type': 'application/json',
+                },
+              });
             if (!response.ok) {
                 throw new Error('Failed to fetch questions');
             }
@@ -42,6 +48,10 @@ const Questions = ({ reportId }) => {
         try {
             const response = await fetch(`${apiUrl}/api/questions/delete/${id}`, {
                 method: 'DELETE',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                  'Content-Type': 'application/json',
+                },
             });
             if (!response.ok) {
                 throw new Error('Failed to delete question');
