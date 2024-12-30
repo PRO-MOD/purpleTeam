@@ -127,8 +127,8 @@ function HomePage() {
             <Route exact path='/challenges/docker' element={<ProtectedRoute Component={DockerManagement}/>}/>
             <Route exact path='/repository' element={<ProtectedRoute Component={Repository}/>}/>
             <Route exact path='/createRepo' element={<ProtectedRoute Component={CreateRepo}/>}/>
-            {/* <Route exact path='/userScores' element={<UserscoresComponent/>}/> */}
-            <Route exact path='/userScores' element={<SolvedChallenges/>}/>
+            <Route exact path='/userScores' element={<UserscoresComponent/>}/>
+            <Route exact path='/solvedChallenges' element={<SolvedChallenges/>}/>
           </Routes>
           
         </div>

@@ -20,7 +20,8 @@ function UserDetails() {
   const [submissionData, setSubmissionData] = useState(null);
   const [submissionTypes, setSubmissionTypes] = useState(null);
   const [hintCost, setHintCost]=useState(null);
-  const [mode, setMode] = useState("purpleTeam");
+  // const [mode, setMode] = useState("purpleTeam");
+  const mode="purpleTeam";
   const [selectedTab, setSelectedTab] = useState('reports'); // New state for tab selection
   const navigate = useNavigate();
 
@@ -72,17 +73,17 @@ function UserDetails() {
       }
     };
 
-    const fetchMode = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/api/config/mode`, {
-          method: 'GET',
-        });
-        const data = await response.json();
-        setMode(data.mode);
-      } catch (error) {
-        console.error('Error fetching mode:', error);
-      }
-    };
+    // const fetchMode = async () => {
+    //   try {
+    //     const response = await fetch(`${apiUrl}/api/config/mode`, {
+    //       method: 'GET',
+    //     });
+    //     const data = await response.json();
+    //     setMode(data.mode);
+    //   } catch (error) {
+    //     console.error('Error fetching mode:', error);
+    //   }
+    // };
 
     const fetchSubmissions = async () => {
       try {
@@ -128,7 +129,7 @@ function UserDetails() {
       fetchUserDetails();
       fetchUserReports();
       fetchUserScore();
-      fetchMode();
+      // fetchMode();
       fetchSubmissions();
       fetchtotalHintCost();
     }
@@ -199,9 +200,9 @@ function UserDetails() {
 
               {selectedTab === 'challenges' && (
                 <>
-                  <ChallengesDataVisualization submissionData={submissionData}  />
-                  <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
-                  <SubmissionTable userId={userId} />
+                 <ChallengesDataVisualization submissionData={submissionData} hintCost={hintCost} />
+              <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Challenges Submissions</h1>
+              <SubmissionTable userId={userId} />
                 </>
               )}
             </>

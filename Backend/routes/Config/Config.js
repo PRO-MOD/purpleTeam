@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require('path');
 const fs = require('fs');
 const Config=require('../../models/CTFdChallenges/Config');
+const User = require('../../models/User')
 
 
 const createUploadMiddleware = require('../../utils/CTFdChallenges/multerConfig');
@@ -126,48 +127,48 @@ router.post('/setVisibilitySettings', fetchuser, async (req, res) => {
   }
 });
 
-router.get('/mode', async (req, res) => {
-  try {
-    const config = await Config.findOne(); // Assuming there's only one config document
-    if (!config) {
-      return res.status(404).json({ success: false, message: 'Config not found.' });
-    }
-    res.json({ success: true, mode: config.mode });
-  } catch (error) {
-    console.error('Error fetching mode:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch mode.' });
-  }
-});
+// router.get('/mode', async (req, res) => {
+//   try {
+//     const config = await Config.findOne(); // Assuming there's only one config document
+//     if (!config) {
+//       return res.status(404).json({ success: false, message: 'Config not found.' });
+//     }
+//     res.json({ success: true, mode: config.mode });
+//   } catch (error) {
+//     console.error('Error fetching mode:', error);
+//     res.status(500).json({ success: false, message: 'Failed to fetch mode.' });
+//   }
+// });
 
 // Set Mode API
-router.post('/mode', fetchuser, async (req, res) => {
-  const { mode } = req.body;
-  const userAdmin = await User.findById(req.user.id);
+// router.post('/mode', fetchuser, async (req, res) => {
+//   const { mode } = req.body;
+//   const userAdmin = await User.findById(req.user.id);
       
-  if (userAdmin.role !== process.env.WT) {
-    return res.status(403).json({ error: "Bad Request" });
-  }
-  // Validate mode
-  if (!['ctfd', 'purpleTeam'].includes(mode)) {
-    return res.status(400).json({ success: false, message: 'Invalid mode value.' });
-  }
+//   if (userAdmin.role !== process.env.WT) {
+//     return res.status(403).json({ error: "Bad Request" });
+//   }
+//   // Validate mode
+//   if (!['ctfd', 'purpleTeam'].includes(mode)) {
+//     return res.status(400).json({ success: false, message: 'Invalid mode value.' });
+//   }
 
-  try {
-    const config = await Config.findOne(); // Assuming there's only one config document
-    if (!config) {
-      return res.status(404).json({ success: false, message: 'Config not found.' });
-    }
+//   try {
+//     const config = await Config.findOne(); // Assuming there's only one config document
+//     if (!config) {
+//       return res.status(404).json({ success: false, message: 'Config not found.' });
+//     }
 
-    // Update mode
-    config.mode = mode;
-    await config.save();
+//     // Update mode
+//     config.mode = mode;
+//     await config.save();
 
-    res.json({ success: true, message: 'Mode updated successfully.', mode: config.mode });
-  } catch (error) {
-    console.error('Error updating mode:', error);
-    res.status(500).json({ success: false, message: 'Failed to update mode.' });
-  }
-});
+//     res.json({ success: true, message: 'Mode updated successfully.', mode: config.mode });
+//   } catch (error) {
+//     console.error('Error updating mode:', error);
+//     res.status(500).json({ success: false, message: 'Failed to update mode.' });
+//   }
+// });
 
 
 

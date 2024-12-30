@@ -30,7 +30,7 @@ const ReportDetails = () => {
     return <div>Loading...</div>;
   }
 
-  const tabs = ['Questions', 'Config', 'Stats'];
+  const tabs = ['Questions', 'Scenario', 'Config', 'Stats'];
 
   return (
     <div className="w-full">

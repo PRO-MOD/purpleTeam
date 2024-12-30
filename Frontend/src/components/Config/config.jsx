@@ -4,7 +4,7 @@ import NavBar from './Navbar';
 import GeneralSettings from './GeneralSettings';
 import AppearanceSettings from './AppearanceSettings';
 import AccessSettings from './AccessSettings';
-import ModeSelector from './Mode';
+// import ModeSelector from './Mode';
 
 const ConfigurationPage = () => {
   const [activeSection, setActiveSection] = useState('general');
@@ -19,7 +19,7 @@ const ConfigurationPage = () => {
         {activeSection === 'general' && <GeneralSettings />}
         {activeSection === 'appearance' && <AppearanceSettings />}
         {activeSection === 'access' && <AccessSettings />}
-        {activeSection === 'mode' && <ModeSelector />}
+        {/* {activeSection === 'mode' && <ModeSelector />} */}
       </div>
     </>
   );

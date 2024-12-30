@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import ColorContext from '../context/ColorContext';
 import FontContext from '../context/FontContext';
+import ConfirmationModal from './Challenges/challenges/Partials/ConfirmationModal';
 const BT = import.meta.env.VITE_BT;
 const WT= import.meta.env.VITE_WT;
 
@@ -23,6 +24,9 @@ function AddUsers() {
     const [volunteers, setVolunteers] = useState([]);
     const [editUserId, setEditUserId] = useState(null); // Store the ID of the user being edited
     const [file, setFile] = useState(null);
+    const [deleteUserId, setDeleteUserId] = useState(null); // State to store the ID of the user to be deleted
+    const [deleteUserType, setDeleteUserType] = useState(null); // State to store the type of user (user or volunteer)
+    const [showConfirmModal, setShowConfirmModal] = useState(false); // State to control the modal visibility
 
     useEffect(() => {
         fetchUsers();
@@ -60,6 +64,7 @@ function AddUsers() {
             console.error('Error fetching volunteers:', error);
         }
     };
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -151,21 +156,29 @@ function AddUsers() {
         }
     };
 
-    const deleteUser = async (userId, userType) => {
+    const handleDeleteUser = (userId, userType) => {
+        setDeleteUserId(userId);
+        setDeleteUserType(userType);
+        setShowConfirmModal(true); // Show the confirmation modal
+    };
+
+  
+    // Function to confirm the delete action
+    const confirmDelete = async () => {
         try {
-            const url = `${apiUrl}/api/auth/deleteuser/${userId}`;
+            const url = `${apiUrl}/api/auth/deleteuser/${deleteUserId}`;
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
-                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
                 }
             });
             if (response.ok) {
                 // Remove the deleted user from the users or volunteers array
-                if (userType === 'user') {
-                    setUsers(users.filter(user => user._id !== userId));
+                if (deleteUserType === 'user') {
+                    setUsers(users.filter(user => user._id !== deleteUserId));
                 } else {
-                    setVolunteers(volunteers.filter(volunteer => volunteer._id !== userId));
+                    setVolunteers(volunteers.filter(volunteer => volunteer._id !== deleteUserId));
                 }
                 console.log('User deleted successfully');
             } else {
@@ -173,6 +186,40 @@ function AddUsers() {
             }
         } catch (error) {
             console.error('Error deleting user:', error);
+        } finally {
+            setShowConfirmModal(false); // Close the modal after deletion
+        }
+    };
+
+    // Function to cancel the delete action
+    const cancelDelete = () => {
+        setShowConfirmModal(false); // Close the modal without deleting
+    };
+
+    
+    const toggleVisibility = async (userId, userType) => {
+        try {
+            const url = `${apiUrl}/api/auth/toggleVisibility/${userId}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                // Update the visibility state in the local state
+                if (userType === 'user') {
+                    setUsers(users.map(user => user._id === userId ? { ...user, userVisibility: !user.userVisibility } : user));
+                } else {
+                    setVolunteers(volunteers.map(volunteer => volunteer._id === userId ? { ...volunteer, userVisibility: !volunteer.userVisibility } : volunteer));
+                }
+                console.log('Visibility toggled successfully');
+            } else {
+                console.error('Failed to toggle visibility');
+            }
+        } catch (error) {
+            console.error('Error toggling visibility:', error);
         }
     };
 
@@ -180,6 +227,7 @@ function AddUsers() {
         <div className="m-12">
             <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>Admin Dashboard</h1>
             <hr className='mx-2 my-8 border-black' />
+        
 
             <div className="flex flex-row w-full items-center">
                 {/* Button to add user */}
@@ -280,6 +328,7 @@ function AddUsers() {
                             <th className="border border-gray-400 px-4 py-2 w-4/12">Email</th>
                             <th className="border border-gray-400 px-4 py-2 w-3/6">Password</th>
                             <th className="border border-gray-400 px-4 py-2 w-1/12">Actions</th>
+                            <th className="border border-gray-400 px-4 py-2 w-1/12">Visibility</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -291,7 +340,20 @@ function AddUsers() {
                                 <td className="border border-gray-400 px-4 py-2">************</td>
                                 <td className="border border-gray-400 px-4 py-2">
                                     <button onClick={() => handleEditUser(user._id, "user")} className="mr-2">Edit</button>
-                                    <FontAwesomeIcon icon={faTrashCan} onClick={() => deleteUser(user._id, "user")}/>
+                                    <button
+        onClick={() => handleDeleteUser(user._id, "user")}
+        className="text-red-500 hover:text-red-700" // Add a button wrapper for better styling and click handling
+    >
+        <FontAwesomeIcon icon={faTrashCan} />
+    </button>
+                                </td>
+                                <td className="border border-gray-400 px-4 py-2">
+                                    <button
+                                        className={`w-12 h-6 rounded-full p-1 ${user.userVisibility ? 'bg-green-500' : 'bg-red-500'}`}
+                                        onClick={() => toggleVisibility(user._id, "user")}
+                                    >
+                                        <div className={`h-4 w-4 rounded-full bg-white shadow transform transition-transform ${user.userVisibility ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -308,6 +370,7 @@ function AddUsers() {
                             <th className="border border-gray-400 px-4 py-2 w-4/12">Email</th>
                             <th className="border border-gray-400 px-4 py-2 w-3/6">Password</th>
                             <th className="border border-gray-400 px-4 py-2 w-1/12">Actions</th>
+                            <th className="border border-gray-400 px-4 py-2 w-1/12">Visibility</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -319,14 +382,35 @@ function AddUsers() {
                                 <td className="border border-gray-400 px-4 py-2">************</td>
                                 <td className="border border-gray-400 px-4 py-2">
                                     <button onClick={() => handleEditUser(volunteer._id, "volunteer")} className="mr-2">Edit</button>
-                                    <FontAwesomeIcon icon={faTrashCan} onClick={() => deleteUser(volunteer._id, "volunteer")}/>
+                                    <button
+        onClick={() => handleDeleteUser(volunteer._id, "volunteer")}
+        className="text-red-500 hover:text-red-700" // Add a button wrapper for better styling and click handling
+    >
+        <FontAwesomeIcon icon={faTrashCan} />
+    </button>
+                                </td>
+                                <td className="border border-gray-400 px-4 py-2">
+                                    <button
+                                        className={`w-12 h-6 rounded-full p-1 ${volunteer.userVisibility ? 'bg-green-500' : 'bg-red-500'}`}
+                                        onClick={() => toggleVisibility(volunteer._id, "volunteer")}
+                                    >
+                                        <div className={`h-4 w-4 rounded-full bg-white shadow transform transition-transform ${volunteer.userVisibility ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                                    </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                {showConfirmModal && (
+                <ConfirmationModal
+                    message="Are you sure you want to delete this user?"
+                    onConfirm={confirmDelete}
+                    onCancel={cancelDelete}
+                />
+            )}
             </div>
         </div>
+        
     );
 }
 

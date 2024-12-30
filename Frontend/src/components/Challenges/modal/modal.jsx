@@ -358,6 +358,35 @@ const Modal = ({
     }
   };
 
+  const handleFetchFile = async (fileName) => {
+    try {
+      // Make a fetch request to the backend to retrieve the file
+      const response = await fetch(`${apiUrl}/uploads/CTFdChallenges/${fileName}`, {
+        method: "GET",
+        headers: {
+          "auth-token": localStorage.getItem("Hactify-Auth-token"),
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch the file");
+      }
+  
+      // Convert the response to a blob
+      const blob = await response.blob();
+  
+      // Create a URL for the blob and open it in a new tab
+      const fileUrl = URL.createObjectURL(blob);
+      window.open(fileUrl, "_blank");
+  
+      // Clean up the created URL after the file is opened
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error fetching the file:", error);
+    }
+  };
+  
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -494,7 +523,7 @@ const Modal = ({
                 <ul className="list-disc list-inside mt-2">
                   {challenge.files.map((fileName, index) => (
                     <li key={index}>
-                      <a
+                      {/* <a
                         href={`${apiUrl}/uploads/CTFdChallenges/${fileName}`}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -502,12 +531,21 @@ const Modal = ({
                         style={paraFont}
                       >
                         {fileName}
-                      </a>
+                      </a> */}
+
+<button
+  onClick={() => handleFetchFile(fileName)}
+  className="text-blue-500 hover:underline"
+  style={paraFont}
+>
+  {fileName}
+</button>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
+
 
             <div className="mt-4 flex justify-between items-center">
 

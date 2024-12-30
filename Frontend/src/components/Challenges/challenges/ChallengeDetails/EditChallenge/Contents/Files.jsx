@@ -96,6 +96,36 @@ const Files = ({ challengeId }) => {
     setShowUpload(!showUpload);
   };
 
+
+  const handleFetchFile = async (fileName) => {
+    try {
+      // Make a fetch request to the backend to retrieve the file
+      const response = await fetch(`${apiUrl}/uploads/CTFdChallenges/${fileName}`, {
+        method: "GET",
+        headers: {
+          "auth-token": localStorage.getItem("Hactify-Auth-token"),
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch the file");
+      }
+  
+      // Convert the response to a blob
+      const blob = await response.blob();
+  
+      // Create a URL for the blob and open it in a new tab
+      const fileUrl = URL.createObjectURL(blob);
+      window.open(fileUrl, "_blank");
+  
+      // Clean up the created URL after the file is opened
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error fetching the file:", error);
+    }
+  };
+  
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-4">
@@ -114,7 +144,7 @@ const Files = ({ challengeId }) => {
           <ul className="space-y-2">
             {files.map((file, index) => (
               <li key={index} className="flex justify-between items-center">
-                <a
+                {/* <a
                   href={`${apiUrl}/uploads/CTFdChallenges/${file}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -122,7 +152,16 @@ const Files = ({ challengeId }) => {
                   style={{ ...paraFont }} // Apply paragraph font style
                 >
                   {file}
-                </a>
+                </a> */}
+
+<button
+  onClick={() => handleFetchFile(file)}
+  className="text-blue-500 hover:underline"
+  style={{ ...paraFont }} // Apply paragraph font style
+>
+  {file}
+</button>
+
                 <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer" onClick={() => handleFileDelete(file)} />
               </li>
             ))}
