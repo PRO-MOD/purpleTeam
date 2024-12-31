@@ -21,7 +21,7 @@ function UserDetails() {
   const [submissionTypes, setSubmissionTypes] = useState(null);
   const [hintCost, setHintCost]=useState(null);
   // const [mode, setMode] = useState("purpleTeam");
-  const mode="purpleTeam";
+  const mode="ctfd"; // ctfd  // purpleTeam
   const [selectedTab, setSelectedTab] = useState('reports'); // New state for tab selection
   const navigate = useNavigate();
 

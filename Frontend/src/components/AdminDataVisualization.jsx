@@ -17,7 +17,7 @@ function AdminDataVisualization() {
   const [submissionData, setSubmissionData] = useState([]);
   const [submissionTypes, setSubmissionTypes] = useState([]);
   // const[mode,setMode]=useState("purpleTeam");
-  const mode="purpleTeam";
+  const mode="ctfd";
   
 
   useEffect(() => {
