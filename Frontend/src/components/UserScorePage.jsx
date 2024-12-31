@@ -2,10 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import ScoreTable from './ScoreTable';
 import UserScoreTable from './UserScoreTable';
 // import UserScoreTable from './UserScoreTable';
-<<<<<<< HEAD
-=======
-import UserScoreTable from './UserScoreTable';
->>>>>>> 2fa49565e4770a3227209fe37ebd99d11ffcf424
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
