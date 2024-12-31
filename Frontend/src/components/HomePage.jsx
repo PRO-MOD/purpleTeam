@@ -112,7 +112,7 @@ function HomePage() {
             <Route exact path="/profile" element={<UserProfile />} />
             {/* Challenges ROute */}
             <Route exact path='/admin/challenges' element={<ProtectedRoute Component={MainChallenge} />} />
-            <Route exact path='/admin/cybershakti/visualization' element={<ProtectedRoute Component={CyberShakti} />} />
+            {/* <Route exact path='/admin/cybershakti/visualization' element={<ProtectedRoute Component={CyberShakti} />} /> */}
             <Route exact path='/admin/challenge/create' element={<ProtectedRoute Component={CreateChallenge} />} />
             <Route exact path='/challenges/:id' element={<ProtectedRoute Component={ChallengeDetailsPage} />} />
             <Route exact path='/repositories/:id' element={<ProtectedRoute Component={RepoDetailsPage} />} />
