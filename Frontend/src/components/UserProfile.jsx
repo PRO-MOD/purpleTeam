@@ -16,43 +16,6 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
 
-
-  const [profileImage, setProfileImage] = useState("");
-
-useEffect(() => {
-  const fetchProfileImage = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/${userData.profile}`, {
-        method: "GET",
-        headers: {
-          "auth-token": localStorage.getItem("Hactify-Auth-token"),
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch the profile image");
-      }
-
-      // Convert the response to a blob
-      const blob = await response.blob();
-
-      // Create a URL for the blob
-      const url = URL.createObjectURL(blob);
-      setProfileImage(url);
-    } catch (error) {
-      console.error("Error fetching the profile image:", error);
-    }
-  };
-
-  fetchProfileImage();
-
-  // Clean up the URL to avoid memory leaks
-  return () => {
-    if (profileImage) URL.revokeObjectURL(profileImage);
-  };
-}, [userData]);
-
-
   const fetchUserData = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/auth/getuser`, {
@@ -106,7 +69,7 @@ useEffect(() => {
       <h1 className="text-3xl font-bold mb-4 text-center" style={{ fontFamily: headingFont.fontFamily, fontSize:headingFont.fontSize }}>User Profile</h1>
       <div className="flex flex-col items-center mb-8">
         {/* Display current profile picture */}
-        <img src={` ${profileImage}` || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="Profile" className="w-32 h-32 rounded-full mb-4 shadow-md" />
+        <img src={` ${apiUrl}/${ userData.profile}` || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="Profile" className="w-32 h-32 rounded-full mb-4 shadow-md" />
         <p className="mb-2"><span className="font-semibold"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Name:</span> <span  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{userData.name}</span></p>
         <p className="mb-4"><span className="font-semibold"style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>Email:</span> <span  style={{ fontFamily: paraFont.fontFamily, fontSize:paraFont.fontSize }}>{userData.email}</span></p>
       </div>

@@ -168,7 +168,7 @@ function UserReports({ userId, route }) {
   };
 
   const viewReport = (reportId, userId, responseId) => {
-    console.log(reportId, userId, responseId);
+    // console.log(reportId, userId, responseId);
 
     fetch(
       `${apiUrl}/api/generatePDF/generateReport/${reportId}/${userId}/${responseId}`,

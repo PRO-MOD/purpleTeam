@@ -12,7 +12,8 @@ function ScoreTable({ scores, loading, isHomePage }) {
   const [sortedScores, setSortedScores] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: 'totalScore', direction: 'descending' });
   // const [mode, setMode] = useState(''); // State to store the mode
-  const mode="purpleTeam";
+  // const mode="purpleTeam";
+  const mode=import.meta.env.VITE_MODE;
   // Fetch the mode from the API
   // useEffect(() => {
   //   const fetchMode = async () => {

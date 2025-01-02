@@ -70,39 +70,39 @@ const SideNavbar = () => {
   };
 
 
-  const [logoPic, setLogoPic] = useState("");
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        const response = await fetch(`${logoUrl}`, {
-          method: "GET",
-          headers: {
-           "auth-token": localStorage.getItem("Hactify-Auth-token"),
-          },
-        });
+  // const [logoPic, setLogoPic] = useState("");
+  // useEffect(() => {
+  //   const fetchLogo = async () => {
+  //     try {
+  //       const response = await fetch(`${logoUrl}`, {
+  //         method: "GET",
+  //         headers: {
+  //          "auth-token": localStorage.getItem("Hactify-Auth-token"),
+  //         },
+  //       });
   
-        if (!response.ok) {
-          throw new Error("Failed to fetch the logo");
-        }
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch the logo");
+  //       }
   
-        // Convert the response to a blob
-        const blob = await response.blob();
+  //       // Convert the response to a blob
+  //       const blob = await response.blob();
   
-        // Create a URL for the blob
-        const url = URL.createObjectURL(blob);
-        setLogoPic(url);
-      } catch (error) {
-        console.error("Error fetching the logo:", error);
-      }
-    };
+  //       // Create a URL for the blob
+  //       const url = URL.createObjectURL(blob);
+  //       setLogoPic(url);
+  //     } catch (error) {
+  //       console.error("Error fetching the logo:", error);
+  //     }
+  //   };
   
-    fetchLogo();
+  //   fetchLogo();
   
-    // Clean up the URL to avoid memory leaks
-    return () => {
-      if (logoPic) URL.revokeObjectURL(logoPic);
-    };
-  }, [logoUrl]);
+  //   // Clean up the URL to avoid memory leaks
+  //   return () => {
+  //     if (logoPic) URL.revokeObjectURL(logoPic);
+  //   };
+  // }, [logoUrl]);
 
   // const fetchMode = async () => {
   //   try {
@@ -193,7 +193,7 @@ const SideNavbar = () => {
   // Define general items
   const generalItems = [
     { path: "/home", icon: faHome, label: "Statistics", visibility: visibilitySettings.home == 'yes' },
-    { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home == 'yes' },
+    // { path: "/admin/cybershakti/visualization", icon: faChartColumn, label: "Cybershakti", visibility: visibilitySettings.home == 'yes' },
     { path: "/UserHome", icon: faCircleUser, label: "Dashboard", visibility: visibilitySettings.dashboard == 'yes' },
     { path: "/notes", icon: faNotesMedical, label: "Notes", visibility: visibilitySettings.notes == 'yes' },
     { path: "/progress", icon: faChartColumn, label: "Progress", visibility: visibilitySettings.progress == 'yes' },
@@ -210,8 +210,8 @@ const SideNavbar = () => {
   return (
     <div className="flex flex-col h-screen bg-white-600 text-white w-full sticky top-0 shadow-xl z-50 overflow-y-auto" style={{ fontFamily: navbarFont.fontFamily, fontSize: navbarFont.fontSize }}>
       {/* Logo Section */}
-      <div className="flex items-center justify-center py-4 h-32">
-        <img src={logoPic} alt="Logo" className="h-full" />
+      <div className="flex items-center justify-center py-4 h-28 w-[80%] m-auto">
+        <img src={logoUrl} alt="Logo" className="h-full filter brightness-0 invert" />
       </div>
 
       {/* Navigation Section */}

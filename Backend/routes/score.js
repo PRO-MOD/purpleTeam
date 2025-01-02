@@ -11,6 +11,7 @@ const xlsx = require('xlsx');
 const fetchuser = require('../middleware/fetchuser');
 const ChallengeSolve = require('../models/ChallengeSolved');
 const Submission = require('../models/CTFdChallenges/Submission');
+const UserResponse = require('../models/Report/UserResponse');
 const BT = process.env.BT;
 
 
@@ -317,8 +318,14 @@ router.get('/getscores1', async (req, res) => {
 //     }
 // });
 
-router.get('/get-scores', async (req, res) => {
+router.get('/get-scores', fetchuser, async (req, res) => {
   try {
+    const userAdmin = await User.findById(req.user.id);
+     
+        if (userAdmin.role != process.env.WT) {
+          return res.status(403).send({ error: "Bad Request" });
+        }
+
     // Find users with userVisibility set to true
     const visibleUsers = await User.find({ userVisibility: true }).select('_id');
 
@@ -327,6 +334,26 @@ router.get('/get-scores', async (req, res) => {
 
     // Fetch scores for these user IDs
     const scores = await Score.find({ user: { $in: userIds } });
+
+    for (const score of scores) {
+      // Fetch all UserResponses for the current user
+      const userResponses = await UserResponse.find({ userId: score.user });
+      
+      if (userResponses.length > 0) {
+        // Check if any UserResponse has a null finalScore
+        const hasNullFinalScore = userResponses.some(response => response.finalScore === null);
+
+        if (hasNullFinalScore) {
+          // If any finalScore is null and `read` is false, set `read` to true
+          score.read = false;
+          await score.save();
+        } else if (!hasNullFinalScore) {
+          // If all finalScores are not null and `read` is true, set `read` to false
+          score.read = true;
+          await score.save();
+        }
+      }
+    }
 
     // Send the scores back as the response
     res.json(scores);

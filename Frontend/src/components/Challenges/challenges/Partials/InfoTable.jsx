@@ -40,7 +40,12 @@ const InfoTable = ({ data, columns, onRowClick, selectedItems, onItemSelect, onS
                                 onClick={(event) => onRowClick(item._id, event)}
                             >
                                 {columns.map((column, colIndex) => (
-                                    <td key={colIndex} className="py-2 px-4 border-b">{column.accessor === "_id" ? rowIndex + 1 : item[column.accessor]}</td>
+                                    <td key={colIndex} className="py-2 px-4 border-b"> {column.accessor === "visibility" ? 
+                                        (item[column.accessor] ? 'Visible' : 'Invisible') : 
+                                        (column.accessor === "_id" ? rowIndex + 1 : item[column.accessor])
+                                    }
+
+                                    </td>
                                 ))}
                                 <td className="py-2 px-4 border-b">
                                     <input

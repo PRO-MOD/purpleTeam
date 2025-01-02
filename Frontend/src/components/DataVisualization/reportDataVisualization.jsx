@@ -126,19 +126,49 @@ const ReportDataVisualization = ({ jsonData, scoreData }) => {
     },
   ];
 
-  // Pie chart for different report names
-  const reportNames = [...new Set(jsonData.map((report) => report.reportName))];
-  const reportCounts = reportNames.map((name) =>
-    jsonData.filter((report) => report.reportName === name).length
-  );
-  const pieChartOptions = {
-    labels: reportNames,
-    title: {
-      text: 'Report Distribution',
+  // // Pie chart for different report names
+  // const reportNames = [...new Set(jsonData.map((report) => report.reportName))];
+  // const reportCounts = reportNames.map((name) =>
+  //   jsonData.filter((report) => report.reportName === name).length
+  // );
+  // const pieChartOptions = {
+  //   labels: reportNames,
+  //   title: {
+  //     text: 'Report Distribution',
+  //   },
+  //   colors: ['#3652f3', '#4c66f4', '#6379f5', '#7a8df6', '#1f3ae1'], // Shades for pie slices
+  // };
+  // const pieChartData = reportCounts;
+
+  // Correct processing for pie chart data
+const reportNames = [...new Set(jsonData.map((report) => report.reportName))];
+const reportCounts = reportNames.map((name) =>
+  jsonData.filter((report) => report.reportName === name).length
+);
+
+// Updated pie chart options
+const pieChartOptions = {
+  chart: {
+    type: 'pie',
+  },
+  labels: reportNames,
+  title: {
+    text: 'Report Distribution',
+    align: 'center',
+    style: {
+      fontSize: '16px',
+      fontWeight: 'bold',
     },
-    colors: ['#3652f3', '#4c66f4', '#6379f5', '#7a8df6', '#1f3ae1'], // Shades for pie slices
-  };
-  const pieChartData = reportCounts;
+  },
+  legend: {
+    position: 'bottom',
+  },
+  colors: ['#3652f3', '#4c66f4', '#6379f5', '#7a8df6', '#1f3ae1'], // Ensure you have enough colors
+};
+
+// Updated pie chart data
+const pieChartData = reportCounts.length > 0 ? reportCounts : [1]; // Avoid empty series
+
 
   // Line chart for submissions over time
   const lineChartOptions = {

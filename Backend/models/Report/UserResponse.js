@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const userResponseSchema = new mongoose.Schema({
   reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'NewReport', required: true },
+  scenarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Scenario', required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   responses: [
     {
@@ -14,7 +15,7 @@ const userResponseSchema = new mongoose.Schema({
     }
   ],
   penaltyScore: { type: Number, default: 0 },
-  finalScore: { type: Number, default: 0 }, // Field to store penalty score
+  finalScore: { type: Number, default: null }, // Field to store penalty score
   createdAt: { type: Date, default: Date.now }
 });
 

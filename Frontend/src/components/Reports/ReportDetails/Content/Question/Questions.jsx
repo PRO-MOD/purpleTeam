@@ -4,6 +4,7 @@ import AddQuestion from './AddQuestion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import FontContext from '../../../../../context/FontContext';
+import ConfirmationModal from '../../../../Challenges/challenges/Partials/ConfirmationModal';
 
 const Questions = ({ reportId }) => {
     const {navbarFont, headingFont, paraFont, updateFontSettings}=useContext(FontContext);
@@ -12,6 +13,9 @@ const Questions = ({ reportId }) => {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(null);
+    const [showConfirmModal, setShowConfirmModal] = useState(false); // State to control confirm modal
+    const [questionToDelete, setQuestionToDelete] = useState(null); // Store the question to be deleted
+
     const apiUrl = import.meta.env.VITE_Backend_URL;
 
     useEffect(() => {
@@ -20,7 +24,13 @@ const Questions = ({ reportId }) => {
 
     const fetchQuestions = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`);
+            const response = await fetch(`${apiUrl}/api/questions/for/${reportId}`, {
+                method: 'GET',
+                headers: {
+                  'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                  'Content-Type': 'application/json',
+                },
+              });
             if (!response.ok) {
                 throw new Error('Failed to fetch questions');
             }
@@ -33,24 +43,37 @@ const Questions = ({ reportId }) => {
         }
     };
 
+  
+
     const handleEdit = (question) => {
         setEditingQuestion(question);
         setShowModal(true);
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
+        setQuestionToDelete(id); // Set the question to be deleted
+        setShowConfirmModal(true); // Show the confirmation modal
+    };
+
+    const confirmDelete = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/questions/delete/${id}`, {
+            const response = await fetch(`${apiUrl}/api/questions/delete/${questionToDelete}`, {
                 method: 'DELETE',
+                headers: {
+                    'Auth-token': localStorage.getItem('Hactify-Auth-token'),
+                    'Content-Type': 'application/json',
+                },
             });
             if (!response.ok) {
                 throw new Error('Failed to delete question');
             }
-            setQuestions(questions.filter((question) => question._id !== id));
+            setQuestions(questions.filter((question) => question._id !== questionToDelete));
+            setShowConfirmModal(false); // Close the confirmation modal
         } catch (error) {
             setError('Failed to delete question');
         }
     };
+
 
     const handleModalClose = () => {
         setShowModal(false);
@@ -62,6 +85,7 @@ const Questions = ({ reportId }) => {
             setQuestions(questions.map((question) =>
                 question._id === newQuestion._id ? newQuestion : question
             ));
+            await fetchQuestions();
         } else {
             setQuestions([...questions, newQuestion].sort((a, b) => a.index - b.index));
             await fetchQuestions();
@@ -79,6 +103,7 @@ const Questions = ({ reportId }) => {
 
     const columns = [
         { header: "Order", accessor: "index" },
+        { header: "Scenario ID", accessor: "scenarioName" },
         { header: "Question", accessor: "text" },
         { header: "Type", accessor: "type" },
         { header: "Options", accessor: "options" },
@@ -102,9 +127,22 @@ const Questions = ({ reportId }) => {
                             existingQuestion={editingQuestion}
                             onSubmit={handleQuestionSubmit}
                         />
+
+
                     </div>
                 </div>
             )}
+
+            {/* Confirmation Modal for Deletion */}
+            {showConfirmModal && (
+                <ConfirmationModal
+                    message="Are you sure you want to delete this question?"
+                    onConfirm={confirmDelete}
+                    onCancel={() => setShowConfirmModal(false)}
+                />
+            )}
+
+
         </div>
     );
 };

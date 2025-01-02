@@ -119,8 +119,19 @@ const upload = multer({ storage });
 
 router.post('/ans', fetchuser, upload.any(), async (req, res) => {
   try {
-    const { reportId } = req.body;
+    const { reportId, scenarioId } = req.body;
     const userId = req.user.id;
+
+    // Check if the user has already submitted a response
+    const existingResponse = await UserResponse.findOne({ reportId, scenarioId, userId });
+
+    if (existingResponse) {
+      return res.status(403).json({ 
+        message: 'You have already submitted this report. Editing is not allowed.' 
+      });
+    }
+
+
     const responses = req.body.responses;
     let responseArray = [];
     let errors = [];
@@ -204,6 +215,7 @@ router.post('/ans', fetchuser, upload.any(), async (req, res) => {
     const newResponse = new UserResponse({
       reportId: reportId,
       userId: userId,
+      scenarioId: scenarioId,
       responses: responseArray,
     });
 
